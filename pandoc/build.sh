@@ -4,5 +4,4 @@ pandoc sample.md \
   --mathjax \
   --highlight-style tango \
   --template=templates/layout.html \
-  --css=style.css \
   --toc

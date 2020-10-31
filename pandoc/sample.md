@@ -1,6 +1,6 @@
 ---
-date: 2020-10-31
 title: Title
+date: 2020-10-31
 ---
 
 # Chapter 1
