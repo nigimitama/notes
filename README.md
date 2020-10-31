@@ -50,18 +50,55 @@
 
 
 ```
-pandoc docs_raw/sample.md \
+pandoc sample.md \
+  --from=markdown \
+  --output=sample.html \
+  --standalone \
+  --mathjax \
+  --highlight-style tango \
+  --toc \
+  --css=github-pandoc.css
+```
+
+
+
+```
+pandoc sample.md \
   --from=markdown \
   --output=output.html \
   --standalone \
   --mathjax \
-  --highlight-style tango
+  --highlight-style tango \
+  --toc \
+  --template=templates/default.html
 ```
 
+
+```
+pandoc sample.md \
+  --output=sample.html \
+  --standalone \
+  --mathjax \
+  --highlight-style tango \
+  --template=templates/layout.html \
+  --toc
+```
+
+
 ### pandoc links
+
 - [Pandoc User’s Guide 日本語版 — 日本Pandocユーザ会 2019.02.21 ドキュメント](https://pandoc-doc-ja.readthedocs.io/ja/latest/users-guide.html#using-pandoc)
 - [Pandoc - Demos](https://pandoc.org/demos.html)
 - [Pandoc で github 風 CSS を使った standalone な html を生成 - Qiita](https://qiita.com/griffin_stewie/items/95026360fdfca1bd8e33)
-- 
+- [Pandocをインストールしてマークダウン記法を自分好みに変換しよう！ - はるなぴログ](https://www.halu7.com/entry/pandoc-install-option)
+- [44種類のフォーマットに対応したPandocでMarkdownをHTML形式に変換する | Developers.IO](https://dev.classmethod.jp/articles/pandoc-markdown2html/)
 
+
+
+### FrontEnd
+
+#### Sticky Table of Contents
+- toc generator: [Tocbot](https://tscanlin.github.io/tocbot/)
+- [Sticky Table of Contents with Scrolling Active States | CSS-Tricks](https://css-tricks.com/sticky-table-of-contents-with-scrolling-active-states/)
+- [Progress Nav](https://lab.hakim.se/progress-nav/)
 
