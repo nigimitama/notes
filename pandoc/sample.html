@@ -5,67 +5,254 @@
   <meta name="generator" content="pandoc">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre|Roboto" rel="stylesheet">
   <link href="progress-nav/normalize.css" rel="stylesheet" type="text/css" />
   <link href="progress-nav/style.css" rel="stylesheet" type="text/css" />
 
-    <meta name="dcterms.date" content="2020-10-31">
-  <title>Title</title>
+    <title></title>
   <style type="text/css">code{white-space: pre;}</style>
 
+<!--
+  <style type="text/css">
+    div.sourceCode { overflow-x: auto; }
+    table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+      margin: 0; padding: 0; vertical-align: baseline; border: none; }
+    table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+    td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+    td.sourceCode { padding-left: 5px; }
+    pre, code { background-color: #f8f8f8; }
+    code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code > span.dt { color: #204a87; } /* DataType */
+    code > span.dv { color: #0000cf; } /* DecVal */
+    code > span.bn { color: #0000cf; } /* BaseN */
+    code > span.fl { color: #0000cf; } /* Float */
+    code > span.ch { color: #4e9a06; } /* Char */
+    code > span.st { color: #4e9a06; } /* String */
+    code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code > span.ot { color: #8f5902; } /* Other */
+    code > span.al { color: #ef2929; } /* Alert */
+    code > span.fu { color: #000000; } /* Function */
+    code > span.er { color: #a40000; font-weight: bold; } /* Error */
+    code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+    code > span.cn { color: #000000; } /* Constant */
+    code > span.sc { color: #000000; } /* SpecialChar */
+    code > span.vs { color: #4e9a06; } /* VerbatimString */
+    code > span.ss { color: #4e9a06; } /* SpecialString */
+    code > span.im { } /* Import */
+    code > span.va { color: #000000; } /* Variable */
+    code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code > span.ex { } /* Extension */
+    code > span.at { color: #c4a000; } /* Attribute */
+    code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+-->
 
+  <link rel="stylesheet" href="templates/style.css">
 
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
 
 
 </head>
 <body>
+  <header class="p-3">
+    <a href="index.html"><span class="logo">Note</span></a>
+  </header>
+
+  <main class="py-2">
   <!-- table of contents -->
       <nav class="toc" id="TOC">
     <ul>
-    <li><a href="#chapter-1">Chapter 1</a><ul>
-    <li><a href="#section">Section</a></li>
-    <li><a href="#section-1">Section</a></li>
+    <li><a href="#回帰におけるバイアスとバリアンス">回帰におけるバイアスとバリアンス</a><ul>
+    <li><a href="#code-test">code test</a></li>
+    <li><a href="#展開">展開</a></li>
+    <li><a href="#バイアスバリアンスの意味">バイアス、バリアンスの意味</a><ul>
+    <li><a href="#削減不能な誤差irreducible-error">削減不能な誤差（irreducible error）</a></li>
+    <li><a href="#バイアスbias">バイアス（Bias）</a></li>
+    <li><a href="#バリアンスvariance">バリアンス（Variance）</a></li>
     </ul></li>
-    <li><a href="#chapter-2">Chapter 2</a><ul>
-    <li><a href="#section-2">Section</a></li>
-    <li><a href="#section-3">Section</a></li>
     </ul></li>
-    <li><a href="#chapter-3">Chapter 3</a><ul>
-    <li><a href="#section-4">Section</a></li>
-    <li><a href="#section-5">Section</a></li>
-    </ul></li>
+    <li><a href="#分類におけるバイアスとバリアンス">分類におけるバイアスとバリアンス</a></li>
     </ul>
-
+      <!-- svg for progress-nav -->
       <svg class="toc-marker" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-        <path stroke="#444" stroke-width="3" fill="transparent" stroke-dasharray="0, 0, 0, 1000" stroke-linecap="round" stroke-linejoin="round" transform="translate(-0.5, -0.5)" />
+        <path stroke="dimgray" stroke-width="3" fill="transparent" stroke-dasharray="0, 0, 0, 1000" stroke-linecap="round" stroke-linejoin="round" transform="translate(-0.5, -0.5)" />
       </svg>
     </nav>
     
   <!-- main contents -->
-  <main>
     
-        <header>
-      <h1 class="title">Title</h1>
-                        <p class="date">2020-10-31</p>
-          </header>
+    <!-- contents header -->
     
     <!-- contents body -->
     <article class="contents">
-      <h1 id="chapter-1">Chapter 1</h1>
-      <h2 id="section">Section</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <h2 id="section-1">Section</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <h1 id="chapter-2">Chapter 2</h1>
-      <h2 id="section-2">Section</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <h2 id="section-3">Section</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <h1 id="chapter-3">Chapter 3</h1>
-      <h2 id="section-4">Section</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <h2 id="section-5">Section</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <h1 id="回帰におけるバイアスとバリアンス">回帰におけるバイアスとバリアンス</h1>
+      <p><a href="http://delta-apache-vm.cs.tau.ac.il/~nin/Courses/NC06/VarbiasBiasGeman.pdf">Geman, S., Bienenstock, E., &amp; Doursat, R. (1992). Neural networks and the bias/variance dilemma. <em>Neural computation</em>, <em>4</em>(1), 1-58.</a></p>
+      <p>特徴量ベクトルを<span class="math inline">\(X\)</span>とし、目的変数は<span class="math inline">\(Y=f(X) + \varepsilon\)</span>であると仮定する。</p>
+      <p><span class="math inline">\(f(X)\)</span>は<span class="math inline">\(Y\)</span>の予測可能な部分で、<span class="math inline">\(\varepsilon\)</span>は予測不能なノイズで、<span class="math inline">\(\text{E}[\varepsilon]=0,\ \text{Var}[\varepsilon]=\sigma^2_{\varepsilon}\)</span>とする。</p>
+      <p>議論を簡潔にするため、データにおける<span class="math inline">\(x_i\)</span>の値は決定論的に決められているとする。</p>
+      <p>学習データセット<span class="math inline">\(\mathcal{D}\)</span>で学習した予測器を<span class="math inline">\(\hat{f}(x; \mathcal D)\)</span>とする。</p>
+      <p>様々な学習データセット<span class="math inline">\(\mathcal D\)</span>にわたっての期待値をとる操作を<span class="math inline">\({\rm E}_{\mathcal D}\)</span>と表す。</p>
+      <p>平均2乗誤差の下での、<span class="math inline">\(X=x_0\)</span>における期待予測誤差（expected prediction error）もしくは汎化誤差（generalization error）と呼ばれるものは、 <span class="math display">\[
+      {\rm EPE} (x_0) = {\rm E}_{\mathcal D}[(Y - \hat{f}(x_0; \mathcal D))^2 | X = x_0]
+      \]</span></p>
+      <p>これを分解すると <span class="math display">\[
+      \begin{align}
+      \text{EPE}(x_0)&amp;=\text{E}_{\mathcal D}[(Y-\hat{f}(x_0; \mathcal{D}))^2|X=x_0]\\
+      &amp;= \sigma^2_{\varepsilon} + (\text{E}_{\mathcal D}[\hat{f}(x_0; \mathcal{D})]
+      - f(x_0))^2+ \text{E}_{\mathcal D}[(\hat{f}(x_0; \mathcal{D}) - \text{E}_{\mathcal D}[\hat{f}(x_0; \mathcal{D})])^2]\\
+      &amp;= \sigma^2_{\varepsilon} + \text{Bias}(\hat{f}(x_0; \mathcal{D}))^2 + \text{Var}_{\mathcal D}(\hat{f}(x_0; \mathcal{D}))\\
+      &amp;= \text{削減不能な誤差} + \text{バイアス}^2 + \text{バリアンス（分散）}
+      \end{align}
+      \]</span> と分解できることが知られている。</p>
+      <h2 id="code-test">code test</h2>
+      <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">101</span>):
+          <span class="cf">if</span> i <span class="op">%</span> <span class="dv">15</span> <span class="op">==</span> <span class="dv">0</span>:
+              <span class="bu">print</span>(<span class="st">&quot;Fizz Buzz!&quot;</span>)
+          <span class="cf">elif</span> i <span class="op">%</span> <span class="dv">3</span> <span class="op">==</span> <span class="dv">0</span>:
+              <span class="bu">print</span>(<span class="st">&quot;Fizz!&quot;</span>)
+          <span class="cf">elif</span> i <span class="op">%</span> <span class="dv">5</span> <span class="op">==</span> <span class="dv">0</span>:
+              <span class="bu">print</span>(<span class="st">&quot;Buzz!&quot;</span>)
+          <span class="cf">else</span>:
+              <span class="bu">print</span>(i)</code></pre></div>
+      <h2 id="展開">展開</h2>
+      <p>この分解の過程を以下で整理していく。ただし、記号を以下のように簡略化する <span class="math display">\[
+      \begin{align}
+      f &amp;:= f(x_0)\\
+      \hat{f} &amp;:= \hat{f}(x_0; \mathcal{D})\\
+      {\rm E} &amp;:= {\rm E}_{\mathcal D}\\
+      {\rm Var} &amp;:= {\rm Var}_{\mathcal D}\\
+      \end{align}
+      \]</span></p>
+      <p><span class="math display">\[
+      \begin{align}
+      \text{EPE}(x_0)
+      &amp;=\text{E}[(Y-\hat{f})^2]\\
+      &amp;={\rm E}[(Y - {\rm E}[\hat{f}] + {\rm E}[\hat{f}] - \hat{f})^2]\\
+      &amp;={\rm E}[(Y - {\rm E}[\hat{f}])^2 
+      + 2(Y - {\rm E}[\hat{f}])({\rm E}[\hat{f}] - \hat{f}) 
+      + ({\rm E}[\hat{f}] - \hat{f})^2]\\
+      &amp;={\rm E}[(Y - {\rm E}[\hat{f}])^2]
+      + {\rm E}[2(Y - {\rm E}[\hat{f}])({\rm E}[\hat{f}] - \hat{f})]
+      + {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2] \tag{1}
+      \end{align}
+      \]</span></p>
+      <p>ここで式<span class="math inline">\((1\)</span>)の第1項は <span class="math display">\[
+      \begin{align}
+      &amp;{\rm E}[(Y - {\rm E}[\hat{f}])^2]\\
+      &amp;= {\rm E}[Y^2 - 2Y{\rm E}[\hat{f}] + {\rm E}[\hat{f}]^2]\\
+      &amp;= {\rm E}[(f+\varepsilon)^2 - 2(f + \varepsilon){\rm E}[\hat{f}]
+      + {\rm E}[\hat{f}]^2]\\
+      &amp;={\rm E}[
+      (f^2 + 2f\varepsilon + \varepsilon^2)
+      - (2f{\rm E}[\hat{f}] + 2\varepsilon{\rm E}[\hat{f}])
+      - {\rm E}[\hat{f}]^2
+      ]\tag{2}
+      \end{align}
+      \]</span> と分解でき、ここで<span class="math inline">\({\rm E}[\varepsilon]=0\)</span>と期待値の線形性<span class="math inline">\(c{\rm E}[X] = {\rm E}[cX]\)</span>から、<span class="math inline">\(\varepsilon\)</span>が含まれる項はゼロが掛かってゼロになるので式<span class="math inline">\((2)\)</span>は <span class="math display">\[
+      \begin{align}
+      &amp;{\rm E}[
+      (f^2 + 2f\varepsilon + \varepsilon^2)
+      - (2f{\rm E}[\hat{f}] + 2\varepsilon{\rm E}[\hat{f}])
+      + {\rm E}[\hat{f}]^2
+      ]\tag{2}\\
+      &amp;= 
+      {\rm E}[\varepsilon^2]
+      + {\rm E}[f^2 - 2f{\rm E}[\hat{f}] +{\rm E}[\hat{f}]^2]\\
+      &amp;= {\rm E}[\varepsilon^2]
+      + {\rm E}[(f - {\rm E}[\hat{f}])^2]
+      \end{align}
+      \]</span> である。</p>
+      <p>式<span class="math inline">\((1)\)</span>の第2項は、<span class="math inline">\({\rm E}[\hat{f}]\)</span>が定数であることと、期待値と定数の関係<span class="math inline">\({\rm E}[X - c] = {\rm E}[X]-c\)</span>から、 <span class="math display">\[
+      {\rm E}[{\rm E}[\hat{f}] - \hat{f}]
+      = {\rm E}[\hat{f}] - {\rm E}[\hat{f}] = 0
+      \]</span> であるので、第2項はゼロになる。</p>
+      <p>ゆえに式<span class="math inline">\((1)\)</span>は <span class="math display">\[
+      \begin{align}
+      &amp;{\rm E}[(Y - {\rm E}[\hat{f}])^2]
+      + {\rm E}[2(Y - {\rm E}[\hat{f}])({\rm E}[\hat{f}] - \hat{f})]
+      + {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2] \tag{1}\\
+      &amp;= {\rm E}[\varepsilon^2] 
+      + {\rm E}[(f - {\rm E}[\hat{f}])^2]
+      + {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\tag{3}
+      \end{align}
+      \]</span> となる。</p>
+      <p>式<span class="math inline">\((3)\)</span>の第1項は、 <span class="math display">\[
+      \begin{align}
+      {\rm Var}[\varepsilon]
+      &amp;= {\rm E}[(\varepsilon - {\rm E}[\varepsilon])^2]\\
+      &amp;= {\rm E}[\varepsilon^2 -2\varepsilon {\rm E}[\varepsilon] + {\rm E}[\varepsilon]^2]\\
+      &amp;= {\rm E}[\varepsilon^2 -2\varepsilon \cdot 0 + 0^2]\\
+      &amp;= {\rm E}[\varepsilon^2]
+      \end{align}
+      \]</span> なので、ノイズ<span class="math inline">\(\varepsilon\)</span>の分散に等しい。</p>
+      <p>式<span class="math inline">\((3)\)</span>の第2項は、<span class="math inline">\(f\)</span>と<span class="math inline">\({\rm E}[\hat{f}]\)</span>が定数であるため <span class="math display">\[
+      \begin{align}
+      &amp;{\rm E}[(f - {\rm E}[\hat{f}])^2]\\
+      &amp;=(f - {\rm E}[\hat{f}])^2\\
+      \end{align}
+      \]</span> で、これは真の関数<span class="math inline">\(f\)</span>と予測値の期待値<span class="math inline">\({\rm E}[\hat{f}]\)</span>の差（バイアス）の2乗である。</p>
+      <p>式<span class="math inline">\((3)\)</span>の第3項は、予測値<span class="math inline">\(\hat{f}\)</span>の分散（バリアンス）である。</p>
+      <p>よって、 <span class="math display">\[
+      \begin{align}
+      &amp; {\rm E}[\varepsilon^2] 
+      + {\rm E}[(f - {\rm E}[\hat{f}])^2]
+      + {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\tag{3}\\
+      &amp;= \sigma_\varepsilon^2
+      + (f - {\rm E}[\hat{f}])^2
+      + {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\\
+      &amp;= \sigma^2_{\varepsilon} + \text{Bias}(\hat{f})^2 + \text{Var}(\hat{f})\\
+      &amp;= \text{削減不能な誤差} + \text{バイアス}^2 + \text{バリアンス（分散）}
+      \end{align}
+      \]</span> である。</p>
+      <p>まとめると <span class="math display">\[
+      \begin{align}\text{EPE}(x_0)&amp;=\text{E}[(Y-\hat{f})^2]\\&amp;={\rm E}[(Y - {\rm E}[\hat{f}] + {\rm E}[\hat{f}] - \hat{f})^2]\\&amp;={\rm E}[(Y - {\rm E}[\hat{f}])^2 + 2(Y - {\rm E}[\hat{f}])({\rm E}[\hat{f}] - \hat{f}) + ({\rm E}[\hat{f}] - \hat{f})^2]\\&amp;={\rm E}[(Y - {\rm E}[\hat{f}])^2]+ {\rm E}[2(Y - {\rm E}[\hat{f}])({\rm E}[\hat{f}] - \hat{f})]+ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2] \tag{1}\\&amp;={\rm E}[(Y - {\rm E}[\hat{f}])^2]+ 2(Y - {\rm E}[\hat{f}])\underbrace{{\rm E}[({\rm E}[\hat{f}] - \hat{f})]}_{=0}+ {\rm E}[({\rm E}[\hat{f}]- \hat{f})^2]\\&amp;= {\rm E}[\varepsilon^2] + {\rm E}[(f - {\rm E}[\hat{f}])^2]+ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\tag{3}\\&amp;= \sigma_\varepsilon^2+ (f - {\rm E}[\hat{f}])^2+ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\\&amp;= \sigma^2_{\varepsilon} + \text{Bias}(\hat{f})^2 + \text{Var}(\hat{f})\\&amp;= \text{削減不能な誤差} + \text{バイアス}^2 + \text{バリアンス（分散）}\\\end{align}
+      \]</span> である。</p>
+      <h2 id="バイアスバリアンスの意味">バイアス、バリアンスの意味</h2>
+      <h3 id="削減不能な誤差irreducible-error">削減不能な誤差（irreducible error）</h3>
+      <p><span class="math display">\[
+      {\rm Var}_{\mathcal D}[\varepsilon] = \sigma^2_{\varepsilon}
+      \]</span></p>
+      <p><span class="math inline">\(Y\)</span>の分散であり、ノイズの分散。</p>
+      <p>データの測定誤差などに由来する。</p>
+      <p>削減できないので、予測誤差のバイアスーバリアンス分解を議論するときに、この項を省くために、<span class="math inline">\(Y\)</span>と<span class="math inline">\(\hat{f}\)</span>の誤差ではなく<span class="math inline">\(f\)</span>と<span class="math inline">\(\hat{f}\)</span>の誤差を分解して <span class="math display">\[
+      \begin{align}
+      &amp;{\rm E}[(f - \hat{f})^2]\\
+      &amp;= {\rm E}[(f - {\rm E}[\hat{f}] + {\rm E}[\hat{f}] - \hat{f})^2]\\
+      &amp;= {\rm E}[(f - {\rm E}[\hat{f}])^2]
+      + 2(f - {\rm E}[\hat{f}])
+      \underbrace{{\rm E}[({\rm E}[\hat{f}] - \hat{f})]}_{0}
+      + {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\\
+      &amp;= (f - {\rm E}[\hat{f}])^2
+      + {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\\
+      &amp;= {\rm Bias}(\hat{f})^2 + {\rm Var}(\hat{f})
+      \end{align}
+      \]</span> とする場合もある。</p>
+      <h3 id="バイアスbias">バイアス（Bias）</h3>
+      <p><span class="math display">\[
+      \text{Bias}(\hat{f}(x_0; \mathcal{D}))
+      = \text{E}_{\mathcal D}[\hat{f}(x_0; \mathcal{D})]- f(x_0)
+      \]</span></p>
+      <p>予測値の平均と真の値との差。</p>
+      <p>多くの場合、より複雑なモデルを用いて予測すると、それだけバイアスは減少し、代わりにバリアンスが増加する。</p>
+      <h3 id="バリアンスvariance">バリアンス（Variance）</h3>
+      <p><span class="math display">\[
+      \text{Var}_{\mathcal D}(\hat{f}(x_0; \mathcal{D}))
+      = \text{E}_{\mathcal D}[(\hat{f}(x_0; \mathcal{D}) - \text{E}_{\mathcal D}[\hat{f}(x_0; \mathcal{D})])^2]
+      \]</span></p>
+      <p>（学習データセットを変えていったときの）予測値の分散。</p>
+      <p>学習データセットを変えるたびに予測値がばらつく、ということは、学習・予測の安定性が低いということ。すなわち、単一の学習データセットに過学習していることに由来すると考えられる。</p>
+      <h1 id="分類におけるバイアスとバリアンス">分類におけるバイアスとバリアンス</h1>
+      <p><a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.38.4282&amp;rep=rep1&amp;type=pdf">Tibshirani, R. (1996). <em>Bias, variance and prediction error for classification rules</em>. University of Toronto, Department of Statistics.</a></p>
+      <p><a href="https://www.stat.berkeley.edu/~breiman/arcall96.pdf">Breiman, L. (1996). <em>Bias, variance, and arcing classifiers</em>. Tech. Rep. 460, Statistics Department, University of California, Berkeley, CA, USA.</a></p>
+      <p>Kohavi, R. and Wolpert, D.H.[1996] Bias Plus Variance Decomposition for Zero-One Loss Functions, ftp starry.stanford.edu/pub/ronnyk/biasVar.ps</p>
     </article>
     
       </main>

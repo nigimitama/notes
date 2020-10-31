@@ -3,5 +3,6 @@ pandoc sample.md \
   --standalone \
   --mathjax \
   --highlight-style tango \
+  --css=templates/style.css \
   --template=templates/layout.html \
   --toc
