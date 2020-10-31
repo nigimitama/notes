@@ -1,15 +1,8 @@
-
-
-
-
-
-
-# 回帰におけるバイアスとバリアンス
+---
+title: 回帰におけるバイアスとバリアンス
+---
 
 [Geman, S., Bienenstock, E., & Doursat, R. (1992). Neural networks and the bias/variance dilemma. *Neural computation*, *4*(1), 1-58.](http://delta-apache-vm.cs.tau.ac.il/~nin/Courses/NC06/VarbiasBiasGeman.pdf)
-
-
-
 
 
 特徴量ベクトルを$X$とし、目的変数は$Y=f(X) + \varepsilon$であると仮定する。
