@@ -4,6 +4,6 @@ pandoc sample.md \
   --mathjax \
   --highlight-style tango \
   --css=modules/style.css \
-  --template=template.html \
+  --template=modules/template.html \
   --title-prefix=盆暗の勉強メモ \
   --toc
