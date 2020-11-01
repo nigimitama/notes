@@ -9,7 +9,7 @@ function build_page {
     output_html_path=${input_md_path//\.\//}  # remove ./
     output_html_path=${output_html_path//\//_}  # replace / with _
     output_html_path=${output_html_path//.md/.html}  # replace .md with .html
-    pandoc $basename \
+    pandoc $input_md_path \
         --output=$output_html_path \
         --standalone \
         --mathjax \
@@ -22,9 +22,10 @@ function build_page {
 
 
 # reset
-# if [ -e ./docs/* ]; then
-rm -r ./docs/*
-# fi
+if [ -e ./docs ]; then
+    rm -r ./docs
+fi
+mkdir ./docs
 
 # css, jsのフォルダを移動する
 cp -r ./pandoc/modules ./docs
@@ -38,13 +39,7 @@ cd ./docs
 assets_dirs=$(find -type d | grep .assets)
 # echo "assets_paths: $assets_paths"
 for assets_dir in $assets_dirs; do
-    dirname=${assets_dir##*/}
-    if [ ! -e $dirname ]; then
-        mkdir $dirname
-    fi
-    if [ "$assets_dir" != "./$dirname" ]; then
-        mv "$assets_dir" $dirname
-    fi
+    mv "$assets_dir" .
 done
 
 
@@ -56,7 +51,9 @@ for file in $files; do
         build_page $file
     fi
 done
+
+# markdownファイルを削除
 rm $files
 
-
-
+# 空のディレクトリを削除
+rm -r $(find . -type d -empty)
