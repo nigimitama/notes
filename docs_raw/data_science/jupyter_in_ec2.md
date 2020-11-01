@@ -1,4 +1,9 @@
-# EC2でJupyterLabを使う
+---
+title: EC2でJupyterLabを使う
+date: 2020-10-25
+---
+
+
 
 データ分析ではJupyterLabやJupyterNotebookを使うことも多いかと思います。
 

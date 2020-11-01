@@ -1,5 +1,5 @@
 '''
-
+FIXME: not work (copytree failed)
 - modulesフォルダを移動する
 - assetsフォルダがネストされていたら第一層に移動する
 - madkrownファイルのpathを取得
