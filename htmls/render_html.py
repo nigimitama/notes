@@ -1,7 +1,8 @@
 import os
 import re
+import glob
 from jinja2 import Environment, FileSystemLoader
-import re
+from lxml import html
 
 
 def generate_simple():
@@ -26,9 +27,7 @@ class Renderer:
         html_dir = './templates'
         self.output_dir = '../docs'
         self.env = Environment(loader=FileSystemLoader(html_dir))
-        md_dir = '../docs_raw'
-        files = get_file_paths(md_dir)
-        self.md_files = [f for f in files if '.md' in f]
+        self._get_html_paths()
 
     def main(self):
         pass
@@ -36,24 +35,33 @@ class Renderer:
     def render_index(self):
         file_name = 'index.html'
         template = self.env.get_template(file_name)
-        html = template.render(
+        html_ = template.render(
             title=self.title
         )
-        self._save_html(html, file_name)
+        self._save_html(html_, file_name)
+
+    def _get_html_paths(self):
+        '''htmlのパスを取得する。output_dirに各記事のhtmlを生成済という前提'''
+        # files = get_file_paths(self.output_dir)
+        files = glob.glob(f'{self.output_dir}/**', recursive=True)
+        self.html_files = [f for f in files if f.endswith('.html')]
 
     def render_engineering(self):
         file_name = 'engineering.html'
         category = 'engineering'
-        paths = [f for f in self.md_files if category in f]
-        python_paths = [get_path_titles(f) for f in paths if category in f]
-        infra_paths = [get_path_titles(f) for f in paths if category in f]
+        paths = [f for f in self.html_files
+                 if (category in f) and (file_name not in f)]
+        python_paths = [self._get_path_titles(f) for f in paths
+                        if 'python' in f]
+        infra_paths = [self._get_path_titles(f) for f in paths
+                       if 'infrastructure' in f]
         template = self.env.get_template(file_name)
-        html = template.render(
+        html_ = template.render(
             title=self.title,
             python_paths=python_paths,
             infra_paths=infra_paths
         )
-        self._save_html(html, file_name)
+        self._save_html(html_, file_name)
 
     def _save_html(self, html, file_name):
         path = f'{self.output_dir}/{file_name}'
@@ -62,34 +70,25 @@ class Renderer:
             f.write(html)
         return self
 
+    def _get_path_titles(self, html_path):
+        with open(html_path, 'r', encoding='utf-8') as f:
+            document = f.read()
+        tree = html.fromstring(document)
+        # タイトルが取れるならそれを使う
+        title = tree.xpath('//title/text()')[0] \
+            .replace(self.title, '').replace(' – ', '').strip()
+        if title == '':
+            title = html_path.split('_')[-1].replace('.html', '')
+        return [html_path, title]
+
 
 def get_file_paths(path):
     paths = []
-    for current_dir, dirs, files in os.walk(path):
-        if len(dirs) == 0:
-            for file in files:
-                path = os.path.join(current_dir, file)
-                paths.append(path)
-        else:
-            for dir in dirs:
-                for file in files:
-                    path = os.path.join(current_dir, dir, file)
-                    paths.append(path)
+    for dirpath, _, filenames in os.walk(path):
+        for filename in filenames:
+            path = os.path.join(dirpath, filename)
+            paths.append(path)
     return paths
-
-
-def get_path_titles(md_path):
-    title = os.path.basename(md_path).replace('.md', '')
-    with open(md_path, 'r', encoding='utf-8') as f:
-        doc = f.read()
-    has_yml = re.match(r'.{0,10}(---)', doc[0:20])
-    if has_yml:
-        yml = re.match(
-            r'.{0,10}(---).{0,100}(---)', doc, re.DOTALL).group()
-        title = re.search(
-            r'(title)\s?(:)\s?(?P<title>.+)\n', yml).group('title')
-    return [md_path, title]
-    # return {'path': md_path, 'title': title}
 
 
 if __name__ == '__main__':
