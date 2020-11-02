@@ -12,50 +12,16 @@
   - `deploy.sh`を実行したら変換からpushまで全部される、みたいな
 
 
+## 方法
 
-### 方法
+### 1. index.htmlなど
+- jinja2でテンプレートから生成する
+- data_science.htmlなどのカテゴリトップ画面も同様
 
-- pandocでmarkdownをhtmlに変換する
-- テンプレートのhtmlを作り、そのコンテンツ部分にmarkdownの内容を埋め込む形でjinja2で各記事のhtmlを吐き出す
-  - h1, h2タグなどの見出しに対して自動で目次を振るようなスクリプトを書き、jinja2で吐き出すときに目次を追加できるようにする
-- pandocのテンプレートというのもある
-  - サイトのindex.htmlとそのテンプレートの共通化が大変そうなので使わないことにする。テンプレート関連は全部jinja2でやる
-
-
-```
-pandoc sample.md \
-  --from=markdown \
-  --output=sample.html \
-  --standalone \
-  --mathjax \
-  --highlight-style tango \
-  --toc \
-  --css=github-pandoc.css
-```
+### 2. 個別の記事
+- pandocのテンプレートを使う
 
 
-
-```
-pandoc sample.md \
-  --from=markdown \
-  --output=output.html \
-  --standalone \
-  --mathjax \
-  --highlight-style tango \
-  --toc \
-  --template=templates/default.html
-```
-
-
-```
-pandoc sample.md \
-  --output=sample.html \
-  --standalone \
-  --mathjax \
-  --highlight-style tango \
-  --template=templates/layout.html \
-  --toc
-```
 
 
 ### pandoc links
