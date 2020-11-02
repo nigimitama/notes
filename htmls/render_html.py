@@ -1,7 +1,6 @@
 import os
 import re
 from jinja2 import Environment, FileSystemLoader
-# from lxml import html
 import re
 
 
@@ -18,6 +17,7 @@ def generate_simple():
             # save the results
             with open(f'{output_dir}/{file_name}', "w") as f:
                 f.write(html)
+
 
 class Renderer:
 
@@ -36,22 +36,22 @@ class Renderer:
     def render_index(self):
         file_name = 'index.html'
         template = self.env.get_template(file_name)
-        template.render(
+        html = template.render(
             title=self.title
         )
-        self._save_html(template, file_name)
+        self._save_html(html, file_name)
 
     def render_engineering(self):
         file_name = 'engineering.html'
-        prefix = 'engineering'
-        articles = [f for f in self.md_files if re.search(prefix, f)]
-        python_articles = [get_path_titles(a) for a in articles if re.search(prefix, a)]
-        infra_articles = [get_path_titles(a) for a in articles if re.search(prefix, a)]
+        category = 'engineering'
+        paths = [f for f in self.md_files if category in f]
+        python_paths = [get_path_titles(f) for f in paths if category in f]
+        infra_paths = [get_path_titles(f) for f in paths if category in f]
         template = self.env.get_template(file_name)
         html = template.render(
             title=self.title,
-            python_articles=python_articles,
-            infra_articles=infra_articles
+            python_paths=python_paths,
+            infra_paths=infra_paths
         )
         self._save_html(html, file_name)
 
@@ -66,19 +66,16 @@ class Renderer:
 def get_file_paths(path):
     paths = []
     for current_dir, dirs, files in os.walk(path):
-        for dir in dirs:
+        if len(dirs) == 0:
             for file in files:
-                path = os.path.join(current_dir, dir, file)
+                path = os.path.join(current_dir, file)
                 paths.append(path)
+        else:
+            for dir in dirs:
+                for file in files:
+                    path = os.path.join(current_dir, dir, file)
+                    paths.append(path)
     return paths
-
-
-def get_path_titles_html(html_path):
-    with open(html_path, 'r', encoding='utf-8') as f:
-        document = f.read()
-    tree = html.fromstring(document)
-    title = tree.xpath('//title/text()')[0]
-    return {'path': html_path, 'title': title}
 
 
 def get_path_titles(md_path):
@@ -91,7 +88,8 @@ def get_path_titles(md_path):
             r'.{0,10}(---).{0,100}(---)', doc, re.DOTALL).group()
         title = re.search(
             r'(title)\s?(:)\s?(?P<title>.+)\n', yml).group('title')
-    return {'path': md_path, 'title': title}
+    return [md_path, title]
+    # return {'path': md_path, 'title': title}
 
 
 if __name__ == '__main__':
