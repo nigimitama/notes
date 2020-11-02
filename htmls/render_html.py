@@ -1,7 +1,9 @@
 import os
 import re
 from jinja2 import Environment, FileSystemLoader
-from lxml import html
+# from lxml import html
+import re
+
 
 def generate_simple():
     title = '盆暗の勉強メモ'
@@ -21,7 +23,7 @@ class Renderer:
 
     def __init__(self):
         self.title = '盆暗の勉強メモ'
-        self.html_dir = './templates'
+        html_dir = './templates'
         self.output_dir = '../docs'
         self.env = Environment(loader=FileSystemLoader(html_dir))
         md_dir = '../docs_raw'
@@ -37,20 +39,19 @@ class Renderer:
         template.render(
             title=self.title
         )
-        self._save_html(html, file_name)
+        self._save_html(template, file_name)
 
     def render_engineering(self):
         file_name = 'engineering.html'
         prefix = 'engineering'
-        eng_mds = [f for f in self.md_files if re.search(prefix, f)]
-        python_mds = [f for f in eng_mds if re.search(prefix, f)]
-        infra_mds = [f for f in eng_mds if re.search(prefix, f)]
-        
+        articles = [f for f in self.md_files if re.search(prefix, f)]
+        python_articles = [get_path_titles(a) for a in articles if re.search(prefix, a)]
+        infra_articles = [get_path_titles(a) for a in articles if re.search(prefix, a)]
         template = self.env.get_template(file_name)
-        template.render(
+        html = template.render(
             title=self.title,
-            python_mds=python_mds,
-            infra_mds=infra_mds
+            python_articles=python_articles,
+            infra_articles=infra_articles
         )
         self._save_html(html, file_name)
 
@@ -72,12 +73,25 @@ def get_file_paths(path):
     return paths
 
 
-def get_path_titles(html_path):
+def get_path_titles_html(html_path):
     with open(html_path, 'r', encoding='utf-8') as f:
         document = f.read()
     tree = html.fromstring(document)
     title = tree.xpath('//title/text()')[0]
     return {'path': html_path, 'title': title}
+
+
+def get_path_titles(md_path):
+    title = os.path.basename(md_path).replace('.md', '')
+    with open(md_path, 'r', encoding='utf-8') as f:
+        doc = f.read()
+    has_yml = re.match(r'.{0,10}(---)', doc[0:20])
+    if has_yml:
+        yml = re.match(
+            r'.{0,10}(---).{0,100}(---)', doc, re.DOTALL).group()
+        title = re.search(
+            r'(title)\s?(:)\s?(?P<title>.+)\n', yml).group('title')
+    return {'path': md_path, 'title': title}
 
 
 if __name__ == '__main__':
