@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+echo "generate pandoc template -------------------"
+cd ./htmls
+python3 ./render_template.py
+cd ..
+
 echo "generate articles -------------------"
 
 function build_page {
@@ -16,7 +21,7 @@ function build_page {
         --mathjax \
         --highlight-style tango \
         --css="modules/style.css" \
-        --template="modules/template.html" \
+        --template="modules/pandoc_template.html" \
         --title-prefix=盆暗の勉強メモ \
         --toc
 }
