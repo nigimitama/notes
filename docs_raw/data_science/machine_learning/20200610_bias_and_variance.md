@@ -5,9 +5,11 @@ date: 2020-06-10
 
 
 
+予測誤差や推定量の推定の誤差は、バイアス（bias）とバリアンス（variance）という2つの構成要因に分けることができる。分けることで、誤差を削減する方法について議論しやすくなる。
+
+
+
 # 回帰の場合
-
-
 
 特徴量ベクトルを$X$とし、目的変数は$Y=f(X) + \varepsilon$であると仮定する。
 
@@ -220,6 +222,9 @@ $$
 
 
 ## 参考
+
+- [バイアス-バリアンス - 機械学習の「朱鷺の杜Wiki」](http://ibisforest.org/index.php?%E3%83%90%E3%82%A4%E3%82%A2%E3%82%B9-%E3%83%90%E3%83%AA%E3%82%A2%E3%83%B3%E3%82%B9)
+- [偏りと分散 - Wikipedia](https://ja.wikipedia.org/wiki/%E5%81%8F%E3%82%8A%E3%81%A8%E5%88%86%E6%95%A3)
 
 - [Hastie, T., Tibshirani, R., & Friedman, J. (2009). The elements of statistical learning: data mining, inference, and prediction. Springer Science & Business Media.](https://web.stanford.edu/~hastie/Papers/ESLII.pdf)
 - [Geman, S., Bienenstock, E., & Doursat, R. (1992). Neural networks and the bias/variance dilemma. *Neural computation*, *4*(1), 1-58.](http://delta-apache-vm.cs.tau.ac.il/~nin/Courses/NC06/VarbiasBiasGeman.pdf)

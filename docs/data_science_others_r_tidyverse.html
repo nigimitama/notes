@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GXSWJY51EG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GXSWJY51EG');
+  </script>
+
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+  <script src="https://kit.fontawesome.com/95678975f3.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre|Roboto" rel="stylesheet">
+  <link href="modules/progress-nav/normalize.css" rel="stylesheet" type="text/css" />
+  <link href="modules/progress-nav/style.css" rel="stylesheet" type="text/css" />
+
+    <meta name="dcterms.date" content="2019-01-19">
+  <title>盆暗の勉強メモ – [R] tidyverseの基本的な使い方のメモ</title>
+  <style type="text/css">code{white-space: pre;}</style>
+
+  <style type="text/css">
+    div.sourceCode { overflow-x: auto; }
+    table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+      margin: 0; padding: 0; vertical-align: baseline; border: none; }
+    table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+    td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+    td.sourceCode { padding-left: 5px; }
+    pre, code { background-color: #f8f8f8; }
+    code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code > span.dt { color: #204a87; } /* DataType */
+    code > span.dv { color: #0000cf; } /* DecVal */
+    code > span.bn { color: #0000cf; } /* BaseN */
+    code > span.fl { color: #0000cf; } /* Float */
+    code > span.ch { color: #4e9a06; } /* Char */
+    code > span.st { color: #4e9a06; } /* String */
+    code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code > span.ot { color: #8f5902; } /* Other */
+    code > span.al { color: #ef2929; } /* Alert */
+    code > span.fu { color: #000000; } /* Function */
+    code > span.er { color: #a40000; font-weight: bold; } /* Error */
+    code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+    code > span.cn { color: #000000; } /* Constant */
+    code > span.sc { color: #000000; } /* SpecialChar */
+    code > span.vs { color: #4e9a06; } /* VerbatimString */
+    code > span.ss { color: #4e9a06; } /* SpecialString */
+    code > span.im { } /* Import */
+    code > span.va { color: #000000; } /* Variable */
+    code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code > span.ex { } /* Extension */
+    code > span.at { color: #c4a000; } /* Attribute */
+    code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+
+
+  <link rel="stylesheet" href="modules/style.css">
+
+
+
+</head>
+<body>
+  <header>
+    <div class="logo-area p-4">
+      <a href="index.html">盆暗の勉強メモ</a>
+    </div>
+
+    <nav class="navbar px-4 py-1 navbar-expand-lg navbar-light bg-light">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="data_science.html">Data Science</a></li>
+          <li class="nav-item"><a class="nav-link" href="engineering.html">Software Engineering</a></li>
+          <li class="nav-item"><a class="nav-link" href="mathematics.html">Mathematics</a></li>
+        </ul>
+    </nav>
+  </header>
+
+  <main class="py-2">
+  <!-- table of contents -->
+      <nav class="toc" id="TOC">
+    <ul>
+    <li><a href="#tidyverseとは">tidyverseとは</a><ul>
+    <li><a href="#the-core-tidyverse-packages">the core tidyverse packages</a></li>
+    </ul></li>
+    <li><a href="#よく使う関数演算子">よく使う関数・演算子</a><ul>
+    <li><a href="#パイプ演算子">パイプ演算子「%&gt;%」</a></li>
+    <li><a href="#read_csvデータを適切な型で読み込む">read_csv：データを適切な型で読み込む</a></li>
+    <li><a href="#select列を選択する">select：列を選択する</a></li>
+    <li><a href="#rename列名を変更する">rename：列名を変更する</a></li>
+    <li><a href="#spreadワイド形式横持ちにする">spread：ワイド形式（横持ち）にする</a></li>
+    <li><a href="#gatherロング形式縦持ちにする">gather：ロング形式（縦持ち）にする</a></li>
+    </ul></li>
+    </ul>
+      <!-- svg for progress-nav -->
+      <svg class="toc-marker" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+        <path stroke="dimgray" stroke-width="3" fill="transparent" stroke-dasharray="0, 0, 0, 1000" stroke-linecap="round" stroke-linejoin="round" transform="translate(-0.5, -0.5)" />
+      </svg>
+    </nav>
+    
+  <!-- main contents -->
+    
+    <!-- contents header -->
+        <div>
+      <h1 class="title">[R] tidyverseの基本的な使い方のメモ</h1>
+                        <p class="date">2019-01-19</p>
+          </div>
+    
+    <!-- contents body -->
+    <article class="contents">
+<p>Rにはデータの処理を効率的に行うことができるtidyverseというパッケージ群がある。ggplot2とかdplyrとかが含まれる。</p>
+<p>これらのパッケージの関数たちのうち、使用頻度が非常に高いものをメモする。</p>
+<h1 id="tidyverseとは">tidyverseとは</h1>
+<p>R界の「神」と呼ばれることも多い<a href="http://hadley.nz/">Hadley Wickham</a>が作ったパッケージ群で、Rでの諸々の処理をモダンに行うことを可能にしている。</p>
+<ul>
+<li>GitHub:https://github.com/tidyverse/tidyverse</li>
+</ul>
+<h3 id="the-core-tidyverse-packages">the core tidyverse packages</h3>
+<p>tidyverseには以下のようなパッケージが含まれる。</p>
+<ul>
+<li><a href="http://ggplot2.tidyverse.org/">ggplot2</a> ：データの可視化のためのパッケージ。綺麗なグラフやGIS（統計地図）などを描ける</li>
+<li><a href="http://dplyr.tidyverse.org/">dplyr</a>：データの操作のためのパッケージ</li>
+<li><a href="http://tidyr.tidyverse.org/">tidyr</a>：整然データ</li>
+<li><a href="http://readr.tidyverse.org/">readr</a>：データの読み込みを便利にする</li>
+<li><a href="http://purrr.tidyverse.org/">purrr</a>：関数型プログラミングのためのパッケージ。リストの操作を便利にします。</li>
+<li><a href="http://tibble.tidyverse.org/">tibble</a>：モダンなデータフレームのパッケージ</li>
+<li><a href="https://github.com/tidyverse/stringr">stringr</a>：文字列の操作のためのパッケージ</li>
+<li><a href="https://github.com/hadley/forcats">forcats</a>：factorの操作のためのパッケージ</li>
+</ul>
+<h1 id="よく使う関数演算子">よく使う関数・演算子</h1>
+<h2 id="パイプ演算子">パイプ演算子「%&gt;%」</h2>
+<p>{magrittr}の機能のひとつである<strong>パイプ演算子は、関数同士をつなげることができる。</strong></p>
+<p><code>%&gt;%</code>の左辺にあるオブジェクトを、<code>%&gt;%</code>の右辺にある関数の第一引数に送る。</p>
+<p>例えば、irisのデータフレームを使って</p>
+<ol style="list-style-type: decimal">
+<li><code>Species</code>変数が<code>&quot;virginica&quot;</code>の値のものだけを取り出す（<code>base::subset()</code>）</li>
+<li>そのうち上から6行を表示する（<code>base::head()</code>）</li>
+</ol>
+<p>という処理をしたいときは、パイプでデータと２つの関数をつなぎ合わせて１行で書くことができる。</p>
+<pre class="{r}"><code>iris %&gt;% subset(Species == &quot;virginica&quot;) %&gt;% head()</code></pre>
+<pre><code>##     Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+## 101          6.3         3.3          6.0         2.5 virginica
+## 102          5.8         2.7          5.1         1.9 virginica
+## 103          7.1         3.0          5.9         2.1 virginica
+## 104          6.3         2.9          5.6         1.8 virginica
+## 105          6.5         3.0          5.8         2.2 virginica
+## 106          7.6         3.0          6.6         2.1 virginica</code></pre>
+<p>「<code>%&gt;%</code>なんて打ち辛すぎるだろ！」と思うかもしれないが、RStudioでは「Ctrl+Shift+M」でパイプ演算子を（両側の半角スペースも一緒に）打ち込んでくれるので、1秒もかからず打つことができる。</p>
+<p>適度に改行・代入して区切りながらパイプでつなげていくことで、コードの可読性を飛躍的に高めることができる。</p>
+<h2 id="read_csvデータを適切な型で読み込む">read_csv：データを適切な型で読み込む</h2>
+<p>{readr}の<code>read_csv</code>は、<strong>データ型をしっかり判断しながらcsvを読み込んでくれる関数</strong>である。</p>
+<p>例えば地方自治体コードのようにゼロからはじまる数字のあるコードを読み込むとき、 <code>read.csv</code>を使うとinteger（整数型）として読み込むため、<code>01100</code>が<code>1100</code>にされてしまう。これではコードとして意味を成さなくなってしまう。</p>
+<p>一方、<code>read_csv</code>を使えばゼロから始まっていることを考慮してcharacter（文字列型）として読み込んでくれるため、きちんとデータを利用できる。</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># city code data from RESAS</span>
+## base::read.csv
+cities_base =<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/cities.csv&quot;</span>)
+<span class="kw">str</span>(cities_base)</code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    1920 obs. of  3 variables:
+##  $ prefCode: int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ cityCode: int  1100 1101 1102 1103 1104 1105 1106 1107 1108 1109 ...
+##  $ cityName: Factor w/ 1887 levels &quot;あきる野市&quot;,&quot;あさぎり町&quot;,..: 624 629 634 630 632 633 631 628 625 626 ...</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## readr::read_csv
+cities_readr =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/cities.csv&quot;</span>, <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">encoding =</span> <span class="st">&quot;cp932&quot;</span>))
+<span class="kw">str</span>(cities_readr)</code></pre></div>
+<pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    1920 obs. of  3 variables:
+##  $ prefCode: int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ cityCode: chr  &quot;01100&quot; &quot;01101&quot; &quot;01102&quot; &quot;01103&quot; ...
+##  $ cityName: chr  &quot;札幌市&quot; &quot;札幌市中央区&quot; &quot;札幌市北区&quot; &quot;札幌市東区&quot; ...
+##  - attr(*, &quot;spec&quot;)=List of 2
+##   ..$ cols   :List of 3
+##   .. ..$ prefCode: list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ cityCode: list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_character&quot; &quot;collector&quot;
+##   .. ..$ cityName: list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_character&quot; &quot;collector&quot;
+##   ..$ default: list()
+##   .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_guess&quot; &quot;collector&quot;
+##   ..- attr(*, &quot;class&quot;)= chr &quot;col_spec&quot;</code></pre>
+<p>ただ、<code>read_csv</code>を使うときはエンコーディングに注意する必要がある。（特にWindowsでは）</p>
+<p>Shift-JISやCP932でエンコードされているcsvデータ（Excelで文字化けせず開ける日本語を含むcsvデータ）を<code>read_csv</code>で開くときは、そのまま開くと日本語が文字化けするので、引数に<code>locale = locale(encoding = &quot;cp932&quot;)</code>を指定する必要がある。</p>
+<h2 id="select列を選択する">select：列を選択する</h2>
+<p><code>select()</code>は<strong>データフレームから任意の列を取り出す関数</strong>である。</p>
+<p>{dplyr}パッケージはどの関数もよく使うが、とりわけ<code>select()</code>はとてもよく使う。</p>
+<h4 id="基本selectdata-取り出したい列名-...">基本：<code>select(data, 取り出したい列名, ...)</code></h4>
+<pre class="{r}"><code>iris %&gt;% select(Petal.Length, Petal.Width, Species) %&gt;% head()</code></pre>
+<pre><code>##   Petal.Length Petal.Width Species
+## 1          1.4         0.2  setosa
+## 2          1.4         0.2  setosa
+## 3          1.3         0.2  setosa
+## 4          1.5         0.2  setosa
+## 5          1.4         0.2  setosa
+## 6          1.7         0.4  setosa</code></pre>
+<h4 id="select内で使える演算子"><code>select()</code>内で使える演算子</h4>
+<ul>
+<li><code>-</code>：取り出したくない列を指定する</li>
+<li><code>:</code>：ある列からある列までを取り出す</li>
+<li><code>c()</code>：列名のベクトルで指定する</li>
+</ul>
+<h4 id="select関数"><code>select(関数)</code></h4>
+<p><code>select()</code>内で使う関数もある。</p>
+<ul>
+<li><code>starts_with()</code>, <code>ends_with()</code>, <code>contains()</code></li>
+<li>特定の文字列から始まる/特定の文字列で終わる/特定の文字列を含む、ような列を指定する</li>
+<li><code>iris %&gt;% select(contains(&quot;Length&quot;))</code>のように使う</li>
+<li><code>matches()</code>：正規表現にマッチする列を指定する</li>
+<li><code>num_range()</code>：列名に番号が振られている場合、番号の範囲に基づいて列を指定できる</li>
+<li><code>one_of()</code>：列名の文字列ベクトルで列を指定できる</li>
+<li><code>everything()</code>：全ての列を指定する。</li>
+<li>列の並び順を変えたいとき,<code>iris %&gt;% select(Species, everything())</code>のように書く</li>
+</ul>
+<p><code>contains()</code>と<code>everything()</code>は個人的によく使う。</p>
+<h2 id="rename列名を変更する">rename：列名を変更する</h2>
+<p><code>rename(data, [新列名] = [現列名], ...)</code>のように書く</p>
+<pre class="{r}"><code>rename(iris, petal_length = Petal.Length) %&gt;% head()</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width petal_length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<p>なお、<code>select()</code>でも列名変更はできるが、返ってくるデータフレームには選択された列しか残らない。</p>
+<h4 id="rename内で使える演算子関数"><code>rename()</code>内で使える演算子、関数</h4>
+<p><code>select()</code>と同じ。</p>
+<h2 id="spreadワイド形式横持ちにする">spread：ワイド形式（横持ち）にする</h2>
+<p>{tidyr}の<code>spread</code>と<code>gather</code>もよく使う関数の一つである。</p>
+<p><code>spread</code>はロング形式（縦持ち）のデータフレームをワイド形式（横持ち）にする。</p>
+<p><code>spread(data, key, value, fill = NA, ...)</code></p>
+<p>例えば以下のようなロング形式のデータフレームがあるときを考える。</p>
+<pre class="{r}"><code># 顧客id, 商品, 売上個数のデータ
+sales &lt;- data_frame(id = c(1:4, 1),
+                    item = c(&quot;apple&quot;, &quot;orange&quot;, &quot;apple&quot;, &quot;orange&quot;, &quot;banana&quot;),
+                    count = c(3, 4, 1, 2, 3))
+sales</code></pre>
+<pre><code>## # A tibble: 5 x 3
+##      id item   count
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;
+## 1     1 apple      3
+## 2     2 orange     4
+## 3     3 apple      1
+## 4     4 orange     2
+## 5     1 banana     3</code></pre>
+<p><code>spred()</code>にid以外の列を入れ、keyにitem列、valueにcount列を指定する。</p>
+<pre class="{r}"><code>sales %&gt;% spread(key = item, value = count)</code></pre>
+<pre><code>## # A tibble: 4 x 4
+##      id apple banana orange
+##   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1     1     3      3     NA
+## 2     2    NA     NA      4
+## 3     3     1     NA     NA
+## 4     4    NA     NA      2</code></pre>
+<p>key（item列）の値ごとに新たな列が追加されていき、その中にはid列と対応したcount列の値が入った、ワイド形式の横長なデータフレームになった。</p>
+<h2 id="gatherロング形式縦持ちにする">gather：ロング形式（縦持ち）にする</h2>
+<p><code>tidyr::gather()</code>はワイド形式のデータフレームをロング形式に変える</p>
+<p><code>gather(data, key = &quot;key&quot;, value = &quot;value&quot;, ..., na.rm = FALSE)</code></p>
+<ul>
+<li><code>key, value</code>：新しいkey列、value列の名前</li>
+<li><code>na.rm</code>：NAの列を削除するかどうか</li>
+</ul>
+<pre class="{r}"><code>sales %&gt;% spread(item, count) %&gt;% gather(item, count, apple:orange, na.rm = TRUE)</code></pre>
+<pre><code>## # A tibble: 5 x 3
+##      id item   count
+## * &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;
+## 1     1 apple      3
+## 2     3 apple      1
+## 3     1 banana     3
+## 4     2 orange     4
+## 5     4 orange     2</code></pre>
+<p>もとのロング形式に戻すことができた。</p> <!-- NOTE: ここにインデントをつけるとcode部のインデントが壊れる -->
+    </article>
+    
+      </main>
+
+  <script src="modules/progress-nav/script.js"></script>
+</body>
+</html>

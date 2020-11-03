@@ -19,11 +19,11 @@ date: 2020-10-25
 
 AWSコンソールにログインしてインスタンスを起動します。OSはpythonが入っているubuntuが良いかと思います。
 
-![image-20201025213638286](jupyter_in_ec2.assets/image-20201025213638286.png)
+![](jupyter_in_ec2.assets/image-20201025213638286.png)
 
 自分のIPからの接続しか許可しないようにセキュリティグループを設定します
 
-![image-20201025214549882](jupyter_in_ec2.assets/image-20201025214549882.png)
+![](jupyter_in_ec2.assets/image-20201025214549882.png)
 
 インスタンス概要の「パブリックIPv4アドレス」に書かれているIPに対してssh接続してサーバーにログインします。
 
@@ -83,7 +83,7 @@ jupyter-lab --ip='0.0.0.0'
 
 
 
-![image-20201025221235818](jupyter_in_ec2.assets/image-20201025221235818.png)
+![](jupyter_in_ec2.assets/image-20201025221235818.png)
 
 
 
@@ -91,7 +91,7 @@ jupyter-lab --ip='0.0.0.0'
 
 
 
-![image-20201025221400207](jupyter_in_ec2.assets/image-20201025221400207.png)
+![](jupyter_in_ec2.assets/image-20201025221400207.png)
 
 
 
@@ -125,5 +125,5 @@ Verify password: ****
 
 
 
-![image-20201025221725711](jupyter_in_ec2.assets/image-20201025221725711.png)
+![](jupyter_in_ec2.assets/image-20201025221725711.png)
 
