@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GXSWJY51EG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GXSWJY51EG');
+  </script>
+
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+  <script src="https://kit.fontawesome.com/95678975f3.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre|Roboto" rel="stylesheet">
+  <link href="modules/progress-nav/normalize.css" rel="stylesheet" type="text/css" />
+  <link href="modules/progress-nav/style.css" rel="stylesheet" type="text/css" />
+
+    <meta name="dcterms.date" content="2020-06-10">
+  <title>盆暗の勉強メモ – バイアスとバリアンス</title>
+  <style type="text/css">code{white-space: pre;}</style>
+
+
+
+  <link rel="stylesheet" href="modules/style.css">
+
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+
+
+</head>
+<body>
+  <header>
+    <div class="logo-area p-4">
+      <a href="index.html">盆暗の勉強メモ</a>
+    </div>
+
+    <nav class="navbar px-4 py-1 navbar-expand-lg navbar-light bg-light">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="data_science.html">Data Science</a></li>
+          <li class="nav-item"><a class="nav-link" href="engineering.html">Software Engineering</a></li>
+          <li class="nav-item"><a class="nav-link" href="mathematics.html">Mathematics</a></li>
+        </ul>
+    </nav>
+  </header>
+
+  <main class="py-2">
+  <!-- table of contents -->
+      <nav class="toc" id="TOC">
+    <ul>
+    <li><a href="#回帰の場合">回帰の場合</a><ul>
+    <li><a href="#展開">展開</a></li>
+    <li><a href="#バイアスバリアンスの意味">バイアス、バリアンスの意味</a><ul>
+    <li><a href="#削減不能な誤差irreducible-error">削減不能な誤差（irreducible error）</a></li>
+    <li><a href="#バイアスbias">バイアス（Bias）</a></li>
+    <li><a href="#バリアンスvariance">バリアンス（Variance）</a></li>
+    </ul></li>
+    <li><a href="#参考">参考</a></li>
+    </ul></li>
+    <li><a href="#分類の場合">分類の場合</a><ul>
+    <li><a href="#参考-1">参考</a></li>
+    </ul></li>
+    </ul>
+      <!-- svg for progress-nav -->
+      <svg class="toc-marker" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+        <path stroke="dimgray" stroke-width="3" fill="transparent" stroke-dasharray="0, 0, 0, 1000" stroke-linecap="round" stroke-linejoin="round" transform="translate(-0.5, -0.5)" />
+      </svg>
+    </nav>
+    
+  <!-- main contents -->
+    
+    <!-- contents header -->
+        <div>
+      <h1 class="title">バイアスとバリアンス</h1>
+                        <p class="date">2020-06-10</p>
+          </div>
+    
+    <!-- contents body -->
+    <article class="contents">
+<h1 id="回帰の場合">回帰の場合</h1>
+<p>特徴量ベクトルを<span class="math inline">\(X\)</span>とし、目的変数は<span class="math inline">\(Y=f(X) + \varepsilon\)</span>であると仮定する。</p>
+<p><span class="math inline">\(f(X)\)</span>は<span class="math inline">\(Y\)</span>の予測可能な部分で、<span class="math inline">\(\varepsilon\)</span>は予測不能なノイズで、<span class="math inline">\(\text{E}[\varepsilon]=0,\ \text{Var}[\varepsilon]=\sigma^2_{\varepsilon}\)</span>とする。</p>
+<p>議論を簡潔にするため、データにおける<span class="math inline">\(x_i\)</span>の値は決定論的に決められているとする。</p>
+<p>学習データセット<span class="math inline">\(\mathcal{D}\)</span>で学習した予測器を<span class="math inline">\(\hat{f}(x; \mathcal D)\)</span>とする。</p>
+<p>様々な学習データセット<span class="math inline">\(\mathcal D\)</span>にわたっての期待値をとる操作を<span class="math inline">\({\rm E}_{\mathcal D}\)</span>と表す。</p>
+<p>平均2乗誤差の下での、<span class="math inline">\(X=x_0\)</span>における期待予測誤差（expected prediction error）もしくは汎化誤差（generalization error）と呼ばれるものは、 <span class="math display">\[
+{\rm EPE} (x_0) = {\rm E}_{\mathcal D}[(Y - \hat{f}(x_0; \mathcal D))^2 | X = x_0]
+\]</span></p>
+<p>これを分解すると <span class="math display">\[
+\begin{align}
+\text{EPE}(x_0)&amp;=\text{E}_{\mathcal D}[(Y-\hat{f}(x_0; \mathcal{D}))^2|X=x_0]\\
+&amp;= \sigma^2_{\varepsilon} + (\text{E}_{\mathcal D}[\hat{f}(x_0; \mathcal{D})]
+- f(x_0))^2+ \text{E}_{\mathcal D}[(\hat{f}(x_0; \mathcal{D}) - \text{E}_{\mathcal D}[\hat{f}(x_0; \mathcal{D})])^2]\\
+&amp;= \sigma^2_{\varepsilon} + \text{Bias}(\hat{f}(x_0; \mathcal{D}))^2 + \text{Var}_{\mathcal D}(\hat{f}(x_0; \mathcal{D}))\\
+&amp;= \text{削減不能な誤差} + \text{バイアス}^2 + \text{バリアンス（分散）}
+\end{align}
+\]</span> と分解できることが知られている。</p>
+<h2 id="展開">展開</h2>
+<p>この分解の過程を以下で整理していく。ただし、記号を以下のように簡略化する <span class="math display">\[
+\begin{align}
+f &amp;:= f(x_0)\\
+\hat{f} &amp;:= \hat{f}(x_0; \mathcal{D})\\
+{\rm E} &amp;:= {\rm E}_{\mathcal D}\\
+{\rm Var} &amp;:= {\rm Var}_{\mathcal D}\\
+\end{align}
+\]</span></p>
+<p><span class="math display">\[
+\begin{align}
+\text{EPE}(x_0)
+&amp;=\text{E}[(Y-\hat{f})^2]\\
+&amp;={\rm E}[(Y - {\rm E}[\hat{f}] + {\rm E}[\hat{f}] - \hat{f})^2]\\
+&amp;={\rm E}[(Y - {\rm E}[\hat{f}])^2 
++ 2(Y - {\rm E}[\hat{f}])({\rm E}[\hat{f}] - \hat{f}) 
++ ({\rm E}[\hat{f}] - \hat{f})^2]\\
+&amp;={\rm E}[(Y - {\rm E}[\hat{f}])^2]
++ {\rm E}[2(Y - {\rm E}[\hat{f}])({\rm E}[\hat{f}] - \hat{f})]
++ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2] \tag{1}
+\end{align}
+\]</span></p>
+<p>ここで式<span class="math inline">\((1\)</span>)の第1項は <span class="math display">\[
+\begin{align}
+&amp;{\rm E}[(Y - {\rm E}[\hat{f}])^2]\\
+&amp;= {\rm E}[Y^2 - 2Y{\rm E}[\hat{f}] + {\rm E}[\hat{f}]^2]\\
+&amp;= {\rm E}[(f+\varepsilon)^2 - 2(f + \varepsilon){\rm E}[\hat{f}]
++ {\rm E}[\hat{f}]^2]\\
+&amp;={\rm E}[
+(f^2 + 2f\varepsilon + \varepsilon^2)
+- (2f{\rm E}[\hat{f}] + 2\varepsilon{\rm E}[\hat{f}])
+- {\rm E}[\hat{f}]^2
+]\tag{2}
+\end{align}
+\]</span> と分解でき、ここで<span class="math inline">\({\rm E}[\varepsilon]=0\)</span>と期待値の線形性<span class="math inline">\(c{\rm E}[X] = {\rm E}[cX]\)</span>から、<span class="math inline">\(\varepsilon\)</span>が含まれる項はゼロが掛かってゼロになるので式<span class="math inline">\((2)\)</span>は <span class="math display">\[
+\begin{align}
+&amp;{\rm E}[
+(f^2 + 2f\varepsilon + \varepsilon^2)
+- (2f{\rm E}[\hat{f}] + 2\varepsilon{\rm E}[\hat{f}])
++ {\rm E}[\hat{f}]^2
+]\tag{2}\\
+&amp;= 
+{\rm E}[\varepsilon^2]
++ {\rm E}[f^2 - 2f{\rm E}[\hat{f}] +{\rm E}[\hat{f}]^2]\\
+&amp;= {\rm E}[\varepsilon^2]
++ {\rm E}[(f - {\rm E}[\hat{f}])^2]
+\end{align}
+\]</span> である。</p>
+<p>式<span class="math inline">\((1)\)</span>の第2項は、<span class="math inline">\({\rm E}[\hat{f}]\)</span>が定数であることと、期待値と定数の関係<span class="math inline">\({\rm E}[X - c] = {\rm E}[X]-c\)</span>から、 <span class="math display">\[
+{\rm E}[{\rm E}[\hat{f}] - \hat{f}]
+= {\rm E}[\hat{f}] - {\rm E}[\hat{f}] = 0
+\]</span> であるので、第2項はゼロになる。</p>
+<p>ゆえに式<span class="math inline">\((1)\)</span>は <span class="math display">\[
+\begin{align}
+&amp;{\rm E}[(Y - {\rm E}[\hat{f}])^2]
++ {\rm E}[2(Y - {\rm E}[\hat{f}])({\rm E}[\hat{f}] - \hat{f})]
++ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2] \tag{1}\\
+&amp;= {\rm E}[\varepsilon^2] 
++ {\rm E}[(f - {\rm E}[\hat{f}])^2]
++ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\tag{3}
+\end{align}
+\]</span> となる。</p>
+<p>式<span class="math inline">\((3)\)</span>の第1項は、 <span class="math display">\[
+\begin{align}
+{\rm Var}[\varepsilon]
+&amp;= {\rm E}[(\varepsilon - {\rm E}[\varepsilon])^2]\\
+&amp;= {\rm E}[\varepsilon^2 -2\varepsilon {\rm E}[\varepsilon] + {\rm E}[\varepsilon]^2]\\
+&amp;= {\rm E}[\varepsilon^2 -2\varepsilon \cdot 0 + 0^2]\\
+&amp;= {\rm E}[\varepsilon^2]
+\end{align}
+\]</span> なので、ノイズ<span class="math inline">\(\varepsilon\)</span>の分散に等しい。</p>
+<p>式<span class="math inline">\((3)\)</span>の第2項は、<span class="math inline">\(f\)</span>と<span class="math inline">\({\rm E}[\hat{f}]\)</span>が定数であるため <span class="math display">\[
+\begin{align}
+&amp;{\rm E}[(f - {\rm E}[\hat{f}])^2]\\
+&amp;=(f - {\rm E}[\hat{f}])^2\\
+\end{align}
+\]</span> で、これは真の関数<span class="math inline">\(f\)</span>と予測値の期待値<span class="math inline">\({\rm E}[\hat{f}]\)</span>の差（バイアス）の2乗である。</p>
+<p>式<span class="math inline">\((3)\)</span>の第3項は、予測値<span class="math inline">\(\hat{f}\)</span>の分散（バリアンス）である。</p>
+<p>よって、 <span class="math display">\[
+\begin{align}
+&amp; {\rm E}[\varepsilon^2] 
++ {\rm E}[(f - {\rm E}[\hat{f}])^2]
++ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\tag{3}\\
+&amp;= \sigma_\varepsilon^2
++ (f - {\rm E}[\hat{f}])^2
++ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\\
+&amp;= \sigma^2_{\varepsilon} + \text{Bias}(\hat{f})^2 + \text{Var}(\hat{f})\\
+&amp;= \text{削減不能な誤差} + \text{バイアス}^2 + \text{バリアンス（分散）}
+\end{align}
+\]</span> である。</p>
+<p>まとめると <span class="math display">\[
+\begin{align}\text{EPE}(x_0)&amp;=\text{E}[(Y-\hat{f})^2]\\&amp;={\rm E}[(Y - {\rm E}[\hat{f}] + {\rm E}[\hat{f}] - \hat{f})^2]\\&amp;={\rm E}[(Y - {\rm E}[\hat{f}])^2 + 2(Y - {\rm E}[\hat{f}])({\rm E}[\hat{f}] - \hat{f}) + ({\rm E}[\hat{f}] - \hat{f})^2]\\&amp;={\rm E}[(Y - {\rm E}[\hat{f}])^2]+ {\rm E}[2(Y - {\rm E}[\hat{f}])({\rm E}[\hat{f}] - \hat{f})]+ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2] \tag{1}\\&amp;={\rm E}[(Y - {\rm E}[\hat{f}])^2]+ 2(Y - {\rm E}[\hat{f}])\underbrace{{\rm E}[({\rm E}[\hat{f}] - \hat{f})]}_{=0}+ {\rm E}[({\rm E}[\hat{f}]- \hat{f})^2]\\&amp;= {\rm E}[\varepsilon^2] + {\rm E}[(f - {\rm E}[\hat{f}])^2]+ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\tag{3}\\&amp;= \sigma_\varepsilon^2+ (f - {\rm E}[\hat{f}])^2+ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\\&amp;= \sigma^2_{\varepsilon} + \text{Bias}(\hat{f})^2 + \text{Var}(\hat{f})\\&amp;= \text{削減不能な誤差} + \text{バイアス}^2 + \text{バリアンス（分散）}\\\end{align}
+\]</span> である。</p>
+<h2 id="バイアスバリアンスの意味">バイアス、バリアンスの意味</h2>
+<h3 id="削減不能な誤差irreducible-error">削減不能な誤差（irreducible error）</h3>
+<p><span class="math display">\[
+{\rm Var}_{\mathcal D}[\varepsilon] = \sigma^2_{\varepsilon}
+\]</span></p>
+<p><span class="math inline">\(Y\)</span>の分散であり、ノイズの分散。</p>
+<p>データの測定誤差などに由来する。</p>
+<p>削減できないので、予測誤差のバイアスーバリアンス分解を議論するときに、この項を省くために、<span class="math inline">\(Y\)</span>と<span class="math inline">\(\hat{f}\)</span>の誤差ではなく<span class="math inline">\(f\)</span>と<span class="math inline">\(\hat{f}\)</span>の誤差を分解して <span class="math display">\[
+\begin{align}
+&amp;{\rm E}[(f - \hat{f})^2]\\
+&amp;= {\rm E}[(f - {\rm E}[\hat{f}] + {\rm E}[\hat{f}] - \hat{f})^2]\\
+&amp;= {\rm E}[(f - {\rm E}[\hat{f}])^2]
++ 2(f - {\rm E}[\hat{f}])
+\underbrace{{\rm E}[({\rm E}[\hat{f}] - \hat{f})]}_{0}
++ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\\
+&amp;= (f - {\rm E}[\hat{f}])^2
++ {\rm E}[({\rm E}[\hat{f}] - \hat{f})^2]\\
+&amp;= {\rm Bias}(\hat{f})^2 + {\rm Var}(\hat{f})
+\end{align}
+\]</span> とする場合もある。</p>
+<h3 id="バイアスbias">バイアス（Bias）</h3>
+<p><span class="math display">\[
+\text{Bias}(\hat{f}(x_0; \mathcal{D}))
+= \text{E}_{\mathcal D}[\hat{f}(x_0; \mathcal{D})]- f(x_0)
+\]</span></p>
+<p>予測値の平均と真の値との差。</p>
+<p>多くの場合、より複雑なモデルを用いて予測すると、それだけバイアスは減少し、代わりにバリアンスが増加する。</p>
+<h3 id="バリアンスvariance">バリアンス（Variance）</h3>
+<p><span class="math display">\[
+\text{Var}_{\mathcal D}(\hat{f}(x_0; \mathcal{D}))
+= \text{E}_{\mathcal D}[(\hat{f}(x_0; \mathcal{D}) - \text{E}_{\mathcal D}[\hat{f}(x_0; \mathcal{D})])^2]
+\]</span></p>
+<p>（学習データセットを変えていったときの）予測値の分散。</p>
+<p>学習データセットを変えるたびに予測値がばらつく、ということは、学習・予測の安定性が低いということ。すなわち、単一の学習データセットに過学習していることに由来すると考えられる。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://web.stanford.edu/~hastie/Papers/ESLII.pdf">Hastie, T., Tibshirani, R., &amp; Friedman, J. (2009). The elements of statistical learning: data mining, inference, and prediction. Springer Science &amp; Business Media.</a></li>
+<li><a href="http://delta-apache-vm.cs.tau.ac.il/~nin/Courses/NC06/VarbiasBiasGeman.pdf">Geman, S., Bienenstock, E., &amp; Doursat, R. (1992). Neural networks and the bias/variance dilemma. <em>Neural computation</em>, <em>4</em>(1), 1-58.</a></li>
+</ul>
+<h1 id="分類の場合">分類の場合</h1>
+<p>いつか書く</p>
+<h2 id="参考-1">参考</h2>
+<ul>
+<li><p><a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.38.4282&amp;rep=rep1&amp;type=pdf">Tibshirani, R. (1996). <em>Bias, variance and prediction error for classification rules</em>. University of Toronto, Department of Statistics.</a></p></li>
+<li><p><a href="https://www.stat.berkeley.edu/~breiman/arcall96.pdf">Breiman, L. (1996). <em>Bias, variance, and arcing classifiers</em>. Tech. Rep. 460, Statistics Department, University of California, Berkeley, CA, USA.</a></p></li>
+<li><p>Kohavi, R. and Wolpert, D.H.[1996] Bias Plus Variance Decomposition for Zero-One Loss Functions, ftp starry.stanford.edu/pub/ronnyk/biasVar.ps</p></li>
+</ul> <!-- NOTE: ここにインデントをつけるとcode部のインデントが壊れる -->
+    </article>
+    
+      </main>
+
+  <script src="modules/progress-nav/script.js"></script>
+</body>
+</html>

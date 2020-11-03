@@ -2,21 +2,12 @@
 
 # 勉強の備忘録サイト
 
-
-
-- 数式入りのmarkdownをhtmlにしたい
-  - pandocを使いこなすことができれば、いけそう
-- 静的サイトだけどlayoutを共通化して、変更の都度mdからhtmlにコンバートしたい
-  - contentsはシンプルにmdを変換したhtmlで、それ以外はもっと凝った感じで
-  - R markdownから変換したときのような目次をつけたい
-  - `deploy.sh`を実行したら変換からpushまで全部される、みたいな
-
-
-## 方法
+## 更新方法
 
 ### 1. index.htmlなど
 - jinja2でテンプレートから生成する
 - data_science.htmlなどのカテゴリトップ画面も同様
+- htmls/render_html.pyを実行
 
 ### 2. 個別の記事
 - pandocのテンプレートを使う

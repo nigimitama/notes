@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+echo "generate articles -------------------"
 
 function build_page {
     input_md_path=$1
@@ -57,3 +58,7 @@ rm $files
 
 # 空のディレクトリを削除
 rm -r $(find . -type d -empty)
+
+echo "generate index pages -------------------"
+cd ../htmls
+python3 ./render_html.py
