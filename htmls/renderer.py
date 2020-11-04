@@ -53,6 +53,12 @@ class Renderer:
         return self
 
     def _get_path_titles(self, html_path):
+        # get_path
+        ## github pages上ではnotes/<article>.htmlなのにローカルではdocs/<article>.htmlなので置換
+        dir_name = self.output_dir.replace('/', '').replace('.', '')
+        path = html_path.replace('/', '').replace('.', '').replace(dir_name, '')
+
+        # get_title
         with open(html_path, 'r', encoding='utf-8') as f:
             document = f.read()
         tree = html.fromstring(document)
@@ -61,4 +67,4 @@ class Renderer:
             .replace(self.title, '').replace(' – ', '').strip()
         if title == '':
             title = html_path.split('_')[-1].replace('.html', '')
-        return [html_path, title]
+        return [path, title]
