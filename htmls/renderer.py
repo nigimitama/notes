@@ -1,6 +1,7 @@
 import glob
 from jinja2 import Environment, FileSystemLoader
 from lxml import html
+import re
 
 
 class Renderer:
@@ -54,9 +55,10 @@ class Renderer:
 
     def _get_path_titles(self, html_path):
         # get_path
-        ## github pages上ではnotes/<article>.htmlなのにローカルではdocs/<article>.htmlなので置換
-        dir_name = self.output_dir.replace('/', '').replace('.', '')
-        path = html_path.replace('/', '').replace('.', '').replace(dir_name, '')
+        # ../docs/<article>.htmlから <article>.htmlにする
+        dir_name = re.sub(r'(\.{1,2}/)', '', self.output_dir)
+        html_name = re.sub(r'(\.{1,2}/|/)', '', html_path)
+        path = html_name.replace(dir_name, '')
 
         # get_title
         with open(html_path, 'r', encoding='utf-8') as f:
