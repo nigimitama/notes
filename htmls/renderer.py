@@ -10,7 +10,11 @@ class Renderer:
         self.title = '盆暗の勉強メモ'
         html_dir = './templates'
         self.output_dir = output_dir
-        self.env = Environment(loader=FileSystemLoader(html_dir))
+        self.env = Environment(
+            loader=FileSystemLoader(html_dir),
+            trim_blocks=True,
+            lstrip_blocks=True
+        )
         self._get_html_paths()
 
     def render_template(self):
