@@ -33,11 +33,6 @@ class Renderer:
         )
         self._save_html(html_, file_name)
 
-    def _get_html_paths(self):
-        '''htmlのパスを取得する。output_dirに各記事のhtmlを生成済という前提'''
-        files = glob.glob(f'{self.output_dir}/**', recursive=True)
-        self.html_files = [f for f in files if f.endswith('.html')]
-
     def render_category_page(self, file_name='engineering.html'):
         category = file_name.replace('.html', '')
         paths = [f for f in self.html_files
@@ -49,6 +44,13 @@ class Renderer:
             path_titles=path_titles
         )
         self._save_html(html_, file_name)
+
+    def _get_html_paths(self):
+        '''htmlのパスを取得する。output_dirに各記事のhtmlを生成済という前提'''
+        files = glob.glob(f'{self.output_dir}/**', recursive=True)
+        self.html_files = [f for f in files if f.endswith('.html')]
+        # __が入ったものは表示しない
+        self.html_files = [f for f in self.html_files if '__' not in f]
 
     def _save_html(self, html, file_name):
         path = f'{self.output_dir}/{file_name}'
