@@ -1,0 +1,2 @@
+- [ダメな統計学：目次｜Colorless Green Ideas](https://id.fnshr.info/2014/12/17/stats-done-wrong-toc/)
+- 
