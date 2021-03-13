@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GXSWJY51EG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GXSWJY51EG');
+  </script>
+
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+  <script src="https://kit.fontawesome.com/95678975f3.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre|Roboto" rel="stylesheet">
+  <link href="modules/progress-nav/normalize.css" rel="stylesheet" type="text/css" />
+  <link href="modules/progress-nav/style.css" rel="stylesheet" type="text/css" />
+
+    <meta name="dcterms.date" content="2020-11-07">
+  <title>盆暗の勉強メモ – scikit-learn Pipelineの基本の使い方</title>
+  <style type="text/css">code{white-space: pre;}</style>
+
+  <style type="text/css">
+    a.sourceLine { display: inline-block; line-height: 1.25; }
+    a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+    a.sourceLine:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode { white-space: pre; position: relative; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    code.sourceCode { white-space: pre-wrap; }
+    a.sourceLine { text-indent: -1em; padding-left: 1em; }
+    }
+    pre.numberSource a.sourceLine
+      { position: relative; left: -4em; }
+    pre.numberSource a.sourceLine::before
+      { content: attr(title);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; pointer-events: all; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { background-color: #f8f8f8; }
+    @media screen {
+    a.sourceLine::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #c4a000; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #000000; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #000000; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #000000; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+
+  <link rel="stylesheet" href="modules/style.css">
+
+
+
+</head>
+<body>
+<header>
+    <div class="logo-area p-4">
+        <a href="index.html">盆暗の勉強メモ</a>
+    </div>
+
+    <nav class="navbar px-4 py-1 navbar-expand navbar-light bg-light">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="data_science.html"><i class="fas fa-chart-bar"></i> Data Science</a></li>
+            <li class="nav-item"><a class="nav-link" href="engineering.html"><i class="fas fa-file-code"></i> Software Engineering</a></li>
+            <li class="nav-item"><a class="nav-link" href="mathematics.html"><i class="fas fa-square-root-alt"></i> Mathematics</a></li>
+        </ul>
+    </nav>
+</header>  <main class="py-2">
+  <!-- table of contents -->
+      <nav class="toc" id="TOC">
+    <ul>
+    <li><a href="#pipelineとは">Pipelineとは</a></li>
+    <li><a href="#自作のtransformerを作る">自作のTransformerを作る</a><ul>
+    <li><a href="#基底クラスを定義する">基底クラスを定義する</a></li>
+    <li><a href="#自作のtransformerを定義する">自作のTransformerを定義する</a></li>
+    <li><a href="#例">例</a></li>
+    </ul></li>
+    <li><a href="#memoryfitの再計算を回避する">memory：fitの再計算を回避する</a></li>
+    <li><a href="#参考">参考</a></li>
+    </ul>
+      <!-- svg for progress-nav -->
+      <svg class="toc-marker" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+        <path stroke="dimgray" stroke-width="3" fill="transparent" stroke-dasharray="0, 0, 0, 1000" stroke-linecap="round" stroke-linejoin="round" transform="translate(-0.5, -0.5)" />
+      </svg>
+    </nav>
+    
+  <!-- main contents -->
+    
+    <!-- contents header -->
+        <div>
+      <h1 class="title">scikit-learn Pipelineの基本の使い方</h1>
+                        <p class="date">2020-11-07</p>
+          </div>
+    
+    <!-- contents body -->
+    <article class="contents">
+<h1 id="pipelineとは">Pipelineとは</h1>
+<p>scikit-learnには<a href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html">Pipeline</a>というclassがある。これは複数の前処理用クラスと予測モデルをまとめて一つのオブジェクトにすることができるもの。</p>
+<p>例えば、StandardScalerで特徴量の標準化を行って線形回帰で学習/予測を行う場合、Pipelineを使わない場合は以下のようにStandardScalerとLinearRegressionで別々にfitやtransformを行わないといけない。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># データの用意</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_regression</a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</a>
+<a class="sourceLine" id="cb1-7" title="7">X, y <span class="op">=</span> make_regression(random_state<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb1-8" title="8">X_train, X_test, y_train, y_test <span class="op">=</span> <span class="op">\</span></a>
+<a class="sourceLine" id="cb1-9" title="9">    train_test_split(X, y, random_state<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb1-10" title="10">    </a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="co"># Pipelineを使わない場合</span></a>
+<a class="sourceLine" id="cb1-12" title="12">scaler <span class="op">=</span> StandardScaler()</a>
+<a class="sourceLine" id="cb1-13" title="13">estimator <span class="op">=</span> LinearRegression()</a>
+<a class="sourceLine" id="cb1-14" title="14"><span class="co">## fit</span></a>
+<a class="sourceLine" id="cb1-15" title="15">X_train_ <span class="op">=</span> scaler.fit_transform(X_train)</a>
+<a class="sourceLine" id="cb1-16" title="16">estimator.fit(X_train_, y_train)</a>
+<a class="sourceLine" id="cb1-17" title="17"><span class="co">## predict</span></a>
+<a class="sourceLine" id="cb1-18" title="18">X_test_ <span class="op">=</span> scaler.transform(X_test)</a>
+<a class="sourceLine" id="cb1-19" title="19">y_pred <span class="op">=</span> estimator.predict(X_test_)</a></code></pre></div>
+<p>この処理を実際のアプリにデプロイすることを考えると、fit済みのscalerとestimatorをそれぞれ保存・管理してアプリ上に展開しないといけない。</p>
+<p>今回はscalerが一つなのでまだいいが、これが数十個になると<strong>非常に面倒</strong>であり、そうした複雑なコードは<strong>バグのもと</strong>になる。</p>
+<p>一方、Pipelineを使えば同様の処理は以下のように書くことができる。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb2-1" title="1"><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_regression</a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</a>
+<a class="sourceLine" id="cb2-6" title="6">X, y <span class="op">=</span> make_regression(random_state<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb2-7" title="7">X_train, X_test, y_train, y_test <span class="op">=</span> <span class="op">\</span></a>
+<a class="sourceLine" id="cb2-8" title="8">    train_test_split(X, y, random_state<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb2-9" title="9"></a>
+<a class="sourceLine" id="cb2-10" title="10"><span class="co"># pipelineを使う場合</span></a>
+<a class="sourceLine" id="cb2-11" title="11">pipe <span class="op">=</span> Pipeline(steps<span class="op">=</span>[</a>
+<a class="sourceLine" id="cb2-12" title="12">    (<span class="st">&#39;scaler&#39;</span>, StandardScaler()),</a>
+<a class="sourceLine" id="cb2-13" title="13">    (<span class="st">&#39;estimator&#39;</span>, LinearRegression())</a>
+<a class="sourceLine" id="cb2-14" title="14">])</a>
+<a class="sourceLine" id="cb2-15" title="15">pipe.fit(X_train, y_train)</a>
+<a class="sourceLine" id="cb2-16" title="16">y_pred_ <span class="op">=</span> pipe.predict(X_test)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb3-1" title="1"><span class="co"># もちろん同じ結果が得られる</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="bu">all</span>(y_pred <span class="op">==</span> y_pred_)  <span class="co"># True</span></a></code></pre></div>
+<h1 id="自作のtransformerを作る">自作のTransformerを作る</h1>
+<p>自作の前処理用クラスを作るにはどうしたらよいのだろうか。</p>
+<h2 id="基底クラスを定義する">基底クラスを定義する</h2>
+<p>StandardScalerなどの<a href="https://github.com/scikit-learn/scikit-learn/blob/0fb307bf3/sklearn/preprocessing/_data.py#L517">ソースコード</a>を見ると</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">class</span> StandardScaler(TransformerMixin, BaseEstimator):</a>
+<a class="sourceLine" id="cb4-2" title="2">    ...</a></code></pre></div>
+<p>というようにTransformerMixin, BaseEstimatorを継承している。</p>
+<p><a href="https://github.com/scikit-learn/scikit-learn/blob/0fb307bf39bbdacd6ed713c00724f8f871d60370/sklearn/base.py#L660">TransformerMixin</a>は<code>fit_transform</code>しかメソッドを持っていない一方、Transformerは<code>fit</code>と<code>transform</code>も持たないといけないので、そちらは自分で定義してやる必要がある。</p>
+<p>なので<a href="https://qiita.com/kazetof/items/fcfabfc3d737a8ff8668">この記事</a>に書いてあるように</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb5-1" title="1"><span class="im">from</span> sklearn.base <span class="im">import</span> BaseEstimator, TransformerMixin</a>
+<a class="sourceLine" id="cb5-2" title="2"></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="kw">class</span> BaseTransformer(BaseEstimator, TransformerMixin):</a>
+<a class="sourceLine" id="cb5-4" title="4"></a>
+<a class="sourceLine" id="cb5-5" title="5">    <span class="kw">def</span> fit(<span class="va">self</span>, X, y<span class="op">=</span><span class="va">None</span>):</a>
+<a class="sourceLine" id="cb5-6" title="6">        <span class="cf">return</span> <span class="va">self</span></a>
+<a class="sourceLine" id="cb5-7" title="7"></a>
+<a class="sourceLine" id="cb5-8" title="8">    <span class="kw">def</span> transform(<span class="va">self</span>, X):</a>
+<a class="sourceLine" id="cb5-9" title="9">        <span class="cf">return</span> <span class="va">self</span></a></code></pre></div>
+<p>のようなクラスを定義してやれば使いやすい基底クラスになるはず。</p>
+<h2 id="自作のtransformerを定義する">自作のTransformerを定義する</h2>
+<p>上で定義した基底クラスを継承して、やりたい処理を書けば自作のTransformerの完成。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">class</span> Double(BaseTransformer):</a>
+<a class="sourceLine" id="cb6-2" title="2">    </a>
+<a class="sourceLine" id="cb6-3" title="3">    <span class="kw">def</span> transform(<span class="va">self</span>, X):</a>
+<a class="sourceLine" id="cb6-4" title="4">        <span class="cf">return</span> X<span class="op">*</span><span class="dv">2</span></a></code></pre></div>
+<h2 id="例">例</h2>
+<p>データの生成からPipelineでの利用まで全体をコードに書くなら、以下のような感じ。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb7-1" title="1"><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_regression</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="im">from</span> sklearn.base <span class="im">import</span> BaseEstimator, TransformerMixin</a>
+<a class="sourceLine" id="cb7-6" title="6"></a>
+<a class="sourceLine" id="cb7-7" title="7"><span class="kw">class</span> BaseTransformer(BaseEstimator, TransformerMixin):</a>
+<a class="sourceLine" id="cb7-8" title="8"></a>
+<a class="sourceLine" id="cb7-9" title="9">    <span class="kw">def</span> fit(<span class="va">self</span>, X, y<span class="op">=</span><span class="va">None</span>):</a>
+<a class="sourceLine" id="cb7-10" title="10">        <span class="cf">return</span> <span class="va">self</span></a>
+<a class="sourceLine" id="cb7-11" title="11"></a>
+<a class="sourceLine" id="cb7-12" title="12">    <span class="kw">def</span> transform(<span class="va">self</span>, X):</a>
+<a class="sourceLine" id="cb7-13" title="13">        <span class="cf">return</span> <span class="va">self</span></a>
+<a class="sourceLine" id="cb7-14" title="14"></a>
+<a class="sourceLine" id="cb7-15" title="15"></a>
+<a class="sourceLine" id="cb7-16" title="16"><span class="kw">class</span> Double(BaseTransformer):</a>
+<a class="sourceLine" id="cb7-17" title="17">    </a>
+<a class="sourceLine" id="cb7-18" title="18">    <span class="kw">def</span> transform(<span class="va">self</span>, X):</a>
+<a class="sourceLine" id="cb7-19" title="19">        <span class="cf">return</span> X<span class="op">*</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb7-20" title="20"></a>
+<a class="sourceLine" id="cb7-21" title="21">    </a>
+<a class="sourceLine" id="cb7-22" title="22">X, y <span class="op">=</span> make_regression(random_state<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb7-23" title="23">X_train, X_test, y_train, y_test <span class="op">=</span> <span class="op">\</span></a>
+<a class="sourceLine" id="cb7-24" title="24">    train_test_split(X, y, random_state<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb7-25" title="25"></a>
+<a class="sourceLine" id="cb7-26" title="26"><span class="co"># pipelineを使う場合</span></a>
+<a class="sourceLine" id="cb7-27" title="27">pipe <span class="op">=</span> Pipeline(steps<span class="op">=</span>[</a>
+<a class="sourceLine" id="cb7-28" title="28">    (<span class="st">&#39;double&#39;</span>, Double()),</a>
+<a class="sourceLine" id="cb7-29" title="29">    (<span class="st">&#39;estimator&#39;</span>, LinearRegression())</a>
+<a class="sourceLine" id="cb7-30" title="30">])</a>
+<a class="sourceLine" id="cb7-31" title="31">pipe.fit(X_train, y_train)</a>
+<a class="sourceLine" id="cb7-32" title="32">pipe.predict(X_test)</a></code></pre></div>
+<h1 id="memoryfitの再計算を回避する">memory：fitの再計算を回避する</h1>
+<p>transformerのfitに多くの計算量を要する場合、fitしたtransformerをキャッシュすることができる。引数<code>memory</code>にディレクトリのパスの文字列かjoblib.Memoryオブジェクトを入れることで、そちらにキャッシュされる。</p>
+<p><a href="https://scikit-learn.org/stable/modules/compose.html#caching-transformers-avoid-repeated-computation">6.1.1.3. Caching transformers: avoid repeated computation</a></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb8-1" title="1"><span class="im">from</span> tempfile <span class="im">import</span> mkdtemp</a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="im">from</span> shutil <span class="im">import</span> rmtree</a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="im">from</span> sklearn.svm <span class="im">import</span> SVC</a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</a>
+<a class="sourceLine" id="cb8-6" title="6">estimators <span class="op">=</span> [(<span class="st">&#39;reduce_dim&#39;</span>, PCA()), (<span class="st">&#39;clf&#39;</span>, SVC())]</a>
+<a class="sourceLine" id="cb8-7" title="7">cachedir <span class="op">=</span> mkdtemp()</a>
+<a class="sourceLine" id="cb8-8" title="8">pipe <span class="op">=</span> Pipeline(estimators, memory<span class="op">=</span>cachedir)</a>
+<a class="sourceLine" id="cb8-9" title="9"></a>
+<a class="sourceLine" id="cb8-10" title="10"><span class="co"># Clear the cache directory when you don&#39;t need it anymore</span></a>
+<a class="sourceLine" id="cb8-11" title="11">rmtree(cachedir)</a></code></pre></div>
+<h1 id="参考">参考</h1>
+<p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html">sklearn.pipeline.Pipeline — scikit-learn 0.23.2 documentation</a></p>
+<p><a href="https://scikit-learn.org/stable/modules/compose.html#pipeline">6.1. Pipelines and composite estimators — scikit-learn 0.23.2 documentation</a></p>
+<p><a href="https://qiita.com/kazetof/items/fcfabfc3d737a8ff8668">sklearnのpipelineに自分で定義した関数を流し込む - Qiita</a></p> <!-- NOTE: ここにインデントをつけるとcode部のインデントが壊れる -->
+    </article>
+    
+      </main>
+
+  <script src="modules/progress-nav/script.js"></script>
+</body>
+</html>
