@@ -2,7 +2,26 @@
 
 # 勉強の備忘録サイト
 
-## 更新方法
+いくつかの方法を検討中
+
+1. pandocでmd->htmlの変換をして、サイトは自分で作る
+2. github pagesのjekyllの機能を使う
+3. hoxoなどの外部のサービスを使う
+
+
+
+## Jekyllを使う
+
+- [Front Matter | Jekyll • Simple, blog-aware, static sites](https://jekyllrb.com/docs/front-matter/)
+- Theme: [テーマ選択画面で GitHub Pages サイトにテーマを追加する - GitHub Docs](https://docs.github.com/ja/github/working-with-github-pages/adding-a-theme-to-your-github-pages-site-with-the-theme-chooser)
+
+- [Jekyll を使用して GitHub Pages サイトをローカルでテストする - GitHub Docs](https://docs.github.com/ja/github/working-with-github-pages/testing-your-github-pages-site-locally-with-jekyll)
+
+
+
+
+
+## pandocを使う場合
 
 ### 1. index.htmlなど
 - jinja2でテンプレートから生成する
@@ -32,5 +51,7 @@
 - [Sticky Table of Contents with Scrolling Active States | CSS-Tricks](https://css-tricks.com/sticky-table-of-contents-with-scrolling-active-states/)
 - [Progress Nav](https://lab.hakim.se/progress-nav/)
 
-## memo
-- 「markdown cms」とかで検索して出てくるツールもいくつかあるので、もしかしたらそういう既存ツールのほうがいいかも？Hexoとか。
+
+
+
+
