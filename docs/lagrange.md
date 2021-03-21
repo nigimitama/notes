@@ -1,8 +1,9 @@
 ---
 title: ラグランジュの未定乗数法
-layout: page
+layout: post
 date: 2020-01-30
 tags: math
+parmalink: /lagrange.html
 ---
 
 
