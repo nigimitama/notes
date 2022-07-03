@@ -10,6 +10,14 @@
 
 
 
+## Github pages
+
+- customize layout: [Adding a theme to your GitHub Pages site using Jekyll - GitHub Docs](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/adding-a-theme-to-your-github-pages-site-using-jekyll#customizing-your-themes-html-layout)
+  - `_layout` ディレクトリをつくる
+  - [Themes | Jekyll • Simple, blog-aware, static sites](https://jekyllrb.com/docs/themes/#overriding-theme-defaults)
+
+
+
 ## Jekyllを使う
 
 - [Front Matter | Jekyll • Simple, blog-aware, static sites](https://jekyllrb.com/docs/front-matter/)
