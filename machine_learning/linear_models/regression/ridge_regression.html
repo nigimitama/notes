@@ -1,0 +1,825 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Ridge回帰 &#8212; 統計学と機械学習のメモ</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="LASSO" href="lasso.html" />
+    <link rel="prev" title="線形回帰" href="linear_regression.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">統計学と機械学習のメモ</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../index.html">
+                    統計学と機械学習のメモ
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  統計学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../statistics/probability_and_expectation.html">
+   確率と期待値・分散
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../statistics/distributions.html">
+   確率分布
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../statistics/statistical_inference.html">
+   統計的推測
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  機械学習
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_regression.html">
+   線形回帰
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Ridge回帰
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lasso.html">
+   LASSO
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../classification/linear_discriminant_analysis.html">
+   線形判別モデル
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../classification/logistic_regression.html">
+   ロジスティック回帰
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../svm.html">
+   Support Vector Machine
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/nigimitama/machine-learning-from-scratch/gh-pages?urlpath=tree/docs/machine_learning/linear_models/regression/ridge_regression.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/nigimitama/machine-learning-from-scratch/"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/nigimitama/machine-learning-from-scratch//issues/new?title=Issue%20on%20page%20%2Fmachine_learning/linear_models/regression/ridge_regression.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../../_sources/machine_learning/linear_models/regression/ridge_regression.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   モデル
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   パラメータの推定
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     制約付き最小化問題
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     ラグランジュの未定乗数法
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     誤差関数の整理
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id6">
+   リッジ回帰の特徴
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id7">
+     正則化
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id8">
+     過学習の抑制
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id9">
+   推定量のバイアスとバリアンス
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id10">
+   参考文献
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id11">
+     リッジ回帰
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id12">
+     ラグランジュの未定乗数法
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Ridge回帰</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   モデル
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   パラメータの推定
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     制約付き最小化問題
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     ラグランジュの未定乗数法
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     誤差関数の整理
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id6">
+   リッジ回帰の特徴
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id7">
+     正則化
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id8">
+     過学習の抑制
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id9">
+   推定量のバイアスとバリアンス
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id10">
+   参考文献
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id11">
+     リッジ回帰
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id12">
+     ラグランジュの未定乗数法
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="ridge">
+<h1>Ridge回帰<a class="headerlink" href="#ridge" title="Permalink to this headline">#</a></h1>
+<section id="id1">
+<h2>モデル<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
+<p><strong>リッジ回帰</strong>（ridge regression）は誤差関数に正則化項を追加した線形回帰モデルである。</p>
+<p>モデル自体は線形回帰と同様で目的変数<span class="math notranslate nohighlight">\(y\)</span>をパラメータ<span class="math notranslate nohighlight">\(\boldsymbol{\beta}=(\beta_1, \beta_2, ..., \beta_d)^\top\)</span>と特徴量<span class="math notranslate nohighlight">\(\boldsymbol{x}=(x_1, x_2, ..., x_d)^\top\)</span>の線形関数と誤差<span class="math notranslate nohighlight">\(\varepsilon\)</span>で表現するものになる。</p>
+<div class="math notranslate nohighlight">
+\[
+y = \beta_0 + \beta_1 x_1 + \cdots + \beta_d x_d + \varepsilon
+\]</div>
+<p>サンプルサイズが<span class="math notranslate nohighlight">\(n\)</span>のデータセット<span class="math notranslate nohighlight">\(\{\boldsymbol{x}_i, y_i\}^n_{i=1}\)</span>があるとして、目的変数を<span class="math notranslate nohighlight">\(\boldsymbol{y} = (y_1, y_2, ..., y_n)^\top\)</span>、特徴量を<span class="math notranslate nohighlight">\(\boldsymbol{X}=(\boldsymbol{x}_1, \boldsymbol{x}_2, ..., \boldsymbol{x}_n)^\top\)</span>とおくと</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{y}=\boldsymbol{X} \boldsymbol{\beta}+\boldsymbol{\varepsilon}
+\]</div>
+<p>と表記することもできる。</p>
+</section>
+<section id="id2">
+<h2>パラメータの推定<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<section id="id3">
+<h3>制約付き最小化問題<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
+<p>リッジ回帰が線形回帰と違う点は、パラメータの推定（誤差関数の最小化）に関して制約条件があること。</p>
+<p>線形回帰は目的変数の実測値<span class="math notranslate nohighlight">\(y_i\)</span>と予測値<span class="math notranslate nohighlight">\(\hat{y}_i=\sum^d_{j=1} x_{ij} \beta_j\)</span>の誤差二乗和<span class="math notranslate nohighlight">\(SSE=\sum^n_{i=1} (y_i - \hat{y}_i)^2\)</span>を最小にするパラメータを求めるものであった。</p>
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\argmin}{\mathop{\rm arg~min}\limits}
+\hat{\boldsymbol{\beta}}^{LS} = \argmin_{\boldsymbol{\beta}}
+\sum^n_{i=1} (y_i - \hat{y}_i)^2
+\]</div>
+<p>リッジ回帰はこれに「パラメータ<span class="math notranslate nohighlight">\(\beta_j\)</span>の二乗和がある値<span class="math notranslate nohighlight">\(R\)</span>以下である」という制約条件が付いた下でパラメータを推定する。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\newcommand{\argmin}{\mathop{\rm arg~min}\limits}
+\begin{align}
+\hat{\boldsymbol{\beta}}^{ridge} = \text{ } 
+&amp; \argmin_{\boldsymbol{\beta}} \sum^n_{i=1} (y_i - \hat{y}_i)^2
+\\
+&amp; \text{subject to } \sum^d_{i=1} \beta_j^2 \leq R
+\end{align}
+\end{split}\]</div>
+<p>この問題を解くために、<strong>ラグランジュの未定乗数法</strong>を利用する。</p>
+</section>
+<section id="id4">
+<h3>ラグランジュの未定乗数法<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
+<p>ざっくりいうと、以下の手続きで問題の制約を緩和して解く方法。</p>
+<p>(1) 微分可能な凸関数<span class="math notranslate nohighlight">\(f(\boldsymbol{x})\)</span>に対する制約付き最小化問題があるとする。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}\min_\boldsymbol{x} \hspace{1em} &amp; f(\boldsymbol{x})\\
+\text{subject to} \hspace{1em} &amp; g(\boldsymbol{x}) \leq r\end{align}
+\end{split}\]</div>
+<p>(2) <strong>ラグランジュ未定乗数</strong>という未知の値<span class="math notranslate nohighlight">\(\lambda\geq0\)</span>を用いて、<strong>ラグランジュ関数</strong>（<strong>ラグランジアン</strong>）</p>
+<div class="math notranslate nohighlight">
+\[
+L(\boldsymbol{x}, \lambda) 
+= f(\boldsymbol{x}) + \lambda (g(\boldsymbol{x}) - r)
+\]</div>
+<p>を作る。</p>
+<p>(3) <strong>ラグランジュ双対問題</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}\max_\lambda \hspace{1em} &amp;  L(\boldsymbol{x}, \lambda)\\
+\text{subject to} \hspace{1em} &amp; \lambda \geq 0\end{align}
+\end{split}\]</div>
+<p>を解いていく。<span class="math notranslate nohighlight">\(L(\boldsymbol{x}, \lambda)\)</span>を<span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span>で微分してゼロとおき、</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{0} = \frac{\partial L}{\partial \boldsymbol{x}} = 
+\frac{\partial f}{\partial \boldsymbol{x}}
++ \lambda \frac{\partial g}{\partial \boldsymbol{x}}
+\]</div>
+<p>これを解いて最適解<span class="math notranslate nohighlight">\(\lambda^*, \boldsymbol{x}^*\)</span>を得る。</p>
+<p>この解<span class="math notranslate nohighlight">\(\boldsymbol{x}^*\)</span>は元の最小化問題（主問題）の解と一致することが知られている。</p>
+</section>
+<section id="id5">
+<h3>誤差関数の整理<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
+<p>ラグランジュの未定乗数法を利用して、誤差関数を以下のように書くことができる。</p>
+<div class="math notranslate nohighlight">
+\[
+J({\boldsymbol{\beta}})
+= \sum_{i=1}^n(y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^d \beta_j^2
+\]</div>
+<p>この右辺第二項は<strong>正則化項</strong>、<span class="math notranslate nohighlight">\(\lambda\)</span>は<strong>正則化パラメータ</strong>と呼ばれる。<span class="math notranslate nohighlight">\(\lambda=0\)</span>のときは最小二乗法と同じ誤差関数になり、得られる推定量も最小二乗推定量と等しくなる。</p>
+<p>一般的なラグランジュ双対問題とは異なり、リッジ回帰では最適な<span class="math notranslate nohighlight">\(\lambda\)</span>を推定することはせず、あらかじめ<span class="math notranslate nohighlight">\(\lambda\)</span>を指定して<span class="math notranslate nohighlight">\(x\)</span>を推定する。（誤差を最小にする<span class="math notranslate nohighlight">\(\lambda\)</span>はゼロであり、正則化の意味がなくなるためだと思われる。）</p>
+<p>また、最初の制約問題で登場した<span class="math notranslate nohighlight">\(R\)</span>は誤差関数に含めない（おそらく誤差関数を<span class="math notranslate nohighlight">\(\beta\)</span>について微分したときに定数項の<span class="math notranslate nohighlight">\(R\)</span>は消えて特に影響をもたらさないため）</p>
+<p>ちなみに行列表記するとこんな感じに表される。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+J({\boldsymbol{\beta}})
+&amp;= \sum_{i=1}^n(y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^d \beta_j^2
+\\
+&amp;= \| \boldsymbol{y}-\boldsymbol{X}\boldsymbol{\beta}\|^2_2
++ \lambda\| \boldsymbol{\beta}\|^2_2
+\\
+&amp;= (\boldsymbol{y}-\boldsymbol{X}\boldsymbol{\beta})^\top 
+(\boldsymbol{y}-\boldsymbol{X}\boldsymbol{\beta})
++ \lambda \boldsymbol{\beta}^\top \boldsymbol{\beta}
+\end{align}
+\end{split}\]</div>
+<p>リッジ回帰の推定量<span class="math notranslate nohighlight">\(\hat{\boldsymbol{\beta}}^{ridge}\)</span>は解析的に解くことができ、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+J(\boldsymbol{\beta})
+&amp;= (\boldsymbol{y}-\boldsymbol{X}\boldsymbol{\beta})^\top 
+(\boldsymbol{y}-\boldsymbol{X}\boldsymbol{\beta})
++ \lambda \boldsymbol{\beta}^\top \boldsymbol{\beta}
+\\
+&amp;= \boldsymbol{y}^\top \boldsymbol{y}
+- \boldsymbol{y}^\top \boldsymbol{X}\boldsymbol{\beta}
+- (\boldsymbol{X}\boldsymbol{\beta})^\top \boldsymbol{y}
++ (\boldsymbol{X}\boldsymbol{\beta})^\top
+(\boldsymbol{X}\boldsymbol{\beta})
++ \lambda \boldsymbol{\beta}^\top \boldsymbol{\beta}
+\\
+&amp;= \boldsymbol{y}^\top \boldsymbol{y}
+- 2 \boldsymbol{\beta}^\top \boldsymbol{X}^\top \boldsymbol{y}
++ \boldsymbol{\beta}^\top \boldsymbol{X}^\top 
+\boldsymbol{X} \boldsymbol{\beta}
++ \lambda \boldsymbol{\beta}^\top \boldsymbol{\beta}
+\end{align}
+\end{split}\]</div>
+<p>なので、誤差関数の傾きがゼロ（誤差が最小値）の点を求めると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\frac{\partial J(\boldsymbol{\beta})}{\partial \boldsymbol{\beta}}
+= -2\boldsymbol{X}^\top\boldsymbol{y}
++ 2(\boldsymbol{X}^\top\boldsymbol{X})\boldsymbol{\beta}
++ 2\lambda\boldsymbol{\beta}
+=\boldsymbol{0}
+\\
+\Longrightarrow
+(\boldsymbol{X}^\top\boldsymbol{X})\boldsymbol{\beta}
++ \lambda\boldsymbol{\beta}
+=\boldsymbol{X}^\top\boldsymbol{y}
+\\
+\Longrightarrow
+(\boldsymbol{X}^\top\boldsymbol{X} + \lambda \boldsymbol{I})\boldsymbol{\beta}
+=\boldsymbol{X}^\top\boldsymbol{y}
+\end{split}\]</div>
+<p>となり、</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\boldsymbol{\beta}}^{ridge}
+= (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1}
+\boldsymbol{X}^\top \boldsymbol{y}
+\]</div>
+<p>となる。</p>
+</section>
+</section>
+<section id="id6">
+<h2>リッジ回帰の特徴<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h2>
+<p>リッジ回帰は制約をかけたことにより通常の線形回帰（最小二乗法）とは異なる特徴をもっている。</p>
+<section id="id7">
+<h3>正則化<a class="headerlink" href="#id7" title="Permalink to this headline">#</a></h3>
+<p>線形回帰の最小二乗推定量<span class="math notranslate nohighlight">\(\hat{\boldsymbol{\beta}}^{LS}\)</span>は次のようなものだった。</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\boldsymbol{\beta}}^{LS}
+= (\boldsymbol{X}^\top \boldsymbol{X})^{-1}
+\boldsymbol{X}^\top \boldsymbol{y}
+\]</div>
+<p>このとき、</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span>の列数が行数よりも多い（サンプルサイズより特徴量の次元数のほうが多い）</p></li>
+<li><p>特徴量間の相関が非常に強い</p></li>
+</ol>
+<p>といった状況においては、<span class="math notranslate nohighlight">\(\boldsymbol{X}^\top \boldsymbol{X}\)</span>が正則でなくなって逆行列が計算できなくなったり、あるいは推定が不安定になることがある。</p>
+<p>そこでリッジ回帰の推定量<span class="math notranslate nohighlight">\(\hat{\boldsymbol{\beta}}^{ridge}\)</span>では</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\boldsymbol{\beta}}^{ridge}
+= (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1}
+\boldsymbol{X}^\top \boldsymbol{y}
+\]</div>
+<p>と、<span class="math notranslate nohighlight">\(\boldsymbol{X}^\top \boldsymbol{X}\)</span>の対角成分に<span class="math notranslate nohighlight">\(\lambda\)</span>を足すことで尾根（ridge）を作り、正則にすることで逆行列が計算できるようにしている。</p>
+</section>
+<section id="id8">
+<h3>過学習の抑制<a class="headerlink" href="#id8" title="Permalink to this headline">#</a></h3>
+<p>リッジ回帰の誤差関数</p>
+<div class="math notranslate nohighlight">
+\[
+J(\beta)=
+\sum_{i=1}^n(y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^d \beta_j^2
+\]</div>
+<p>は、<span class="math notranslate nohighlight">\(\lambda\)</span>を大きくすると誤差に占める第二項の比重が大きくなり、パラメータ<span class="math notranslate nohighlight">\(\beta_j\)</span>の値をゼロに向けて縮小（shrink）させる。</p>
+<p>パラメータが学習データに過学習して大きい値になっているような状況ではパラメータをうまく縮小させることによって過学習を抑制してモデルの汎化誤差を下げることができる。</p>
+</section>
+</section>
+<section id="id9">
+<h2>推定量のバイアスとバリアンス<a class="headerlink" href="#id9" title="Permalink to this headline">#</a></h2>
+<p>正則化しない通常の最小二乗法推定量はBLUE（最良線形不偏推定量：線形不偏推定量のなかでバリアンスが最小）だった。
+リッジ回帰やlassoの推定量は不偏ではない（バイアスがある）推定量であるが、最小二乗推定量よりも小さなバリアンスがありうる。そのため最小二乗推定を使用する線形回帰よりもリッジ回帰のほうが予測精度が良くなる可能性がある。</p>
+<p>TODO: 加筆する</p>
+<p><a class="reference external" href="https://www.math.arizona.edu/~hzhang/math574m/Read/RidgeRegressionBiasedEstimationForNonorthogonalProblems.pdf">Ridge Regression: Biased Estimation for Nonorthogonal Problems</a></p>
+</section>
+<section id="id10">
+<h2>参考文献<a class="headerlink" href="#id10" title="Permalink to this headline">#</a></h2>
+<section id="id11">
+<h3>リッジ回帰<a class="headerlink" href="#id11" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>杉山将『イラストで学ぶ機械学習』</p></li>
+<li><p>スパース推定</p></li>
+<li><p>ESLⅡ</p></li>
+<li><p><a class="reference external" href="https://stats.biopapyrus.jp/sparse-modeling/ridge.html">Ridge | L2 正則化を用いて多重共線性を回避してパラメーター推定を行う方法</a></p></li>
+<li><p><a class="reference external" href="http://ibisforest.org/index.php?%E3%83%AA%E3%83%83%E3%82%B8%E5%9B%9E%E5%B8%B0">リッジ回帰 - 機械学習の「朱鷺の杜Wiki」</a></p></li>
+</ul>
+</section>
+<section id="id12">
+<h3>ラグランジュの未定乗数法<a class="headerlink" href="#id12" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="http://tomomi.my.coocan.jp/text/relax1.pdf">ラグランジュ緩和と双対問題</a></p></li>
+<li><p>『言語処理のための機械学習入門』pp.14-19</p></li>
+<li><p><a class="reference external" href="https://qiita.com/birdwatcher/items/b23209f06177373c6df4">ラグランジュ双対問題について解説 - Qiita</a></p></li>
+<li><p>『これならわかる最適化数学』</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./machine_learning/linear_models/regression"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="linear_regression.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">線形回帰</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="lasso.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">LASSO</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By mitama<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

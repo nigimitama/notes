@@ -1,0 +1,949 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Support Vector Machine &#8212; 統計学と機械学習のメモ</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="ロジスティック回帰" href="linear_models/classification/logistic_regression.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">統計学と機械学習のメモ</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    統計学と機械学習のメモ
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  統計学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/probability_and_expectation.html">
+   確率と期待値・分散
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/distributions.html">
+   確率分布
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/statistical_inference.html">
+   統計的推測
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  機械学習
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_models/regression/linear_regression.html">
+   線形回帰
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_models/regression/ridge_regression.html">
+   Ridge回帰
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_models/regression/lasso.html">
+   LASSO
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_models/classification/linear_discriminant_analysis.html">
+   線形判別モデル
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_models/classification/logistic_regression.html">
+   ロジスティック回帰
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Support Vector Machine
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/nigimitama/machine-learning-from-scratch/gh-pages?urlpath=tree/docs/machine_learning/svm.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/nigimitama/machine-learning-from-scratch/"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/nigimitama/machine-learning-from-scratch//issues/new?title=Issue%20on%20page%20%2Fmachine_learning/svm.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/machine_learning/svm.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Support Vector Machine
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     マージン
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#svm">
+     ハードマージンSVM
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id2">
+       最適識別超平面
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cvxpy">
+       実装例（cvxpy）
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#scikit-learn">
+       実装例（scikit-learn）
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   ソフトマージンSVM
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   カーネルトリック
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Support Vector Machine</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Support Vector Machine
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     マージン
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#svm">
+     ハードマージンSVM
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id2">
+       最適識別超平面
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cvxpy">
+       実装例（cvxpy）
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#scikit-learn">
+       実装例（scikit-learn）
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   ソフトマージンSVM
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   カーネルトリック
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="support-vector-machine">
+<h1>Support Vector Machine<a class="headerlink" href="#support-vector-machine" title="Permalink to this headline">#</a></h1>
+<section id="id1">
+<h2>マージン<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
+<p>データがクラス<span class="math notranslate nohighlight">\(\{C_1, C_2\}\)</span>のどちらに含まれるかを判断する2クラス識別問題について考える。</p>
+<p>教師ラベルは<span class="math notranslate nohighlight">\(t \in \{+1, -1\}\)</span>で、それぞれデータが<span class="math notranslate nohighlight">\(C_1, C_2\)</span>のどちらに含まれるかを示すとする。
+係数ベクトルを<span class="math notranslate nohighlight">\(w=(w0, w_1, ..., w_d)^T\)</span>, 特徴量ベクトルを<span class="math notranslate nohighlight">\(x=(x_0=1, x_1, ..., x_d)^T\)</span>と表すとすると、</p>
+<p>線形識別関数は</p>
+<div class="math notranslate nohighlight">
+\[
+f(x) = w^T x
+\]</div>
+<p>と表すことができる。</p>
+<p>識別境界（識別超平面）は<span class="math notranslate nohighlight">\(f(x)=0\)</span>となる位置に描かれるとし、クラス1を<span class="math notranslate nohighlight">\(f(x) &gt;= 0\)</span>、クラス2を<span class="math notranslate nohighlight">\(f(x) &lt; 0\)</span>で表現するように学習させるとする。例えば次の図のように、ある識別関数が存在したとする。</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 2次元に描いた場合</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># このようなデータがあったとする</span>
+<span class="n">x_c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">.50</span><span class="p">,</span> <span class="mf">.55</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">.45</span><span class="p">,</span> <span class="mf">.75</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">.7</span><span class="p">,</span> <span class="mf">.50</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">.7</span><span class="p">,</span> <span class="mf">.75</span><span class="p">],</span>
+<span class="p">])</span>
+<span class="n">x_c2</span> <span class="o">=</span> <span class="o">-</span> <span class="n">x_c1</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_c1</span><span class="p">,</span> <span class="n">x_c2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x_c1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x_c2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+
+<span class="c1"># 重みベクトルが仮にこのようなwだったとする</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+
+<span class="c1"># 描画範囲</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">plot_hyperplane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">x1</span><span class="p">):</span>
+    <span class="c1"># データ点の散布図</span>
+    <span class="n">is_1</span> <span class="o">=</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">is_1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="n">is_1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;C1&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">is_1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">is_1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;C2&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">)</span>
+
+    <span class="c1"># x軸, y軸を描く</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># 超平面：x2 = -(w1/w2) * x1の形にする</span>
+    <span class="c1"># x1 = np.linspace(-1, 1, 100)</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">x1</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;dimgray&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;f(x)=w&#39;x&quot;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">plot_hyperplane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/svm_2_0.png" src="../_images/svm_2_0.png" />
+</div>
+</div>
+<p>訓練データ中に存在しなかったノイズがテストデータに含まれていた場合、ノイズの分だけ識別を誤りやすくなる。
+しかし、訓練データの点が識別超平面からある値<span class="math notranslate nohighlight">\(h &gt; 0\)</span>よりも離れるように学習させれば、<span class="math notranslate nohighlight">\(h\)</span>より小さなノイズに対しては正しく識別できるようになる。</p>
+<p>例えば、以下の図の(a)と(b)はいずれもサンプルをうまく分離できているものの、(a)よりも(b)のほうがデータ点と識別超平面の距離があり、ノイズに対してより頑健で望ましい分類器であると考えられる。</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">plot_hyperplane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;(a)&quot;</span><span class="p">)</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">plot_hyperplane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;(b)&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/svm_4_0.png" src="../_images/svm_4_0.png" />
+</div>
+</div>
+<p>となれば、 <strong>「識別超平面が訓練データからもっとも離れるように（両クラスの中間になるように）学習させればよいのではないか」</strong> という考えが湧く。</p>
+<p>これがサポートベクターマシン（Support Vector Machine: SVM）の考え方である。</p>
+<p>訓練データと識別超平面との距離のことをその識別超平面の<strong>マージン</strong>（margin）という。</p>
+<p>ある識別関数に対してとれるマージンの大きさは、両クラスの学習データを識別関数の法線ベクトル上に射影した長さの最小値</p>
+<div class="math notranslate nohighlight">
+\[
+\rho(w) = \min_{x \in C_1} \frac{w^T x}{||w||}
+- \max_{x \in C_2} \frac{w^T x}{||w||}
+\]</div>
+<p>の半分である。<span class="math notranslate nohighlight">\(\rho(w)\)</span>はクラス間マージンという。次の図中の2つの破線の間の距離が<span class="math notranslate nohighlight">\(\rho(w)\)</span>である</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">plot_hyperplane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+
+<span class="c1"># 識別関数 f(x)=w&#39;x の下での、class={C1, C2}のどちらに属するかについての判定結果</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+<span class="n">is_class_1</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">]</span>
+<span class="n">is_class_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">is_class_1</span><span class="p">)</span>
+
+<span class="c1"># マージンとその合計ρ</span>
+<span class="n">margin1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([(</span><span class="n">w</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">[</span><span class="n">is_class_1</span><span class="p">,</span> <span class="p">:][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">is_class_1</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+<span class="n">margin2</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([(</span><span class="n">w</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">[</span><span class="n">is_class_2</span><span class="p">,</span> <span class="p">:][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">is_class_2</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="n">margin1</span> <span class="o">-</span> <span class="n">margin2</span>
+
+<span class="c1"># margins</span>
+<span class="n">m1</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">margin1</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">m1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
+<span class="n">m2</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">margin2</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/svm_7_0.png" src="../_images/svm_7_0.png" />
+</div>
+</div>
+</section>
+<section id="svm">
+<h2>ハードマージンSVM<a class="headerlink" href="#svm" title="Permalink to this headline">#</a></h2>
+<p>学習データの集合を<span class="math notranslate nohighlight">\(\mathcal{D}_L = \{(t_i, x_i)\}(i=1,...,N)\)</span>とする。係数ベクトルはバイアス項<span class="math notranslate nohighlight">\(b\)</span>を外に出す形で、<span class="math notranslate nohighlight">\(w=(w_1, ..., w_d)^T\)</span>と表記する。特徴量ベクトルは<span class="math notranslate nohighlight">\(x=(x_1,...,x_d)^T\)</span>である。<span class="math notranslate nohighlight">\(t_i=\{-1, +1\}\)</span>は教師データで、学習データ<span class="math notranslate nohighlight">\(x_i\in \mathbb{R}^d\)</span>がどちらのクラスに属するかを示す。</p>
+<p>線形識別関数のマージンを<span class="math notranslate nohighlight">\(\kappa\)</span>とすれば全ての学習データで</p>
+<div class="math notranslate nohighlight">
+\[
+|w^T x_i + b| \geq \kappa
+\]</div>
+<p>が成り立つ。</p>
+<p>係数ベクトルとバイアス項をマージンで正規化（<span class="math notranslate nohighlight">\(w^T x_i = -b\)</span>を定数倍）したものをあらためて<span class="math notranslate nohighlight">\(w, b\)</span>とおけば</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{cases}
+w^T x_i + b \geq +1  &amp; \text{if} \hspace{0.5em} t_i = +1\\
+w^T x_i + b \leq -1  &amp; \text{if} \hspace{0.5em} t_i = -1
+\end{cases}
+\end{split}\]</div>
+<p>となり、まとめて表記すると</p>
+<div class="math notranslate nohighlight">
+\[
+t_i \times (w^T x_i + b) \geq 1
+\]</div>
+<p>クラス間マージンは
+$<span class="math notranslate nohighlight">\(
+\rho(w, b)
+= \min_{x \in C_{y=+1}} \frac{w^T x}{||w||} - \max_{x\in C_{y=-1}} \frac{w^T x}{||w||}
+\)</span>$</p>
+<p>第1項の分子は<span class="math notranslate nohighlight">\(w^T x_i + b \geq +1\)</span>の最小値が<span class="math notranslate nohighlight">\(w^T x_i + b = 1\)</span>であることから<span class="math notranslate nohighlight">\(\min w^T x_i = 1 - b\)</span></p>
+<p>第2項の分子は<span class="math notranslate nohighlight">\(w^T x_i + b \leq -1\)</span>の最大値が<span class="math notranslate nohighlight">\(w^T x_i + b = -1\)</span>であることから<span class="math notranslate nohighlight">\(\max w^T x_i = -1 - b\)</span></p>
+<p>であることを使えば</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\rho(w, b)
+&amp;= \min_{x \in C_{y=+1}} \frac{w^T x}{||w||} - \max_{x\in C_{y=-1}} \frac{w^T x}{||w||}\\
+&amp;= \frac{1 - b}{||w||} - \frac{-1 - b}{||w||}\\
+&amp;= \frac{1 + 1 - b + b}{||w||}\\
+&amp;= \frac{2}{||w||}
+\end{align}
+\end{split}\]</div>
+<p>となる。</p>
+<p>識別関数の最大マージンは最大クラス間マージンの半分であるため、<span class="math notranslate nohighlight">\(\frac{1}{||w||}\)</span>となる。</p>
+<section id="id2">
+<h3>最適識別超平面<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h3>
+<p>最適な識別超平面は、「すべての訓練データを正しく識別できる」という制約条件</p>
+<div class="math notranslate nohighlight">
+\[
+t_i (w^T x_i + b) \geq 1 \hspace{1em} (i=1,...,N)
+\]</div>
+<p>の下で係数ベクトルのノルム<span class="math notranslate nohighlight">\(||w||\)</span>を最小にする解</p>
+<div class="math notranslate nohighlight">
+\[
+w_0 = \min ||w||
+\]</div>
+<p>として求めることができる。これは次の不等式制約条件つき最適化問題を解くことで得られる。</p>
+<div class="admonition- admonition">
+<p class="admonition-title">主問題</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\text{minimize} &amp; \hspace{1em} L_p(w) = \frac{1}{2} w^T w\\
+\text{subject to} &amp; \hspace{1em} t_i( w^T x_i + b) \geq 1; \ \forall i
+\end{align}
+\end{split}\]</div>
+</div>
+<p>この問題はラグランジュの未定乗数法を用いて解かれ、次のラグランジュ関数として定式化される</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{L}_p(w, b, \alpha) = \frac{1}{2} w^T w
+- \sum^N_{i=1} \alpha_i (t_i (w^T x_i + b) - 1)
+\]</div>
+<p>ここで<span class="math notranslate nohighlight">\(\alpha=(\alpha_1, ..., \alpha_N)^T\)</span>、<span class="math notranslate nohighlight">\(\alpha_i \geq 0\)</span>であり、<span class="math notranslate nohighlight">\(\alpha_i\)</span>はラグランジュ未定乗数と呼ばれる。</p>
+<p>この最適化問題の解<span class="math notranslate nohighlight">\(w_*\)</span>と<span class="math notranslate nohighlight">\(b_*\)</span>は以下の<strong>KKT（Karush-Kuhn-Tucker）条件</strong>を満たす解として知られている。</p>
+<div class="admonition-kkt admonition">
+<p class="admonition-title">KKT条件</p>
+<p>(1) <span class="math notranslate nohighlight">\(\displaystyle \frac{\partial \tilde{L}_p(w, b, \alpha)}{\partial w}|_{w=w_*} = w_* - \sum^N_{i=1} \alpha_i t_i x_i = 0\)</span></p>
+<p>(2) <span class="math notranslate nohighlight">\(\displaystyle \frac{\partial \tilde{L}_p(w, b, \alpha)}{\partial b} = \sum^N_{i=1} \alpha_i t_i = 0\)</span></p>
+<p>(3) <span class="math notranslate nohighlight">\(t_i(w^T x_i + b) - 1 \geq 0\)</span></p>
+<p>(4) <span class="math notranslate nohighlight">\(\alpha_i \geq 0\)</span></p>
+<p>(5) <span class="math notranslate nohighlight">\(\alpha_i (t_i (w^T x_i + b) - 1) = 0\)</span></p>
+</div>
+<p>ラグランジュ関数の<span class="math notranslate nohighlight">\(w\)</span>を<span class="math notranslate nohighlight">\(w_*\)</span>に置き換えてKKT条件(1)と(2)を代入して整理すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+L_d(\alpha)
+&amp;= \frac{1}{2} {w_*}^T w_* - \sum^N_{i=1} \alpha_i t_i w_*^T x_i - b \sum^N_{i=1} \alpha_i t_i + \sum^N_{i=1} \alpha_i\\
+&amp;= \sum^N_{i=1} \alpha_i - \frac{1}{2} w_*^T w_*  \hspace{2em} (\because \sum^N_{i=1} \alpha_i t_i = 0)\\
+&amp;= \sum^N_{i=1} \alpha_i - \frac{1}{2} \sum^N_{i=1} \sum^N_{j=1} \alpha_i \alpha_j t_i t_j x_i^T x_j
+\end{align}
+\end{split}\]</div>
+<p>となり、ラグランジュ未定乗数のみの関数にすることができる</p>
+<p>KKT条件(1)より最適解は<span class="math notranslate nohighlight">\(w_* = \sum^N_{i=1} \alpha_i t_i x_i\)</span>のようになることがわかっているので、最適な係数<span class="math notranslate nohighlight">\(\alpha_i\)</span>を求める問題に置き換えることができる。</p>
+<div class="admonition- admonition">
+<p class="admonition-title">双対問題</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\text{maximize} &amp; \hspace{1em} L_d(\alpha) = \alpha^T \boldsymbol{1} - \frac{1}{2} \alpha^T H \alpha \\
+\text{subject to} &amp; \hspace{1em} \alpha^T t = 0
+\end{align}
+\end{split}\]</div>
+</div>
+<p>ここで</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\boldsymbol{1} &amp;= (1,...,1)^T\\
+H &amp;= (H_{ij} = t_i t_j x_i^T x_j)\\
+t &amp;= (t_1,...,t_N)^T\\
+\end{align}
+\end{split}\]</div>
+<p>である。</p>
+<p>双対問題のラグランジュ関数は、ラグランジュ未定乗数を<span class="math notranslate nohighlight">\(\beta\)</span>とすれば次の関数になる。</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{L}_d(\alpha, \beta) = \alpha^T \boldsymbol{1} - \frac{1}{2} \alpha^T H \alpha - \beta \alpha^T t
+\]</div>
+<p>KKT条件(5)より<span class="math notranslate nohighlight">\(\alpha_i (t_i (w^T x_i + b) - 1) = 0\)</span>がすべての<span class="math notranslate nohighlight">\(i\)</span>で成り立てば良いため、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{cases}
+\alpha_i &gt; 0 &amp; \text{if} \hspace{0.5em} t_i(w^T x_i + b) - 1 = 0\\
+\alpha_i = 0 &amp; \text{if} \hspace{0.5em} t_i(w^T x_i + b) - 1 \neq 0
+\end{cases}
+\end{split}\]</div>
+<p>となる。<span class="math notranslate nohighlight">\(\alpha_i &gt; 0\)</span>となる<span class="math notranslate nohighlight">\(x_i\)</span>を<strong>サポートベクトル</strong>という。</p>
+<p>最適なバイアス<span class="math notranslate nohighlight">\(b_*\)</span>はサポートベクトルの一つ<span class="math notranslate nohighlight">\(x_s\)</span>を用いて</p>
+<div class="math notranslate nohighlight">
+\[
+t_s (w_*^T x_s + b_*) - 1 = 0
+\]</div>
+<p>を解いて求めるか、それらの平均を用いる。</p>
+</section>
+<section id="cvxpy">
+<h3>実装例（cvxpy）<a class="headerlink" href="#cvxpy" title="Permalink to this headline">#</a></h3>
+<p>双対問題を<a class="reference external" href="https://www.cvxpy.org/examples/basic/quadratic_program.html">cvxpyの二次計画問題のソルバー</a>を使って解いてみる</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># データ数が多くなるとソルバーが上手く動かないので一旦暫定的対処としてデータ数を絞る</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">y</span>
+<span class="c1"># Hを作成</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">@</span> <span class="n">X</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+<span class="n">ones</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cvxpy</span> <span class="k">as</span> <span class="nn">cp</span>
+
+<span class="n">alpha</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># 長さnのベクトル</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Maximize</span><span class="p">(</span> <span class="n">alpha</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">ones</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">cp</span><span class="o">.</span><span class="n">quad_form</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span> <span class="p">),</span>
+                  <span class="p">[</span><span class="n">alpha</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The optimal value is&quot;</span><span class="p">,</span> <span class="n">prob</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;alpha is&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">alpha</span><span class="o">.</span><span class="n">value</span>
+<span class="n">w</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;w=</span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The optimal value is 33.99999999999994
+alpha is [34. 10. 24.]
+w=[39.6 49. ]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">plot_hyperplane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/svm_14_0.png" src="../_images/svm_14_0.png" />
+</div>
+</div>
+</section>
+<section id="scikit-learn">
+<h3>実装例（scikit-learn）<a class="headerlink" href="#scikit-learn" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">svm</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">svm</span><span class="o">.</span><span class="n">SVC</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">shrinking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;b=</span><span class="si">{</span><span class="n">clf</span><span class="o">.</span><span class="n">intercept_</span><span class="si">}</span><span class="s2">, w=</span><span class="si">{</span><span class="n">clf</span><span class="o">.</span><span class="n">coef_</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>b=[-0.15974441], w=[[0.76677316 0.83067093]]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.inspection</span> <span class="kn">import</span> <span class="n">DecisionBoundaryDisplay</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">disp</span> <span class="o">=</span> <span class="n">DecisionBoundaryDisplay</span><span class="o">.</span><span class="n">from_estimator</span><span class="p">(</span>
+    <span class="n">clf</span><span class="p">,</span>
+    <span class="n">X</span><span class="p">,</span>
+    <span class="n">response_method</span><span class="o">=</span><span class="s2">&quot;predict&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">coolwarm</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;x2&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">coolwarm</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Decision Boundary of SVM&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/svm_17_0.png" src="../_images/svm_17_0.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="id3">
+<h1>ソフトマージンSVM<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="id4">
+<h1>カーネルトリック<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./machine_learning"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="linear_models/classification/logistic_regression.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">ロジスティック回帰</p>
+        </div>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By mitama<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
