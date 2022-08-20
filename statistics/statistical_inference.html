@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>統計的推測 &#8212; データサイエンス関連まとめメモ</title>
+    <title>統計的推測 &#8212; データサイエンスの勉強ノート</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -94,7 +94,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <h1 class="site-logo" id="site-title">データサイエンス関連まとめメモ</h1>
+      <h1 class="site-logo" id="site-title">データサイエンスの勉強ノート</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -390,31 +390,36 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#map">
-     MAP推定
+    <a class="reference internal nav-link" href="#id5">
+     ベイズ法
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id5">
+    <a class="reference internal nav-link" href="#id6">
      例
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#id6">
+      <a class="reference internal nav-link" href="#id7">
        モーメント法による推定
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#id7">
+      <a class="reference internal nav-link" href="#id8">
        最尤法による推定
       </a>
      </li>
     </ul>
    </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id9">
+     ベイズ推定
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id8">
+  <a class="reference internal nav-link" href="#id10">
    区間推定
   </a>
  </li>
@@ -453,31 +458,36 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#map">
-     MAP推定
+    <a class="reference internal nav-link" href="#id5">
+     ベイズ法
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id5">
+    <a class="reference internal nav-link" href="#id6">
      例
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#id6">
+      <a class="reference internal nav-link" href="#id7">
        モーメント法による推定
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#id7">
+      <a class="reference internal nav-link" href="#id8">
        最尤法による推定
       </a>
      </li>
     </ul>
    </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id9">
+     ベイズ推定
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id8">
+  <a class="reference internal nav-link" href="#id10">
    区間推定
   </a>
  </li>
@@ -643,30 +653,58 @@ L(p=0.9|\boldsymbol{X}) = 0.9^2 \times 0.1^3 = 0.00081
 </div>
 </div>
 </section>
-<section id="map">
-<h3>MAP推定<a class="headerlink" href="#map" title="Permalink to this headline">#</a></h3>
-<p><strong>事後確率最大値</strong>（maximum a posteriori: MAP）は事後分布の最頻値</p>
-<div class="cell docutils container">
+<section id="id5">
+<h3>ベイズ法<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
+<p>同時確率密度関数<span class="math notranslate nohighlight">\(f(\boldsymbol{x}|\boldsymbol{\theta})\)</span>の<span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span>を確率変数とみなして確率分布を仮定する。これを<strong>事前分布</strong>（prior distribution）といい、<span class="math notranslate nohighlight">\(\pi(\boldsymbol{\theta}|\boldsymbol{\xi})\)</span>と書く。<span class="math notranslate nohighlight">\(\boldsymbol{\xi}\)</span>は事前分布の母数であり、<strong>超母数</strong>（hyperparameter）と呼ばれる。</p>
+<p>このモデルは次のように表される。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{cases}
+\boldsymbol{X}|\boldsymbol{\theta} \sim f(\boldsymbol{x}|\boldsymbol{\theta})\\
+\boldsymbol{\theta} \sim \pi (\boldsymbol{\theta}|\boldsymbol{\xi})
+\end{cases}
+\end{split}\]</div>
+<p><span class="math notranslate nohighlight">\(\boldsymbol{X}=\boldsymbol{x}\)</span>を与えたときの<span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span>の条件付き分布を<span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span>の<strong>事後分布</strong>（posterior distribution）といい、</p>
+<div class="math notranslate nohighlight">
+\[
+\displaystyle \pi(\boldsymbol{\theta | x, \xi})
+= \frac{ f(\boldsymbol{x|\theta}) \pi(\boldsymbol{\theta|\xi}) } { f_\pi (\boldsymbol{x | \xi}) }
+\]</div>
+<p>で与えられる。</p>
+<p>ここで<span class="math notranslate nohighlight">\(f_\pi (\boldsymbol{x | \xi})\)</span>は<span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span>の周辺分布で、<span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span>が連続型確率変数のとき</p>
+<div class="math notranslate nohighlight">
+\[
+f_\pi (\boldsymbol{x | \xi}) = \int f(\boldsymbol{x|\theta}) \pi(\boldsymbol{\theta|\xi}) d \boldsymbol{\theta}
+\]</div>
+<p>である。</p>
+<p>ベイズ法とは事後分布から推定量を導く方法である。事後分布の平均<span class="math notranslate nohighlight">\(E[\boldsymbol{\theta|X}]\)</span>は<strong>事後期待値</strong>（expected a posteriori: EAP）と呼ばれる。
+事後分布の最頻値は<strong>事後確率最大値</strong>（maximum a posteriori: MAP）や<strong>ベイズ的最尤推定量</strong>（Bayesian maximum likelihood estimator）と呼ばれる。こうした分布の代表値を使用して点推定を行うことができる。</p>
+<div class="cell tag_hide-input tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># nest_asyncio: asyncioを使うstanをjupyterで使うための対処</span>
+<span class="c1"># [Stanによる推定例：ベルヌーイ分布のパラメータ - The One with ...](https://hamada.hatenablog.jp/entry/2017/06/28/100815)</span>
+
 <span class="kn">import</span> <span class="nn">nest_asyncio</span>
 <span class="n">nest_asyncio</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span>
 
 <span class="kn">import</span> <span class="nn">stan</span>
 
+
 <span class="n">stan_code</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">data {</span>
 <span class="s2">    int N;</span>
-<span class="s2">    real X[N];</span>
+<span class="s2">    array[N] int X;</span>
 <span class="s2">}</span>
 <span class="s2">parameters {</span>
-<span class="s2">    real&lt;lower=0&gt; n;</span>
 <span class="s2">    real&lt;lower=0, upper=1&gt; p;</span>
 <span class="s2">}</span>
 <span class="s2">model {</span>
-<span class="s2">    X ~ bernoulli(p);</span>
+<span class="s2">    for (i in 1:N) </span>
+<span class="s2">        X[i] ~ bernoulli(p);</span>
 <span class="s2">}</span>
 <span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
@@ -674,7 +712,7 @@ L(p=0.9|\boldsymbol{X}) = 0.9^2 \times 0.1^3 = 0.00081
 <span class="p">}</span>
 
 <span class="n">posterior</span> <span class="o">=</span> <span class="n">stan</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">stan_code</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_chains</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_chains</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
 <span class="n">df</span>
 </pre></div>
@@ -684,184 +722,206 @@ L(p=0.9|\boldsymbol{X}) = 0.9^2 \times 0.1^3 = 0.00081
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Building...
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>In file included from /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages/httpstan/include/stan/model/indexing.hpp:5,
+                 from /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages/httpstan/include/stan/model/model_header.hpp:17,
+                 from /home/runner/.cache/httpstan/4.8.2/models/uskkbges/model_uskkbges.cpp:2:
+/opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages/httpstan/include/stan/model/indexing/assign_varmat.hpp: In function ‘void stan::model::assign(Mat1&amp;&amp;, const Mat2&amp;, const char*, const stan::model::index_multi&amp;, const stan::model::index_multi&amp;)’:
+/opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages/httpstan/include/stan/model/indexing/assign_varmat.hpp:401:9: warning: typedef ‘using pair_type = struct std::pair&lt;int, std::vector&lt;int, stan::math::arena_allocator&lt;int&gt; &gt; &gt;’ locally defined but not used [-Wunused-local-typedefs]
+  401 |   using pair_type = std::pair&lt;int, arena_vec&gt;;
+      |         ^~~~~~~~~
+/home/runner/.cache/httpstan/4.8.2/models/uskkbges/model_uskkbges.cpp: In constructor ‘model_uskkbges_namespace::model_uskkbges::model_uskkbges(stan::io::var_context&amp;, unsigned int, std::ostream*)’:
+/home/runner/.cache/httpstan/4.8.2/models/uskkbges/model_uskkbges.cpp:52:11: warning: variable ‘pos__’ set but not used [-Wunused-but-set-variable]
+   52 |       int pos__ = std::numeric_limits&lt;int&gt;::min();
+      |           ^~~~~
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/.cache/httpstan/4.8.2/models/uskkbges/model_uskkbges.cpp: In instantiation of ‘void model_uskkbges_namespace::model_uskkbges::transform_inits_impl(VecVar&amp;, VecI&amp;, VecVar&amp;, std::ostream*) const [with VecVar = std::vector&lt;double, std::allocator&lt;double&gt; &gt;; VecI = std::vector&lt;int&gt;; stan::require_vector_t&lt;T_y&gt;* &lt;anonymous&gt; = 0; stan::require_vector_like_vt&lt;std::is_integral, VecI&gt;* &lt;anonymous&gt; = 0; std::ostream = std::basic_ostream&lt;char&gt;]’:
+/home/runner/.cache/httpstan/4.8.2/models/uskkbges/model_uskkbges.cpp:326:69:   required from here
+/home/runner/.cache/httpstan/4.8.2/models/uskkbges/model_uskkbges.cpp:173:11: warning: variable ‘pos__’ set but not used [-Wunused-but-set-variable]
+  173 |       int pos__ = std::numeric_limits&lt;int&gt;::min();
+      |           ^~~~~
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">RuntimeError</span><span class="g g-Whitespace">                              </span>Traceback (most recent call last)
-<span class="nn">Input In [2],</span> in <span class="ni">&lt;cell line: 26&gt;</span><span class="nt">()</span>
-<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="n">stan_code</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span><span class="s2"> data {</span>
-<span class="g g-Whitespace">      </span><span class="mi">9</span><span class="s2">     int N;</span>
-<span class="s2">   (...)</span>
-<span class="g g-Whitespace">     </span><span class="mi">18</span><span class="s2"> }</span>
-<span class="g g-Whitespace">     </span><span class="mi">19</span><span class="s2"> &quot;&quot;&quot;</span>
-<span class="g g-Whitespace">     </span><span class="mi">21</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-<span class="g g-Whitespace">     </span><span class="mi">22</span>     <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
-<span class="g g-Whitespace">     </span><span class="mi">23</span>     <span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">24</span> <span class="p">}</span>
-<span class="ne">---&gt; </span><span class="mi">26</span> <span class="n">posterior</span> <span class="o">=</span> <span class="n">stan</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">stan_code</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">27</span> <span class="n">fit</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_chains</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">28</span> <span class="n">df</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages/stan/model.py:518,</span> in <span class="ni">build</span><span class="nt">(program_code, data, random_seed)</span>
-<span class="g g-Whitespace">    </span><span class="mi">515</span>         <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">program_code</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">param_names</span><span class="p">,</span> <span class="n">constrained_param_names</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">random_seed</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">517</span> <span class="k">try</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">518</span>     <span class="k">return</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">go</span><span class="p">())</span>
-<span class="g g-Whitespace">    </span><span class="mi">519</span> <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">520</span>     <span class="k">return</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages/nest_asyncio.py:35,</span> in <span class="ni">_patch_asyncio.&lt;locals&gt;.run</span><span class="nt">(main, debug)</span>
-<span class="g g-Whitespace">     </span><span class="mi">33</span> <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">34</span> <span class="k">try</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">35</span>     <span class="k">return</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">36</span> <span class="k">finally</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">37</span>     <span class="k">if</span> <span class="ow">not</span> <span class="n">task</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages/nest_asyncio.py:89,</span> in <span class="ni">_patch_loop.&lt;locals&gt;.run_until_complete</span><span class="nt">(self, future)</span>
-<span class="g g-Whitespace">     </span><span class="mi">86</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-<span class="g g-Whitespace">     </span><span class="mi">87</span>     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">88</span>         <span class="s1">&#39;Event loop stopped before Future completed.&#39;</span><span class="p">)</span>
-<span class="ne">---&gt; </span><span class="mi">89</span> <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/asyncio/futures.py:201,</span> in <span class="ni">Future.result</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">199</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_traceback</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="g g-Whitespace">    </span><span class="mi">200</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">201</span>     <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span>
-<span class="g g-Whitespace">    </span><span class="mi">202</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/asyncio/tasks.py:256,</span> in <span class="ni">Task.__step</span><span class="nt">(***failed resolving arguments***)</span>
-<span class="g g-Whitespace">    </span><span class="mi">252</span> <span class="k">try</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">253</span>     <span class="k">if</span> <span class="n">exc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">254</span>         <span class="c1"># We use the `send` method directly, because coroutines</span>
-<span class="g g-Whitespace">    </span><span class="mi">255</span>         <span class="c1"># don&#39;t have `__iter__` and `__next__` methods.</span>
-<span class="ne">--&gt; </span><span class="mi">256</span>         <span class="n">result</span> <span class="o">=</span> <span class="n">coro</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">257</span>     <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">258</span>         <span class="n">result</span> <span class="o">=</span> <span class="n">coro</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages/stan/model.py:497,</span> in <span class="ni">build.&lt;locals&gt;.go</span><span class="nt">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">495</span>         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_type</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">496</span>     <span class="k">else</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">497</span>         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">exception_body</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">498</span> <span class="n">building_output</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span> <span class="k">if</span> <span class="n">io</span><span class="o">.</span><span class="n">supports_ansi</span><span class="p">()</span> <span class="k">else</span> <span class="n">building_output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">499</span> <span class="k">if</span> <span class="n">model_in_cache</span><span class="p">:</span>
-
-<span class="ne">RuntimeError</span>: Warning in &#39;/tmp/httpstan_wlavuu7x/model_3h2sbrlq.stan&#39;, line 4, column 4: Declaration
-    <span class="n">of</span> <span class="n">arrays</span> <span class="n">by</span> <span class="n">placing</span> <span class="n">brackets</span> <span class="n">after</span> <span class="n">a</span> <span class="n">variable</span> <span class="n">name</span> <span class="ow">is</span> <span class="n">deprecated</span> <span class="ow">and</span>
-    <span class="n">will</span> <span class="n">be</span> <span class="n">removed</span> <span class="ow">in</span> <span class="n">Stan</span> <span class="mf">2.32.0</span><span class="o">.</span> <span class="n">Instead</span> <span class="n">use</span> <span class="n">the</span> <span class="n">array</span> <span class="n">keyword</span> <span class="n">before</span> <span class="n">the</span>
-    <span class="nb">type</span><span class="o">.</span> <span class="n">This</span> <span class="n">can</span> <span class="n">be</span> <span class="n">changed</span> <span class="n">automatically</span> <span class="n">using</span> <span class="n">the</span> <span class="n">auto</span><span class="o">-</span><span class="nb">format</span> <span class="n">flag</span> <span class="n">to</span>
-    <span class="n">stanc</span>
-<span class="n">Semantic</span> <span class="n">error</span> <span class="ow">in</span> <span class="s1">&#39;/tmp/httpstan_wlavuu7x/model_3h2sbrlq.stan&#39;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">11</span><span class="p">,</span> <span class="n">column</span> <span class="mi">4</span> <span class="n">to</span> <span class="n">column</span> <span class="mi">21</span><span class="p">:</span>
-   <span class="o">-------------------------------------------------</span>
-<span class="g g-Whitespace">     </span><span class="mi">9</span><span class="p">:</span>  <span class="p">}</span>
-<span class="g g-Whitespace">    </span><span class="mi">10</span><span class="p">:</span>  <span class="n">model</span> <span class="p">{</span>
-<span class="g g-Whitespace">    </span><span class="mi">11</span><span class="p">:</span>      <span class="n">X</span> <span class="o">~</span> <span class="n">bernoulli</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
-             <span class="o">^</span>
-<span class="g g-Whitespace">    </span><span class="mi">12</span><span class="p">:</span>  <span class="p">}</span>
-   <span class="o">-------------------------------------------------</span>
-
-<span class="n">Ill</span><span class="o">-</span><span class="n">typed</span> <span class="n">arguments</span> <span class="n">supplied</span> <span class="n">to</span> <span class="n">function</span> <span class="s1">&#39;bernoulli&#39;</span><span class="p">:</span>
-<span class="p">(</span><span class="n">array</span><span class="p">[]</span> <span class="n">real</span><span class="p">,</span> <span class="n">real</span><span class="p">)</span>
-<span class="n">Available</span> <span class="n">signatures</span><span class="p">:</span>
-<span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">row_vector</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">real</span>
-  <span class="n">The</span> <span class="n">first</span> <span class="n">argument</span> <span class="n">must</span> <span class="n">be</span> <span class="nb">int</span> <span class="n">but</span> <span class="n">got</span> <span class="n">array</span><span class="p">[]</span> <span class="n">real</span>
-<span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">vector</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">real</span>
-  <span class="n">The</span> <span class="n">first</span> <span class="n">argument</span> <span class="n">must</span> <span class="n">be</span> <span class="nb">int</span> <span class="n">but</span> <span class="n">got</span> <span class="n">array</span><span class="p">[]</span> <span class="n">real</span>
-<span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">[]</span> <span class="n">real</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">real</span>
-  <span class="n">The</span> <span class="n">first</span> <span class="n">argument</span> <span class="n">must</span> <span class="n">be</span> <span class="nb">int</span> <span class="n">but</span> <span class="n">got</span> <span class="n">array</span><span class="p">[]</span> <span class="n">real</span>
-<span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">real</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">real</span>
-  <span class="n">The</span> <span class="n">first</span> <span class="n">argument</span> <span class="n">must</span> <span class="n">be</span> <span class="nb">int</span> <span class="n">but</span> <span class="n">got</span> <span class="n">array</span><span class="p">[]</span> <span class="n">real</span>
-<span class="p">(</span><span class="n">array</span><span class="p">[]</span> <span class="nb">int</span><span class="p">,</span> <span class="n">row_vector</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">real</span>
-  <span class="n">The</span> <span class="n">first</span> <span class="n">argument</span> <span class="n">must</span> <span class="n">be</span> <span class="n">array</span><span class="p">[]</span> <span class="nb">int</span> <span class="n">but</span> <span class="n">got</span> <span class="n">array</span><span class="p">[]</span> <span class="n">real</span>
-<span class="p">(</span><span class="n">Additional</span> <span class="n">signatures</span> <span class="n">omitted</span><span class="p">)</span>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># nest_asyncio: asyncioを使うstanをjupyterで使うための対処</span>
-<span class="kn">import</span> <span class="nn">nest_asyncio</span>
-<span class="n">nest_asyncio</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span>
-
-<span class="kn">import</span> <span class="nn">stan</span>
-
-<span class="n">stan_code</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">data {</span>
-<span class="s2">    int N;</span>
-<span class="s2">    real X[N];</span>
-<span class="s2">    real Y[N];</span>
-<span class="s2">}</span>
-<span class="s2">parameters {</span>
-<span class="s2">    real a; </span>
-<span class="s2">    real b;</span>
-<span class="s2">    real&lt;lower=0&gt; sigma;</span>
-<span class="s2">}</span>
-<span class="s2">model {</span>
-<span class="s2">    for (n in 1:N) {</span>
-<span class="s2">        Y[n] ~ normal(a * X[n] + b, sigma);</span>
-<span class="s2">    }</span>
-<span class="s2">}</span>
-<span class="s2">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-
-<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
-    <span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
-    <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="n">y</span>
-<span class="p">}</span>
-
-<span class="n">posterior</span> <span class="o">=</span> <span class="n">stan</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">stan_code</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_chains</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
-<span class="n">df</span>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Building: 22.8s, done.
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Messages from stanc:
+</pre></div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Building:</span> found in cache, done.
-<span class=" -Color -Color-Cyan">Messages from </span><span class=" -Color -Color-Bold -Color-Bold-Cyan">stanc</span><span class=" -Color -Color-Cyan">:</span>
-Warning in &#39;/tmp/httpstan_f5g_k22j/model_iuz5kz76.stan&#39;, line 4, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.32.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in &#39;/tmp/httpstan_f5g_k22j/model_iuz5kz76.stan&#39;, line 5, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.32.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning: The parameter sigma has no priors. This means either no prior is
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning: The parameter p has no priors. This means either no prior is
     provided, or the prior(s) depend on data variables. In the later case,
     this may be a false positive.
-Warning: The parameter b has no priors. This means either no prior is
-    provided, or the prior(s) depend on data variables. In the later case,
-    this may be a false positive.
-Warning: The parameter a has no priors. This means either no prior is
-    provided, or the prior(s) depend on data variables. In the later case,
-    this may be a false positive.
-<span class=" -Color -Color-Cyan">Sampling:</span>   0%
-<span class=" -Color -Color-Cyan">Sampling:</span>  25% (1100/4400)
-<span class=" -Color -Color-Cyan">Sampling:</span>  50% (2200/4400)
-<span class=" -Color -Color-Cyan">Sampling:</span>  75% (3300/4400)
-<span class=" -Color -Color-Cyan">Sampling:</span> 100% (4400/4400)
-<span class=" -Color -Color-Green">Sampling:</span> 100% (4400/4400), done.
-<span class=" -Color -Color-Cyan">Messages received during sampling:</span>
-  Gradient evaluation took 2.3e-05 seconds
-  1000 transitions using 10 leapfrog steps per transition would take 0.23 seconds.
-  Adjust your expectations accordingly!
-  Gradient evaluation took 2e-05 seconds
-  1000 transitions using 10 leapfrog steps per transition would take 0.2 seconds.
-  Adjust your expectations accordingly!
-  Gradient evaluation took 2e-05 seconds
-  1000 transitions using 10 leapfrog steps per transition would take 0.2 seconds.
-  Adjust your expectations accordingly!
-  Gradient evaluation took 2.1e-05 seconds
-  1000 transitions using 10 leapfrog steps per transition would take 0.21 seconds.
-  Adjust your expectations accordingly!
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling:   0%
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling:  10% (2000/20000)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling:  20% (4000/20000)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling:  30% (6000/20000)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling:  40% (8000/20000)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling:  50% (10000/20000)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling:  60% (12000/20000)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling:  70% (14000/20000)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling:  80% (16000/20000)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling:  90% (18000/20000)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling: 100% (20000/20000)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling: 100% (20000/20000), done.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Messages received during sampling:
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Gradient evaluation took 4e-06 seconds
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1000 transitions using 10 leapfrog steps per transition would take 0.04 seconds.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Adjust your expectations accordingly!
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Gradient evaluation took 4e-06 seconds
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1000 transitions using 10 leapfrog steps per transition would take 0.04 seconds.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Adjust your expectations accordingly!
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Gradient evaluation took 2e-06 seconds
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1000 transitions using 10 leapfrog steps per transition would take 0.02 seconds.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Adjust your expectations accordingly!
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Gradient evaluation took 3e-06 seconds
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1000 transitions using 10 leapfrog steps per transition would take 0.03 seconds.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Adjust your expectations accordingly!
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Gradient evaluation took 3e-06 seconds
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1000 transitions using 10 leapfrog steps per transition would take 0.03 seconds.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Adjust your expectations accordingly!
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Gradient evaluation took 2e-06 seconds
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1000 transitions using 10 leapfrog steps per transition would take 0.02 seconds.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Adjust your expectations accordingly!
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Gradient evaluation took 3e-06 seconds
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1000 transitions using 10 leapfrog steps per transition would take 0.03 seconds.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Adjust your expectations accordingly!
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Gradient evaluation took 3e-06 seconds
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1000 transitions using 10 leapfrog steps per transition would take 0.03 seconds.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Adjust your expectations accordingly!
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Gradient evaluation took 3e-06 seconds
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1000 transitions using 10 leapfrog steps per transition would take 0.03 seconds.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Adjust your expectations accordingly!
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Gradient evaluation took 2e-06 seconds
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1000 transitions using 10 leapfrog steps per transition would take 0.02 seconds.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Adjust your expectations accordingly!
 </pre></div>
 </div>
 <div class="output text_html"><div>
@@ -889,14 +949,10 @@ Warning: The parameter a has no priors. This means either no prior is
       <th>n_leapfrog__</th>
       <th>divergent__</th>
       <th>energy__</th>
-      <th>a</th>
-      <th>b</th>
-      <th>sigma</th>
+      <th>p</th>
     </tr>
     <tr>
       <th>draws</th>
-      <th></th>
-      <th></th>
       <th></th>
       <th></th>
       <th></th>
@@ -910,68 +966,58 @@ Warning: The parameter a has no priors. This means either no prior is
   <tbody>
     <tr>
       <th>0</th>
-      <td>-42.801114</td>
-      <td>1.000000</td>
-      <td>0.290116</td>
-      <td>2.0</td>
+      <td>-5.642715</td>
+      <td>0.858490</td>
+      <td>0.844098</td>
+      <td>1.0</td>
       <td>3.0</td>
       <td>0.0</td>
-      <td>45.829875</td>
-      <td>4.632673</td>
-      <td>10.269763</td>
-      <td>1.037120</td>
+      <td>5.727999</td>
+      <td>0.670866</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>-42.450227</td>
-      <td>0.731577</td>
-      <td>0.420165</td>
+      <td>-4.881275</td>
+      <td>0.989540</td>
+      <td>0.943361</td>
+      <td>1.0</td>
       <td>3.0</td>
-      <td>7.0</td>
       <td>0.0</td>
-      <td>44.783000</td>
-      <td>4.452251</td>
-      <td>10.206611</td>
-      <td>0.953691</td>
+      <td>5.861898</td>
+      <td>0.346497</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>-41.174188</td>
-      <td>0.968916</td>
-      <td>0.308192</td>
+      <td>-4.780382</td>
+      <td>0.981418</td>
+      <td>1.283229</td>
+      <td>2.0</td>
       <td>3.0</td>
-      <td>15.0</td>
       <td>0.0</td>
-      <td>41.304353</td>
-      <td>5.124229</td>
-      <td>10.004806</td>
-      <td>0.915344</td>
+      <td>5.292580</td>
+      <td>0.427244</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>-42.247496</td>
-      <td>0.841800</td>
-      <td>0.383678</td>
+      <td>-5.275625</td>
+      <td>0.868117</td>
+      <td>0.935121</td>
+      <td>1.0</td>
       <td>3.0</td>
-      <td>11.0</td>
       <td>0.0</td>
-      <td>42.662264</td>
-      <td>4.808097</td>
-      <td>9.996633</td>
-      <td>1.013135</td>
+      <td>5.452545</td>
+      <td>0.255209</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>-41.963179</td>
-      <td>0.958529</td>
-      <td>0.290116</td>
+      <td>-4.792388</td>
+      <td>0.998572</td>
+      <td>0.814226</td>
+      <td>2.0</td>
       <td>3.0</td>
-      <td>15.0</td>
       <td>0.0</td>
-      <td>44.439816</td>
-      <td>5.054726</td>
-      <td>9.829253</td>
-      <td>0.888380</td>
+      <td>4.885668</td>
+      <td>0.457724</td>
     </tr>
     <tr>
       <th>...</th>
@@ -983,108 +1029,83 @@ Warning: The parameter a has no priors. This means either no prior is
       <td>...</td>
       <td>...</td>
       <td>...</td>
-      <td>...</td>
-      <td>...</td>
     </tr>
     <tr>
-      <th>395</th>
-      <td>-42.683555</td>
-      <td>0.998712</td>
-      <td>0.383678</td>
+      <th>9995</th>
+      <td>-4.780359</td>
+      <td>0.949375</td>
+      <td>1.154637</td>
+      <td>2.0</td>
       <td>3.0</td>
-      <td>7.0</td>
       <td>0.0</td>
-      <td>43.449058</td>
-      <td>5.455197</td>
-      <td>9.632969</td>
-      <td>0.909628</td>
+      <td>5.246708</td>
+      <td>0.428180</td>
     </tr>
     <tr>
-      <th>396</th>
-      <td>-42.153233</td>
-      <td>0.992322</td>
-      <td>0.290116</td>
+      <th>9996</th>
+      <td>-5.712871</td>
+      <td>0.754834</td>
+      <td>0.976298</td>
+      <td>1.0</td>
       <td>3.0</td>
-      <td>15.0</td>
       <td>0.0</td>
-      <td>45.837368</td>
-      <td>4.939001</td>
-      <td>10.086040</td>
-      <td>1.031135</td>
+      <td>5.916396</td>
+      <td>0.200804</td>
     </tr>
     <tr>
-      <th>397</th>
-      <td>-42.323812</td>
+      <th>9997</th>
+      <td>-6.685109</td>
       <td>1.000000</td>
-      <td>0.420165</td>
-      <td>1.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>43.139564</td>
-      <td>4.895999</td>
-      <td>10.206233</td>
-      <td>0.887500</td>
-    </tr>
-    <tr>
-      <th>398</th>
-      <td>-42.349448</td>
-      <td>0.901445</td>
-      <td>0.308192</td>
-      <td>4.0</td>
-      <td>15.0</td>
-      <td>0.0</td>
-      <td>43.215780</td>
-      <td>5.089360</td>
-      <td>10.044141</td>
-      <td>0.834932</td>
-    </tr>
-    <tr>
-      <th>399</th>
-      <td>-41.871942</td>
-      <td>0.750254</td>
-      <td>0.383678</td>
+      <td>0.934847</td>
+      <td>2.0</td>
       <td>3.0</td>
-      <td>7.0</td>
       <td>0.0</td>
-      <td>44.770306</td>
-      <td>5.444374</td>
-      <td>9.746197</td>
-      <td>0.944708</td>
+      <td>7.966974</td>
+      <td>0.129600</td>
+    </tr>
+    <tr>
+      <th>9998</th>
+      <td>-5.269414</td>
+      <td>0.797791</td>
+      <td>1.030901</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>6.050728</td>
+      <td>0.256186</td>
+    </tr>
+    <tr>
+      <th>9999</th>
+      <td>-5.749151</td>
+      <td>1.000000</td>
+      <td>0.959207</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>0.0</td>
+      <td>6.395544</td>
+      <td>0.684206</td>
     </tr>
   </tbody>
 </table>
-<p>400 rows × 10 columns</p>
+<p>10000 rows × 8 columns</p>
 </div></div></div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">displot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1000</span><span class="p">:,</span> <span class="p">:],</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:ylabel=&#39;Frequency&#39;&gt;
-</pre></div>
-</div>
-<img alt="../_images/statistical_inference_8_1.png" src="../_images/statistical_inference_8_1.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:ylabel=&#39;Frequency&#39;&gt;
-</pre></div>
-</div>
-<img alt="../_images/statistical_inference_9_1.png" src="../_images/statistical_inference_9_1.png" />
+<img alt="../_images/statistical_inference_7_0.png" src="../_images/statistical_inference_7_0.png" />
 </div>
 </div>
 </section>
-<section id="id5">
-<h3>例<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
+<section id="id6">
+<h3>例<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h3>
 <p>あるゲームのガチャを1000回引いた結果、「外れ」と「当たり」の回数が以下のようになった。このガチャの「当たり」の確率はいくつか。</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
@@ -1135,8 +1156,8 @@ Warning: The parameter a has no priors. This means either no prior is
 </table>
 </div></div></div>
 </div>
-<section id="id6">
-<h4>モーメント法による推定<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h4>
+<section id="id7">
+<h4>モーメント法による推定<a class="headerlink" href="#id7" title="Permalink to this headline">#</a></h4>
 <!-- 試行回数$n$、成功確率$p$の二項分布$Bi(n, p)$の平均は$np$であるため、標本平均を$n$で乗じれば$p$が推定できる
 
 $$
@@ -1159,8 +1180,8 @@ $$
 </div>
 </div>
 </section>
-<section id="id7">
-<h4>最尤法による推定<a class="headerlink" href="#id7" title="Permalink to this headline">#</a></h4>
+<section id="id8">
+<h4>最尤法による推定<a class="headerlink" href="#id8" title="Permalink to this headline">#</a></h4>
 <p>ベルヌーイ分布</p>
 <p><span class="math notranslate nohighlight">\(X_i = 1\)</span>となる確率が<span class="math notranslate nohighlight">\(p\)</span>のベルヌーイ分布<span class="math notranslate nohighlight">\(Ber(p)\)</span>に従った確率変数の実現値がサンプルだとしたとき、<span class="math notranslate nohighlight">\(r=\sum X_i\)</span>とすると、その尤度関数は</p>
 <div class="math notranslate nohighlight">
@@ -1204,7 +1225,7 @@ L(p|X) = p^r (1-p)^{n-r}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/statistical_inference_16_0.png" src="../_images/statistical_inference_16_0.png" />
+<img alt="../_images/statistical_inference_13_0.png" src="../_images/statistical_inference_13_0.png" />
 </div>
 </div>
 <p>対数尤度の導関数は</p>
@@ -1218,12 +1239,43 @@ L(p|X) = p^r (1-p)^{n-r}
 p = \frac{r}{n} = \frac{\sum X_i}{n}
 \]</div>
 <p>となり、モーメント法と同じ結果になる。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+式展開</div>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial \log L(p|X)}{\partial p} = \frac{r}{p} - \frac{n-r}{1-p} = 0
+\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\frac{r}{p} &amp;= \frac{n-r}{1-p}\\
+\frac{p}{1-p} &amp;= \frac{r}{n-r}\\
+p &amp;= \frac{r(1-p)}{n-r} = \frac{r(1-p)}{r(\frac{n}{r} - 1)} = \frac{1-p}{\frac{n}{r} - 1}\\
+p (\frac{n}{r} - 1) &amp;= 1 - p\\
+p \frac{n}{r} = 1\\
+p = \frac{r}{n}
+\end{align}
+\end{split}\]</div>
+</div>
+</div>
 <p>解析的に解くことができない場合は勾配降下法などで数値的に解く。</p>
 </section>
 </section>
+<section id="id9">
+<h3>ベイズ推定<a class="headerlink" href="#id9" title="Permalink to this headline">#</a></h3>
+<p>Stanを用いる</p>
+<div class="admonition- admonition">
+<p class="admonition-title">参考資料</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://stan-ja.github.io/gh-pages-html/">Stan モデリング言語: ユーザーガイド・リファレンスマニュアル</a></p></li>
+</ul>
+</div>
 </section>
-<section id="id8">
-<h2>区間推定<a class="headerlink" href="#id8" title="Permalink to this headline">#</a></h2>
+</section>
+<section id="id10">
+<h2>区間推定<a class="headerlink" href="#id10" title="Permalink to this headline">#</a></h2>
 </section>
 </section>
 
