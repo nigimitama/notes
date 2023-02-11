@@ -1,0 +1,95 @@
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
+    executenb(
+  File "/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/nbclient/client.py", line 1204, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/nbclient/util.py", line 84, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/nbclient/util.py", line 62, in just_run
+    return loop.run_until_complete(coro)
+  File "/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/asyncio/base_events.py", line 647, in run_until_complete
+    return future.result()
+  File "/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/nbclient/client.py", line 663, in async_execute
+    await self.async_execute_cell(
+  File "/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/nbclient/client.py", line 965, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/nbclient/client.py", line 862, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+import itertools
+
+# safe asset
+mu0, sigma0 = (0.03, 0.0)
+# stock 1
+mu1, sigma1 = (0.4, 0.3)
+
+mu = np.array([mu0, mu1])
+sigma = np.array([sigma0, sigma1])
+
+def Sigma(rho):
+    """共分散行列。ρ_{2,1} = ρ_{1,2}の想定"""
+    return np.array([
+        [sigma1**2, sigma1 * sigma2 * rho],
+        [sigma1 * sigma2 * rho, sigma2**2],
+    ])
+
+mu_Ps = np.array([])
+sigma_Ps = np.array([])
+rhos = np.array([])
+
+# ポートフォリオ・ウェイトの組み合わせ
+pi1 = np.linspace(0, 1, 51)
+pi2 = 1 - pi1
+pi_range = np.array([pi1, pi2])
+
+# 相関係数
+rho_range = [-0.95, 1]
+
+# 変数を変えていったときのポートフォリオのボラティリティ
+for pi, rho in itertools.product(pi_range.T, rho_range):
+    mu_P = pi.T @ mu  # ポートフォリオの期待リターン
+    sigma_P = np.sqrt(pi.T @ Sigma(rho) @ pi)  # ポートフォリオのボラティリティ
+    mu_Ps = np.append(mu_Ps, mu_P)
+    sigma_Ps = np.append(sigma_Ps, sigma_P)
+    rhos = np.append(rhos, sigma_P)
+
+# plot
+fig, ax = plt.subplots()
+sns.scatterplot(
+    x="sigma", y="mu", hue="rho",
+    data = pd.DataFrame({"mu": mu_Ps, "sigma": sigma_Ps, "rho": rhos}),
+    ax=ax
+)
+ax.set(xlabel="volatility", ylabel="expected return", xlim=[-0.01, 0.31], ylim=[-0.01, 0.45])
+ax.grid(True)
+
+
+sigma_range = np.linspace(0, 1, 100)
+for utility in np.linspace(0.22, 0.26, 3):
+    mu_ = [indifference_curve(utility=utility, sigma=sigma, gamma=5) for sigma in sigma_range]
+    ax.plot(sigma_range, mu_, label=f"u = {utility}")
+
+fig.show()
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[3], line 33[0m
+[1;32m     31[0m [38;5;28;01mfor[39;00m pi, rho [38;5;129;01min[39;00m itertools[38;5;241m.[39mproduct(pi_range[38;5;241m.[39mT, rho_range):
+[1;32m     32[0m     mu_P [38;5;241m=[39m pi[38;5;241m.[39mT [38;5;241m@[39m mu  [38;5;66;03m# ポートフォリオの期待リターン[39;00m
+[0;32m---> 33[0m     sigma_P [38;5;241m=[39m np[38;5;241m.[39msqrt(pi[38;5;241m.[39mT [38;5;241m@[39m [43mSigma[49m[43m([49m[43mrho[49m[43m)[49m [38;5;241m@[39m pi)  [38;5;66;03m# ポートフォリオのボラティリティ[39;00m
+[1;32m     34[0m     mu_Ps [38;5;241m=[39m np[38;5;241m.[39mappend(mu_Ps, mu_P)
+[1;32m     35[0m     sigma_Ps [38;5;241m=[39m np[38;5;241m.[39mappend(sigma_Ps, sigma_P)
+
+Cell [0;32mIn[3], line 14[0m, in [0;36mSigma[0;34m(rho)[0m
+[1;32m     11[0m [38;5;28;01mdef[39;00m [38;5;21mSigma[39m(rho):
+[1;32m     12[0m [38;5;250m    [39m[38;5;124;03m"""共分散行列。ρ_{2,1} = ρ_{1,2}の想定"""[39;00m
+[1;32m     13[0m     [38;5;28;01mreturn[39;00m np[38;5;241m.[39marray([
+[0;32m---> 14[0m         [sigma1[38;5;241m*[39m[38;5;241m*[39m[38;5;241m2[39m, sigma1 [38;5;241m*[39m [43msigma2[49m [38;5;241m*[39m rho],
+[1;32m     15[0m         [sigma1 [38;5;241m*[39m sigma2 [38;5;241m*[39m rho, sigma2[38;5;241m*[39m[38;5;241m*[39m[38;5;241m2[39m],
+[1;32m     16[0m     ])
+
+[0;31mNameError[0m: name 'sigma2' is not defined
+NameError: name 'sigma2' is not defined
+
