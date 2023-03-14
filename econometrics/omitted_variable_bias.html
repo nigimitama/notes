@@ -50,10 +50,12 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Heterogeneous Treatment Effectsの推定" href="hte.html" />
-    <link rel="prev" title="OLS" href="ols.html" />
+    <link rel="prev" title="回帰分析" href="ols.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -195,7 +197,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="ols.html">
-   OLS
+   回帰分析
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -238,6 +240,11 @@ const thebe_selector_output = ".output, .cell_output"
  <li class="toctree-l1">
   <a class="reference internal" href="../financial_economics/feature_neutralization.html">
    Feature Neutralization
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/statistical_arbitrage.html">
+   統計的裁定
   </a>
  </li>
 </ul>
@@ -448,12 +455,27 @@ title="Print to PDF"
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id2">
+   生成データで実験
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   誤差項との関係
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   外生性
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id5">
    参考文献
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id3">
-     関連して読みたい論文（積読リスト）
+    <a class="reference internal nav-link" href="#id6">
+     関連論文（積読リスト）
     </a>
    </li>
   </ul>
@@ -479,12 +501,27 @@ title="Print to PDF"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id2">
+   生成データで実験
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   誤差項との関係
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   外生性
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id5">
    参考文献
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id3">
-     関連して読みたい論文（積読リスト）
+    <a class="reference internal nav-link" href="#id6">
+     関連論文（積読リスト）
     </a>
    </li>
   </ul>
@@ -501,14 +538,286 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>欠落変数バイアス<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<p>結果変数<span class="math notranslate nohighlight">\(Y\)</span>、処置変数<span class="math notranslate nohighlight">\(D\)</span>と、<span class="math notranslate nohighlight">\(Y,D\)</span>に影響を与える共変量（交絡因子）<span class="math notranslate nohighlight">\(X\)</span>があるとし、各変数の間には線形の関係があるとする。</p>
+<p>処置の効果を正しく推定するためには共変量をモデルに含める必要があるため、正しいモデルは次の式の形になる（「長いモデル」ということでLとつけている）。</p>
+<div class="math notranslate nohighlight">
+\[
+Y = \alpha^L + \beta^L D + \gamma^L X + \varepsilon^L
+\]</div>
+<p>ここで<span class="math notranslate nohighlight">\(X\)</span>を説明変数に入れない「短いモデル」</p>
+<div class="math notranslate nohighlight">
+\[
+Y = \alpha^S + \beta^S D + \varepsilon^S
+\]</div>
+<p>を構築した場合、処置効果<span class="math notranslate nohighlight">\(\beta^S\)</span>はどう推定されるのだろうか。</p>
+<p>XをDに回帰する（Xの変動をDで説明する）モデルを立ててみる。</p>
+<div class="math notranslate nohighlight">
+\[
+X = \alpha + \beta D + \varepsilon
+\]</div>
+<p>これを「長いモデル」に代入して整理すると、「短いモデル」との対応が見えてくる</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+Y &amp;= \alpha^L + \beta^L D + \gamma^L (\alpha + \beta D + \varepsilon) + \varepsilon^L \\
+&amp;= \alpha^L + \gamma^L \alpha + (\beta^L + \gamma^L \beta) D  + \gamma^L \varepsilon + \varepsilon^L \\
+&amp;= \underbrace{\alpha^L + \gamma^L \alpha}_{\alpha^S}
+  + \underbrace{(\beta^L + \gamma^L \beta)}_{\beta^S} D
+  + \underbrace{\gamma^L \varepsilon + \varepsilon^L}_{\varepsilon^S} \\
+\end{align}
+\end{split}\]</div>
+<p>「短いモデル」の<span class="math notranslate nohighlight">\(\beta^S\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[
+\beta^S = \beta^L + \gamma^L \beta
+\]</div>
+<p>であるため、正しいモデルの推定量<span class="math notranslate nohighlight">\(\beta^L\)</span>から<span class="math notranslate nohighlight">\(\gamma^L \beta\)</span>の分だけズレることがわかる。</p>
 <section id="id2">
-<h2>参考文献<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<h2>生成データで実験<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<p>実際に回帰分析を行ってみる。乱数で生成する。</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
+
+
+<span class="c1"># generate data</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+<span class="c1"># XがDと独立していれば共変量でないので欠落変数バイアスは生まれない</span>
+<span class="c1"># D = np.random.binomial(n=1, p=0.7, size=n)</span>
+
+<span class="c1"># XはDとYに影響を与える共変量であるため、xと処置確率が相関するとする</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">x</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">])</span>
+
+<span class="n">epsilon_L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">alpha_L</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">beta_L</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">gamma_L</span> <span class="o">=</span> <span class="mi">7</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;真の係数：α_L=</span><span class="si">{</span><span class="n">alpha_L</span><span class="si">}</span><span class="s2">, β_L=</span><span class="si">{</span><span class="n">beta_L</span><span class="si">}</span><span class="s2">, γ_L=</span><span class="si">{</span><span class="n">gamma_L</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">alpha_L</span> <span class="o">+</span> <span class="n">beta_L</span> <span class="o">*</span> <span class="n">D</span> <span class="o">+</span> <span class="n">gamma_L</span> <span class="o">*</span> <span class="n">X</span> <span class="o">+</span> <span class="n">epsilon_L</span>
+
+<span class="c1"># data</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">Y</span><span class="o">=</span><span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">))</span>
+<span class="n">display</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+
+<span class="c1"># plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="mi">70</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">D</span> <span class="o">==</span> <span class="n">d</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">D</span> <span class="o">==</span> <span class="n">d</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;D == </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>真の係数：α_L=3, β_L=5, γ_L=7
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Y</th>
+      <th>D</th>
+      <th>X</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>12.968330</td>
+      <td>1</td>
+      <td>0.548814</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>11.926394</td>
+      <td>1</td>
+      <td>0.715189</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>11.071875</td>
+      <td>1</td>
+      <td>0.602763</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>11.376362</td>
+      <td>1</td>
+      <td>0.544883</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5.467551</td>
+      <td>0</td>
+      <td>0.423655</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><img alt="../_images/omitted_variable_bias_3_2.png" src="../_images/omitted_variable_bias_3_2.png" />
+</div>
+</div>
+<p>このデータからそれぞれのモデルを推定すると次のようになる。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># long model</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s1">&#39;Y ~ D + X&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">alpha_L_</span><span class="p">,</span> <span class="n">beta_L_</span><span class="p">,</span> <span class="n">gamma_L_</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">params</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;「長いモデル」の推定値：α_L=</span><span class="si">{</span><span class="n">alpha_L_</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, β_L=</span><span class="si">{</span><span class="n">beta_L_</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, γ_L=</span><span class="si">{</span><span class="n">gamma_L_</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># short model</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s1">&#39;Y ~ D&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">alpha_S_</span><span class="p">,</span> <span class="n">beta_S_</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">params</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;「短いモデル」の推定値：α_S=</span><span class="si">{</span><span class="n">alpha_S_</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, β_S=</span><span class="si">{</span><span class="n">beta_S_</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># X ~ D</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s1">&#39;X ~ D&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">alpha_</span><span class="p">,</span> <span class="n">beta_</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">params</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;XをDに回帰したモデルの推定値：α=</span><span class="si">{</span><span class="n">alpha_</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, β=</span><span class="si">{</span><span class="n">beta_</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>「長いモデル」の推定値：α_L=3.16, β_L=5.04, γ_L=6.43
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>「短いモデル」の推定値：α_S=5.32, β_S=7.14
+XをDに回帰したモデルの推定値：α=0.34, β=0.327
+</pre></div>
+</div>
+</div>
+</div>
+<p>3つのモデルの関係性は</p>
+<div class="math notranslate nohighlight">
+\[
+Y = \underbrace{\alpha^L + \gamma^L \alpha}_{\alpha^S}
+  + \underbrace{(\beta^L + \gamma^L \beta)}_{\beta^S} D
+  + \underbrace{\gamma^L \varepsilon + \varepsilon^L}_{\varepsilon^S}
+\]</div>
+<p>だったので、推定値で同様に計算すると</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">estimated_alpha_S</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_L_</span> <span class="o">+</span> <span class="n">gamma_L_</span> <span class="o">*</span> <span class="n">alpha_</span><span class="p">)</span>
+<span class="n">estimated_beta_S</span> <span class="o">=</span> <span class="p">(</span><span class="n">beta_L_</span> <span class="o">+</span> <span class="n">gamma_L_</span> <span class="o">*</span> <span class="n">beta_</span><span class="p">)</span>
+<span class="n">bias_beta_S</span> <span class="o">=</span> <span class="n">gamma_L_</span> <span class="o">*</span> <span class="n">beta_</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">α_Sの推定値 = </span><span class="si">{</span><span class="n">estimated_alpha_S</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span>
+<span class="s2">β_Sの推定値 = </span><span class="si">{</span><span class="n">estimated_beta_S</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span>
+<span class="s2">β_Lとの差（欠落変数バイアス） = </span><span class="si">{</span><span class="n">bias_beta_S</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>α_Sの推定値 = 5.32
+β_Sの推定値 = 7.14
+β_Lとの差（欠落変数バイアス） = 2.10
+</pre></div>
+</div>
+</div>
+</div>
+<p>となり、「短いモデル」の推定値と同じものが得られた。また、「長いモデル」と比べたときの差（バイアス）も得られた</p>
+</section>
+<section id="id3">
+<h2>誤差項との関係<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+\varepsilon^S = \gamma^L \varepsilon + \varepsilon^L
+\]</div>
+<p>「短いモデル」の誤差項は説明変数と相関がある</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">residuals_L</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s1">&#39;Y ~ D + X&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">residuals_L</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;residual&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">residuals_L</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;residual&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Residuals of the long model&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/omitted_variable_bias_10_0.png" src="../_images/omitted_variable_bias_10_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">residuals_S</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s1">&#39;Y ~ D&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">residuals_S</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;residual&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">residuals_S</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;residual&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Residuals of the short model&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/omitted_variable_bias_11_0.png" src="../_images/omitted_variable_bias_11_0.png" />
+</div>
+</div>
+</section>
+<section id="id4">
+<h2>外生性<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h2>
+<p>このことについては外生性・内生性といった言い方もされる。</p>
+<p>次の単回帰モデルを考える。</p>
+<div class="math notranslate nohighlight">
+\[
+Y = \alpha + \beta X + \varepsilon
+\]</div>
+<p>説明変数<span class="math notranslate nohighlight">\(X\)</span>と誤差項<span class="math notranslate nohighlight">\(\varepsilon\)</span>が相関しないとき、説明変数<span class="math notranslate nohighlight">\(X\)</span>が<strong>外生性</strong>（exogeneity）をもつと言われる。またこのような変数は<strong>外生変数</strong>（exogenous variable）と呼ばれる。</p>
+<p>そうでないとき、説明変数<span class="math notranslate nohighlight">\(X\)</span>は<strong>内生性</strong>（endogeneity）をもつという。</p>
+<p>モデルの式の両辺の期待値をとって<span class="math notranslate nohighlight">\(\alpha\)</span>について解くと<span class="math notranslate nohighlight">\(\alpha = E[Y] - \beta E[X]\)</span>であり、これを代入すると</p>
+<div class="math notranslate nohighlight">
+\[
+Y - E[Y] = \beta (X - E[X]) + \varepsilon
+\]</div>
+<p>と書き換えることができる。両辺に<span class="math notranslate nohighlight">\(X\)</span>を乗じて期待値を</p>
+</section>
+<section id="id5">
+<h2>参考文献<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="http://www.ner.takushoku-u.ac.jp/masano/class_material/waseda/keiryo/R25_reg8_OBV.html">25. 重回帰分析（脱落変数バイアス・処置後変数バイアス）</a></p></li>
 <li><p>安井翔太. (2020). 効果検証入門: 正しい比較のための因果推論 計量経済学の基礎. Gijutsu hyōronsha.</p></li>
+<li><p>星野匡郎, 田中久稔, &amp; 北川梨津. (2023). R による実証分析: 回帰分析から因果分析へ. 株式会社 オーム社.</p></li>
 </ul>
-<section id="id3">
-<h3>関連して読みたい論文（積読リスト）<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
+<section id="id6">
+<h3>関連論文（積読リスト）<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://arxiv.org/abs/2302.06518">[2302.06518] SelectionBias: An R Package for Bounding Selection Bias</a></p>
 <ul>
@@ -552,7 +861,7 @@ title="Print to PDF"
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">OLS</p>
+            <p class="prev-next-title">回帰分析</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="hte.html" title="next page">

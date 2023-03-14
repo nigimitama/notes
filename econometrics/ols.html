@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>OLS &#8212; データサイエンスの勉強ノート</title>
+    <title>回帰分析 &#8212; データサイエンスの勉強ノート</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -197,7 +197,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   OLS
+   回帰分析
   </a>
  </li>
  <li class="toctree-l1">
@@ -240,6 +240,11 @@ const thebe_selector_output = ".output, .cell_output"
  <li class="toctree-l1">
   <a class="reference internal" href="../financial_economics/feature_neutralization.html">
    Feature Neutralization
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/statistical_arbitrage.html">
+   統計的裁定
   </a>
  </li>
 </ul>
@@ -449,7 +454,41 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id1">
+  <a class="reference internal nav-link" href="#id2">
+   単回帰モデル
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     モデル
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     パラメータの推定
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id5">
+   重回帰モデル
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     モデル
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id7">
+     パラメータの推定
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id8">
    対数変換
   </a>
   <ul class="nav section-nav flex-column">
@@ -496,7 +535,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>OLS</h1>
+                <h1>回帰分析</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -507,7 +546,41 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id1">
+  <a class="reference internal nav-link" href="#id2">
+   単回帰モデル
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     モデル
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     パラメータの推定
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id5">
+   重回帰モデル
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     モデル
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id7">
+     パラメータの推定
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id8">
    対数変換
   </a>
   <ul class="nav section-nav flex-column">
@@ -555,10 +628,285 @@ title="Print to PDF"
                 
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="ols">
-<h1>OLS<a class="headerlink" href="#ols" title="Permalink to this headline">#</a></h1>
-<section id="id1">
-<h2>対数変換<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>回帰分析<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<section id="id2">
+<h2>単回帰モデル<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<section id="id3">
+<h3>モデル<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
+<p>説明変数<span class="math notranslate nohighlight">\(x\)</span>と被説明変数<span class="math notranslate nohighlight">\(y\)</span>の<span class="math notranslate nohighlight">\(N\)</span>個のサンプルからなるデータセット<span class="math notranslate nohighlight">\(\{(y_i, x_i)\}_{i=1}^N\)</span>があるとする。</p>
+<p>これに対する次のようなモデルを単回帰モデルという。</p>
+<div class="math notranslate nohighlight">
+\[
+y_i = \beta_0 + \beta_1 x_i + \varepsilon_i
+\]</div>
+</section>
+<section id="id4">
+<h3>パラメータの推定<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
+<p><strong>通常最小二乗法</strong>（ordinary least squares: OLS）という方法を使うのが最も一般的である。これは実測値<span class="math notranslate nohighlight">\(y_i\)</span>と予測値<span class="math notranslate nohighlight">\(\hat{y}_i = \beta_0 + \beta_1 x_i\)</span>との<strong>残差</strong>（residual）<span class="math notranslate nohighlight">\(y_i - \hat{y}_i\)</span>の二乗和（residual sum of squares）</p>
+<div class="math notranslate nohighlight">
+\[
+RSS = \sum_{i=1}^N (y_i - \hat{y}_i)^2 = \sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i)^2
+\]</div>
+<p>を最小化するようにパラメータを推定するというもの。</p>
+<p>この最適化は、まずRSSをパラメータ<span class="math notranslate nohighlight">\(\beta_0, \beta_1\)</span>について微分し、これがゼロとなるようなパラメータを求める。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left\{
+\begin{align}
+\frac{\partial RSS}{\partial \beta_0}
+  &amp;= -2 \sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) = 0
+\\
+\frac{\partial RSS}{\partial \beta_1}
+  &amp;= -2 \sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) x_i = 0
+\end{align}\right.
+\end{split}\]</div>
+<p>これを整理すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left\{
+\begin{align}
+N \beta_0 + \sum_{i=1}^N \beta_1 x_i 
+&amp;= \sum_{i=1}^N y_i
+\\
+\sum_{i=1}^N \beta_0 x_i 
++ \sum_{i=1}^N \beta_1 x_i^2 
+&amp;= \sum_{i=1}^N y_i x_i
+\end{align}
+\right .
+\end{split}\]</div>
+<p>となる。</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+式展開メモ<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">ひとつめの式</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial RSS}{\partial \beta_0} = -2 \sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) = 0
+\]</div>
+<p class="sd-card-text">を整理すると</p>
+<div class="math notranslate nohighlight">
+\[
+2 \underbrace{ \sum_{i=1}^N \beta_0 }_{N \beta_0}
++ 2 \sum_{i=1}^N \beta_1 x_i = 2 \sum_{i=1}^N y_i
+\]</div>
+<p class="sd-card-text">整理すると</p>
+<div class="math notranslate nohighlight">
+\[
+N \beta_0 + \sum_{i=1}^N \beta_1 x_i = \sum_{i=1}^N y_i
+\]</div>
+<p class="sd-card-text">2つ目の式</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial RSS}{\partial \beta_1}
+= -2 \sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) x_i = 0
+\]</div>
+<p class="sd-card-text">は整理すると</p>
+<div class="math notranslate nohighlight">
+\[
+\sum_{i=1}^N \beta_0 x_i + \sum_{i=1}^N \beta_1 x_i^2 = \sum_{i=1}^N y_i x_i
+\]</div>
+</div>
+</details><p>1行目の両辺に<span class="math notranslate nohighlight">\(\frac{1}{N} \sum_{i=1}^N x_i\)</span>を乗じた</p>
+<div class="math notranslate nohighlight">
+\[
+\sum_{i=1}^N \beta_0 x_i
++ \frac{1}{N} \beta_1 (\sum_{i=1}^N x_i)^2
+= \frac{1}{N} (\sum_{i=1}^N y_i)(\sum_{i=1}^N x_i)
+\]</div>
+<p>を2行目から差し引くと</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align}
+\sum_{i=1}^N \beta_1 x_i^2 
+- \frac{1}{N} \beta_1 (\sum_{i=1}^N x_i)^2
+&amp;= \sum_{i=1}^N y_i x_i
+- \frac{1}{N} (\sum_{i=1}^N y_i)(\sum_{i=1}^N x_i)
+\end{align}
+\]</div>
+<p>両辺に<span class="math notranslate nohighlight">\(\frac{1}{N}\)</span>を乗じると</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align}
+\frac{1}{N} \sum_{i=1}^N \beta_1 x_i^2 
+- \beta_1 (\frac{1}{N} \sum_{i=1}^N x_i)^2
+&amp;= \frac{1}{N} \sum_{i=1}^N y_i x_i
+- (\frac{1}{N} \sum_{i=1}^N y_i)(\frac{1}{N} \sum_{i=1}^N x_i)
+\end{align}
+\]</div>
+<p>少し整理すると</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align}
+\beta_1 \left(
+\frac{1}{N} \sum_{i=1}^N x_i^2 
+- (\frac{1}{N} \sum_{i=1}^N x_i)^2
+\right)
+&amp;= \frac{1}{N} \sum_{i=1}^N y_i x_i
+- (\frac{1}{N} \sum_{i=1}^N y_i)(\frac{1}{N} \sum_{i=1}^N x_i)
+\end{align}
+\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\beta_1
+&amp;=
+\frac
+{ \frac{1}{N} \sum_{i=1}^N y_i x_i - (\frac{1}{N} \sum_{i=1}^N y_i)(\frac{1}{N} \sum_{i=1}^N x_i) }
+{ \frac{1}{N} \sum_{i=1}^N x_i^2  - (\frac{1}{N} \sum_{i=1}^N x_i)^2 }
+\\
+&amp;= \frac
+{ \frac{1}{N} \sum_{i=1}^N y_i x_i - \bar{y}\bar{x} }
+{ \frac{1}{N} \sum_{i=1}^N x_i^2  - \bar{x}^2 }
+\\
+&amp;= \frac
+{ Cov[x, y] }
+{ Var[x] }
+\end{align}
+\end{split}\]</div>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+Var[x]
+&amp;= \frac{1}{N} \sum_{i=1}^N (x_i - \bar{x})^2
+\\
+&amp;= \frac{1}{N} \sum_{i=1}^N ( x_i^2 - 2 x_i \bar{x} + \bar{x}^2 )
+\\
+&amp;= \frac{1}{N} \sum_{i=1}^N x_i^2 - 2 \bar{x}^2 + \bar{x}^2
+\\
+&amp;= \frac{1}{N} \sum_{i=1}^N x_i^2 - \bar{x}^2
+\end{align}
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+Cov[x, y]
+&amp;= \frac{1}{N} \sum_{i=1}^N (x_i - \bar{x}) (y_i - \bar{y})
+\\
+&amp;= \frac{1}{N} \sum_{i=1}^N x_i y_i - 2\bar{x}\bar{y} + \bar{x}\bar{y}
+\\
+&amp;= \frac{1}{N} \sum_{i=1}^N x_i y_i - \bar{x}\bar{y}
+\end{align}
+\end{split}\]</div>
+</aside>
+<p><span class="math notranslate nohighlight">\(\beta_0\)</span>については、上記の連立方程式の1つ目の式</p>
+<div class="math notranslate nohighlight">
+\[
+N \beta_0 + \sum_{i=1}^N \beta_1 x_i 
+= \sum_{i=1}^N y_i
+\]</div>
+<p>を<span class="math notranslate nohighlight">\(N\)</span>で割ると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\beta_0 
+&amp;= \frac{1}{N} \sum_{i=1}^N y_i
+- \frac{1}{N} \sum_{i=1}^N \beta_1 x_i
+\\
+&amp;= \bar{y}
+- \beta_1 \bar{x}
+\end{align}
+\end{split}\]</div>
+</section>
+</section>
+<section id="id5">
+<h2>重回帰モデル<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h2>
+<p>説明変数を複数にしたものを重回帰モデルという。</p>
+<section id="id6">
+<h3>モデル<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h3>
+<p>被説明変数を<span class="math notranslate nohighlight">\(N\)</span>次元ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{y}\)</span>（<span class="math notranslate nohighlight">\(N\)</span>はサンプル数）、
+説明変数を<span class="math notranslate nohighlight">\(N \times (K+1)\)</span>次元ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span>（<span class="math notranslate nohighlight">\(K\)</span>は説明変数の次元数）、
+パラメータを<span class="math notranslate nohighlight">\(K+1\)</span>次元ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{\beta}\)</span>、
+誤差項を<span class="math notranslate nohighlight">\(N\)</span>次元ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{\varepsilon}\)</span>と書くと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{bmatrix}
+y_1 \\
+\vdots \\
+y_N
+\end{bmatrix}
+=
+\begin{bmatrix}
+x_{10} &amp; \cdots &amp; x_{1K} \\
+\vdots &amp;  &amp; \vdots \\
+x_{N0} &amp; \cdots &amp; x_{NK} \\
+\end{bmatrix}
+\begin{bmatrix}
+\beta_0 \\
+\vdots \\
+\beta_K
+\end{bmatrix}
++
+\begin{bmatrix}
+\varepsilon_1 \\
+\vdots \\
+\varepsilon_N
+\end{bmatrix}
+\end{split}\]</div>
+<p>を</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{y}
+=
+\boldsymbol{X}
+\boldsymbol{\beta}
++
+\boldsymbol{\varepsilon}
+\]</div>
+<p>と書くことができる</p>
+</section>
+<section id="id7">
+<h3>パラメータの推定<a class="headerlink" href="#id7" title="Permalink to this headline">#</a></h3>
+<p>残差二乗和を行列で表記すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\newcommand{ \y }{ \boldsymbol{y} }
+\newcommand{ \X }{ \boldsymbol{X} }
+\newcommand{ \b }{ \boldsymbol{\beta} }
+\begin{align}
+RSS
+&amp;= (\y - \X \b)^\top (\y - \X \b)
+\\
+&amp;= \y^\top \y
+ - \y^\top \X \b
+ - \b^\top \X^\top \y
+ - \b^\top \X^\top \X \b
+\\
+&amp;= \y^\top \y
+ - 2 \y^\top \X \b
+ + \b^\top \X^\top \X \b
+\end{align}
+\end{split}\]</div>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p><span class="math notranslate nohighlight">\(\y^\top \X \b, \b^\top \X^\top \y\)</span>はともにスカラーになるので</p>
+<div class="math notranslate nohighlight">
+\[
+\y^\top \X \b = \b^\top \X^\top \y
+\]</div>
+</aside>
+<p>これを微分すると</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial RSS}{\partial \b}
+= - 2 \X^\top \y + 2 (\X^\top \X) \b
+\]</div>
+<p>となるため、これが0となるような<span class="math notranslate nohighlight">\(\b\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[
+\b = (\X^\top \X)^{-1} \X^\top \y
+\]</div>
+<p>となる</p>
+</section>
+</section>
+<section id="id8">
+<h2>対数変換<a class="headerlink" href="#id8" title="Permalink to this headline">#</a></h2>
 <p>目的変数や説明変数を対数変換すると、推定結果の解釈が変わる</p>
 <table class="colwidths-auto table">
 <thead>
@@ -612,7 +960,7 @@ title="Print to PDF"
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ols_3_0.png" src="../_images/ols_3_0.png" />
+<img alt="../_images/ols_12_0.png" src="../_images/ols_12_0.png" />
 </div>
 </div>
 <section id="y-beta-0-beta-1-x">
@@ -645,7 +993,7 @@ Y_2 - Y_1 &amp;= \beta_1
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ols_5_0.png" src="../_images/ols_5_0.png" />
+<img alt="../_images/ols_14_0.png" src="../_images/ols_14_0.png" />
 </div>
 </div>
 </section>
@@ -688,7 +1036,7 @@ Y_2 - Y_1 = \beta_1 \ln(1.01) \approx 0.01\beta_1
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ols_7_0.png" src="../_images/ols_7_0.png" />
+<img alt="../_images/ols_16_0.png" src="../_images/ols_16_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -766,7 +1114,7 @@ Y_2 &amp;= \exp(\beta_0 + \beta_1 (X + 1))\\
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ols_12_0.png" src="../_images/ols_12_0.png" />
+<img alt="../_images/ols_21_0.png" src="../_images/ols_21_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -811,7 +1159,7 @@ Y_2 &amp;= \exp(\beta_0 + \beta_1 (X + 1))\\
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ols_15_0.png" src="../_images/ols_15_0.png" />
+<img alt="../_images/ols_24_0.png" src="../_images/ols_24_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
