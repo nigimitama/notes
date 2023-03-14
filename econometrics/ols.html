@@ -813,6 +813,90 @@ N \beta_0 + \sum_{i=1}^N \beta_1 x_i
 - \beta_1 \bar{x}
 \end{align}
 \end{split}\]</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+<span class="c1"># data -------------------------</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">beta_0</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">beta_1</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">))</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">beta_0</span> <span class="o">+</span> <span class="n">beta_1</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">e</span>
+
+<span class="c1"># calc RSS ---------------------</span>
+<span class="k">def</span> <span class="nf">rss</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">beta_0</span><span class="p">,</span> <span class="n">beta_1</span><span class="p">):</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">beta_0</span> <span class="o">+</span> <span class="n">beta_1</span> <span class="o">*</span> <span class="n">x</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">((</span><span class="n">y_true</span> <span class="o">-</span> <span class="n">y_pred</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">beta_0_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">26</span><span class="p">)</span>
+<span class="n">beta_1_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">26</span><span class="p">)</span>
+<span class="n">Beta0</span><span class="p">,</span> <span class="n">Beta1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">beta_0_range</span><span class="p">,</span> <span class="n">beta_1_range</span><span class="p">)</span>
+<span class="n">Loss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rss</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">b1</span><span class="p">)</span> <span class="k">for</span> <span class="n">b0</span><span class="p">,</span> <span class="n">b1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Beta0</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">Beta1</span><span class="o">.</span><span class="n">flatten</span><span class="p">())])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">Beta0</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c1"># OLS estimate ------------------</span>
+<span class="n">beta_1_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">beta_0_hat</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">beta_1_hat</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">loss_</span> <span class="o">=</span> <span class="n">rss</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">beta_0_hat</span><span class="p">,</span> <span class="n">beta_1_hat</span><span class="p">)</span>
+<span class="n">color_ols</span> <span class="o">=</span> <span class="s2">&quot;black&quot;</span>
+
+<span class="c1"># wrong estimate</span>
+<span class="n">beta_wrongs</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">15</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">)]</span>
+<span class="n">color_wrong</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+
+<span class="c1"># plot ---------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+
+<span class="c1"># scatter</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;example of linear models&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">b0</span><span class="p">,</span> <span class="n">b1</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">beta_wrongs</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">b0</span> <span class="o">+</span> <span class="n">b1</span> <span class="o">*</span> <span class="n">x</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Estimate </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: β0=</span><span class="si">{</span><span class="n">b0</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, β1=</span><span class="si">{</span><span class="n">b1</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_wrong</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">beta_0_hat</span> <span class="o">+</span> <span class="n">beta_1_hat</span> <span class="o">*</span> <span class="n">x</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;OLS Estimate: β0=</span><span class="si">{</span><span class="n">beta_0_hat</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, β1=</span><span class="si">{</span><span class="n">beta_1_hat</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_ols</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">)</span>
+
+<span class="c1"># RSS</span>
+<span class="n">cs</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">Beta0</span><span class="p">,</span> <span class="n">Beta1</span><span class="p">,</span> <span class="n">Loss</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;β0&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;β1&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Residual Sum of Squares&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">b0</span><span class="p">,</span> <span class="n">b1</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">beta_wrongs</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">b0</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_wrong</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">b0</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Estimate </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="se">\n</span><span class="s2">(β0=</span><span class="si">{</span><span class="n">b0</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, β1=</span><span class="si">{</span><span class="n">b1</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_wrong</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">beta_0_hat</span><span class="p">,</span> <span class="n">beta_1_hat</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_ols</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">beta_0_hat</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">beta_1_hat</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Minimum Point (OLS Estimate)</span><span class="se">\n</span><span class="s2">(β0=</span><span class="si">{</span><span class="n">beta_0_hat</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, β1=</span><span class="si">{</span><span class="n">beta_1_hat</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_ols</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># # 3d plot --------------------</span>
+<span class="c1"># from matplotlib import cm</span>
+<span class="c1"># fig, ax = plt.subplots(dpi=120, subplot_kw={&quot;projection&quot;: &quot;3d&quot;})</span>
+<span class="c1"># surf = ax.plot_surface(Beta0, Beta1, Loss, rstride=1, cstride=1, linewidth=1, antialiased=True, cmap=cm.coolwarm)</span>
+<span class="c1"># fig.colorbar(surf, shrink=0.5, aspect=5, pad=0.11)</span>
+<span class="c1"># ax.set(xlabel=&quot;beta_0&quot;, ylabel=&quot;beta_1&quot;, zlabel=&quot;Residual Sum of Squares&quot;)</span>
+
+<span class="c1"># # # add a point</span>
+<span class="c1"># # ax.scatter(beta_0_hat, beta_1_hat, loss_, color=&quot;darkorange&quot;)</span>
+<span class="c1"># # ax.text(beta_0_hat * 0.99, beta_1_hat, loss_ * 1.1, f&quot;Lowest point (β0={beta_0_hat:.1f}, β1={beta_1_hat:.1f})&quot;, color=&quot;darkorange&quot;)</span>
+
+<span class="c1"># fig.show()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ols_7_0.png" src="../_images/ols_7_0.png" />
+</div>
+</div>
 </section>
 </section>
 <section id="id5">
@@ -960,7 +1044,7 @@ RSS
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ols_12_0.png" src="../_images/ols_12_0.png" />
+<img alt="../_images/ols_13_0.png" src="../_images/ols_13_0.png" />
 </div>
 </div>
 <section id="y-beta-0-beta-1-x">
@@ -993,7 +1077,7 @@ Y_2 - Y_1 &amp;= \beta_1
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ols_14_0.png" src="../_images/ols_14_0.png" />
+<img alt="../_images/ols_15_0.png" src="../_images/ols_15_0.png" />
 </div>
 </div>
 </section>
@@ -1036,7 +1120,7 @@ Y_2 - Y_1 = \beta_1 \ln(1.01) \approx 0.01\beta_1
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ols_16_0.png" src="../_images/ols_16_0.png" />
+<img alt="../_images/ols_17_0.png" src="../_images/ols_17_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1114,7 +1198,7 @@ Y_2 &amp;= \exp(\beta_0 + \beta_1 (X + 1))\\
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ols_21_0.png" src="../_images/ols_21_0.png" />
+<img alt="../_images/ols_22_0.png" src="../_images/ols_22_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1159,7 +1243,7 @@ Y_2 &amp;= \exp(\beta_0 + \beta_1 (X + 1))\\
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ols_24_0.png" src="../_images/ols_24_0.png" />
+<img alt="../_images/ols_25_0.png" src="../_images/ols_25_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
