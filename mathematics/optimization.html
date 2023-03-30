@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>ラグランジュの未定乗数法 &#8212; データサイエンスの勉強ノート</title>
+    <title>数理最適化 &#8212; データサイエンスの勉強ノート</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -55,6 +55,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="確率と期待値・分散" href="../statistics/probability_and_expectation.html" />
+    <link rel="prev" title="線形代数学" href="linear_algebra.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -114,7 +116,7 @@ const thebe_selector_output = ".output, .cell_output"
   数学
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="function.html">
    関数
@@ -128,6 +130,11 @@ const thebe_selector_output = ".output, .cell_output"
  <li class="toctree-l1">
   <a class="reference internal" href="linear_algebra.html">
    線形代数学
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   数理最適化
   </a>
  </li>
 </ul>
@@ -324,6 +331,35 @@ title="Toggle navigation"
         
     </div>
     <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/nigimitama/notes/gh-pages?urlpath=tree/docs/mathematics/optimization.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
 <button onclick="toggleFullScreen()"
   class="headerbtn"
   data-toggle="tooltip"
@@ -363,7 +399,7 @@ title="Source repository"
       </li>
       
       <li>
-        <a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Fmathematics/Lagrange.html&body=Your%20issue%20content%20here."
+        <a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Fmathematics/optimization.html&body=Your%20issue%20content%20here."
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -391,7 +427,7 @@ title="Open an issue"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="../_sources/mathematics/Lagrange.md"
+        <a href="../_sources/mathematics/optimization.ipynb"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -402,7 +438,7 @@ title="Download source file"
 <span class="headerbtn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.md</span>
+<span class="headerbtn__text-container">.ipynb</span>
 </a>
 
       </li>
@@ -450,32 +486,34 @@ title="Print to PDF"
     </div>
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
    ラグランジュの未定乗数法
   </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id2">
-   用語
-  </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id3">
-     ラグランジュ緩和
+     用語
     </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id4">
+       ラグランジュ緩和
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id5">
+       ラグランジュ双対問題
+      </a>
+     </li>
+    </ul>
    </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id4">
-     ラグランジュ双対問題
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     参考
     </a>
    </li>
   </ul>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id5">
-   参考
-  </a>
  </li>
 </ul>
 
@@ -486,7 +524,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>ラグランジュの未定乗数法</h1>
+                <h1>数理最適化</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -496,32 +534,34 @@ title="Print to PDF"
                         </div>
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
    ラグランジュの未定乗数法
   </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id2">
-   用語
-  </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id3">
-     ラグランジュ緩和
+     用語
     </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id4">
+       ラグランジュ緩和
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id5">
+       ラグランジュ双対問題
+      </a>
+     </li>
+    </ul>
    </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id4">
-     ラグランジュ双対問題
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     参考
     </a>
    </li>
   </ul>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id5">
-   参考
-  </a>
  </li>
 </ul>
 
@@ -534,33 +574,39 @@ title="Print to PDF"
               <div>
                 
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>ラグランジュの未定乗数法<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<h1>数理最適化<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<section id="id2">
+<h2>ラグランジュの未定乗数法<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
 <p>ざっくりいうと、以下の手続きで問題の制約を緩和して解く方法。</p>
-<p>(1) 微分可能な凸関数<span class="math notranslate nohighlight">\(f(\boldsymbol{x})\)</span>に対する制約付き最小化問題があるとする。
-$<span class="math notranslate nohighlight">\(
+<p>(1) 微分可能な凸関数<span class="math notranslate nohighlight">\(f(\boldsymbol{x})\)</span>に対する制約付き最小化問題があるとする。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \begin{align}\min_\boldsymbol{x} \hspace{1em} &amp; f(\boldsymbol{x})\\\text{subject to} \hspace{1em} &amp; g(\boldsymbol{x}) \leq 0\end{align}
-\)</span><span class="math notranslate nohighlight">\(
-(2) **ラグランジュ未定乗数**という未知の値\)</span>\lambda\geq0<span class="math notranslate nohighlight">\(を用いて、**ラグランジュ関数**（**ラグランジアン**）
-\)</span><span class="math notranslate nohighlight">\(
+\end{split}\]</div>
+<p>(2) <strong>ラグランジュ未定乗数</strong>という未知の値<span class="math notranslate nohighlight">\(\lambda\geq0\)</span>を用いて、<strong>ラグランジュ関数</strong>（<strong>ラグランジアン</strong>）</p>
+<div class="math notranslate nohighlight">
+\[
 L(\boldsymbol{x}, \lambda) = f(\boldsymbol{x}) + \lambda (g(\boldsymbol{x}) - 0)=f(\boldsymbol{x}) + \lambda g(\boldsymbol{x})
-\)</span>$
-を作る。</p>
-<p>(3) <strong>ラグランジュ双対問題</strong>
-$<span class="math notranslate nohighlight">\(
+\]</div>
+<p>を作る。</p>
+<p>(3) <strong>ラグランジュ双対問題</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \begin{align}\max_\lambda \hspace{1em} &amp;  L(\boldsymbol{x}, \lambda)\\\text{subject to} \hspace{1em} &amp; \lambda \geq 0\end{align}
-\)</span><span class="math notranslate nohighlight">\(
-を解いていく。\)</span>L(\boldsymbol{x}, \lambda)<span class="math notranslate nohighlight">\(を\)</span>\boldsymbol{x}<span class="math notranslate nohighlight">\(で微分してゼロとおき、
-\)</span><span class="math notranslate nohighlight">\(
+\end{split}\]</div>
+<p>を解いていく。<span class="math notranslate nohighlight">\(L(\boldsymbol{x}, \lambda)\)</span>を<span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span>で微分してゼロとおき、</p>
+<div class="math notranslate nohighlight">
+\[
 \boldsymbol{0} = \frac{\partial L}{\partial \boldsymbol{x}} = \frac{\partial f}{\partial \boldsymbol{x}}+ \lambda \frac{\partial g}{\partial \boldsymbol{x}}
-\)</span><span class="math notranslate nohighlight">\(
-これを解いて最適解\)</span>\lambda^<em>, \boldsymbol{x}^</em><span class="math notranslate nohighlight">\(を得る。この解\)</span>\boldsymbol{x}^*$は元の最小化問題（主問題）の解と一致することが知られている。</p>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="id2">
-<h1>用語<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h1>
+\]</div>
+<p>これを解いて最適解<span class="math notranslate nohighlight">\(\lambda^*, \boldsymbol{x}^*\)</span>を得る。この解<span class="math notranslate nohighlight">\(\boldsymbol{x}^*\)</span>は元の最小化問題（主問題）の解と一致することが知られている。</p>
 <section id="id3">
-<h2>ラグランジュ緩和<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
-<p>以下のような最適化問題があるとする
-$<span class="math notranslate nohighlight">\(
+<h3>用語<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
+<section id="id4">
+<h4>ラグランジュ緩和<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h4>
+<p>以下のような最適化問題があるとする</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \begin{align}
 \text{minimize } \hspace{1em}
 &amp; f(\boldsymbol{x})\\
@@ -568,32 +614,37 @@ $<span class="math notranslate nohighlight">\(
 &amp; g_i(\boldsymbol{x}) = b_i \hspace{1em} (i=1,...,k)\\
 &amp; h_j(\boldsymbol{x}) \geq b_j \hspace{1em} (j=1,...,l)
 \end{align}
-\)</span>$
-この問題の制約を緩和して、もう少し簡単な問題にするアプローチの一つがラグランジュ緩和である。</p>
+\end{split}\]</div>
+<p>この問題の制約を緩和して、もう少し簡単な問題にするアプローチの一つがラグランジュ緩和である。</p>
 <p>例えば等式制約<span class="math notranslate nohighlight">\(g_i(\boldsymbol{x}) = b_i\)</span>を適当な数値<span class="math notranslate nohighlight">\(\beta_i\)</span>倍して目的関数に入れる。</p>
 </section>
-<section id="id4">
-<h2>ラグランジュ双対問題<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h2>
-<p>微分可能な凸関数<span class="math notranslate nohighlight">\(f_i(x), (i=0,...,m)\)</span>に対する制約付き最小化問題
-$<span class="math notranslate nohighlight">\(
+<section id="id5">
+<h4>ラグランジュ双対問題<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h4>
+<p>微分可能な凸関数<span class="math notranslate nohighlight">\(f_i(x), (i=0,...,m)\)</span>に対する制約付き最小化問題</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \begin{align}\min_x \hspace{1em} &amp; f_0(x)\\\text{subject to} \hspace{1em} &amp; f_i(x) \leq a_i \hspace{1em} (i=1, ..., m)\end{align}
-\)</span><span class="math notranslate nohighlight">\(
-のラグランジュ双対問題とは、ラグランジュ未定乗数\)</span>\lambda_i<span class="math notranslate nohighlight">\(とラグランジュ関数（ラグランジアン）
-\)</span><span class="math notranslate nohighlight">\(
+\end{split}\]</div>
+<p>のラグランジュ双対問題とは、ラグランジュ未定乗数<span class="math notranslate nohighlight">\(\lambda_i\)</span>とラグランジュ関数（ラグランジアン）</p>
+<div class="math notranslate nohighlight">
+\[
 L(x, \lambda) = f_0(x) + \sum^{m}_{i=1} \lambda_i (f_i(x) - a_i)
-\)</span><span class="math notranslate nohighlight">\(
-を用いて、以下のように定義される。
-\)</span><span class="math notranslate nohighlight">\(
+\]</div>
+<p>を用いて、以下のように定義される。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \begin{align}\max_{\lambda} \inf_{x} \hspace{1em} &amp; L(x, \lambda)\\\text{subject to}\hspace{1em} &amp; \lambda \geq 0\end{align}
-\)</span>$</p>
+\end{split}\]</div>
 </section>
 </section>
-<section class="tex2jax_ignore mathjax_ignore" id="id5">
-<h1>参考<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h1>
+<section id="id6">
+<h3>参考<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="http://tomomi.my.coocan.jp/text/relax1.pdf">ラグランジュ緩和と双対問題</a></p></li>
 <li><p>『言語処理のための機械学習入門』pp.14-19</p></li>
 </ul>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -623,6 +674,20 @@ L(x, \lambda) = f_0(x) + \sum^{m}_{i=1} \lambda_i (f_i(x) - a_i)
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="linear_algebra.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">線形代数学</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../statistics/probability_and_expectation.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">確率と期待値・分散</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
             </footer>
         </div>
