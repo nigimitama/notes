@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>ベイズ推定 &#8212; データサイエンスの勉強ノート</title>
+    <title>因子分析 &#8212; データサイエンスの勉強ノート</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -51,8 +51,12 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="線形回帰" href="../machine_learning/linear_models/regression/linear_regression.html" />
+    <link rel="prev" title="ノンパラメトリック密度推定" href="../statistics/nonparametric_density_estimation.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -141,32 +145,32 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="probability_and_expectation.html">
+  <a class="reference internal" href="../statistics/probability_and_expectation.html">
    確率と期待値・分散
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="distributions.html">
+  <a class="reference internal" href="../statistics/distributions.html">
    確率分布
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="statistical_inference.html">
+  <a class="reference internal" href="../statistics/statistical_inference.html">
    統計的推測
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="likelihood_and_probability.html">
+  <a class="reference internal" href="../statistics/likelihood_and_probability.html">
    尤度関数と確率関数の違いは何なのか？
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="bootstrap.html">
+  <a class="reference internal" href="../statistics/bootstrap.html">
    Bootstrap
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="nonparametric_density_estimation.html">
+  <a class="reference internal" href="../statistics/nonparametric_density_estimation.html">
    ノンパラメトリック密度推定
   </a>
  </li>
@@ -176,9 +180,9 @@ const thebe_selector_output = ".output, .cell_output"
   統計モデリング
  </span>
 </p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../statistical_modeling/factor_analysis.html">
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    因子分析
   </a>
  </li>
@@ -347,7 +351,7 @@ title="Toggle navigation"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="https://mybinder.org/v2/gh/nigimitama/notes/gh-pages?urlpath=tree/docs/statistics/bayes_estimation.ipynb"
+        <a href="https://mybinder.org/v2/gh/nigimitama/notes/gh-pages?urlpath=tree/docs/statistical_modeling/factor_analysis.ipynb"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -407,7 +411,7 @@ title="Source repository"
       </li>
       
       <li>
-        <a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Fstatistics/bayes_estimation.html&body=Your%20issue%20content%20here."
+        <a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Fstatistical_modeling/factor_analysis.html&body=Your%20issue%20content%20here."
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -435,7 +439,7 @@ title="Open an issue"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="../_sources/statistics/bayes_estimation.ipynb"
+        <a href="../_sources/statistical_modeling/factor_analysis.ipynb"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -496,12 +500,32 @@ title="Print to PDF"
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id2">
-   共役事前分布
+   因子分析モデル
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     1因子モデル
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#m">
+     <span class="math notranslate nohighlight">
+      \(m\)
+     </span>
+     因子モデル
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   主成分分析との違い
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id3">
-   無情報事前分布
+  <a class="reference internal nav-link" href="#id5">
+   参考
   </a>
  </li>
 </ul>
@@ -513,7 +537,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>ベイズ推定</h1>
+                <h1>因子分析</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -525,12 +549,32 @@ title="Print to PDF"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id2">
-   共役事前分布
+   因子分析モデル
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     1因子モデル
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#m">
+     <span class="math notranslate nohighlight">
+      \(m\)
+     </span>
+     因子モデル
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   主成分分析との違い
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id3">
-   無情報事前分布
+  <a class="reference internal nav-link" href="#id5">
+   参考
   </a>
  </li>
 </ul>
@@ -544,12 +588,155 @@ title="Print to PDF"
               <div>
                 
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>ベイズ推定<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<h1>因子分析<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<p><strong>因子分析</strong>（factor analysis）はデータの分散を分解することによって何らかの共通性を抽出する手法である。</p>
+<p>心理学などの分野において、「リーダシップ」や「社交性」のような直接観測することができない<strong>構成概念</strong>（construct）を抽出するために用いられる。</p>
 <section id="id2">
-<h2>共役事前分布<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
-</section>
+<h2>因子分析モデル<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
 <section id="id3">
-<h2>無情報事前分布<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
+<h3>1因子モデル<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
+<p><span class="math notranslate nohighlight">\(p\)</span>次元の観測値が<span class="math notranslate nohighlight">\(n\)</span>個得られているとし、<span class="math notranslate nohighlight">\(i\)</span>番目の<span class="math notranslate nohighlight">\(j\)</span>次元のデータを<span class="math notranslate nohighlight">\(x_{ij}\)</span>と表すことにする。<span class="math notranslate nohighlight">\(x_{ij}\)</span>を標準化して平均0、分散1にしたデータを<span class="math notranslate nohighlight">\(z_{ij}\)</span>と表すことにする。</p>
+<p>1因子モデルは標準化データを次のように分解するモデルである。</p>
+<div class="math notranslate nohighlight">
+\[
+z_{ij} = a_j f_i + d_j u_{ij}
+\]</div>
+<p>ここで</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(f_i\)</span>は観測対象<span class="math notranslate nohighlight">\(i\)</span>の<strong>共通因子</strong>（common factor）で、構成概念を表す</p></li>
+<li><p><span class="math notranslate nohighlight">\(u_{ij}\)</span>は<strong>独自因子</strong>（unique factor）と呼ばれ、構成概念で説明しきれない要因を表す</p></li>
+<li><p><span class="math notranslate nohighlight">\(a_j\)</span>は観測変数<span class="math notranslate nohighlight">\(j\)</span>の<strong>因子負荷</strong>（factor loading）で、観測変数<span class="math notranslate nohighlight">\(j\)</span>が共通因子から受ける影響の程度を表す</p></li>
+<li><p><span class="math notranslate nohighlight">\(d_j\)</span>は観測変数<span class="math notranslate nohighlight">\(j\)</span>の<strong>独自係数</strong>と呼ばれ、観測変数<span class="math notranslate nohighlight">\(j\)</span>が独自因子から受ける影響の程度を表す</p></li>
+</ul>
+</section>
+<section id="m">
+<h3><span class="math notranslate nohighlight">\(m\)</span>因子モデル<a class="headerlink" href="#m" title="Permalink to this headline">#</a></h3>
+<p><span class="math notranslate nohighlight">\(m\)</span>個の因子を扱うように拡張すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+z_{ij}
+&amp;= a_{j1} f_{i1} + \cdots + a_{jm} f_{im} + d_j u_{ij}\\
+&amp;= \sum^m_{l=1} a_{jl} f_{il} + d_j u_{ij}\\
+\end{align}
+\end{split}\]</div>
+<p>と表すことができる。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># テストの点数データ</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+    <span class="p">{</span><span class="s2">&quot;英語&quot;</span><span class="p">:</span> <span class="mi">98</span><span class="p">,</span> <span class="s2">&quot;国語&quot;</span><span class="p">:</span> <span class="mi">95</span><span class="p">,</span> <span class="s2">&quot;数学&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;英語&quot;</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span> <span class="s2">&quot;国語&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span> <span class="s2">&quot;数学&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;英語&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;国語&quot;</span><span class="p">:</span> <span class="mi">57</span><span class="p">,</span> <span class="s2">&quot;数学&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;英語&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;国語&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span> <span class="s2">&quot;数学&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;英語&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;国語&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;数学&quot;</span><span class="p">:</span> <span class="mi">40</span><span class="p">},</span>
+<span class="p">])</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="p">(</span><span class="n">scores</span> <span class="o">-</span> <span class="n">scores</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="n">scores</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+
+<span class="kn">from</span> <span class="nn">statsmodels.multivariate.factor</span> <span class="kn">import</span> <span class="n">Factor</span>
+
+<span class="n">fa</span> <span class="o">=</span> <span class="n">Factor</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">n_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;ml&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">fa</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/statsmodels/multivariate/factor.py:419: UserWarning: Fitting did not converge
+  warnings.warn(&quot;Fitting did not converge&quot;)
+</pre></div>
+</div>
+<div class="output text_html"><table class="simpletable">
+<tr>
+  <td></td> <td></td> <td></td> <td></td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <td></td> <td>Communality</td> <td></td> <td></td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <td></td>   <th>英語</th>     <th>国語</th>     <th>数学</th>  
+</tr>
+<tr>
+  <th></th> <td>0.9977</td> <td>0.7723</td> <td>0.5347</td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <td></td> <td></td> <td></td> <td></td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <td></td> <td>Pre-rotated loadings</td> <td></td> <td></td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+   <td></td>  <th>factor 0</th>
+</tr>
+<tr>
+  <th>英語</th>  <td>0.9995</td> 
+</tr>
+<tr>
+  <th>国語</th>  <td>0.8719</td> 
+</tr>
+<tr>
+  <th>数学</th>  <td>0.7180</td> 
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <td></td> <td></td> <td></td> <td></td>
+</tr>
+</table></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fa</span><span class="o">.</span><span class="n">uniqueness</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.00228581, 0.22772564, 0.46534024])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 共通因子スコア</span>
+<span class="n">fa</span><span class="o">.</span><span class="n">factor_scoring</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 1.15171807],
+       [ 0.85998399],
+       [-0.19932969],
+       [-0.54814633],
+       [-1.26422604]])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="id4">
+<h2>主成分分析との違い<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h2>
+<p>主成分分析も分散を分解して共通した成分を取り出す手法であり、因子分析と似ているが、誤差を分離するかどうかが異なる。</p>
+<p>因子分析は観測変数を共通した部分と誤差とに分解した上で共通因子を抽出するのに対し、主成分分析は誤差の分離を行わずに共通した部分を取り出そうとする。</p>
+</section>
+<section id="id5">
+<h2>参考<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>Hofacker, C. (2004). Exploratory Factor Analysis, Mathematical Marketing. <a class="reference external" href="http://www.openaccesstexts.org/pdf/Quant_Chapter_11_efa.pdf">http://www.openaccesstexts.org/pdf/Quant_Chapter_11_efa.pdf</a></p></li>
+<li><p>J Bai, K Li (2012). Statistical analysis of factor models of high dimension. Annals of Statistics. <a class="reference external" href="https://arxiv.org/pdf/1205.6617.pdf">https://arxiv.org/pdf/1205.6617.pdf</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -566,7 +753,7 @@ title="Print to PDF"
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./statistics"
+            path: "./statistical_modeling"
         },
         predefinedOutput: true
     }
@@ -580,6 +767,20 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../statistics/nonparametric_density_estimation.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">ノンパラメトリック密度推定</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../machine_learning/linear_models/regression/linear_regression.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">線形回帰</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
             </footer>
         </div>
