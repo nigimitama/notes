@@ -55,8 +55,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="不均衡データ" href="../imbalanced_data.html" />
-    <link rel="prev" title="次元削減" href="../dimension_reduction.html" />
+    <link rel="next" title="次元削減" href="../dimension_reduction.html" />
+    <link rel="prev" title="決定木" href="decision_tree.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -133,7 +133,7 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../../mathematics/mathematical_optimization/introduction.html">
+  <a class="reference internal" href="../../mathematics/mathematical_optimization/index.html">
    数理最適化
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
@@ -211,7 +211,7 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../linear_models/introduction.html">
+  <a class="reference internal" href="../linear_models/index.html">
    線形モデル
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
@@ -252,14 +252,31 @@ const thebe_selector_output = ".output, .cell_output"
    Support Vector Machine
   </a>
  </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="index.html">
+   Tree-based Algorithms
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="decision_tree.html">
+     決定木
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     勾配ブースティング決定木
+    </a>
+   </li>
+  </ul>
+ </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dimension_reduction.html">
    次元削減
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   勾配ブースティング決定木
   </a>
  </li>
  <li class="toctree-l1">
@@ -737,7 +754,51 @@ w^*_j = -\frac{ \sum_{i\in I_j} g_i }{ \sum_{i \in I_j} h_i + \lambda }
 w_j = -\frac{ \sum_{i\in I_j} g_i }{ \sum_{i\in I_j} h_i + \lambda } = w_j^*
 \end{split}\]</div>
 </div>
-</details><p>最適な重み<span class="math notranslate nohighlight">\(w_j^*\)</span>を誤差関数に戻すと</p>
+</details><p>L1の場合</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\tilde{\mathcal{L}}^{(t)}
+&amp;= \sum^n_{i=1} [
+     g_i f_t(x_i)
+     + \frac{1}{2} h_i f_t^2(x_i)
+]
++ \gamma T + \frac{1}{2} \lambda \sum^T_{j=1} w_j^2
++ \alpha \sum^T_{j=1} |w_j|
+\\
+&amp;= \sum^T_{j=1} [
+     (\sum_{i\in I_j} g_i) w_j
+     + \frac{1}{2} (\sum_{i\in I_j} h_i + \lambda ) w^2_j
+] + \gamma T
+\end{align}
+\end{split}\]</div>
+<p>L1の場合</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\tilde{\mathcal{L}}^{(t)}
+&amp;= \sum^n_{i=1} [
+     g_i f_t(x_i)
+     + \frac{1}{2} h_i f_t^2(x_i)
+]
++ \gamma T + \frac{1}{2} \lambda \sum^T_{j=1} w_j^2
++ \alpha \sum^T_{j=1} |w_j|
+\\
+&amp;= \sum^T_{j=1} [
+     (\sum_{i\in I_j} g_i) w_j
+     + \alpha |w_j|
+     + \frac{1}{2} (\sum_{i\in I_j} h_i + \lambda ) w^2_j
+] + \gamma T
+\end{align}
+\end{split}\]</div>
+<p><span class="math notranslate nohighlight">\(\sum^T_{j=1} [\cdot]\)</span>の内側を整理すると</p>
+<div class="math notranslate nohighlight">
+\[
+w^*_j = -\frac
+{ \sum_{i\in I_j} g_i \pm \alpha }
+{ \sum_{i \in I_j} h_i + \lambda }
+\]</div>
+<p>最適な重み<span class="math notranslate nohighlight">\(w_j^*\)</span>を誤差関数に戻すと</p>
 <div class="math notranslate nohighlight">
 \[
 \tilde{\mathcal{L}}^{(t)}(q)
@@ -746,7 +807,7 @@ w_j = -\frac{ \sum_{i\in I_j} g_i }{ \sum_{i\in I_j} h_i + \lambda } = w_j^*
 { \sum_{i\in I_j} h_i + \lambda }
 + \gamma T
 \]</div>
-<p>となり、これ木の構造<span class="math notranslate nohighlight">\(q\)</span>の品質を評価する関数として使うことができる。</p>
+<p>となり、これ木の構造<span class="math notranslate nohighlight">\(q\)</span>の品質をスコアリングする関数として使うことができる。</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
 導出<div class="sd-summary-down docutils">
@@ -814,17 +875,17 @@ w_j = -\frac{ \sum_{i\in I_j} g_i }{ \sum_{i\in I_j} h_i + \lambda } = w_j^*
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="../dimension_reduction.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="decision_tree.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">次元削減</p>
+            <p class="prev-next-title">決定木</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="../imbalanced_data.html" title="next page">
+    <a class='right-next' id="next-link" href="../dimension_reduction.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">不均衡データ</p>
+        <p class="prev-next-title">次元削減</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
