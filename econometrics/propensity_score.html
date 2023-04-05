@@ -578,6 +578,18 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#id3">
    傾向スコア
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     傾向スコアの使用方法
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     傾向スコアの長所
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#ipw">
@@ -597,7 +609,7 @@ title="Print to PDF"
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id4">
+  <a class="reference internal nav-link" href="#id6">
    参考文献
   </a>
  </li>
@@ -629,6 +641,18 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#id3">
    傾向スコア
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     傾向スコアの使用方法
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     傾向スコアの長所
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#ipw">
@@ -648,7 +672,7 @@ title="Print to PDF"
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id4">
+  <a class="reference internal nav-link" href="#id6">
    参考文献
   </a>
  </li>
@@ -666,20 +690,88 @@ title="Print to PDF"
 <h1>傾向スコア<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
 <section id="id2">
 <h2>バランシングスコア<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
-<p><strong>バランシングスコア</strong>（balancing score）<span class="math notranslate nohighlight">\(b(\boldsymbol{x})\)</span>とは</p>
+<p><strong>バランシングスコア</strong>（balancing score）<span class="math notranslate nohighlight">\(b(\boldsymbol{x})\)</span>とは、<span class="math notranslate nohighlight">\(b(\boldsymbol{x})\)</span>が条件付けられた下での共変量<span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span>の分布が処置<span class="math notranslate nohighlight">\(z\)</span>と独立になる（処置群<span class="math notranslate nohighlight">\((z=1)\)</span>と対照群<span class="math notranslate nohighlight">\((z=0)\)</span>とで<span class="math notranslate nohighlight">\(x\)</span>の条件付き分布が等しくなる）ような関数である（<a class="reference external" href="https://academic.oup.com/biomet/article/70/1/41/240879">Rosenbaum &amp; Rubin, 1983</a>）。</p>
 <div class="math notranslate nohighlight">
 \[
 \newcommand{\b}[1]{\boldsymbol{#1}}
 \newcommand{\indep}{\perp\!\!\!\perp}
 \b{x} \indep z | b(\b{x})
 \]</div>
-<p>（<a class="reference external" href="https://academic.oup.com/biomet/article/70/1/41/240879">Rosenbaum &amp; Rubin, 1983</a>）</p>
+<p>共変量<span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span>自身は最も細かい（finest）バランシングスコアであり、傾向スコア<span class="math notranslate nohighlight">\(P(z=1|\boldsymbol{x})\)</span>は最も粗い（coarsest）バランシングスコアである。</p>
 </section>
 <section id="id3">
 <h2>傾向スコア<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
+<p>共変量<span class="math notranslate nohighlight">\(\b{x}_i\)</span>の下でその対象<span class="math notranslate nohighlight">\(i\)</span>が処置される確率</p>
+<div class="math notranslate nohighlight">
+\[
+e_i = P(z_i = 1| \b{x}_i)
+\]</div>
+<p>を<strong>傾向スコア</strong>（propensity score）という。</p>
+<section id="id4">
+<h3>傾向スコアの使用方法<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
+<p><strong>1. マッチング</strong></p>
+<p>傾向スコアの値が同じ（厳密マッチング）か近い（最近傍マッチング）個体を比較する</p>
+<p><strong>2. 層別解析</strong></p>
+<p>傾向スコアの値によっていくつかのサブクラスに分け、各クラスで処置群と対照群の平均をとって全体のATEを推定する</p>
+<p><strong>3. 回帰分析・共分散分析</strong></p>
+<p>割当変数<span class="math notranslate nohighlight">\(z\)</span>と傾向スコア<span class="math notranslate nohighlight">\(e\)</span>を説明変数とした線形の回帰分析を行う</p>
+<p><strong>4. その他の推定量</strong></p>
+<p>IPW推定量やDR推定量など（後述）</p>
+</section>
+<section id="id5">
+<h3>傾向スコアの長所<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
+<ol class="simple">
+<li><p>共変量を1次元に次元削減しているため、2つの群において共変量の値に重なりが少ない場合でも使える</p></li>
+<li><p>共変量と結果変数のモデル設定を行わなくてもよい</p>
+<ul class="simple">
+<li><p>例えば回帰分析のような線形モデルを構築しなくてもよい → 共変量と結果変数の間に線形性を仮定できない場合でも使える可能性</p></li>
+</ul>
+</li>
+<li><p>モデルの誤設定に強い</p>
+<ul class="simple">
+<li><p>共分散分析やロジスティック回帰により<span class="math notranslate nohighlight">\(E[y|x]\)</span>を直接モデリングする方法と、層別による傾向スコア解析を比較したところ、傾向スコア解析のほうがモデルの誤設定から生じるバイアスがより少なかったという研究がある（Drake, 1993）</p></li>
+</ul>
+</li>
+</ol>
+</section>
 </section>
 <section id="ipw">
 <h2>IPW推定量<a class="headerlink" href="#ipw" title="Permalink to this headline">#</a></h2>
+<p><strong>逆確率重み付け</strong>（inverse probability weighting: IPW）による推定量（Rubin, 1985）</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\hat{E}(y_1) &amp;= \sum^N_{i=1} \frac{z_i y_i}{e_i} / \sum^N_{i=1} \frac{z_i}{e_i}\\
+\hat{E}(y_0) &amp;= \sum^N_{i=1} \frac{(1-z_i) y_i}{1 - e_i} / \sum^N_{i=1} \frac{1 - z_i}{1 - e_i}\\
+\end{align}
+\end{split}\]</div>
+<p><strong>導出</strong></p>
+<p>真の傾向スコアの値が既知で、「強く無視できる割り当て」条件が成立するなら、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+E(y_1)
+&amp;= E_{\b{x}}[E(y_1|\b{x})]\\
+&amp;= E_{\b{x}}\left[ E\left( \frac{z}{e} |\b{x} \right) E(y_1|\b{x}) \right]
+\hspace{1em} (おそらく真の傾向スコアなら z/e = 1 のため)
+\\
+&amp;= E_{\b{x}}\left[ E\left( \frac{z}{e} y_1|\b{x} \right) \right]\\
+&amp;= E\left( \frac{z y_1 }{e} \right)\\
+&amp;= E\left( \frac{z^2 y_1 + z (1-z) y_0}{e} \right)
+\hspace{1em} (\because z^2 = z,  z(1-z) = 0)
+\\
+&amp;= E\left( \frac{zy}{e} \right)
+\end{align}
+\end{split}\]</div>
+<p>となり、<span class="math notranslate nohighlight">\(\hat{E}(y_1)\)</span>は<span class="math notranslate nohighlight">\(y_1\)</span>の周辺平均の不偏推定量になる。<span class="math notranslate nohighlight">\(\hat{E}(y_0)\)</span>も同様である。</p>
+<p>真の傾向スコア<span class="math notranslate nohighlight">\(e\)</span>ではなく推定値<span class="math notranslate nohighlight">\(\hat{e}_i\)</span>を使ったとしても一致推定量となる。</p>
+<p><span class="math notranslate nohighlight">\(N\)</span>を大きくすると</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{N} \sum^N_{i=1} \frac{z_i}{e_i} \to 1, \hspace{1em}
+\frac{1}{N} \sum^N_{i=1} \frac{1 - z_i}{1 - e_i} \to 1
+\]</div>
+<p>に確率収束することが大数の法則により成立する。</p>
 </section>
 <section id="dr">
 <h2>DR推定量<a class="headerlink" href="#dr" title="Permalink to this headline">#</a></h2>
@@ -687,12 +779,13 @@ title="Print to PDF"
 <h3>causallib<a class="headerlink" href="#causallib" title="Permalink to this headline">#</a></h3>
 </section>
 </section>
-<section id="id4">
-<h2>参考文献<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h2>
+<section id="id6">
+<h2>参考文献<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://yukiyanai.github.io/jp/classes/econometrics2/contents/R/propensity-score.html">計量経済学応用 傾向スコア</a></p></li>
 <li><p><a class="reference external" href="https://gist.github.com/SakumaRyoDev/309c9c6c0002145d09fd36ddfbe3613b">cibook_ch3_pscore</a></p></li>
 <li><p><a class="reference external" href="https://academic.oup.com/biomet/article/70/1/41/240879">Rosenbaum, P. R., &amp; Rubin, D. B. (1983). The central role of the propensity score in observational studies for causal effects. Biometrika, 70(1), 41-55.</a></p></li>
+<li><p>Rubin, D. B. (1985). The use of propensity scores in applied Bayesian inference. Bayesian statistics, 2, 463-472.</p></li>
 </ul>
 </section>
 </section>

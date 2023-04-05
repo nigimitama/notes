@@ -573,15 +573,23 @@ title="Print to PDF"
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id2">
-   0-1ナップサック問題
+   貪欲法
   </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id3">
-     貪欲法
-    </a>
-   </li>
-  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   線形計画問題への近似と貪欲法
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   分岐限定法
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id5">
+   参考文献
+  </a>
  </li>
 </ul>
 
@@ -604,15 +612,23 @@ title="Print to PDF"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id2">
-   0-1ナップサック問題
+   貪欲法
   </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id3">
-     貪欲法
-    </a>
-   </li>
-  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   線形計画問題への近似と貪欲法
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   分岐限定法
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id5">
+   参考文献
+  </a>
  </li>
 </ul>
 
@@ -626,11 +642,29 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>ナップサック問題<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<p><strong>ナップサック問題</strong>（knapsack problem）は価値<span class="math notranslate nohighlight">\(p_i\)</span>やサイズ<span class="math notranslate nohighlight">\(v_i\)</span>が様々な<span class="math notranslate nohighlight">\(n\)</span>個の品物が与えられた時、合計重量がナップサックの許容重量を超えない範囲で合計の価値が最大化するように品物を詰める問題。<strong>整数計画問題</strong>（Integer programming）のひとつで<strong>0-1整数計画問題</strong>という。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+{\text{Maximize}}_{x_i} \ \sum^n_{i=1} p_i x_i\\
+\text{subject to } \ \sum^n_{i=1} v_i x_i \leq V
+\end{split}\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x_i \in \{0, 1\}\)</span>：ナップサックに入れるかどうか</p></li>
+<li><p><span class="math notranslate nohighlight">\(v_i\)</span>：サイズ</p></li>
+<li><p><span class="math notranslate nohighlight">\(p_i\)</span>：価値</p></li>
+<li><p><span class="math notranslate nohighlight">\(V\)</span>：ナップサックの容量</p></li>
+</ul>
 <section id="id2">
-<h2>0-1ナップサック問題<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
-<section id="id3">
-<h3>貪欲法<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
-<p>例：空輸してでも「翌日配送」の表示を出すかどうかのレコメンド問題（<a class="reference external" href="https://dl.acm.org/doi/abs/10.1145/3534678.3539197">Mondal et al, 2022</a>）</p>
+<h2>貪欲法<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<p>ナップサックの有名な近似解は</p>
+<ol class="simple">
+<li><p>サイズあたりの価値<span class="math notranslate nohighlight">\(p_i/v_i\)</span>が高い順に品物の添字を並べかえる</p></li>
+<li><p>品物を1から順にナップザックに詰め込んでいき詰め込めなければストップする</p></li>
+</ol>
+<p>というもの。</p>
+<div class="admonition- admonition">
+<p class="admonition-title">貪欲法の例</p>
+<p>Amazon.comにおいて空輸してでも「翌日配送」の表示を出すかどうかのレコメンド問題（<a class="reference external" href="https://dl.acm.org/doi/abs/10.1145/3534678.3539197">Mondal et al, 2022</a>）で使われていたもの。</p>
 <p><strong>問題</strong></p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -651,8 +685,67 @@ title="Print to PDF"
 </li>
 </ul>
 <p><strong>アルゴリズム</strong></p>
+<ol class="simple">
+<li><p>利益スコア（benefit score）を計算して、商品をbenefit scoreの降順に並べる</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[
+\text{benefit score}_i = \frac
+{\text{price}_i \cdot \Delta_i}
+{\text{weight}_i \cdot \text{cost}^{fly}_i }_i
+\]</div>
+<ol class="simple">
+<li><p>予算内なら順にレコメンド対象にしていく</p></li>
+</ol>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(FLY := \emptyset, k:=1, \text{Budget}^{res} := B\)</span></p></li>
+<li><p>while <span class="math notranslate nohighlight">\((\text{Budget}^{res} - d_k \cdot \text{weight}_k \cdot \text{cost}^{fly}_k ) \geq 0\)</span> do</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(FLY := FLY \cup \{ \text{product}_k \}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\text{Budget}^{res} := \text{Budget}^{res} - d_k \cdot \text{weight}_k \cdot \text{cost}^{fly}_k\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(k:=k+1\)</span></p></li>
+</ul>
+</li>
+<li><p>end</p></li>
+</ul>
 <p>参考：<a class="reference external" href="https://dl.acm.org/doi/abs/10.1145/3534678.3539197">Mondal, A., Majumder, A., &amp; Chaoji, V. (2022, August). ASPIRE: Air Shipping Recommendation for E-commerce Products via Causal Inference Framework. In Proceedings of the 28th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (pp. 3584-3592).</a></p>
+</div>
 </section>
+<section id="id3">
+<h2>線形計画問題への近似と貪欲法<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
+<p>貪欲法のとき、最初に詰め込めなくなる品物の番号を<span class="math notranslate nohighlight">\(i^*\)</span>として、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+x^*_i =
+\begin{cases}
+  1 &amp; \text{ if } \ i = 1,\cdots, i^* -1\\
+  \frac{1}{ v_{i^*} } (V - \sum^{i^* - 1}_{i=1} v_i) &amp; \text{ if }\ i =  i^*\\
+  0 &amp; \text{ if } \ i = i^* + 1,\cdots, n\\
+\end{cases}
+\end{split}\]</div>
+<p>とおくと、これは<span class="math notranslate nohighlight">\(x_i \in \{0, 1\}\)</span>という制約を<span class="math notranslate nohighlight">\(0\leq x_i \leq 1\)</span>に置き換えた線形計画問題の最適解になる（寒野, 2019）</p>
+<p>これは整数計画問題であるナップサック問題の実行可能解ではないため、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+x^*_i =
+\begin{cases}
+  1 &amp; \text{ if } \ i = 1,\cdots, i^* -1\\
+  0 &amp; \text{ if } \ i = i^*,\cdots, n\\
+\end{cases}
+\end{split}\]</div>
+<p>とすると、これは貪欲法になる</p>
+<p>（※貪欲法は最適解とは限らない）</p>
+</section>
+<section id="id4">
+<h2>分岐限定法<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h2>
+<p>離散最適化問題の厳密解法。</p>
+<p><span class="math notranslate nohighlight">\(x_i \in \{0, 1\}, i = 1, \cdots, n\)</span>なら、解は<span class="math notranslate nohighlight">\(2^n\)</span>個の組み合わせのうちにある。それを<strong>列挙木</strong>で列挙して解いていく</p>
+</section>
+<section id="id5">
+<h2>参考文献<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>寒野善博（2019）『最適化手法入門』、講談社サイエンティフィック</p></li>
+</ul>
 </section>
 </section>
 
