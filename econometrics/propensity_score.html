@@ -782,6 +782,41 @@ E(y_1)
 </section>
 <section id="dr">
 <h2>DR推定量<a class="headerlink" href="#dr" title="Permalink to this headline">#</a></h2>
+<p>傾向スコア解析の改善余地が2点ある</p>
+<ol class="simple">
+<li><p>傾向スコア推定後に結果変数の周辺分布を推定する際に<span class="math notranslate nohighlight">\(z=0\)</span>のグループの共変量の情報を用いておらず、データを無駄にしている</p></li>
+<li><p>傾向スコアを計算する際のモデルが誤った場合、推定結果が誤ったものになる可能性</p></li>
+</ol>
+<p>これらを解決するのがDR推定量。</p>
+<p><strong>二重にロバストな推定量</strong>（doubly robust estimator)は、傾向スコアと、共変量で結果変数を説明する回帰関数を両方用いる方法</p>
+<p>傾向スコア算出のためのモデル<span class="math notranslate nohighlight">\(p(z|\b{x}, \alpha) = e(\b{x}, \alpha)\)</span>の母数<span class="math notranslate nohighlight">\(\alpha\)</span>の一致推定量を<span class="math notranslate nohighlight">\(\hat{\alpha}\)</span>、共変量で結果変数を説明する回帰関数<span class="math notranslate nohighlight">\(E[y_1|\b{x}]=g(\b{x}, \b{\beta}_1)\)</span>の母数の推定量を<span class="math notranslate nohighlight">\(\hat{\b{\beta}}_1\)</span>とすると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\hat{E}^{DR}(y_1)
+&amp;= \frac{1}{N} \sum^N \left[
+    \frac{ z_i y_i }{ e(\b{x}_i, \hat{\alpha}) }
+    + \left( 1 - \frac{z_i}{ e(\b{x}_i, \hat{\alpha}) } \right)
+    g(\b{x}_i, \hat{\b{\beta}}_1)
+\right]
+\\
+&amp;= \frac{1}{N} \sum^N \left[
+    y_{i1}
+    + \left( 
+        \frac{ z_i - e(\b{x}_i, \hat{\alpha}) }{ e(\b{x}_i, \hat{\alpha}) }
+    \right)
+    \left(
+        y_{i1} - g(\b{x}_i, \hat{\b{\beta}}_1)
+    \right)
+\right]
+\end{align}
+\end{split}\]</div>
+<p>となる。</p>
+<p>以下の条件のどちらかが成立していれば、DR推定量は結果変数の周辺平均の一致推定量となる</p>
+<ul class="simple">
+<li><p>条件A: 傾向スコアを計算する際に利用されるモデルが正しく指定されている</p></li>
+<li><p>条件B: 共変量で結果変数を説明する回帰関数のモデルが正しく指定されている</p></li>
+</ul>
 <section id="causallib">
 <h3>causallib<a class="headerlink" href="#causallib" title="Permalink to this headline">#</a></h3>
 </section>
