@@ -666,21 +666,25 @@ LSTMはRNNに、活性化関数を通さずに過去の情報を運ぶ変数<spa
 <p>LSTMの特徴は3つのゲートをもつこと。すべてのゲートはロジスティック・シグモイド関数で活性化されるため、<span class="math notranslate nohighlight">\([0, 1]\)</span>の値を出力する。0のときはゲートが閉じており、1のときはゲートが開いている、と解釈すると理解しやすい。</p>
 <p>シグモイド関数を並べてベクトルを返す関数<span class="math notranslate nohighlight">\(\newcommand{\b}[1]{\boldsymbol{#1}} \b{F}_\sigma\)</span>を用いて、それぞれ、次のようになる</p>
 <ol class="simple">
-<li><p>忘却ゲート（forget gate）<span class="math notranslate nohighlight">\(\b{f}_t = \b{F}_\sigma ( W_{xf} \b{x}_t + W_{zf} \b{Z}_{t-1} )\)</span></p></li>
-<li><p>入力ゲート（input gate）<span class="math notranslate nohighlight">\(\b{i}_t = \b{F}_\sigma ( W_{xi} \b{x}_t + W_{zi} \b{Z}_{t-1} )\)</span></p></li>
-<li><p>出力ゲート（output gate）<span class="math notranslate nohighlight">\(\b{o}_t = \b{F}_\sigma ( W_{xo} \b{x}_t + W_{zo} \b{Z}_{t-1} )\)</span></p></li>
+<li><p>忘却ゲート（forget gate）<span class="math notranslate nohighlight">\(\b{f}_t = \b{F}_\sigma ( W_{xf} \b{x}_t + W_{zf} \b{h}_{t-1} )\)</span></p></li>
+<li><p>入力ゲート（input gate）<span class="math notranslate nohighlight">\(\b{i}_t = \b{F}_\sigma ( W_{xi} \b{x}_t + W_{zi} \b{h}_{t-1} )\)</span></p></li>
+<li><p>出力ゲート（output gate）<span class="math notranslate nohighlight">\(\b{o}_t = \b{F}_\sigma ( W_{xo} \b{x}_t + W_{zo} \b{h}_{t-1} )\)</span></p></li>
 </ol>
 <p>tanhを並べてベクトルを返す関数<span class="math notranslate nohighlight">\(\b{tanh}(\cdot)\)</span>を用いて活性化されるベクトル<span class="math notranslate nohighlight">\(\b{g}\)</span></p>
 <div class="math notranslate nohighlight">
 \[
-\b{g}_t = \b{tanh}(W_{xg} \b{x}_t + W_{zg} \b{z}_{t-1} )
+\b{g}_t = \b{tanh}(W_{xg} \b{x}_t + W_{zg} \b{h}_{t-1} )
 \]</div>
 <p>を用いて、忘却ゲートを通って次の時点の隠れ層に渡される長期記憶<span class="math notranslate nohighlight">\(\b{c}_t\)</span>は以下で与えられる</p>
 <div class="math notranslate nohighlight">
 \[
-\b{c}_t = \b{f}_t \otimes \b{c}_{t-1} + \b{i}_t \otimes \b{g}_t
+\b{c}_t = \b{f}_t \odot \b{c}_{t-1} + \b{i}_t \odot \b{g}_t
 \]</div>
-<p>ここで<span class="math notranslate nohighlight">\(\otimes\)</span>は要素ごとの積を表す。この式から、忘却ゲートの調整が効きすぎない限りは長期記憶が残り続ける構造になっていることがわかる。</p>
+<p>ここで<span class="math notranslate nohighlight">\(\odot\)</span>は要素ごとの積を表す。この式から、忘却ゲートの調整が効きすぎない限りは長期記憶が残り続ける構造になっていることがわかる。</p>
+<div class="math notranslate nohighlight">
+\[
+\b{h}_t = \b{o}_t \odot \b{tanh}(\b{c}_t)
+\]</div>
 <section id="seq2seq">
 <h2>seq2seq<a class="headerlink" href="#seq2seq" title="Permalink to this headline">#</a></h2>
 <p>RNN/LSTMを使うEncoder-decoderモデル</p>
