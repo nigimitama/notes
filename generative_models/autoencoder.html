@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>OLSのロバスト標準誤差 &#8212; データサイエンスの勉強ノート</title>
+    <title>Autoencoder &#8212; データサイエンスの勉強ノート</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -330,7 +330,7 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../generative_models/introduction.html">
+  <a class="reference internal" href="introduction.html">
    生成モデル
   </a>
  </li>
@@ -342,27 +342,27 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="rubin_causal_model.html">
+  <a class="reference internal" href="../econometrics/rubin_causal_model.html">
    ルービンの因果モデル
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="propensity_score.html">
+  <a class="reference internal" href="../econometrics/propensity_score.html">
    傾向スコア
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="ols.html">
+  <a class="reference internal" href="../econometrics/ols.html">
    回帰分析
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="omitted_variable_bias.html">
+  <a class="reference internal" href="../econometrics/omitted_variable_bias.html">
    欠落変数バイアス
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="hte.html">
+  <a class="reference internal" href="../econometrics/hte.html">
    Heterogeneous Treatment Effectsの推定
   </a>
  </li>
@@ -462,7 +462,7 @@ title="Toggle navigation"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="https://mybinder.org/v2/gh/nigimitama/notes/gh-pages?urlpath=tree/docs/econometrics/ols_robust_standard_error.ipynb"
+        <a href="https://mybinder.org/v2/gh/nigimitama/notes/gh-pages?urlpath=tree/docs/generative_models/autoencoder.ipynb"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -522,7 +522,7 @@ title="Source repository"
       </li>
       
       <li>
-        <a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Feconometrics/ols_robust_standard_error.html&body=Your%20issue%20content%20here."
+        <a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Fgenerative_models/autoencoder.html&body=Your%20issue%20content%20here."
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -550,7 +550,7 @@ title="Open an issue"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="../_sources/econometrics/ols_robust_standard_error.ipynb"
+        <a href="../_sources/generative_models/autoencoder.ipynb"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -587,23 +587,60 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#vae">
+   VAE
+  </a>
+ </li>
+</ul>
+
+    </nav>
 </div>
     </div>
     <div class="article row">
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>OLSのロバスト標準誤差</h1>
+                <h1>Autoencoder</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#vae">
+   VAE
+  </a>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -611,75 +648,14 @@ title="Print to PDF"
                 
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="ols">
-<h1>OLSのロバスト標準誤差<a class="headerlink" href="#ols" title="Permalink to this headline">#</a></h1>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
-<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
-
-<span class="c1"># 均一分散の場合</span>
-<span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="n">beta</span> <span class="o">+</span> <span class="n">e</span>
-
-<span class="c1"># plot</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7fd851ac2040&gt;
-</pre></div>
-</div>
-<img alt="../_images/ols_robust_standard_error_1_1.png" src="../_images/ols_robust_standard_error_1_1.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">beta_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">)</span> <span class="o">@</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">y</span>
-<span class="n">beta_hat</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([3.22215108, 4.987387  ])
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[100.        , 236.39691976],
-       [236.39691976, 766.62957534]])
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">]</span> <span class="o">@</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">,]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.11723457858134044
-</pre></div>
-</div>
-</div>
-</div>
+  <section class="tex2jax_ignore mathjax_ignore" id="autoencoder">
+<h1>Autoencoder<a class="headerlink" href="#autoencoder" title="Permalink to this headline">#</a></h1>
+<p>autoencoderは入力データとできる限り近い値を出す</p>
+<p>中間層における潜在変数を学習したい</p>
+<section id="vae">
+<h2>VAE<a class="headerlink" href="#vae" title="Permalink to this headline">#</a></h2>
+<p><a class="reference external" href="https://takahashihiroshi.github.io/slides/KDD2022_ja.pdf">KDD2022_ja.pdf</a></p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -695,7 +671,7 @@ title="Print to PDF"
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./econometrics"
+            path: "./generative_models"
         },
         predefinedOutput: true
     }
