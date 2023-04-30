@@ -689,6 +689,11 @@ title="Print to PDF"
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id2">
+   共起行列
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
    言語モデル
   </a>
  </li>
@@ -698,7 +703,7 @@ title="Print to PDF"
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id3">
+    <a class="reference internal nav-link" href="#id4">
      Word2Vecのアプローチは複数ある
     </a>
    </li>
@@ -707,8 +712,15 @@ title="Print to PDF"
      CBOW
     </a>
    </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gensim">
+   gensimによる実装
+  </a>
+  <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id4">
+    <a class="reference internal nav-link" href="#id5">
      参考文献
     </a>
    </li>
@@ -735,6 +747,11 @@ title="Print to PDF"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id2">
+   共起行列
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
    言語モデル
   </a>
  </li>
@@ -744,7 +761,7 @@ title="Print to PDF"
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id3">
+    <a class="reference internal nav-link" href="#id4">
      Word2Vecのアプローチは複数ある
     </a>
    </li>
@@ -753,8 +770,15 @@ title="Print to PDF"
      CBOW
     </a>
    </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gensim">
+   gensimによる実装
+  </a>
+  <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id4">
+    <a class="reference internal nav-link" href="#id5">
      参考文献
     </a>
    </li>
@@ -772,12 +796,37 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>単語埋め込み<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
-<p>ディープラーニングが自然言語処理に活用され始める前は、単語を計算可能なベクトルに変換する処理としては、文書集合内の各単語がある文書に出現した場合に1を、そうでない場合は0を出すようなBag of Wordsというものがよく用いられた。</p>
-<p>ディープラーニングが活用されるようになり登場したものが単語の<strong>埋め込み</strong>（embedding）や<strong>分散表現</strong>（distributed representation）と呼ばれるもので、これらは<span class="math notranslate nohighlight">\(\{0, 1\}\)</span>に限らない値をとり、また次元数を語彙の数よりも小さく（次元圧縮）することもできる。</p>
+<p>ディープラーニングが自然言語処理に活用され始める前は、単語を計算可能なベクトルに変換する処理としては、文書集合内の各単語がある文書に出現した場合に1を、そうでない場合は0を出すようなBag of Wordsというものがよく用いられた。これは扱うデータが大きく語彙数が多くなると非常に高次元になるため、特異値分解などで次元削減を行うこともあった。</p>
+<p>ディープラーニングが活用されるようになり登場したものが単語の<strong>埋め込み</strong>（embedding）や<strong>分散表現</strong>（distributed representation）と呼ばれるもので、これらは<span class="math notranslate nohighlight">\(\{0, 1\}\)</span>に限らない値をとり、また次元数を語彙の数よりも小さく（次元圧縮）することもできる（実はニューラルネットワークを使った言語モデルの中間層を埋め込みとするので、それゆえ任意の次元数にできる）。</p>
 <p>有名なのはWord2VecやElMoである。両者の大まかな違いとしては、Word2Vecは単語ごとに一意な分散表現になるが、ElMoは文脈によって分散表現が変わるということ。
 例えば「彼はスポーツが下手だ」と「彼はいつも下手に出がちだ」は同じ「下手」という語だが意味が異なる。Word2Vecはこのような文脈を考慮しないが、ElMoは考慮する。</p>
 <section id="id2">
-<h2>言語モデル<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<h2>共起行列<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<p>文章<span class="math notranslate nohighlight">\(S = (w_1, \dots, w_d)\)</span>のある単語<span class="math notranslate nohighlight">\(w_i\)</span>の周囲の単語の集合（例えば両側<span class="math notranslate nohighlight">\(c\)</span>個をとって<span class="math notranslate nohighlight">\(C=\{ w_{i-c}, \dots, w_{i-1}, w_{i+1}, \dots, w_{i+c} \}\)</span>）を<strong>文脈</strong>（context）<span class="math notranslate nohighlight">\(C\)</span>といい、各単語<span class="math notranslate nohighlight">\(w_j (i \neq j)\)</span>が<span class="math notranslate nohighlight">\(C\)</span>に含まれるかどうかを<span class="math notranslate nohighlight">\(\{0, 1\}\)</span>で表現する。</p>
+<p>この関係性を表す行列を<strong>共起行列</strong>（co-occurence matrix）という。</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="text-align:center head"><p></p></th>
+<th class="text-align:center head"><p><span class="math notranslate nohighlight">\(w_1\)</span></p></th>
+<th class="text-align:center head"><p><span class="math notranslate nohighlight">\(w_2\)</span></p></th>
+<th class="text-align:center head"><p><span class="math notranslate nohighlight">\(w_3\)</span></p></th>
+<th class="text-align:center head"><p><span class="math notranslate nohighlight">\(w_4\)</span></p></th>
+<th class="text-align:center head"><p><span class="math notranslate nohighlight">\(w_5\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-align:center"><p><span class="math notranslate nohighlight">\(w_3\)</span></p></td>
+<td class="text-align:center"><p>0</p></td>
+<td class="text-align:center"><p>1</p></td>
+<td class="text-align:center"><p>0</p></td>
+<td class="text-align:center"><p>1</p></td>
+<td class="text-align:center"><p>0</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id3">
+<h2>言語モデル<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
 <p>embeddingを直接推定するのではなく、単語予測モデル（言語モデル）を構築して副次的にembeddingを取得することになる。</p>
 <p>言語モデルとは、尤もらしい文章を生成できるような確率分布を習得するために、文章の確率を推定するモデルのこと。</p>
 <p>ある文章<span class="math notranslate nohighlight">\(S\)</span>をトークン化したのを<span class="math notranslate nohighlight">\((w_1, w_2, \cdots, w_n)\)</span>と表記するならば、</p>
@@ -802,8 +851,8 @@ P(w_1, w_2, \cdots, w_n)
 </pre></div>
 </div>
 <p>のような語彙間の類似度や計算が可能な表現</p>
-<section id="id3">
-<h3>Word2Vecのアプローチは複数ある<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
+<section id="id4">
+<h3>Word2Vecのアプローチは複数ある<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
 <p>Word2Vecの方法は、</p>
 <ol class="simple">
 <li><p>CBOW (continuous bag of words)</p></li>
@@ -821,102 +870,83 @@ P(w_1, w_2, \cdots, w_n)
 <h3>CBOW<a class="headerlink" href="#cbow" title="Permalink to this headline">#</a></h3>
 <p><strong>CBOW</strong> (continuous bag of words)モデルは文章<span class="math notranslate nohighlight">\(S=(w_1, w_2, \dots, w_n)\)</span>が与えられた時、その<span class="math notranslate nohighlight">\(i\)</span>番目の単語<span class="math notranslate nohighlight">\(w_i\)</span>を、
 その周りの単語である文脈<span class="math notranslate nohighlight">\(\boldsymbol{C}_i=(w_{i-c}, \dots, w_{i-1}, w_{i+1}, \dots, w_{i+c})\)</span>から予測するモデルである。ここで<span class="math notranslate nohighlight">\(c\)</span>はウィンドウサイズと呼ばれるハイパーパラメータ。</p>
-<p>gensim</p>
+</section>
+</section>
+<section id="gensim">
+<h2>gensimによる実装<a class="headerlink" href="#gensim" title="Permalink to this headline">#</a></h2>
 <p><a class="reference external" href="https://radimrehurek.com/gensim/models/word2vec.html">https://radimrehurek.com/gensim/models/word2vec.html</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gensim.test.utils</span> <span class="kn">import</span> <span class="n">common_texts</span>
-<span class="n">common_texts</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">gensim.test.utils</span> <span class="kn">import</span> <span class="n">common_texts</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">common_texts</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># トークンに分割した文章の集合の例</span>
+<span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;king&quot;</span><span class="p">,</span> <span class="s2">&quot;male&quot;</span><span class="p">,</span> <span class="s2">&quot;ruler&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;queen&quot;</span><span class="p">,</span> <span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;ruler&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;man&quot;</span><span class="p">,</span> <span class="s2">&quot;male&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;woman&quot;</span><span class="p">,</span> <span class="s2">&quot;female&quot;</span><span class="p">],</span>
+<span class="p">]</span>
 
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;gensim&#39;
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gensim.test.utils</span> <span class="kn">import</span> <span class="n">common_texts</span>
 <span class="kn">from</span> <span class="nn">gensim.models</span> <span class="kn">import</span> <span class="n">Word2Vec</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">Word2Vec</span><span class="p">(</span><span class="n">sentences</span><span class="o">=</span><span class="n">common_texts</span><span class="p">,</span> <span class="n">vector_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">min_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-
-<span class="c1"># 逐次学習</span>
-<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">([[</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">]],</span> <span class="n">total_examples</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0, 2)
+<span class="n">model</span> <span class="o">=</span> <span class="n">Word2Vec</span><span class="p">(</span><span class="n">sentences</span><span class="o">=</span><span class="n">sentences</span><span class="p">,</span> <span class="n">vector_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">min_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vector</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="s1">&#39;computer&#39;</span><span class="p">]</span>  <span class="c1"># get numpy vector of a word</span>
-<span class="n">vector</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([-0.00515774, -0.00667028, -0.0077791 ,  0.00831315, -0.00198292,
-       -0.00685696, -0.0041556 ,  0.00514562, -0.00286997, -0.00375075,
-        0.0016219 , -0.0027771 , -0.00158482,  0.0010748 , -0.00297881,
-        0.00852176,  0.00391207, -0.00996176,  0.00626142, -0.00675622,
-        0.00076966,  0.00440552, -0.00510486, -0.00211128,  0.00809783,
-       -0.00424503, -0.00763848,  0.00926061, -0.00215612, -0.00472081,
-        0.00857329,  0.00428459,  0.0043261 ,  0.00928722, -0.00845554,
-        0.00525685,  0.00203994,  0.0041895 ,  0.00169839,  0.00446543,
-        0.0044876 ,  0.0061063 , -0.00320303, -0.00457706, -0.00042664,
-        0.00253447, -0.00326412,  0.00605948,  0.00415534,  0.00776685,
-        0.00257002,  0.00811905, -0.00138761,  0.00808028,  0.0037181 ,
-       -0.00804967, -0.00393476, -0.0024726 ,  0.00489447, -0.00087241,
-       -0.00283173,  0.00783599,  0.00932561, -0.0016154 , -0.00516075,
-       -0.00470313, -0.00484746, -0.00960562,  0.00137242, -0.00422615,
-        0.00252744,  0.00561612, -0.00406709, -0.00959937,  0.00154715,
-       -0.00670207,  0.0024959 , -0.00378173,  0.00708048,  0.00064041,
-        0.00356198, -0.00273993, -0.00171105,  0.00765502,  0.00140809,
-       -0.00585215, -0.00783678,  0.00123305,  0.00645651,  0.00555797,
-       -0.00897966,  0.00859466,  0.00404816,  0.00747178,  0.00974917,
-       -0.0072917 , -0.00904259,  0.0058377 ,  0.00939395,  0.00350795],
-      dtype=float32)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sims</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">most_similar</span><span class="p">(</span><span class="s1">&#39;computer&#39;</span><span class="p">,</span> <span class="n">topn</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># get other similar words</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># kingに意味が近い上位3個（similarの基準はコサイン類似度）</span>
+<span class="n">sims</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">most_similar</span><span class="p">(</span><span class="s1">&#39;king&#39;</span><span class="p">,</span> <span class="n">topn</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">sims</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[(&#39;system&#39;, 0.21617139875888824),
- (&#39;survey&#39;, 0.04468922317028046),
- (&#39;interface&#39;, 0.015203381888568401),
- (&#39;time&#39;, 0.0019510635174810886),
- (&#39;trees&#39;, -0.03284316882491112),
- (&#39;human&#39;, -0.07424270361661911),
- (&#39;response&#39;, -0.09317591041326523),
- (&#39;graph&#39;, -0.09575342386960983),
- (&#39;eps&#39;, -0.10513808578252792),
- (&#39;user&#39;, -0.16911619901657104)]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[(&#39;male&#39;, 0.1459505707025528),
+ (&#39;woman&#39;, 0.041577354073524475),
+ (&#39;man&#39;, 0.03476494178175926)]
 </pre></div>
 </div>
 </div>
 </div>
-</section>
-<section id="id4">
-<h3>参考文献<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># king + woman - man ≒ queen というアレ</span>
+<span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">most_similar</span><span class="p">(</span><span class="n">positive</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;woman&#39;</span><span class="p">,</span> <span class="s1">&#39;king&#39;</span><span class="p">],</span> <span class="n">negative</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;man&#39;</span><span class="p">],</span> <span class="n">topn</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[(&#39;queen&#39;, 0.0066775488667190075)]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 自前で足し引きして類似度計算してみる</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="k">def</span> <span class="nf">cosine_sim</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">@</span> <span class="n">b</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+
+<span class="n">v</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="s2">&quot;king&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="s2">&quot;man&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="s2">&quot;woman&quot;</span><span class="p">]</span>
+<span class="n">words</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">sentences</span><span class="p">,</span> <span class="p">[]))</span> <span class="o">-</span> <span class="p">{</span><span class="s2">&quot;king&quot;</span><span class="p">,</span> <span class="s2">&quot;man&quot;</span><span class="p">,</span> <span class="s2">&quot;woman&quot;</span><span class="p">}</span> <span class="c1"># 計算に使ったものは必然的に類似度が高くなっちゃうので除く</span>
+<span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">word</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">cosine_sim</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="n">word</span><span class="p">])</span><span class="si">:</span><span class="s2">.3g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># queenが一番近くなった</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>queen: 0.00656
+female: -0.0395
+male: -0.0251
+ruler: -0.0263
+</pre></div>
+</div>
+</div>
+</div>
+<section id="id5">
+<h3>参考文献<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://code.google.com/archive/p/word2vec/">https://code.google.com/archive/p/word2vec/</a></p></li>
 <li><p><a class="reference external" href="https://arxiv.org/abs/1310.4546">[1310.4546] Distributed Representations of Words and Phrases and their Compositionality</a></p></li>
