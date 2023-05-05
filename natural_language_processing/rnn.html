@@ -55,6 +55,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="画像認識" href="../image_processing/introduction.html" />
+    <link rel="prev" title="単語の埋め込み" href="embedding.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -394,7 +396,7 @@ const thebe_selector_output = ".output, .cell_output"
   自然言語処理
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="introduction.html">
    自然言語処理
@@ -403,6 +405,11 @@ const thebe_selector_output = ".output, .cell_output"
  <li class="toctree-l1">
   <a class="reference internal" href="embedding.html">
    単語の埋め込み
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   言語モデルとRNN
   </a>
  </li>
 </ul>
@@ -696,6 +703,23 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#id1">
    言語モデル
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     例
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     語順の問題
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   RNN
+  </a>
  </li>
 </ul>
 
@@ -719,6 +743,23 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id1">
    言語モデル
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     例
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     語順の問題
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   RNN
   </a>
  </li>
 </ul>
@@ -778,6 +819,111 @@ P(\underbrace{w_1, \dots, w_{m-2}}_{C_{m-1}}, w_{m-1})
 \]</div>
 <p>となる。これを繰り返すことで上記のようになる</p>
 </div>
+<section id="id2">
+<h3>例<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h3>
+<p>言語モデルは文脈をもとに次の単語を予測する。例えば</p>
+<blockquote>
+<div><p>Alice is reading a book in the room. Bob comes into the room and says hi to <code class="docutils literal notranslate"><span class="pre">?</span></code></p>
+</div></blockquote>
+<p>の?に入る語を予測する</p>
+</section>
+<section id="id3">
+<h3>語順の問題<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
+<p>Word2Vecに使われたcontinuous bag-of words (CBOW) のようなFeed-Forward Networkによる言語モデルでは、コンテキストの語順が考慮されない</p>
+</section>
+</section>
+<section id="id4">
+<h2>RNN<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h2>
+<p>RNNは前の単語までの情報を次の単語の出力に渡すパスが存在する。
+単語の系列を時系列モデルになぞらえて時刻と表現すると、時刻<span class="math notranslate nohighlight">\(t\)</span>の出力<span class="math notranslate nohighlight">\(\boldsymbol{h}_t\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\b}[1]{\boldsymbol{#1}}
+\b{h}_t = \text{tanh}(
+  \b{W}_h
+  \b{h}_{t-1}
+  +
+  \b{W}_x
+  \b{x}_t
+  +
+  \b{b}
+)
+\]</div>
+<p>となる。ここで<span class="math notranslate nohighlight">\(\boldsymbol{x}_t\)</span>は入力で、<span class="math notranslate nohighlight">\(\boldsymbol{h}_{t-1}\)</span>は1時刻前の出力、<span class="math notranslate nohighlight">\(\b{W}_h, \b{W}_x\)</span>は重みで<span class="math notranslate nohighlight">\(\b{b}\)</span>はバイアスである。</p>
+<p>なお、出力<span class="math notranslate nohighlight">\(\b{h}\)</span>は<strong>隠れ状態</strong>（hidden state）と呼ばれる事が多い</p>
+<div class="cell tag_hide-input tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">y_tanh</span> <span class="o">=</span> <span class="p">[</span><span class="n">tanh</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+<span class="n">y_sigmoid</span> <span class="o">=</span> <span class="p">[</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_tanh</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;tanh(x)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_sigmoid</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;sigmoid(x)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">myst_nb</span> <span class="kn">import</span> <span class="n">glue</span>
+<span class="n">glue</span><span class="p">(</span><span class="s2">&quot;tanh_fig&quot;</span><span class="p">,</span> <span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>双曲線正接（hyperbolic tangent: tanh）関数</p>
+<p>RNNの場合、活性化関数にはtanh</p>
+<div class="math notranslate nohighlight">
+\[
+\text{tanh}(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
+\]</div>
+<p>を用いることが多い。tanhはシグモイド関数と形状が似ているが、値域は<span class="math notranslate nohighlight">\([-1, 1]\)</span>と負の値を許しており、また二次微分の減衰がゆっくりとゼロになるため勾配消失が起きにくいという特性がある。</p>
+<figure class="align-default" id="id5" style="width: 50%">
+<div class="cell_output docutils container">
+<img alt="../_images/rnn_6_0.png" src="../_images/rnn_6_0.png" />
+</div>
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">tanh</span><a class="headerlink" href="#id5" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+<span class="n">W</span> <span class="o">@</span> <span class="n">x</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([14, 32])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">@</span> <span class="n">W</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([14, 32])
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 </section>
 
@@ -808,6 +954,20 @@ P(\underbrace{w_1, \dots, w_{m-2}}_{C_{m-1}}, w_{m-1})
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="embedding.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">単語の埋め込み</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../image_processing/introduction.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">画像認識</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
             </footer>
         </div>
