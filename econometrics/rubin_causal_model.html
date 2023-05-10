@@ -1042,8 +1042,8 @@ Y_i = Y_i(D_i) = Y_i(0)(1-D_i) + Y_i(1)D
 \end{align}
 \end{split}\]</div>
 <p>と表すことができる。</p>
-<p>第1項の<span class="math notranslate nohighlight">\(E[Y(1) - Y(0)|D = 1]\)</span>は処置群における「処置を受けたときの結果<span class="math notranslate nohighlight">\(Y(0)\)</span>」と「処置を受けなかった場合の（反実仮想の）結果<span class="math notranslate nohighlight">\(Y(0)\)</span>」の差である。これを<strong>処置群に対する平均処置効果</strong>（average treatment effect on the treated: ATT or ATET）という。
-処置群と対照群で平均的に処置効果に差がないと仮定すれば</p>
+<p>第1項の<span class="math notranslate nohighlight">\(E[Y(1) - Y(0)|D = 1]\)</span>は処置群における「処置を受けたときの結果<span class="math notranslate nohighlight">\(Y(0)\)</span>」と「処置を受けなかった場合の（反実仮想の）結果<span class="math notranslate nohighlight">\(Y(0)\)</span>」の差である。これを<strong>処置群に対する平均処置効果</strong>（average treatment effect on the treated: ATT or ATET）という。</p>
+<p>処置群と対照群で平均的に処置効果に差がないと仮定すれば</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
@@ -1056,6 +1056,68 @@ Y_i = Y_i(D_i) = Y_i(0)(1-D_i) + Y_i(1)D
 <p>となる。</p>
 <p>第2項の<span class="math notranslate nohighlight">\(E[Y(0)|D = 1] - E[Y(0)|D = 0]\)</span>は、「処置群が仮に処置を受けなかったとした場合の結果の期待値」と「対照群が処置を受けなかった場合の期待値」の差であり、<strong>セレクション・バイアス</strong>（selection bias）と呼ばれる。
 もしセレクション・バイアスが0であれば<span class="math notranslate nohighlight">\(\tau_{naive} = ATT\)</span>であり、さらに<span class="math notranslate nohighlight">\(ATT=ATE\)</span>であれば<span class="math notranslate nohighlight">\(\tau_{naive}= ATE = \tau\)</span>になる。そうでない場合は<span class="math notranslate nohighlight">\(\tau_{naive} \neq \tau\)</span>であり、単純な各群の期待値の差をとる方法は誤った分析結果を導くことになる。</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>もう少し厳密な話</p>
+<p>ATT = ATEの仮定を置かずに厳密に書くと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\underbrace{ E[Y(1)|D = 1] - E[Y(0)|D = 0] }_{ \tau_{naive} }
+&amp;= \underbrace{E[Y(1)] - E[Y(0)]}_{ \text{ATE}}
+ + \underbrace{E[Y(0)| D=1] - E[Y(0)| D=0]}_{ \text{Selection bias}}
+\\
+&amp; + \underbrace{(1-\pi)(ATT - ATU)}_{ \text{Heterogeneous treatment effect bias}}
+\end{align}
+\end{split}\]</div>
+<p>となるらしい。ここで<span class="math notranslate nohighlight">\(\pi\)</span>は処置を受ける割合であり、ATUは対照群における平均処置効果である。</p>
+<p>また、</p>
+<div class="math notranslate nohighlight">
+\[
+ATE = \pi ATT+(1-\pi)ATU
+\]</div>
+<p>という関係がある。</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+導出<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+   E\big[Y^1\mid D=1\big] &amp; = a \\
+   E\big[Y^1\mid D=0\big] &amp; = b \\
+   E\big[Y^0\mid D=1\big] &amp; = c \\
+   E\big[Y^0\mid D=0\big] &amp; = d \\
+   ATE  &amp; = e
+\end{align}
+\end{split}\]</div>
+<p class="sd-card-text">とおくと、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+   e    &amp; =\big\{\pi{a}+(1-\pi)b\big\}-\big\{\pi{c} + (1-\pi)d\big\}                                                                 
+   \\
+   e    &amp; =\pi{a}+b-\pi{b}-\pi{c} - d + \pi{d}                                                                                       
+   \\
+   e    &amp; =\pi{a}+ b-\pi{b}-\pi{c} - d + \pi{d} + (\mathbf{a} - \mathbf{a}) + (\mathbf{c} - \mathbf{c}) + (\mathbf{d} - \mathbf{d})  
+   \\
+   0    &amp; =e-\pi{a} - b + \pi{b} + \pi{c} + d - \pi{d} - \mathbf{a} + \mathbf{a} - \mathbf{c} + \mathbf{c} - \mathbf{d} + \mathbf{d}
+   \\
+   \mathbf{a}-\mathbf{d} &amp; =e-\pi{a} - b + \pi{b} + \pi{c} + d - \pi{d} +\mathbf{a} -\mathbf{c} +\mathbf{c} - \mathbf{d}                              
+   \\
+   \mathbf{a}-\mathbf{d} &amp; =e + (\mathbf{c} -\mathbf{d}) + \mathbf{a}-\pi{a} - b + \pi{b} -\mathbf{c} + \pi{c} + d - \pi{d}                           
+   \\
+   \mathbf{a}-\mathbf{d} &amp; =e + (\mathbf{c} -\mathbf{d}) + (1-\pi)a -(1-\pi)b + (1-\pi)d - (1-\pi)c                                                   
+   \\
+   \mathbf{a}-\mathbf{d} &amp; =e + (\mathbf{c} -\mathbf{d}) + (1-\pi)(a-c) -(1-\pi)(b-d)                                                                 
+\end{align}
+\end{split}\]</div>
+</div>
+</details><p>（参考：<a class="reference external" href="https://mixtape.scunning.com/04-potential_outcomes">Causal Inference The Mixtape - 4  Potential Outcomes Causal Model</a>）</p>
+</div>
 <div class="cell tag_remove-input tag_remove-output docutils container">
 </div>
 <div class="cell tag_remove-input tag_remove-output docutils container">
@@ -1076,7 +1138,7 @@ E[Y|D=0] = 0.2
 <p>しかし、DMが配布されたエリアはもともと成約率が高かったので、セレクション・バイアス<span class="math notranslate nohighlight">\(E[Y(0)|D=1] - E[Y(0)|D=0]\)</span>は<span class="math notranslate nohighlight">\(0.3 - 0.2 = 0.1\)</span>となり、<span class="math notranslate nohighlight">\(\tau_{naive}\)</span>は0.1だけ過大にATEを推定していることになる。</p>
 <figure class="align-default" style="width: 80%">
 <div class="cell_output docutils container">
-<img alt="../_images/rubin_causal_model_3_0.png" src="../_images/rubin_causal_model_3_0.png" />
+<img alt="../_images/rubin_causal_model_4_0.png" src="../_images/rubin_causal_model_4_0.png" />
 </div>
 </figure>
 </div>
@@ -1224,7 +1286,7 @@ Y = \tau D + \boldsymbol{X \beta} + \varepsilon
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/rubin_causal_model_10_0.svg" src="../_images/rubin_causal_model_10_0.svg" /></div>
+<img alt="../_images/rubin_causal_model_11_0.svg" src="../_images/rubin_causal_model_11_0.svg" /></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
