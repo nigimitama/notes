@@ -819,6 +819,28 @@ title="Print to PDF"
      第二段階
     </a>
    </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#olstsls">
+     OLSを用いてTSLSを行う
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#tsls">
+     TSLS
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id8">
+   例
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id9">
+     学習効果
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -883,6 +905,28 @@ title="Print to PDF"
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id7">
      第二段階
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#olstsls">
+     OLSを用いてTSLSを行う
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#tsls">
+     TSLS
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id8">
+   例
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id9">
+     学習効果
     </a>
    </li>
   </ul>
@@ -1170,6 +1214,10 @@ Y = \beta_0 + \beta_1 X + \epsilon
 = \frac{ ZとYの標本共分散 }{ ZとXの標本共分散 }
 \]</div>
 <p>となる。</p>
+</section>
+<section id="olstsls">
+<h3>OLSを用いてTSLSを行う<a class="headerlink" href="#olstsls" title="Permalink to this headline">#</a></h3>
+<p>IV系のパッケージを使わずに推定する方法。TSLS推定値は得られるが標準誤差の推定はできない。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="s2">&quot;x ~ z&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
@@ -1197,18 +1245,161 @@ dtype: float64
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="s2">&quot;y ~ x_hat&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">x_hat</span><span class="o">=</span><span class="n">x_hat</span><span class="p">),</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
 <span class="n">model2</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-<span class="n">Stargazer</span><span class="p">([</span><span class="n">model2</span><span class="p">])</span>
+<span class="n">model2</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table style="text-align:center"><tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="1"><em>Dependent variable:y</em></td></tr><tr><td style="text-align:left"></td><tr><td style="text-align:left"></td><td>(1)</td></tr><tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Intercept</td><td>8.823<sup>**</sup></td></tr><tr><td style="text-align:left"></td><td>(4.039)</td></tr><tr><td style="text-align:left">x_hat</td><td>3.893<sup>***</sup></td></tr><tr><td style="text-align:left"></td><td>(0.321)</td></tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Observations</td><td>500</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.228</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.226</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>8.252 (df=498)</td></tr><tr><td style="text-align: left">F Statistic</td><td>146.832<sup>***</sup> (df=1; 498)</td></tr><tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Note:</td>
- <td colspan="1" style="text-align: right">
-  <sup>*</sup>p&lt;0.1;
-  <sup>**</sup>p&lt;0.05;
-  <sup>***</sup>p&lt;0.01
- </td></tr></table></div></div>
+<div class="output text_html"><table class="simpletable">
+<caption>OLS Regression Results</caption>
+<tr>
+  <th>Dep. Variable:</th>            <td>y</td>        <th>  R-squared:         </th> <td>   0.228</td>
+</tr>
+<tr>
+  <th>Model:</th>                   <td>OLS</td>       <th>  Adj. R-squared:    </th> <td>   0.226</td>
+</tr>
+<tr>
+  <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th> <td>   146.8</td>
+</tr>
+<tr>
+  <th>Date:</th>             <td>Sun, 14 May 2023</td> <th>  Prob (F-statistic):</th> <td>8.50e-30</td>
+</tr>
+<tr>
+  <th>Time:</th>                 <td>07:44:05</td>     <th>  Log-Likelihood:    </th> <td> -1763.7</td>
+</tr>
+<tr>
+  <th>No. Observations:</th>      <td>   500</td>      <th>  AIC:               </th> <td>   3531.</td>
+</tr>
+<tr>
+  <th>Df Residuals:</th>          <td>   498</td>      <th>  BIC:               </th> <td>   3540.</td>
+</tr>
+<tr>
+  <th>Df Model:</th>              <td>     1</td>      <th>                     </th>     <td> </td>   
+</tr>
+<tr>
+  <th>Covariance Type:</th>      <td>nonrobust</td>    <th>                     </th>     <td> </td>   
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+      <td></td>         <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>Intercept</th> <td>    8.8232</td> <td>    4.039</td> <td>    2.184</td> <td> 0.029</td> <td>    0.887</td> <td>   16.759</td>
+</tr>
+<tr>
+  <th>x_hat</th>     <td>    3.8935</td> <td>    0.321</td> <td>   12.117</td> <td> 0.000</td> <td>    3.262</td> <td>    4.525</td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <th>Omnibus:</th>       <td>34.778</td> <th>  Durbin-Watson:     </th> <td>   1.912</td>
+</tr>
+<tr>
+  <th>Prob(Omnibus):</th> <td> 0.000</td> <th>  Jarque-Bera (JB):  </th> <td>  12.829</td>
+</tr>
+<tr>
+  <th>Skew:</th>          <td> 0.064</td> <th>  Prob(JB):          </th> <td> 0.00164</td>
+</tr>
+<tr>
+  <th>Kurtosis:</th>      <td> 2.226</td> <th>  Cond. No.          </th> <td>    138.</td>
+</tr>
+</table><br/><br/>Notes:<br/>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</div></div>
 </div>
+</section>
+<section id="tsls">
+<h3>TSLS<a class="headerlink" href="#tsls" title="Permalink to this headline">#</a></h3>
+<p>専用のメソッドを用いる方法。標準誤差も適切に推定できる（はず）</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">statsmodels.sandbox.regression.gmm</span> <span class="kn">import</span> <span class="n">IV2SLS</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">IV2SLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">result</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="simpletable">
+<caption>IV2SLS Regression Results</caption>
+<tr>
+  <th>Dep. Variable:</th>            <td>y</td>        <th>  R-squared:         </th> <td>   0.964</td>
+</tr>
+<tr>
+  <th>Model:</th>                 <td>IV2SLS</td>      <th>  Adj. R-squared:    </th> <td>   0.964</td>
+</tr>
+<tr>
+  <th>Method:</th>               <td>Two Stage</td>    <th>  F-statistic:       </th> <td>     nan</td>
+</tr>
+<tr>
+  <th></th>                    <td>Least Squares</td>  <th>  Prob (F-statistic):</th>  <td>   nan</td> 
+</tr>
+<tr>
+  <th>Date:</th>             <td>Sun, 14 May 2023</td> <th>                     </th>     <td> </td>   
+</tr>
+<tr>
+  <th>Time:</th>                 <td>07:44:05</td>     <th>                     </th>     <td> </td>   
+</tr>
+<tr>
+  <th>No. Observations:</th>      <td>   500</td>      <th>                     </th>     <td> </td>   
+</tr>
+<tr>
+  <th>Df Residuals:</th>          <td>   499</td>      <th>                     </th>     <td> </td>   
+</tr>
+<tr>
+  <th>Df Model:</th>              <td>     1</td>      <th>                     </th>     <td> </td>   
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+   <td></td>     <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>x1</th> <td>    3.7399</td> <td>    0.525</td> <td>    7.125</td> <td> 0.000</td> <td>    2.709</td> <td>    4.771</td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <th>Omnibus:</th>       <td> 3.975</td> <th>  Durbin-Watson:     </th> <td>   0.109</td>
+</tr>
+<tr>
+  <th>Prob(Omnibus):</th> <td> 0.137</td> <th>  Jarque-Bera (JB):  </th> <td>   3.533</td>
+</tr>
+<tr>
+  <th>Skew:</th>          <td>-0.133</td> <th>  Prob(JB):          </th> <td>   0.171</td>
+</tr>
+<tr>
+  <th>Kurtosis:</th>      <td> 2.685</td> <th>  Cond. No.          </th> <td>    1.00</td>
+</tr>
+</table></div></div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h2>例<a class="headerlink" href="#id8" title="Permalink to this headline">#</a></h2>
+<section id="id9">
+<h3>学習効果<a class="headerlink" href="#id9" title="Permalink to this headline">#</a></h3>
+<p><a class="reference external" href="https://www.nber.org/papers/w13341">Stinebrickner, T. R., &amp; Stinebrickner, R. (2007). The causal effect of studying on academic performance (Working Paper No. 13341). National Bureau of Economic Research. Retrieved April, 23, 2015.</a></p>
+<p>方法</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(Y\)</span>：最初のセメスターのGPA</p></li>
+<li><p><span class="math notranslate nohighlight">\(X\)</span>：1日あたりの平均勉強時間</p></li>
+<li><p><span class="math notranslate nohighlight">\(Z\)</span>：ルームメイトがビデオゲームを買ったら<span class="math notranslate nohighlight">\(Z=1\)</span>、買わなかったら<span class="math notranslate nohighlight">\(Z=0\)</span></p>
+<ul>
+<li><p>ルームメイトはランダムに割り当てられる</p></li>
+</ul>
+</li>
+<li><p><span class="math notranslate nohighlight">\(n=210\)</span></p>
+<ul>
+<li><p>対象は Berea College の大学1年生（2001年）</p></li>
+</ul>
+</li>
+</ul>
+<p>結果</p>
+<ul class="simple">
+<li><p>IV（TSLS）推定量：<span class="math notranslate nohighlight">\(0.360\)</span></p></li>
+<li><p>勉強時間が1時間減ったことによるGPAの減少幅は0.36ポイント</p></li>
+</ul>
 </section>
 </section>
 </section>
