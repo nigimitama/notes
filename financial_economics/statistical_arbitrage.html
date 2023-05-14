@@ -790,7 +790,7 @@ title="Print to PDF"
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id5">
-     考察
+     （メモ）共和分ベクトルの簡単な例
     </a>
    </li>
   </ul>
@@ -875,7 +875,7 @@ title="Print to PDF"
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id5">
-     考察
+     （メモ）共和分ベクトルの簡単な例
     </a>
    </li>
   </ul>
@@ -1160,35 +1160,46 @@ beta.3         1.0580      0.452      2.340      0.019       0.172       1.944
 </div>
 </section>
 <section id="id5">
-<h3>考察<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
-<p>どう使える？どうやって見つけられる？共和分の関係があったとして、将来も続く？</p>
+<h3>（メモ）共和分ベクトルの簡単な例<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
+<p><span class="math notranslate nohighlight">\(w_{t}\)</span>は単位根過程、<span class="math notranslate nohighlight">\(e_{1t}, e_{2t}\)</span>を定常過程とする</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+x_{t} = a w_{t} + e_{1t}\\
+y_{t} = b w_{t} + e_{2t}\\
+\end{split}\]</div>
+<p>は</p>
+<div class="math notranslate nohighlight">
+\[
+x_t - \frac{a}{b} y = e_{1t} - \frac{a}{b} e_{2t}
+\]</div>
+<p>となり、共和分ベクトルは<span class="math notranslate nohighlight">\((1, -a/b)\)</span>であることがわかる</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>  <span class="c1"># random walk: w_t = w_{t-1} + w_t&#39;</span>
 
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-<span class="n">rw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># random walk: y_t = y_{t-1} + e</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span>
+<span class="n">e1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">e2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rw</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">w</span> <span class="o">+</span> <span class="n">e1</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">b</span> <span class="o">*</span> <span class="n">w</span> <span class="o">+</span> <span class="n">e2</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;x = a * w + e1&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;y = b * w + e2&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">new</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">a</span><span class="o">/</span><span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;1 * x - (a/b) * y&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x7f9367dad190&gt;]
-</pre></div>
-</div>
-<img alt="../_images/statistical_arbitrage_17_1.png" src="../_images/statistical_arbitrage_17_1.png" />
+<img alt="../_images/statistical_arbitrage_16_0.png" src="../_images/statistical_arbitrage_16_0.png" />
 </div>
 </div>
 </section>
@@ -1298,16 +1309,15 @@ $<span class="math notranslate nohighlight">\(
 <h3>取引執行ルール<a class="headerlink" href="#id11" title="Permalink to this headline">#</a></h3>
 <ol>
 <li><p>ペア選定時に計算した価格差の標準偏差を基準に決める。</p>
-<p>価格差の標本標準偏差<span class="math notranslate nohighlight">\(s_{m,m'}\)</span>は
-$$
-s_{m,m’}^2 = \frac{1}{N} \sum^N_{n=1} (\hat{p}<em>{m,n} - \hat{p}</em>{m’,n})^2</p>
-<ul class="simple">
-<li><p>\left(
-\frac{\sum^N_{n=1} (\hat{p}<em>{m,n} - \hat{p}</em>{m’,n})^2}{N}
-\right)^2
-$$
-で計算できる。</p></li>
-</ul>
+<p>価格差の標本標準偏差<span class="math notranslate nohighlight">\(s_{m,m'}\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[
+   s_{m,m'}^2 = \frac{1}{N} \sum^N_{n=1} (\hat{p}_{m,n} - \hat{p}_{m',n})^2
+   - \left(
+   \frac{\sum^N_{n=1} (\hat{p}_{m,n} - \hat{p}_{m',n})^2}{N}
+   \right)^2
+   \]</div>
+<p>で計算できる。</p>
 </li>
 <li><p>取引期間に入ったら改めて価格を基準化して、価格差<span class="math notranslate nohighlight">\(\hat{p}_{m} - \hat{p}_{m'}\)</span>を日々計算していく。</p>
 <p>取引期間中に価格差の絶対値が<span class="math notranslate nohighlight">\(s_{m,m'}\)</span>の2倍を超えたときにポジションをとる。
@@ -1357,6 +1367,7 @@ s_{m}^{ret} &amp;= \sqrt{
 <li><p><a class="reference external" href="https://d1wqtxts1xzle7.cloudfront.net/31862444/PairsTradingGGR-libre.pdf?1391441413=&amp;response-content-disposition=inline%3B+filename%3Dpair_trading.pdf&amp;Expires=1678543166&amp;Signature=TCTHjjZJBvFK85sdrSoS5xRMtNiSJbPXBjH2E14G~3eLgK370eeu49SZ9PM7g7qGt9G8-LNBR4yy9cXy7nLIf3LijmIgIkCvo6BAriPzDCRDjfXy51X2ImIIg2Cqe9aK4~HIfldHFemFdmvJgsca1I3k8MjmX8VoXtSIYmUsoWqWbT5QQFdqV1Jzb7kN55G-98IeAgamcMv90C--LGoX9tIqKuaxzVaG5sOFAT4QnXrSMyfI0dYVab3bx5qZhRWNLDKd6Ut6BRBAyCNzi2z4pw4WiiHvCN6IXcgSsJTpQWgByZQKKiNedqMLW5UiR~qTdYRGGz4iorkGYT6nxZlOYw__&amp;Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA">Gatev, E., Goetzmann, W. N., &amp; Rouwenhorst, K. G. (2006). Pairs trading: Performance of a relative-value arbitrage rule. The Review of Financial Studies, 19(3), 797-827.</a></p></li>
 <li><p><a class="reference external" href="https://citeseerx.ist.psu.edu/document?repid=rep1&amp;type=pdf&amp;doi=1dc120406e0d542c9dd3b203b090b512f0c6d4ee">Liu, J., &amp; Timmermann, A. (2013). Optimal convergence trade strategies. The Review of Financial Studies, 26(4), 1048-1086.</a></p></li>
 <li><p><a class="reference external" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1361293">Chen, H., Chen, S., Chen, Z., &amp; Li, F. (2019). Empirical investigation of an equity pairs trading strategy. <em>Management Science</em>, <em>65</em>(1), 370-389.</a></p></li>
+<li><p><a class="reference external" href="https://www.oanda.jp/lab-education/ea_trading/beginner/mean_reversion_strategy/">平均回帰戦略とは？共和分ADF検定を用いたトレード戦略について解説 | OANDA FX/CFD Lab-education（オアンダ ラボ）</a></p></li>
 </ul>
 </section>
 </section>

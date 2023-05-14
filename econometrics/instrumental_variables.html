@@ -51,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Difference In Differences" href="difference_in_differences.html" />
@@ -750,12 +752,78 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   概要
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     操作変数法の推定方法
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   データの生成
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#z-to-yz-to-x">
+   方法1：
+   <span class="math notranslate nohighlight">
+    \(Z \to Y\)
+   </span>
+   の因果効果と
+   <span class="math notranslate nohighlight">
+    \(Z\to X\)
+   </span>
+   の因果効果を割って推定する
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id5">
+   方法2：二段階最小二乗法
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     第一段階
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id7">
+     第二段階
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
 </div>
     </div>
     <div class="article row">
@@ -767,6 +835,61 @@ title="Print to PDF"
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   概要
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     操作変数法の推定方法
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   データの生成
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#z-to-yz-to-x">
+   方法1：
+   <span class="math notranslate nohighlight">
+    \(Z \to Y\)
+   </span>
+   の因果効果と
+   <span class="math notranslate nohighlight">
+    \(Z\to X\)
+   </span>
+   の因果効果を割って推定する
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id5">
+   方法2：二段階最小二乗法
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     第一段階
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id7">
+     第二段階
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -776,6 +899,318 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>操作変数法<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<section id="id2">
+<h2>概要<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<p>観察データから結果変数<span class="math notranslate nohighlight">\(Y\)</span>への処置<span class="math notranslate nohighlight">\(X\)</span>の効果を測りたい場合、共変量<span class="math notranslate nohighlight">\(U\)</span>をコントロールしない限り、推定量に欠落変数バイアスを生じさせる。</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/instrumental_variables_2_0.svg" src="../_images/instrumental_variables_2_0.svg" /></div>
+</div>
+<p>他の変数から独立して処置<span class="math notranslate nohighlight">\(X\)</span>を通じてのみ<span class="math notranslate nohighlight">\(Y\)</span>に影響を与える<span class="math notranslate nohighlight">\(Z\)</span>のような変数があれば、これを利用することで<span class="math notranslate nohighlight">\(X\to Y\)</span>の因果効果を識別することが可能になる。この場合の<span class="math notranslate nohighlight">\(Z\)</span>のような変数を<strong>操作変数</strong>（instrmental variable: IV）と呼ぶ。</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/instrumental_variables_4_0.svg" src="../_images/instrumental_variables_4_0.svg" /></div>
+</div>
+<section id="id3">
+<h3>操作変数法の推定方法<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
+<p>2つの方法がある</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(Z \to Y\)</span>の因果効果と<span class="math notranslate nohighlight">\(Z\to X\)</span>の因果効果を割って推定する</p></li>
+<li><p>二段階最小二乗法</p></li>
+</ol>
+<p>どちらのアプローチでも同じ推定結果を得ることができる。</p>
+</section>
+</section>
+<section id="id4">
+<h2>データの生成<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h2>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/instrumental_variables_7_0.svg" src="../_images/instrumental_variables_7_0.svg" /></div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">u</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">u</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>y</th>
+      <th>x</th>
+      <th>z</th>
+      <th>u</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>52.1</td>
+      <td>11.9</td>
+      <td>-0.4</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>65.4</td>
+      <td>13.1</td>
+      <td>-0.3</td>
+      <td>0.7</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>65.0</td>
+      <td>15.0</td>
+      <td>0.0</td>
+      <td>0.6</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>65.6</td>
+      <td>13.5</td>
+      <td>0.5</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>46.7</td>
+      <td>11.0</td>
+      <td>-0.3</td>
+      <td>0.4</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/instrumental_variables_9_0.png" src="../_images/instrumental_variables_9_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="kn">from</span> <span class="nn">patsy</span> <span class="kn">import</span> <span class="n">dmatrices</span>
+<span class="kn">from</span> <span class="nn">stargazer.stargazer</span> <span class="kn">import</span> <span class="n">Stargazer</span>
+
+<span class="n">models</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="s2">&quot;y ~ x&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
+<span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span> <span class="p">)</span>
+<span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="s2">&quot;y ~ x + z&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
+<span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span> <span class="p">)</span>
+<span class="n">Stargazer</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table style="text-align:center"><tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="2"><em>Dependent variable:y</em></td></tr><tr><td style="text-align:left"></td><tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td></tr><tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Intercept</td><td>2.660<sup>***</sup></td><td>-0.074<sup></sup></td></tr><tr><td style="text-align:left"></td><td>(0.612)</td><td>(0.699)</td></tr><tr><td style="text-align:left">x</td><td>4.386<sup>***</sup></td><td>4.603<sup>***</sup></td></tr><tr><td style="text-align:left"></td><td>(0.048)</td><td>(0.055)</td></tr><tr><td style="text-align:left">z</td><td></td><td>-1.407<sup>***</sup></td></tr><tr><td style="text-align:left"></td><td></td><td>(0.198)</td></tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Observations</td><td>500</td><td>500</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.943</td><td>0.948</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.943</td><td>0.948</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>2.237 (df=498)</td><td>2.133 (df=497)</td></tr><tr><td style="text-align: left">F Statistic</td><td>8275.698<sup>***</sup> (df=1; 498)</td><td>4575.533<sup>***</sup> (df=2; 497)</td></tr><tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Note:</td>
+ <td colspan="2" style="text-align: right">
+  <sup>*</sup>p&lt;0.1;
+  <sup>**</sup>p&lt;0.05;
+  <sup>***</sup>p&lt;0.01
+ </td></tr></table></div></div>
+</div>
+</section>
+<section id="z-to-yz-to-x">
+<h2>方法1：<span class="math notranslate nohighlight">\(Z \to Y\)</span>の因果効果と<span class="math notranslate nohighlight">\(Z\to X\)</span>の因果効果を割って推定する<a class="headerlink" href="#z-to-yz-to-x" title="Permalink to this headline">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+Z \to Y \text{の因果効果}
+= \frac{
+    Z \to Y \text{の因果効果}
+}{
+    Z \to X \text{の因果効果}
+}
+\]</div>
+<p>であるため、<span class="math notranslate nohighlight">\(Z \to Y\)</span>の因果効果と<span class="math notranslate nohighlight">\(Z\to X\)</span>の因果効果を割って推定する。</p>
+<p><span class="math notranslate nohighlight">\(X\to Y\)</span>の因果効果を<span class="math notranslate nohighlight">\(\beta\)</span>、<span class="math notranslate nohighlight">\(Z\to X\)</span>の因果効果を<span class="math notranslate nohighlight">\(\gamma\)</span>とおくと、<span class="math notranslate nohighlight">\(Z\to Y\)</span>の因果効果はその積<span class="math notranslate nohighlight">\(\beta \times \gamma\)</span>になる。</p>
+<p>そのため</p>
+<div class="math notranslate nohighlight">
+\[
+\beta = \frac{\beta \times \gamma}{\gamma}
+\]</div>
+<p>で推定するということ。</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/instrumental_variables_12_0.svg" src="../_images/instrumental_variables_12_0.svg" /></div>
+</div>
+<p><span class="math notranslate nohighlight">\(Z\to X\)</span>の検証を<strong>第一段階</strong>（first stage）の検証、<span class="math notranslate nohighlight">\(Z\to Y\)</span>の検証を<strong>誘導型</strong>（reduced form）の検証という。</p>
+<ul class="simple">
+<li><p>第一段階：<span class="math notranslate nohighlight">\(X = \gamma_0 + \gamma_1 Z + e\)</span></p></li>
+<li><p>誘導型：<span class="math notranslate nohighlight">\(Y = \pi_0 + \pi_1 Z + v\)</span></p></li>
+</ul>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>第1段階を誘導型と呼ぶこともある。
+もともとマクロモデルのような同時方程式において内生変数の方程式を解いてモデルの右側を外生変数のみにした形のモデルを「誘導型」と呼んでいたため。</p>
+</aside>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="s2">&quot;x ~ z&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
+<span class="n">model1</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">model1</span><span class="o">.</span><span class="n">params</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept    12.537640
+z             1.981999
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="s2">&quot;y ~ z&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
+<span class="n">model2</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">model2</span><span class="o">.</span><span class="n">params</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept    57.638072
+z             7.716850
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model2</span><span class="o">.</span><span class="n">params</span> <span class="o">/</span> <span class="n">model1</span><span class="o">.</span><span class="n">params</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept    4.597203
+z            3.893468
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id5">
+<h2>方法2：二段階最小二乗法<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h2>
+<p><span class="math notranslate nohighlight">\(X\)</span>の変動のうち<span class="math notranslate nohighlight">\(Z\)</span>の変動に起因する変動分<span class="math notranslate nohighlight">\(\hat{X}\)</span>を推定し、その後<span class="math notranslate nohighlight">\(\hat{X}\to Y\)</span>の因果効果を推定する（それにより<span class="math notranslate nohighlight">\(U\)</span>に起因する<span class="math notranslate nohighlight">\(X\)</span>の変動を除く）</p>
+<section id="id6">
+<h3>第一段階<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h3>
+<p><span class="math notranslate nohighlight">\(X\)</span>を<span class="math notranslate nohighlight">\(Z\)</span>に回帰する（<span class="math notranslate nohighlight">\(e\)</span>は誤差項）</p>
+<div class="math notranslate nohighlight">
+\[
+X = \gamma_0 + \gamma_1 Z + e
+\]</div>
+<p><span class="math notranslate nohighlight">\(X\)</span>の予測値<span class="math notranslate nohighlight">\(\hat{X}\)</span>を得る</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{X} = \hat{\gamma}_0 + \hat{\gamma}_1 Z
+\]</div>
+</section>
+<section id="id7">
+<h3>第二段階<a class="headerlink" href="#id7" title="Permalink to this headline">#</a></h3>
+<p><span class="math notranslate nohighlight">\(X\)</span>を<span class="math notranslate nohighlight">\(\hat{X}\)</span>に置き換えて回帰分析を行う</p>
+<div class="math notranslate nohighlight">
+\[
+Y = \beta_0 + \beta_1 \hat{X} + \varepsilon
+\]</div>
+<p>この推定量は<strong>二段階最小二乗（two-stage least squares: TSLS）推定量</strong>と呼ばれる。</p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p><span class="math notranslate nohighlight">\(U\)</span>も<span class="math notranslate nohighlight">\(Z\)</span>も使わずに</p>
+<div class="math notranslate nohighlight">
+\[
+Y = \beta_0 + \beta_1 X + \epsilon
+\]</div>
+<p>のようにモデルを立てて推定すると、欠落変数バイアスが生じ、<span class="math notranslate nohighlight">\(X\)</span>と<span class="math notranslate nohighlight">\(\epsilon\)</span>は相関する（<span class="math notranslate nohighlight">\(X\)</span>で説明しきれなかった部分に<span class="math notranslate nohighlight">\(X\)</span>と相関する<span class="math notranslate nohighlight">\(U\)</span>に起因する変動が残るため）</p>
+<p>しかし、<span class="math notranslate nohighlight">\(U\)</span>と相関しない<span class="math notranslate nohighlight">\(Z\)</span>の変動を使った<span class="math notranslate nohighlight">\(\hat{X}\)</span>は<span class="math notranslate nohighlight">\(U\)</span>と相関しないため、<span class="math notranslate nohighlight">\(\hat{X}\)</span>と<span class="math notranslate nohighlight">\(\varepsilon\)</span>は相関しない</p>
+</aside>
+<p>単回帰かつ操作変数が1つの場合のTSLS推定量は</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\beta}^{TSLS}_1
+= \frac{ ZとYの標本共分散 }{ ZとXの標本共分散 }
+\]</div>
+<p>となる。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="s2">&quot;x ~ z&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
+<span class="n">model1</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">model1</span><span class="o">.</span><span class="n">params</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Intercept    12.537640
+z             1.981999
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_hat</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="s2">&quot;y ~ x_hat&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">x_hat</span><span class="o">=</span><span class="n">x_hat</span><span class="p">),</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
+<span class="n">model2</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">Stargazer</span><span class="p">([</span><span class="n">model2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table style="text-align:center"><tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="1"><em>Dependent variable:y</em></td></tr><tr><td style="text-align:left"></td><tr><td style="text-align:left"></td><td>(1)</td></tr><tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Intercept</td><td>8.823<sup>**</sup></td></tr><tr><td style="text-align:left"></td><td>(4.039)</td></tr><tr><td style="text-align:left">x_hat</td><td>3.893<sup>***</sup></td></tr><tr><td style="text-align:left"></td><td>(0.321)</td></tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Observations</td><td>500</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.228</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.226</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>8.252 (df=498)</td></tr><tr><td style="text-align: left">F Statistic</td><td>146.832<sup>***</sup> (df=1; 498)</td></tr><tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Note:</td>
+ <td colspan="1" style="text-align: right">
+  <sup>*</sup>p&lt;0.1;
+  <sup>**</sup>p&lt;0.05;
+  <sup>***</sup>p&lt;0.01
+ </td></tr></table></div></div>
+</div>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
