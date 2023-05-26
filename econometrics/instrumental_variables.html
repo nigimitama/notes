@@ -55,7 +55,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Difference In Differences" href="difference_in_differences.html" />
+    <link rel="next" title="RDD" href="regression_discontinuity.html" />
     <link rel="prev" title="傾向スコア" href="propensity_score.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -509,6 +509,11 @@ const thebe_selector_output = ".output, .cell_output"
      欠落変数バイアス
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/fwl.html">
+     FWL定理
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1">
@@ -522,13 +527,13 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="difference_in_differences.html">
-   Difference In Differences
+  <a class="reference internal" href="regression_discontinuity.html">
+   RDD
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="regression_discontinuity.html">
-   RDD
+  <a class="reference internal" href="difference_in_differences.html">
+   Difference In Differences
   </a>
  </li>
 </ul>
@@ -906,6 +911,11 @@ title="Print to PDF"
    </li>
   </ul>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id19">
+   参考文献
+  </a>
+ </li>
 </ul>
 
     </nav>
@@ -1056,6 +1066,11 @@ title="Print to PDF"
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id19">
+   参考文献
+  </a>
  </li>
 </ul>
 
@@ -1424,19 +1439,6 @@ dtype: float64
 <p>専用のメソッドを用いる方法。標準誤差も適切に推定できるはずだが、statsmodelsのIV2SLSはバグってる様子</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels</span>
-<span class="n">statsmodels</span><span class="o">.</span><span class="n">__version__</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;0.14.0&#39;
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">statsmodels.sandbox.regression.gmm</span> <span class="kn">import</span> <span class="n">IV2SLS</span>
 
 <span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="s2">&quot;y ~ x&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
@@ -1465,10 +1467,10 @@ dtype: float64
   <th></th>                    <td>Least Squares</td>  <th>  Prob (F-statistic):</th>   <td>  1.00</td>  
 </tr>
 <tr>
-  <th>Date:</th>             <td>Thu, 18 May 2023</td> <th>                     </th>      <td> </td>    
+  <th>Date:</th>             <td>Fri, 26 May 2023</td> <th>                     </th>      <td> </td>    
 </tr>
 <tr>
-  <th>Time:</th>                 <td>14:07:37</td>     <th>                     </th>      <td> </td>    
+  <th>Time:</th>                 <td>14:38:51</td>     <th>                     </th>      <td> </td>    
 </tr>
 <tr>
   <th>No. Observations:</th>      <td>   500</td>      <th>                     </th>      <td> </td>    
@@ -1505,6 +1507,49 @@ dtype: float64
   <th>Kurtosis:</th>      <td> 2.417</td> <th>  Cond. No.          </th> <td>    78.1</td>
 </tr>
 </table></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">linearmodels.iv</span> <span class="kn">import</span> <span class="n">IV2SLS</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">IV2SLS</span><span class="o">.</span><span class="n">from_formula</span><span class="p">(</span><span class="s2">&quot;y ~ [x ~ z]&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">model</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="simpletable">
+<caption>IV-2SLS Estimation Summary</caption>
+<tr>
+  <th>Dep. Variable:</th>            <td>y</td>        <th>  R-squared:         </th> <td>0.9641</td> 
+</tr>
+<tr>
+  <th>Estimator:</th>             <td>IV-2SLS</td>     <th>  Adj. R-squared:    </th> <td>0.9640</td> 
+</tr>
+<tr>
+  <th>No. Observations:</th>        <td>500</td>       <th>  F-statistic:       </th> <td>50.264</td> 
+</tr>
+<tr>
+  <th>Date:</th>             <td>Fri, May 26 2023</td> <th>  P-value (F-stat)   </th> <td>0.0000</td> 
+</tr>
+<tr>
+  <th>Time:</th>                 <td>14:38:51</td>     <th>  Distribution:      </th> <td>chi2(1)</td>
+</tr>
+<tr>
+  <th>Cov. Estimator:</th>        <td>robust</td>      <th>                     </th>    <td></td>    
+</tr>
+<tr>
+  <th></th>                          <td></td>         <th>                     </th>    <td></td>    
+</tr>
+</table>
+<table class="simpletable">
+<caption>Parameter Estimates</caption>
+<tr>
+  <td></td>  <th>Parameter</th> <th>Std. Err.</th> <th>T-stat</th> <th>P-value</th> <th>Lower CI</th> <th>Upper CI</th>
+</tr>
+<tr>
+  <th>x</th>  <td>3.7399</td>    <td>0.5275</td>   <td>7.0897</td> <td>0.0000</td>   <td>2.7060</td>   <td>4.7738</td> 
+</tr>
+</table><br/><br/>Endogenous: x<br/>Instruments: z<br/>Robust Covariance (Heteroskedastic)<br/>Debiased: False<br/>id: 0x7f4a61a63c40</div></div>
 </div>
 </section>
 </section>
@@ -1653,7 +1698,7 @@ T =
 <section id="id17">
 <h3>LATE<a class="headerlink" href="#id17" title="Permalink to this headline">#</a></h3>
 <ol class="simple">
-<li><p>独立性（independence)：<span class="math notranslate nohighlight">\(\{Y(0), Y(1), D(0), D(1)\} \indep Z\)</span></p></li>
+<li><p>独立性（independence)：<span class="math notranslate nohighlight">\(\newcommand{\indep}{\mathop{\hspace{0.1em} \perp\!\!\!\perp \hspace{0.1em}}} \{Y(0), Y(1), D(0), D(1)\} \indep Z\)</span></p></li>
 <li><p>除外制約（exclusion restriction）：<span class="math notranslate nohighlight">\(Z\)</span>から<span class="math notranslate nohighlight">\(Y\)</span>への影響は<span class="math notranslate nohighlight">\(D\)</span>を通じてのみ存在</p></li>
 <li><p>関連性（relevance）：<span class="math notranslate nohighlight">\(Z\)</span>は<span class="math notranslate nohighlight">\(D\)</span>に影響を与えうる：<span class="math notranslate nohighlight">\(E[D(1)-D(0)]\neq 0\)</span></p></li>
 <li><p>単調性（monotonicity）：<span class="math notranslate nohighlight">\(D(1)-D(0) \geq 0 \text{for all} i, \text{or vice versa}\)</span>（no defier）</p></li>
@@ -1712,6 +1757,12 @@ T =
 \end{split}\]</div>
 </section>
 </section>
+<section id="id19">
+<h2>参考文献<a class="headerlink" href="#id19" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="http://web.econ.keio.ac.jp/staff/bessho/lecture/06/econome/060616IV1.pdf">別所俊一郎（2006）操作変数法(1) </a></p></li>
+</ul>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1748,10 +1799,10 @@ T =
             <p class="prev-next-title">傾向スコア</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="difference_in_differences.html" title="next page">
+    <a class='right-next' id="next-link" href="regression_discontinuity.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Difference In Differences</p>
+        <p class="prev-next-title">RDD</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -51,10 +51,12 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="概要" href="../financial_economics/introduction.html" />
-    <link rel="prev" title="Difference In Differences" href="difference_in_differences.html" />
+    <link rel="next" title="Difference In Differences" href="difference_in_differences.html" />
+    <link rel="prev" title="操作変数法" href="instrumental_variables.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -507,6 +509,11 @@ const thebe_selector_output = ".output, .cell_output"
      欠落変数バイアス
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/fwl.html">
+     FWL定理
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1">
@@ -519,14 +526,14 @@ const thebe_selector_output = ".output, .cell_output"
    操作変数法
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="difference_in_differences.html">
-   Difference In Differences
-  </a>
- </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    RDD
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="difference_in_differences.html">
+   Difference In Differences
   </a>
  </li>
 </ul>
@@ -773,9 +780,78 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   RDDの分類
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#framework">
+     2つのframework
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#design">
+     2つのdesign
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sharp-rd-designs">
+   Sharp RD Designs
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#rd">
+   線形RD
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   多項式RD
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   局所回帰
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#fuzzy-rd">
+   Fuzzy RD
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#python">
+   Pythonによる推定
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#interrupted-time-series">
    Interrupted Time-Series
   </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   参考文献
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#introductions">
+     Introductions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multi-cutoff">
+     Multi-Cutoff
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multi-running-variable">
+     Multi-running variable?
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -797,9 +873,78 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   RDDの分類
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#framework">
+     2つのframework
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#design">
+     2つのdesign
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sharp-rd-designs">
+   Sharp RD Designs
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#rd">
+   線形RD
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   多項式RD
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   局所回帰
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#fuzzy-rd">
+   Fuzzy RD
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#python">
+   Pythonによる推定
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#interrupted-time-series">
    Interrupted Time-Series
   </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   参考文献
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#introductions">
+     Introductions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multi-cutoff">
+     Multi-Cutoff
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multi-running-variable">
+     Multi-running variable?
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -814,11 +959,259 @@ title="Print to PDF"
   <section class="tex2jax_ignore mathjax_ignore" id="rdd">
 <h1>RDD<a class="headerlink" href="#rdd" title="Permalink to this headline">#</a></h1>
 <p><strong>回帰不連続デザイン</strong>（regression discontinuity design: RDD）は、ある連続変数（running variable）上のある地点を閾値（threshold, cut off point）として処置割り当てが変わる状況を利用し、閾値の直前と直後における結果変数の差を、閾値周辺の対象における局所的な平均処置効果とするデザイン</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ate</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">cutoff</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">d</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">cutoff</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="o">-</span><span class="mi">5</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">ate</span> <span class="o">*</span> <span class="n">d</span> <span class="o">+</span> <span class="n">e</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="p">))</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;running variable&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;outcome&quot;</span><span class="p">)</span>
+<span class="c1"># sns.scatterplot(x=&quot;x&quot;, y=&quot;y&quot;, hue=&quot;d&quot;, data=df, ax=ax)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">cutoff</span> <span class="o">*</span> <span class="mf">1.01</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="s2">&quot;Cutoff&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">nonparametric</span><span class="o">.</span><span class="n">lowess</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">d</span> <span class="o">==</span> <span class="n">i</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">d</span> <span class="o">==</span> <span class="n">i</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">preds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">preds</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkorange&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/regression_discontinuity_1_0.png" src="../_images/regression_discontinuity_1_0.png" />
+</div>
+</div>
+<section id="id1">
+<h2>RDDの分類<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
+<section id="framework">
+<h3>2つのframework<a class="headerlink" href="#framework" title="Permalink to this headline">#</a></h3>
+<ol class="simple">
+<li><p>continuity-based framework: 分断点（cutoff point）付近のジャンプを見る</p></li>
+<li><p>local randomization framework: 分断点付近のサンプルがたまたま分断点より高くなったか低くなったかはランダムと判断し、処置群と対照群を比較する</p></li>
+</ol>
+</section>
+<section id="design">
+<h3>2つのdesign<a class="headerlink" href="#design" title="Permalink to this headline">#</a></h3>
+<ol class="simple">
+<li><p>Sharp RD: <span class="math notranslate nohighlight">\(X &gt; c\)</span>のサンプルは100%の確率で処置を受ける</p></li>
+<li><p>Fuzzy RD: <span class="math notranslate nohighlight">\(X &gt; c\)</span>のサンプルは処置の確率が不連続に変化するが、100%ではない（処置割当に従わないことがありうる）</p></li>
+</ol>
+</section>
+</section>
+<section id="sharp-rd-designs">
+<h2>Sharp RD Designs<a class="headerlink" href="#sharp-rd-designs" title="Permalink to this headline">#</a></h2>
+<p>Sharp RDDはすべての個体が確実に処置割り当てに従う（処置を受ける確率がcutoffで0から1へ不連続に変化する）というデザインである。</p>
+<p>RDでは処置の割り当て<span class="math notranslate nohighlight">\(T\)</span>は、連続変数のrunning variable <span class="math notranslate nohighlight">\(X\)</span>が閾値（threshold; cutoff point）<span class="math notranslate nohighlight">\(c\)</span>を超えるかどうかにより決まる</p>
+<div class="math notranslate nohighlight">
+\[
+T = \mathbb{1}(X \geq c)
+\]</div>
+<p>continuity-basedの伝統的なsharp RD処置効果は次のように表される</p>
+<div class="math notranslate nohighlight">
+\[
+\tau_{SRD} := E[Y_i(1) - Y_i(0) | X_i=c]
+= \lim_{x\downarrow c} E[Y_i|X_i=x] - \lim_{x\uparrow c} E[Y_i|X_i=x]
+\]</div>
+<p><span class="math notranslate nohighlight">\(\lim_{x\downarrow c}\)</span>は<span class="math notranslate nohighlight">\(c\)</span>より大きい値から<span class="math notranslate nohighlight">\(c\)</span>に向けて<span class="math notranslate nohighlight">\(x\)</span>を近づけた極限（右極限）、<span class="math notranslate nohighlight">\(\lim_{x\uparrow c}\)</span>はその逆（左極限）</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">d</span> <span class="o">*</span> <span class="n">tau</span>
+<span class="n">y_unobserved</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">*</span> <span class="n">tau</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">d</span> <span class="o">==</span> <span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">d</span> <span class="o">==</span> <span class="n">i</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">d</span> <span class="o">==</span> <span class="n">i</span><span class="p">],</span> <span class="n">y_unobserved</span><span class="p">[</span><span class="n">d</span> <span class="o">==</span> <span class="n">i</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">d</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">d</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="mf">0.3</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">),</span>
+            <span class="n">s</span><span class="o">=</span><span class="sa">rf</span><span class="s2">&quot;$E[Y(</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">)|X]$&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">)</span>
+    
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">c</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Cutoff $c$&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">ymax</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">d</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkorange&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.7</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">c</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\tau_</span><span class="si">{SRD}</span><span class="s2">$&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkorange&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+    <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;running variable $X$&quot;</span><span class="p">,</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;outcome $Y$&quot;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Continuity-based RD Design&quot;</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/regression_discontinuity_4_0.png" src="../_images/regression_discontinuity_4_0.png" />
+</div>
+</div>
+</section>
+<section id="rd">
+<h2>線形RD<a class="headerlink" href="#rd" title="Permalink to this headline">#</a></h2>
+<p>条件付き期待値<span class="math notranslate nohighlight">\(E[Y(1)|X], E[Y(0)|X]\)</span>がともに<span class="math notranslate nohighlight">\(X\)</span>に関して線形である場合、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+E[Y(1)|X] = \alpha_1 + \beta_1 X\\
+E[Y(0)|X] = \alpha_0 + \beta_0 X
+\end{split}\]</div>
+<p>と表すことができ、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\tilde{\alpha}_1  = \alpha_1 + \beta_1 \cdot c\\
+\tilde{\alpha}_0  = \alpha_0 + \beta_0 \cdot c\\
+\end{split}\]</div>
+<p>と定義してすれば</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+E[Y(1)|X] = \tilde{\alpha}_1 + \beta_1 (X - c)\\
+E[Y(0)|X] = \tilde{\alpha}_0 + \beta_0 (X - c)
+\end{split}\]</div>
+<p>と変形することができるため</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\tau_{SRD}
+&amp;= E[Y(1)|X = c] - E[Y(0)|X = c]\\
+&amp;= \tilde{\alpha}_1 - \tilde{\alpha}_0
+\end{align}
+\end{split}\]</div>
+<p>のようにして線形回帰によってRD推定量を計算できる</p>
+</section>
+<section id="id2">
+<h2>多項式RD<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<p>条件付き期待値が非線形の場合で、線形回帰によって扱いたい場合は多項式でモデリングする方法がある</p>
+</section>
+<section id="id3">
+<h2>局所回帰<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
+<p>多項式よりはこちらが推奨される</p>
+</section>
+<section id="fuzzy-rd">
+<h2>Fuzzy RD<a class="headerlink" href="#fuzzy-rd" title="Permalink to this headline">#</a></h2>
+<p>処置の割当<span class="math notranslate nohighlight">\(T = \mathbb{1}(X \geq c)\)</span>に対して実際に処置を受けるかどうかを<span class="math notranslate nohighlight">\(D(T) \in \{0, 1\}\)</span>で表す。</p>
+<p>処置が強制ではない場合でも、処置を受ける確率<span class="math notranslate nohighlight">\(P(D=1|X)\)</span>が<span class="math notranslate nohighlight">\(X=c\)</span>において不連続であればFuzzy RDによってRDによる推定ができる</p>
+<p>continuity-based frameworkにおいて、Fuzzy RDのedtimandは次のように表される</p>
+<div class="math notranslate nohighlight">
+\[
+\tau_{FRD} = \frac
+{ \lim_{x\downarrow c} E[Y_i|X_i=x] - \lim_{x\uparrow c} E[Y_i|X_i=x] }
+{ \lim_{x\downarrow c} E[D_i|X_i=x] - \lim_{x\uparrow c} E[D_i|X_i=x] }
+\]</div>
+</section>
+<section id="python">
+<h2>Pythonによる推定<a class="headerlink" href="#python" title="Permalink to this headline">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">{rdrobust}</span></code>パッケージはRだけでなくPython版も提供されている（<a class="reference external" href="https://rdpackages.github.io/rdrobust/">RDROBUST · RD Packages</a>）ので使っていく</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rdrobust</span> <span class="kn">import</span> <span class="n">rdrobust</span><span class="p">,</span> <span class="n">rdbwselect</span><span class="p">,</span> <span class="n">rdplot</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rdrobust</span> <span class="kn">import</span> <span class="n">rdrobust</span><span class="p">,</span> <span class="n">rdbwselect</span><span class="p">,</span> <span class="n">rdplot</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1">### Load data base</span>
+<span class="n">rdrobust_senate</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;https://raw.githubusercontent.com/rdpackages/rdrobust/master/Python/rdrobust_senate.csv&quot;</span><span class="p">)</span>
+
+<span class="c1"># Define the variblrs</span>
+<span class="n">margin</span> <span class="o">=</span> <span class="n">rdrobust_senate</span><span class="o">.</span><span class="n">margin</span>
+<span class="n">vote</span> <span class="o">=</span> <span class="n">rdrobust_senate</span><span class="o">.</span><span class="n">vote</span>
+
+<span class="c1">### rdplot with 95% confidence intervals</span>
+<span class="n">rdplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">vote</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">margin</span><span class="p">,</span> <span class="n">binselect</span><span class="o">=</span><span class="s2">&quot;es&quot;</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="mi">95</span><span class="p">,</span> 
+         <span class="n">title</span><span class="o">=</span><span class="s2">&quot;RD Plot: U.S. Senate Election Data&quot;</span><span class="p">,</span> 
+         <span class="n">y_label</span><span class="o">=</span><span class="s2">&quot;Vote Share in Election at time t+2&quot;</span><span class="p">,</span>
+         <span class="n">x_label</span><span class="o">=</span><span class="s2">&quot;Vote Share in Election at time t&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/regression_discontinuity_13_0.png" src="../_images/regression_discontinuity_13_0.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call: rdplot
+Number of Observations:                  1297
+Kernel:                               Uniform
+Polynomial Order Est. (p):                  4
+
+                                Left      Right
+------------------------------------------------
+Number of Observations           595        702
+Number of Effective Obs          595        702
+Bandwith poly. fit (h)         100.0      100.0
+Number of bins scale               1          1
+Bins Selected                      8          9
+Average Bin Length              12.5     11.111
+Median Bin Length               12.5     11.111
+IMSE-optimal bins                8.0        9.0
+Mimicking Variance bins         15.0       35.0
+
+Relative to IMSE-optimal:
+Implied scale                    1.0        1.0
+WIMSE variance weight            0.5        0.5
+WIMSE bias weight                0.5        0.5
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 <section id="interrupted-time-series">
 <h2>Interrupted Time-Series<a class="headerlink" href="#interrupted-time-series" title="Permalink to this headline">#</a></h2>
 <p><strong>分割時系列</strong>（interrupted time-series）はRDDのrunning variableを時間にしたもの。
 時系列特有の変動（自己相関性など）がバイアスになりうるので考慮が必要</p>
 <p>例（医学系）：<a class="reference external" href="https://onlinelibrary.wiley.com/doi/10.1046/j.1365-2710.2002.00430.x/abstract;jsessionid=F03D81FDF2408F991F59B6E8BFD9606D.f01t02?systemMessage=Wiley+Online+Library+will+be+disrupted+on+16th+May+from+12%3A00-14%3A00+BST+%2807%3A00-09%3A00+EDT%29+for+up+to+two+hours+for+essential+maintenance.++Apologies+for+the+inconvenience.">Wagner, A. K., Soumerai, S. B., Zhang, F., &amp; Ross‐Degnan, D. (2002). Segmented regression analysis of interrupted time series studies in medication use research. Journal of clinical pharmacy and therapeutics, 27(4), 299-309.</a></p>
+</section>
+<section id="id4">
+<h2>参考文献<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h2>
+<p><a class="reference external" href="https://rdpackages.github.io/">RD Packages</a></p>
+<section id="introductions">
+<h3>Introductions<a class="headerlink" href="#introductions" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Cattaneo and Titiunik (2022): <a class="reference external" href="https://rdpackages.github.io/references/Cattaneo-Titiunik_2022_ARE.pdf">Regression Discontinuity Designs</a>.
+<em>Annual Review of Economics</em> 14: 821-851.</p>
+<ul>
+<li><p>(arxiv) <a class="reference external" href="https://arxiv.org/pdf/2108.09400.pdf">Cattaneo, M. D., &amp; Titiunik, R. (2022). Regression discontinuity designs.</a></p></li>
+</ul>
+</li>
+<li><p>Cattaneo, Idrobo and Titiunik (2020): <a class="reference external" href="https://rdpackages.github.io/references/Cattaneo-Idrobo-Titiunik_2020_CUP.pdf">A Practical Introduction to Regression Discontinuity Designs: Foundations</a>.
+<em>Cambridge Elements: Quantitative and Computational Methods for Social Science</em>, Cambridge University Press. <a class="reference external" href="https://rdpackages.github.io/references/Cattaneo-Idrobo-Titiunik_2020_CUP--erratum.pdf">Erratum</a>.</p></li>
+<li><p>Cattaneo, Idrobo and Titiunik (2023): <a class="reference external" href="https://rdpackages.github.io/references/Cattaneo-Idrobo-Titiunik_2023_CUP.pdf">A Practical Introduction to Regression Discontinuity Designs: Extensions</a>.
+<em>Cambridge Elements: Quantitative and Computational Methods for Social Science</em>, Cambridge University Press.</p></li>
+</ul>
+</section>
+<section id="multi-cutoff">
+<h3>Multi-Cutoff<a class="headerlink" href="#multi-cutoff" title="Permalink to this headline">#</a></h3>
+<p><a class="reference external" href="https://arxiv.org/pdf/1808.04416.pdf">Cattaneo, et al. (2021). Extrapolating treatment effects in multi-cutoff regression discontinuity designs.</a></p>
+</section>
+<section id="multi-running-variable">
+<h3>Multi-running variable?<a class="headerlink" href="#multi-running-variable" title="Permalink to this headline">#</a></h3>
+<p><a class="reference external" href="https://www.mdc.e.u-tokyo.ac.jp/wp-content/uploads/2021/01/UTMD-003.pdf">Abdulkadiroglu, A., Angrist, J. D., Narita, Y., &amp; Pathak, P. A. (2019). Breaking ties: Regression discontinuity design meets market design.</a></p>
+</section>
 </section>
 </section>
 
@@ -849,17 +1242,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="difference_in_differences.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="instrumental_variables.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Difference In Differences</p>
+            <p class="prev-next-title">操作変数法</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="../financial_economics/introduction.html" title="next page">
+    <a class='right-next' id="next-link" href="difference_in_differences.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">概要</p>
+        <p class="prev-next-title">Difference In Differences</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
