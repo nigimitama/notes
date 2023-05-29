@@ -1,0 +1,1804 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>固定効果モデル &#8212; データサイエンスの勉強ノート</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="概要" href="../financial_economics/introduction.html" />
+    <link rel="prev" title="Difference In Differences" href="difference_in_differences.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GXSWJY51EG"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-GXSWJY51EG');
+                </script>
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">データサイエンスの勉強ノート</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    データサイエンス関連まとめメモ
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  数学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../mathematics/introduction.html">
+   数学の初歩
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../mathematics/set_theory.html">
+   集合論
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../mathematics/functions.html">
+   関数
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../mathematics/calculus.html">
+   微分積分学
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../mathematics/linear_algebra.html">
+   線形代数学
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mathematics/mathematical_optimization/index.html">
+   数理最適化
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mathematics/mathematical_optimization/lagrange.html">
+     ラグランジュの未定乗数法
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mathematics/mathematical_optimization/gradient_descent.html">
+     勾配降下法
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mathematics/mathematical_optimization/knapsack_problem.html">
+     ナップサック問題
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  統計学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/probability_and_expectation.html">
+   確率と期待値・分散
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/distributions.html">
+   確率分布
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../statistics/statistical_inference/index.html">
+   統計的推測
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../statistics/statistical_inference/01_sample_distribution.html">
+     標本分布
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../statistics/statistical_inference/02_generating_functions.html">
+     母関数
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../statistics/statistical_inference/03_central_limit_theorem.html">
+     中心極限定理
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../statistics/statistical_inference/04_point_estimation.html">
+     点推定
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../statistics/statistical_inference/05_interval_inference.html">
+     区間推定
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../statistics/statistical_inference/06_test.html">
+     検定
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/likelihood_and_probability.html">
+   尤度関数と確率関数の違いは何なのか？
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/bootstrap.html">
+   Bootstrap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/nonparametric_density_estimation.html">
+   ノンパラメトリック密度推定
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/correlation.html">
+   順序尺度の相関係数
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  統計モデリング
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistical_modeling/factor_analysis.html">
+   因子分析
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  機械学習
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../machine_learning/linear_models/index.html">
+   線形モデル
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/linear_models/regression/linear_regression.html">
+     線形回帰
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/linear_models/regression/ridge_regression.html">
+     Ridge回帰
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/linear_models/regression/lasso.html">
+     LASSO
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/linear_models/classification/linear_discriminant_analysis.html">
+     線形判別モデル
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/linear_models/classification/logistic_regression.html">
+     ロジスティック回帰
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../machine_learning/svm.html">
+   Support Vector Machine
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../machine_learning/trees/index.html">
+   Tree-based Algorithms
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/trees/decision_tree.html">
+     決定木
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/trees/gbdt.html">
+     勾配ブースティング決定木
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../machine_learning/deep_learning/index.html">
+   深層学習
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/deep_learning/neural_network.html">
+     Feed-Forward Neural Network
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/deep_learning/cnn.html">
+     CNN
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/deep_learning/rnn.html">
+     RNN
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/deep_learning/lstm.html">
+     LSTM
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/deep_learning/transformer.html">
+     Transformer
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/deep_learning/dl_and_tabular_data.html">
+     Deep Learning and Tabular data
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../machine_learning/dimension_reduction.html">
+   次元削減
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../machine_learning/imbalanced_data.html">
+   不均衡データ
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  生成モデル
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../generative_models/generative_models.html">
+   生成モデル
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../generative_models/autoencoder.html">
+   Autoencoder
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../generative_models/gan.html">
+   GAN
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../generative_models/diffusion_models.html">
+   Diffusion Models
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  自然言語処理
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../natural_language_processing/introduction.html">
+   自然言語処理
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../natural_language_processing/embedding.html">
+   単語の埋め込み
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../natural_language_processing/rnn.html">
+   言語モデルとRNN
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  画像処理
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../image_processing/introduction.html">
+   画像認識
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  計量経済学
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="rubin_causal_model.html">
+   ルービンの因果モデル
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="hte.html">
+   Heterogeneous Treatment Effectsの推定
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="ols/index.html">
+   回帰分析
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/ols.html">
+     概要
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/test_of_ols.html">
+     OLSの検定・区間推定
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/nature_of_ols_estimator.html">
+     OLS推定量の性質
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/ols_robust_standard_error.html">
+     OLSのロバスト標準誤差
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/log_transformation.html">
+     対数変換
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/omitted_variable_bias.html">
+     欠落変数バイアス
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/fwl.html">
+     FWL定理
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="propensity_score.html">
+   傾向スコア
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="instrumental_variables.html">
+   操作変数法
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="regression_discontinuity.html">
+   RDD
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="difference_in_differences.html">
+   Difference In Differences
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   固定効果モデル
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  金融経済学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/introduction.html">
+   概要
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/optimal_portfolio.html">
+   最適ポートフォリオ
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/capm.html">
+   CAPM
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/metrics.html">
+   ファイナンスの指標たち
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/feature_neutralization.html">
+   Feature Neutralization
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/statistical_arbitrage.html">
+   統計的裁定
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/nigimitama/notes/gh-pages?urlpath=tree/docs/econometrics/fixed_effect_model.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/nigimitama/notes"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Feconometrics/fixed_effect_model.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/econometrics/fixed_effect_model.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   パネルデータ
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pooled-ols">
+   Pooled OLS
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#one-way-fixed-effect-model">
+   one-way fixed effect model
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     個体固定効果モデル
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#first-difference-model-ols">
+       (1) “一回の階差モデル（first difference model）”によるOLS推定
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#n-1ols">
+       (2) “
+       <span class="math notranslate nohighlight">
+        \(n-1\)
+       </span>
+       個のダミー説明変数”を用いたOLS推定
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#entity-demeaned-ols">
+       (3) ”平均差分法（Entity-demeaned）”を用いたOLS推定
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#two-way-effect-model">
+   two-way effect model
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   比較
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>固定効果モデル</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   パネルデータ
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pooled-ols">
+   Pooled OLS
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#one-way-fixed-effect-model">
+   one-way fixed effect model
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     個体固定効果モデル
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#first-difference-model-ols">
+       (1) “一回の階差モデル（first difference model）”によるOLS推定
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#n-1ols">
+       (2) “
+       <span class="math notranslate nohighlight">
+        \(n-1\)
+       </span>
+       個のダミー説明変数”を用いたOLS推定
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#entity-demeaned-ols">
+       (3) ”平均差分法（Entity-demeaned）”を用いたOLS推定
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#two-way-effect-model">
+   two-way effect model
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   比較
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>固定効果モデル<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<section id="id2">
+<h2>パネルデータ<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<p>異なる時点で同じ個体についての情報を観測したデータを<strong>パネルデータ</strong> （panel data）という。</p>
+<p>パネルデータを分析する際は個体差による効果や時点ごとの固有の効果の影響を除く必要があり、そうしたことができる代表的な分析手法が<strong>固定効果モデル</strong>（fixed effect model）である</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;Grunfeld&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;plm&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+<span class="n">data</span>
+
+<span class="c1"># Grunfeldは1935～1954年にかけてのアメリカの10の企業のbalanced panelデータ</span>
+<span class="c1"># firm: 企業ID</span>
+<span class="c1"># inv: 投資総額</span>
+<span class="c1"># value: 企業価値</span>
+<span class="c1"># capital: 資本ストック</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>firm</th>
+      <th>year</th>
+      <th>inv</th>
+      <th>value</th>
+      <th>capital</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>1935</td>
+      <td>317.60</td>
+      <td>3078.50</td>
+      <td>2.80</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>1936</td>
+      <td>391.80</td>
+      <td>4661.70</td>
+      <td>52.60</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>1937</td>
+      <td>410.60</td>
+      <td>5387.10</td>
+      <td>156.90</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>1938</td>
+      <td>257.70</td>
+      <td>2792.20</td>
+      <td>209.20</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1</td>
+      <td>1939</td>
+      <td>330.80</td>
+      <td>4313.20</td>
+      <td>203.40</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>195</th>
+      <td>10</td>
+      <td>1950</td>
+      <td>3.42</td>
+      <td>69.05</td>
+      <td>8.74</td>
+    </tr>
+    <tr>
+      <th>196</th>
+      <td>10</td>
+      <td>1951</td>
+      <td>4.67</td>
+      <td>83.04</td>
+      <td>9.07</td>
+    </tr>
+    <tr>
+      <th>197</th>
+      <td>10</td>
+      <td>1952</td>
+      <td>6.00</td>
+      <td>74.42</td>
+      <td>9.93</td>
+    </tr>
+    <tr>
+      <th>198</th>
+      <td>10</td>
+      <td>1953</td>
+      <td>6.53</td>
+      <td>63.51</td>
+      <td>11.68</td>
+    </tr>
+    <tr>
+      <th>199</th>
+      <td>10</td>
+      <td>1954</td>
+      <td>5.12</td>
+      <td>58.12</td>
+      <td>14.33</td>
+    </tr>
+  </tbody>
+</table>
+<p>200 rows × 5 columns</p>
+</div></div></div>
+</div>
+</section>
+<section id="pooled-ols">
+<h2>Pooled OLS<a class="headerlink" href="#pooled-ols" title="Permalink to this headline">#</a></h2>
+<p>パネルデータ分析において、固定効果を特に考慮しないで通常の重回帰モデルを用いたモデルを<strong>Pooled OLS</strong>と呼ぶ。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pooled_ols</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="o">.</span><span class="n">from_formula</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s2">&quot;value ~ inv + capital&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">pooled_ols</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="simpletable">
+<caption>OLS Regression Results</caption>
+<tr>
+  <th>Dep. Variable:</th>          <td>value</td>      <th>  R-squared:         </th> <td>   0.745</td>
+</tr>
+<tr>
+  <th>Model:</th>                   <td>OLS</td>       <th>  Adj. R-squared:    </th> <td>   0.743</td>
+</tr>
+<tr>
+  <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th> <td>   288.5</td>
+</tr>
+<tr>
+  <th>Date:</th>             <td>Mon, 29 May 2023</td> <th>  Prob (F-statistic):</th> <td>2.91e-59</td>
+</tr>
+<tr>
+  <th>Time:</th>                 <td>02:34:48</td>     <th>  Log-Likelihood:    </th> <td> -1582.7</td>
+</tr>
+<tr>
+  <th>No. Observations:</th>      <td>   200</td>      <th>  AIC:               </th> <td>   3171.</td>
+</tr>
+<tr>
+  <th>Df Residuals:</th>          <td>   197</td>      <th>  BIC:               </th> <td>   3181.</td>
+</tr>
+<tr>
+  <th>Df Model:</th>              <td>     2</td>      <th>                     </th>     <td> </td>   
+</tr>
+<tr>
+  <th>Covariance Type:</th>      <td>nonrobust</td>    <th>                     </th>     <td> </td>   
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+      <td></td>         <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>Intercept</th> <td>  410.8156</td> <td>   64.142</td> <td>    6.405</td> <td> 0.000</td> <td>  284.323</td> <td>  537.308</td>
+</tr>
+<tr>
+  <th>inv</th>       <td>    5.7598</td> <td>    0.291</td> <td>   19.803</td> <td> 0.000</td> <td>    5.186</td> <td>    6.333</td>
+</tr>
+<tr>
+  <th>capital</th>   <td>   -0.6153</td> <td>    0.209</td> <td>   -2.937</td> <td> 0.004</td> <td>   -1.028</td> <td>   -0.202</td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <th>Omnibus:</th>       <td>49.984</td> <th>  Durbin-Watson:     </th> <td>   0.328</td>
+</tr>
+<tr>
+  <th>Prob(Omnibus):</th> <td> 0.000</td> <th>  Jarque-Bera (JB):  </th> <td> 107.714</td>
+</tr>
+<tr>
+  <th>Skew:</th>          <td> 1.157</td> <th>  Prob(JB):          </th> <td>4.08e-24</td>
+</tr>
+<tr>
+  <th>Kurtosis:</th>      <td> 5.751</td> <th>  Cond. No.          </th> <td>    630.</td>
+</tr>
+</table><br/><br/>Notes:<br/>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</div></div>
+</div>
+</section>
+<section id="one-way-fixed-effect-model">
+<h2>one-way fixed effect model<a class="headerlink" href="#one-way-fixed-effect-model" title="Permalink to this headline">#</a></h2>
+<p>時点や個体など、1つの固定効果に対処するモデル。一元配置固定効果モデル（one-way fixed effect model）などと呼ばれる。</p>
+<section id="id3">
+<h3>個体固定効果モデル<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
+<p>以下のような個体固定効果モデルを考える。</p>
+<div class="math notranslate nohighlight">
+\[
+Y_{it} = \beta_0 + \beta_1 X_{it} +\theta_i + \varepsilon_{it}
+\]</div>
+<p>パネルデータを用いることができる場合、以下の3つの方法によって個体固定効果（entity fixed effects）<span class="math notranslate nohighlight">\(\theta_i\)</span>を除去することができる。</p>
+<section id="first-difference-model-ols">
+<h4>(1) “一回の階差モデル（first difference model）”によるOLS推定<a class="headerlink" href="#first-difference-model-ols" title="Permalink to this headline">#</a></h4>
+<div class="math notranslate nohighlight">
+\[
+(Y_{i,t+1} - Y_{it}) = (\beta_0 - \beta_0) + \beta_1 (X_{i,t+1}-X_{it}) +  (\varepsilon_{i,t+1} - \varepsilon_{it})
+\]</div>
+<p>記号を置き換えて、</p>
+<div class="math notranslate nohighlight">
+\[
+\Delta Y_{it} = \beta_1 \Delta X_{it}+ \Delta \varepsilon_{it}
+\]</div>
+<ul class="simple">
+<li><p>推定方法：</p>
+<ol class="simple">
+<li><p>説明変数、被説明変数それぞれ<span class="math notranslate nohighlight">\(t+1\)</span>期から<span class="math notranslate nohighlight">\(t\)</span>期を引く</p></li>
+<li><p>上の式をOLS推定する</p></li>
+</ol>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;Grunfeld&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;plm&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+<span class="n">deltas</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">&quot;firm&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">firm</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;firm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;firm == </span><span class="si">{</span><span class="n">firm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">d</span> <span class="o">-</span> <span class="n">d</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">delta</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+    <span class="n">delta</span><span class="p">[</span><span class="s2">&quot;firm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">firm</span>
+    <span class="n">deltas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+<span class="n">delta</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">deltas</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;firm&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">delta</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>firm</th>
+      <th>year</th>
+      <th>inv</th>
+      <th>value</th>
+      <th>capital</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>1936</td>
+      <td>74.20</td>
+      <td>1583.20</td>
+      <td>49.80</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>1954</td>
+      <td>182.30</td>
+      <td>-648.10</td>
+      <td>449.00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>1953</td>
+      <td>413.20</td>
+      <td>1316.80</td>
+      <td>346.80</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>1952</td>
+      <td>135.30</td>
+      <td>91.90</td>
+      <td>222.80</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1</td>
+      <td>1951</td>
+      <td>113.00</td>
+      <td>1077.40</td>
+      <td>108.70</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>185</th>
+      <td>10</td>
+      <td>1937</td>
+      <td>0.19</td>
+      <td>-5.74</td>
+      <td>-0.14</td>
+    </tr>
+    <tr>
+      <th>186</th>
+      <td>10</td>
+      <td>1936</td>
+      <td>-0.54</td>
+      <td>17.03</td>
+      <td>0.21</td>
+    </tr>
+    <tr>
+      <th>187</th>
+      <td>10</td>
+      <td>1953</td>
+      <td>0.53</td>
+      <td>-10.91</td>
+      <td>1.75</td>
+    </tr>
+    <tr>
+      <th>188</th>
+      <td>10</td>
+      <td>1944</td>
+      <td>0.25</td>
+      <td>-0.42</td>
+      <td>-0.17</td>
+    </tr>
+    <tr>
+      <th>189</th>
+      <td>10</td>
+      <td>1954</td>
+      <td>-1.41</td>
+      <td>-5.39</td>
+      <td>2.65</td>
+    </tr>
+  </tbody>
+</table>
+<p>190 rows × 5 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">first_diff</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="o">.</span><span class="n">from_formula</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s2">&quot;value ~ -1 + inv + capital&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">delta</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">first_diff</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="simpletable">
+<caption>OLS Regression Results</caption>
+<tr>
+  <th>Dep. Variable:</th>          <td>value</td>      <th>  R-squared (uncentered):</th>      <td>   0.389</td>
+</tr>
+<tr>
+  <th>Model:</th>                   <td>OLS</td>       <th>  Adj. R-squared (uncentered):</th> <td>   0.383</td>
+</tr>
+<tr>
+  <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th>          <td>   59.85</td>
+</tr>
+<tr>
+  <th>Date:</th>             <td>Mon, 29 May 2023</td> <th>  Prob (F-statistic):</th>          <td>7.69e-21</td>
+</tr>
+<tr>
+  <th>Time:</th>                 <td>02:34:48</td>     <th>  Log-Likelihood:    </th>          <td> -1351.2</td>
+</tr>
+<tr>
+  <th>No. Observations:</th>      <td>   190</td>      <th>  AIC:               </th>          <td>   2706.</td>
+</tr>
+<tr>
+  <th>Df Residuals:</th>          <td>   188</td>      <th>  BIC:               </th>          <td>   2713.</td>
+</tr>
+<tr>
+  <th>Df Model:</th>              <td>     2</td>      <th>                     </th>              <td> </td>   
+</tr>
+<tr>
+  <th>Covariance Type:</th>      <td>nonrobust</td>    <th>                     </th>              <td> </td>   
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+     <td></td>        <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>inv</th>     <td>    4.3070</td> <td>    0.398</td> <td>   10.816</td> <td> 0.000</td> <td>    3.521</td> <td>    5.092</td>
+</tr>
+<tr>
+  <th>capital</th> <td>   -1.5319</td> <td>    0.339</td> <td>   -4.517</td> <td> 0.000</td> <td>   -2.201</td> <td>   -0.863</td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <th>Omnibus:</th>       <td>60.467</td> <th>  Durbin-Watson:     </th> <td>   2.603</td> 
+</tr>
+<tr>
+  <th>Prob(Omnibus):</th> <td> 0.000</td> <th>  Jarque-Bera (JB):  </th> <td>1184.992</td> 
+</tr>
+<tr>
+  <th>Skew:</th>          <td>-0.564</td> <th>  Prob(JB):          </th> <td>4.81e-258</td>
+</tr>
+<tr>
+  <th>Kurtosis:</th>      <td>15.182</td> <th>  Cond. No.          </th> <td>    1.38</td> 
+</tr>
+</table><br/><br/>Notes:<br/>[1] R² is computed without centering (uncentered) since the model does not contain a constant.<br/>[2] Standard Errors assume that the covariance matrix of the errors is correctly specified.</div></div>
+</div>
+</section>
+<section id="n-1ols">
+<h4>(2) “<span class="math notranslate nohighlight">\(n-1\)</span>個のダミー説明変数”を用いたOLS推定<a class="headerlink" href="#n-1ols" title="Permalink to this headline">#</a></h4>
+<p>最小二乗ダミー変数推定（Least Squares Dummy Variables (LSDV) 推定）とも呼ばれる。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+Y_{it} = \beta_0 + \beta_1 X_{it} + \gamma_2 D2_i + \cdots + \gamma_n Dn_i + \varepsilon_{it}  \\
+  \text{where } D2_i = 
+  \begin{cases}
+  1 &amp; \text{for } i = 2\\
+  0 &amp; \text{otherwise}
+  \end{cases} \text{, etc.}
+\end{split}\]</div>
+<ul class="simple">
+<li><p>推定方法：</p>
+<ol class="simple">
+<li><p>個体ダミー変数（個体<span class="math notranslate nohighlight">\(i\)</span>に該当する場合に1、それ以外は0となるダミー変数）<span class="math notranslate nohighlight">\(D2_i, \cdots, Dn_i\)</span>を作成する</p></li>
+<li><p>上の式をOLS推定する</p></li>
+</ol>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;Grunfeld&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;plm&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+<span class="n">lsdv</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="o">.</span><span class="n">from_formula</span><span class="p">(</span>
+    <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;value ~ inv + capital + firm&quot;</span><span class="p">,</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">firm</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;firm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">))</span> <span class="c1"># category型にすれば自動でダミー変数にしてくれる</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">lsdv</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="simpletable">
+<caption>OLS Regression Results</caption>
+<tr>
+  <th>Dep. Variable:</th>          <td>value</td>      <th>  R-squared:         </th> <td>   0.961</td> 
+</tr>
+<tr>
+  <th>Model:</th>                   <td>OLS</td>       <th>  Adj. R-squared:    </th> <td>   0.958</td> 
+</tr>
+<tr>
+  <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th> <td>   415.7</td> 
+</tr>
+<tr>
+  <th>Date:</th>             <td>Mon, 29 May 2023</td> <th>  Prob (F-statistic):</th> <td>1.60e-125</td>
+</tr>
+<tr>
+  <th>Time:</th>                 <td>02:34:48</td>     <th>  Log-Likelihood:    </th> <td> -1396.3</td> 
+</tr>
+<tr>
+  <th>No. Observations:</th>      <td>   200</td>      <th>  AIC:               </th> <td>   2817.</td> 
+</tr>
+<tr>
+  <th>Df Residuals:</th>          <td>   188</td>      <th>  BIC:               </th> <td>   2856.</td> 
+</tr>
+<tr>
+  <th>Df Model:</th>              <td>    11</td>      <th>                     </th>     <td> </td>    
+</tr>
+<tr>
+  <th>Covariance Type:</th>      <td>nonrobust</td>    <th>                     </th>     <td> </td>    
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+       <td></td>         <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>Intercept</th>  <td> 2926.5580</td> <td>  138.597</td> <td>   21.116</td> <td> 0.000</td> <td> 2653.152</td> <td> 3199.964</td>
+</tr>
+<tr>
+  <th>firm[T.2]</th>  <td>-1977.3704</td> <td>   92.074</td> <td>  -21.476</td> <td> 0.000</td> <td>-2159.000</td> <td>-1795.740</td>
+</tr>
+<tr>
+  <th>firm[T.3]</th>  <td>-1074.1620</td> <td>  154.332</td> <td>   -6.960</td> <td> 0.000</td> <td>-1378.606</td> <td> -769.718</td>
+</tr>
+<tr>
+  <th>firm[T.4]</th>  <td>-2417.7546</td> <td>  138.428</td> <td>  -17.466</td> <td> 0.000</td> <td>-2690.826</td> <td>-2144.683</td>
+</tr>
+<tr>
+  <th>firm[T.5]</th>  <td>-2624.3942</td> <td>  172.507</td> <td>  -15.213</td> <td> 0.000</td> <td>-2964.691</td> <td>-2284.097</td>
+</tr>
+<tr>
+  <th>firm[T.6]</th>  <td>-2611.9931</td> <td>  144.390</td> <td>  -18.090</td> <td> 0.000</td> <td>-2896.826</td> <td>-2327.160</td>
+</tr>
+<tr>
+  <th>firm[T.7]</th>  <td>-2752.7584</td> <td>  161.271</td> <td>  -17.069</td> <td> 0.000</td> <td>-3070.893</td> <td>-2434.624</td>
+</tr>
+<tr>
+  <th>firm[T.8]</th>  <td>-2334.6595</td> <td>  146.157</td> <td>  -15.974</td> <td> 0.000</td> <td>-2622.978</td> <td>-2046.341</td>
+</tr>
+<tr>
+  <th>firm[T.9]</th>  <td>-2561.2563</td> <td>  161.357</td> <td>  -15.873</td> <td> 0.000</td> <td>-2879.559</td> <td>-2242.954</td>
+</tr>
+<tr>
+  <th>firm[T.10]</th> <td>-2861.4294</td> <td>  150.690</td> <td>  -18.989</td> <td> 0.000</td> <td>-3158.690</td> <td>-2564.169</td>
+</tr>
+<tr>
+  <th>inv</th>        <td>    2.8562</td> <td>    0.308</td> <td>    9.288</td> <td> 0.000</td> <td>    2.250</td> <td>    3.463</td>
+</tr>
+<tr>
+  <th>capital</th>    <td>   -0.5079</td> <td>    0.140</td> <td>   -3.618</td> <td> 0.000</td> <td>   -0.785</td> <td>   -0.231</td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <th>Omnibus:</th>       <td>38.057</td> <th>  Durbin-Watson:     </th> <td>   1.562</td>
+</tr>
+<tr>
+  <th>Prob(Omnibus):</th> <td> 0.000</td> <th>  Jarque-Bera (JB):  </th> <td> 212.860</td>
+</tr>
+<tr>
+  <th>Skew:</th>          <td> 0.515</td> <th>  Prob(JB):          </th> <td>6.00e-47</td>
+</tr>
+<tr>
+  <th>Kurtosis:</th>      <td> 7.948</td> <th>  Cond. No.          </th> <td>1.04e+04</td>
+</tr>
+</table><br/><br/>Notes:<br/>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.<br/>[2] The condition number is large, 1.04e+04. This might indicate that there are<br/>strong multicollinearity or other numerical problems.</div></div>
+</div>
+</section>
+<section id="entity-demeaned-ols">
+<h4>(3) ”平均差分法（Entity-demeaned）”を用いたOLS推定<a class="headerlink" href="#entity-demeaned-ols" title="Permalink to this headline">#</a></h4>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\tilde{Y}_{it} &amp;= \beta_1 \tilde{X}_{it} + \tilde{\varepsilon}_{it}, \\
+\text{where }
+\tilde{Y}_{it} &amp;= Y_{it} - \bar{Y}_i, \hspace{1em}   \bar{Y}_i = \frac{1}{T} \sum^T_{t=1} Y_{it}\\
+\tilde{X}_{it} &amp;= X_{it} - \bar{X}_i, \hspace{1em} \bar{X}_i  = \frac{1}{T} \sum^T_{t=1} X_{it}\\
+\tilde{\varepsilon}_{it} &amp;= \varepsilon_{it}- \bar{\varepsilon}_i, \hspace{1em} \bar{\varepsilon}_i = \frac{1}{T} \sum_{t=1}^T \varepsilon_{it}
+\end{align}
+\end{split}\]</div>
+<ul class="simple">
+<li><p>推定方法：</p>
+<ol class="simple">
+<li><p>説明変数・被説明変数について、変数から期間平均を引く</p></li>
+<li><p>上の式をOLS推定する</p></li>
+</ol>
+</li>
+<li><p><span class="math notranslate nohighlight">\(n-1\)</span>個の個体ダミー説明変数による推定と同じ推定値が得られる</p></li>
+<li><p>統計ソフトでは通常は平均差分法による推定が行われる</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;Grunfeld&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;plm&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+<span class="n">group</span> <span class="o">=</span> <span class="s2">&quot;firm&quot;</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;inv&quot;</span><span class="p">,</span> <span class="s2">&quot;capital&quot;</span><span class="p">]:</span>
+        <span class="n">d</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">-</span> <span class="n">d</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+
+<span class="n">entity_demeaned</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="o">.</span><span class="n">from_formula</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s2">&quot;value ~ -1 + inv + capital&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">entity_demeaned</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="simpletable">
+<caption>OLS Regression Results</caption>
+<tr>
+  <th>Dep. Variable:</th>          <td>value</td>      <th>  R-squared (uncentered):</th>      <td>   0.412</td>
+</tr>
+<tr>
+  <th>Model:</th>                   <td>OLS</td>       <th>  Adj. R-squared (uncentered):</th> <td>   0.406</td>
+</tr>
+<tr>
+  <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th>          <td>   69.28</td>
+</tr>
+<tr>
+  <th>Date:</th>             <td>Mon, 29 May 2023</td> <th>  Prob (F-statistic):</th>          <td>1.55e-23</td>
+</tr>
+<tr>
+  <th>Time:</th>                 <td>02:34:49</td>     <th>  Log-Likelihood:    </th>          <td> -1396.3</td>
+</tr>
+<tr>
+  <th>No. Observations:</th>      <td>   200</td>      <th>  AIC:               </th>          <td>   2797.</td>
+</tr>
+<tr>
+  <th>Df Residuals:</th>          <td>   198</td>      <th>  BIC:               </th>          <td>   2803.</td>
+</tr>
+<tr>
+  <th>Df Model:</th>              <td>     2</td>      <th>                     </th>              <td> </td>   
+</tr>
+<tr>
+  <th>Covariance Type:</th>      <td>nonrobust</td>    <th>                     </th>              <td> </td>   
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+     <td></td>        <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>inv</th>     <td>    2.8562</td> <td>    0.300</td> <td>    9.532</td> <td> 0.000</td> <td>    2.265</td> <td>    3.447</td>
+</tr>
+<tr>
+  <th>capital</th> <td>   -0.5079</td> <td>    0.137</td> <td>   -3.713</td> <td> 0.000</td> <td>   -0.778</td> <td>   -0.238</td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <th>Omnibus:</th>       <td>38.057</td> <th>  Durbin-Watson:     </th> <td>   1.562</td>
+</tr>
+<tr>
+  <th>Prob(Omnibus):</th> <td> 0.000</td> <th>  Jarque-Bera (JB):  </th> <td> 212.860</td>
+</tr>
+<tr>
+  <th>Skew:</th>          <td> 0.515</td> <th>  Prob(JB):          </th> <td>6.00e-47</td>
+</tr>
+<tr>
+  <th>Kurtosis:</th>      <td> 7.948</td> <th>  Cond. No.          </th> <td>    4.31</td>
+</tr>
+</table><br/><br/>Notes:<br/>[1] R² is computed without centering (uncentered) since the model does not contain a constant.<br/>[2] Standard Errors assume that the covariance matrix of the errors is correctly specified.</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">md</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">mixedlm</span><span class="p">(</span><span class="s2">&quot;value ~ inv + capital&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">])</span>
+<span class="n">mdf</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mdf</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          Mixed Linear Model Regression Results
+=========================================================
+Model:            MixedLM Dependent Variable: value      
+No. Observations: 200     Method:             REML       
+No. Groups:       20      Scale:              444235.8454
+Min. group size:  10      Log-Likelihood:     -1579.1760 
+Max. group size:  10      Converged:          Yes        
+Mean group size:  10.0                                   
+---------------------------------------------------------
+             Coef.  Std.Err.   z    P&gt;|z|  [0.025  0.975]
+---------------------------------------------------------
+Intercept   410.816   49.405  8.315 0.000 313.983 507.648
+inv           5.760    0.279 20.671 0.000   5.214   6.306
+capital      -0.615    0.083 -7.406 0.000  -0.778  -0.452
+Group Var     0.000                                      
+=========================================================
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/statsmodels/regression/mixed_linear_model.py:1635: UserWarning: Random effects covariance is singular
+  warnings.warn(msg)
+/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/statsmodels/regression/mixed_linear_model.py:2238: ConvergenceWarning: The MLE may be on the boundary of the parameter space.
+  warnings.warn(msg, ConvergenceWarning)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="two-way-effect-model">
+<h2>two-way effect model<a class="headerlink" href="#two-way-effect-model" title="Permalink to this headline">#</a></h2>
+<p>時点効果＋個体効果 といった2つの効果を同時に固定する</p>
+<div class="math notranslate nohighlight">
+\[
+Y_{it} =\beta_1 X_{it} +\theta_i + \pi_t + \varepsilon_{it}
+\]</div>
+<p>個体の固定効果<span class="math notranslate nohighlight">\(\theta_i\)</span>と時間の固定効果<span class="math notranslate nohighlight">\(\pi_t\)</span>の両方を除去したい場合は、それぞれの推定方法の組み合わせになる。</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(n-1\)</span>個の個体ダミー変数と<span class="math notranslate nohighlight">\(T-1\)</span>個の時間ダミー変数を用いたOLS推定</p></li>
+<li><p>entity demeaningと<span class="math notranslate nohighlight">\(T-1\)</span>個の時間ダミー変数を用いたOLS推定</p></li>
+<li><p>time demeaningと<span class="math notranslate nohighlight">\(n-1\)</span>個の個体ダミー変数を用いたOLS推定</p></li>
+<li><p>entity &amp; time demeaningを用いたOLS推定</p>
+<ul class="simple">
+<li><p>説明変数と被説明変数について、個体と時間両方の平均を引いてOLS推定</p></li>
+</ul>
+</li>
+</ol>
+<p>なお、パネルデータを活用した計量経済分析では、時間固定効果がないと仮定できるケースはまれであるため、通常はone-way固定効果モデルではなくtwo-way固定効果モデルを用いる。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;Grunfeld&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;plm&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;firm&quot;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;inv&quot;</span><span class="p">,</span> <span class="s2">&quot;capital&quot;</span><span class="p">]:</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">-</span> <span class="n">d</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+
+<span class="n">two_way_entity_demeaned</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="o">.</span><span class="n">from_formula</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s2">&quot;value ~ -1 + inv + capital&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">two_way_entity_demeaned</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="simpletable">
+<caption>OLS Regression Results</caption>
+<tr>
+  <th>Dep. Variable:</th>          <td>value</td>      <th>  R-squared (uncentered):</th>      <td>   0.868</td>
+</tr>
+<tr>
+  <th>Model:</th>                   <td>OLS</td>       <th>  Adj. R-squared (uncentered):</th> <td>   0.858</td>
+</tr>
+<tr>
+  <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th>          <td>   91.94</td>
+</tr>
+<tr>
+  <th>Date:</th>             <td>Mon, 29 May 2023</td> <th>  Prob (F-statistic):</th>          <td>4.95e-13</td>
+</tr>
+<tr>
+  <th>Time:</th>                 <td>02:34:49</td>     <th>  Log-Likelihood:    </th>          <td> -217.22</td>
+</tr>
+<tr>
+  <th>No. Observations:</th>      <td>    30</td>      <th>  AIC:               </th>          <td>   438.4</td>
+</tr>
+<tr>
+  <th>Df Residuals:</th>          <td>    28</td>      <th>  BIC:               </th>          <td>   441.2</td>
+</tr>
+<tr>
+  <th>Df Model:</th>              <td>     2</td>      <th>                     </th>              <td> </td>   
+</tr>
+<tr>
+  <th>Covariance Type:</th>      <td>nonrobust</td>    <th>                     </th>              <td> </td>   
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+     <td></td>        <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>inv</th>     <td>    2.5459</td> <td>    0.667</td> <td>    3.818</td> <td> 0.001</td> <td>    1.180</td> <td>    3.912</td>
+</tr>
+<tr>
+  <th>capital</th> <td>    0.7689</td> <td>    0.480</td> <td>    1.603</td> <td> 0.120</td> <td>   -0.214</td> <td>    1.751</td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <th>Omnibus:</th>       <td>27.147</td> <th>  Durbin-Watson:     </th> <td>   2.396</td>
+</tr>
+<tr>
+  <th>Prob(Omnibus):</th> <td> 0.000</td> <th>  Jarque-Bera (JB):  </th> <td>  76.607</td>
+</tr>
+<tr>
+  <th>Skew:</th>          <td> 1.709</td> <th>  Prob(JB):          </th> <td>2.32e-17</td>
+</tr>
+<tr>
+  <th>Kurtosis:</th>      <td>10.043</td> <th>  Cond. No.          </th> <td>    5.18</td>
+</tr>
+</table><br/><br/>Notes:<br/>[1] R² is computed without centering (uncentered) since the model does not contain a constant.<br/>[2] Standard Errors assume that the covariance matrix of the errors is correctly specified.</div></div>
+</div>
+</section>
+<section id="id4">
+<h2>比較<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">stargazer.stargazer</span> <span class="kn">import</span> <span class="n">Stargazer</span>
+
+<span class="n">Stargazer</span><span class="p">([</span><span class="n">pooled_ols</span><span class="p">,</span> <span class="n">first_diff</span><span class="p">,</span> <span class="n">lsdv</span><span class="p">,</span> <span class="n">entity_demeaned</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table style="text-align:center"><tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="4"><em>Dependent variable:value</em></td></tr><tr><td style="text-align:left"></td><tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td></tr><tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Intercept</td><td>410.816<sup>***</sup></td><td></td><td>2926.558<sup>***</sup></td><td></td></tr><tr><td style="text-align:left"></td><td>(64.142)</td><td></td><td>(138.597)</td><td></td></tr><tr><td style="text-align:left">capital</td><td>-0.615<sup>***</sup></td><td>-1.532<sup>***</sup></td><td>-0.508<sup>***</sup></td><td>-0.508<sup>***</sup></td></tr><tr><td style="text-align:left"></td><td>(0.209)</td><td>(0.339)</td><td>(0.140)</td><td>(0.137)</td></tr><tr><td style="text-align:left">firm[T.10]</td><td></td><td></td><td>-2861.429<sup>***</sup></td><td></td></tr><tr><td style="text-align:left"></td><td></td><td></td><td>(150.690)</td><td></td></tr><tr><td style="text-align:left">firm[T.2]</td><td></td><td></td><td>-1977.370<sup>***</sup></td><td></td></tr><tr><td style="text-align:left"></td><td></td><td></td><td>(92.074)</td><td></td></tr><tr><td style="text-align:left">firm[T.3]</td><td></td><td></td><td>-1074.162<sup>***</sup></td><td></td></tr><tr><td style="text-align:left"></td><td></td><td></td><td>(154.332)</td><td></td></tr><tr><td style="text-align:left">firm[T.4]</td><td></td><td></td><td>-2417.755<sup>***</sup></td><td></td></tr><tr><td style="text-align:left"></td><td></td><td></td><td>(138.428)</td><td></td></tr><tr><td style="text-align:left">firm[T.5]</td><td></td><td></td><td>-2624.394<sup>***</sup></td><td></td></tr><tr><td style="text-align:left"></td><td></td><td></td><td>(172.507)</td><td></td></tr><tr><td style="text-align:left">firm[T.6]</td><td></td><td></td><td>-2611.993<sup>***</sup></td><td></td></tr><tr><td style="text-align:left"></td><td></td><td></td><td>(144.390)</td><td></td></tr><tr><td style="text-align:left">firm[T.7]</td><td></td><td></td><td>-2752.758<sup>***</sup></td><td></td></tr><tr><td style="text-align:left"></td><td></td><td></td><td>(161.271)</td><td></td></tr><tr><td style="text-align:left">firm[T.8]</td><td></td><td></td><td>-2334.659<sup>***</sup></td><td></td></tr><tr><td style="text-align:left"></td><td></td><td></td><td>(146.157)</td><td></td></tr><tr><td style="text-align:left">firm[T.9]</td><td></td><td></td><td>-2561.256<sup>***</sup></td><td></td></tr><tr><td style="text-align:left"></td><td></td><td></td><td>(161.357)</td><td></td></tr><tr><td style="text-align:left">inv</td><td>5.760<sup>***</sup></td><td>4.307<sup>***</sup></td><td>2.856<sup>***</sup></td><td>2.856<sup>***</sup></td></tr><tr><td style="text-align:left"></td><td>(0.291)</td><td>(0.398)</td><td>(0.308)</td><td>(0.300)</td></tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Observations</td><td>200</td><td>190</td><td>200</td><td>200</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.745</td><td>0.389</td><td>0.961</td><td>0.412</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.743</td><td>0.383</td><td>0.958</td><td>0.406</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>666.510 (df=197)</td><td>298.303 (df=188)</td><td>268.733 (df=188)</td><td>261.859 (df=198)</td></tr><tr><td style="text-align: left">F Statistic</td><td>288.500<sup>***</sup> (df=2; 197)</td><td>59.854<sup>***</sup> (df=2; 188)</td><td>415.740<sup>***</sup> (df=11; 188)</td><td>69.279<sup>***</sup> (df=2; 198)</td></tr><tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Note:</td>
+ <td colspan="4" style="text-align: right">
+  <sup>*</sup>p&lt;0.1;
+  <sup>**</sup>p&lt;0.05;
+  <sup>***</sup>p&lt;0.01
+ </td></tr></table></div></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./econometrics"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="difference_in_differences.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Difference In Differences</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../financial_economics/introduction.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">概要</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By mitama<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
