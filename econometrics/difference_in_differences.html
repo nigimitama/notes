@@ -51,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="固定効果モデル" href="fixed_effect_model.html" />
@@ -783,6 +785,31 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#did">
+   2群・2期間のDID
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#times-2">
+   <span class="math notranslate nohighlight">
+    \(2\times 2\)
+   </span>
+   差の差
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   DIDの仮定
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     並行トレンドの仮定
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#multiple">
    Multiple
   </a>
@@ -817,6 +844,31 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#did">
+   2群・2期間のDID
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#times-2">
+   <span class="math notranslate nohighlight">
+    \(2\times 2\)
+   </span>
+   差の差
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   DIDの仮定
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     並行トレンドの仮定
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#multiple">
    Multiple
   </a>
@@ -844,6 +896,98 @@ title="Print to PDF"
   <section class="tex2jax_ignore mathjax_ignore" id="difference-in-differences">
 <h1>Difference In Differences<a class="headerlink" href="#difference-in-differences" title="Permalink to this headline">#</a></h1>
 <p><strong>差の差法</strong>（difference in differences: DID）</p>
+<section id="did">
+<h2>2群・2期間のDID<a class="headerlink" href="#did" title="Permalink to this headline">#</a></h2>
+<p>最もシンプルな2群・2期間のDIDを例にとる。</p>
+<p>結果変数を<span class="math notranslate nohighlight">\(Y\)</span>、処置変数を<span class="math notranslate nohighlight">\(X \in \{0, 1\}\)</span>とする。
+グループ<span class="math notranslate nohighlight">\(k\)</span>の時点<span class="math notranslate nohighlight">\(t\)</span>を<span class="math notranslate nohighlight">\(Y_{kt}\)</span>とすると、推定したい効果<span class="math notranslate nohighlight">\(\beta\)</span>だけでなくグループごとの固定効果<span class="math notranslate nohighlight">\(\alpha_k\)</span>と時間ごとの効果<span class="math notranslate nohighlight">\(\delta_t\)</span>も入ってくる。</p>
+<div class="math notranslate nohighlight">
+\[
+Y_{kt} = \beta X_{kt} + \alpha_k + \delta_t + \varepsilon_{kt}
+\]</div>
+<p>グループ<span class="math notranslate nohighlight">\(k=1\)</span>（処置群: <span class="math notranslate nohighlight">\(X_{10}=0, X_{11}=1\)</span>）</p>
+<ul class="simple">
+<li><p>処置前（<span class="math notranslate nohighlight">\(t=0\)</span>）：<span class="math notranslate nohighlight">\(Y_{10} = \beta X_{10} + \alpha_1 + \delta_0 + \varepsilon_{10} = \alpha_1 + \delta_0 + \varepsilon_{10}\)</span></p></li>
+<li><p>処置後（<span class="math notranslate nohighlight">\(t=1\)</span>）：<span class="math notranslate nohighlight">\(Y_{11} = \beta X_{11} + \alpha_1 + \delta_1 + \varepsilon_{11} = \beta + \alpha_1 + \delta_1 + \varepsilon_{11}\)</span></p></li>
+</ul>
+<p>グループ<span class="math notranslate nohighlight">\(k=0\)</span>（対照群: <span class="math notranslate nohighlight">\(X_{00} = X_{01} = 0\)</span>）</p>
+<ul class="simple">
+<li><p>処置前（<span class="math notranslate nohighlight">\(t=0\)</span>）：<span class="math notranslate nohighlight">\(Y_{00} = \beta X_{00} + \alpha_0 + \delta_0 + \varepsilon_{00} = \alpha_0 + \delta_0 + \varepsilon_{00}\)</span></p></li>
+<li><p>処置後（<span class="math notranslate nohighlight">\(t=1\)</span>）：<span class="math notranslate nohighlight">\(Y_{01} = \beta X_{01} + \alpha_0 + \delta_1 + \varepsilon_{01} = \alpha_0 + \delta_1 + \varepsilon_{01}\)</span></p></li>
+</ul>
+<p>個体固定効果<span class="math notranslate nohighlight">\(\alpha_k\)</span>を除去するため、グループごとに処置前後で差分をとると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+Y_{11} - Y_{10}
+    &amp;= \beta + \alpha_1 + \delta_1 + \varepsilon_{11} - (\alpha_1 + \delta_0 + \varepsilon_{10})\\
+    &amp;=  \beta + \alpha_1 - \alpha_1 + \delta_1 - \delta_0 + \varepsilon_{11} - \varepsilon_{10}\\
+    &amp;=  \beta + \delta_1 - \delta_0 + \varepsilon_{11} - \varepsilon_{10}\\
+\\
+Y_{01} - Y_{00}
+    &amp;= \alpha_0 + \delta_1 + \varepsilon_{01} - (\alpha_0 + \delta_0 + \varepsilon_{00})\\
+    &amp;= \alpha_0 - \alpha_0 + \delta_1 - \delta_0 + \varepsilon_{01} - \varepsilon_{00}\\
+    &amp;= \delta_1 - \delta_0 + \varepsilon_{01} - \varepsilon_{00}\\
+\end{align}
+\end{split}\]</div>
+<p>となり、時間固定効果<span class="math notranslate nohighlight">\(\delta_t\)</span>を除去するために両者の差をとると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+(Y_{11} - Y_{10}) - (Y_{01} - Y_{00})
+&amp;= \beta + \delta_1 - \delta_0 + \varepsilon_{11} - \varepsilon_{10} - (\delta_1 - \delta_0 + \varepsilon_{01} - \varepsilon_{00})\\
+&amp;= \beta + \delta_1 - \delta_0 - (\delta_1 - \delta_0) + \varepsilon_{11} - \varepsilon_{10} - (\varepsilon_{01} - \varepsilon_{00})\\
+&amp;= \beta + \varepsilon_{11} - \varepsilon_{10} - (\varepsilon_{01} - \varepsilon_{00})\\
+&amp;\approx \beta
+\end{align}
+\end{split}\]</div>
+<p>となる</p>
+</section>
+<section id="times-2">
+<h2><span class="math notranslate nohighlight">\(2\times 2\)</span>差の差<a class="headerlink" href="#times-2" title="Permalink to this headline">#</a></h2>
+<p>2群2期間のDIDを例に取る</p>
+<p>処置群<span class="math notranslate nohighlight">\(T\)</span>と対照群<span class="math notranslate nohighlight">\(U\)</span>が存在し、処置前を<span class="math notranslate nohighlight">\(\text{Pre}\)</span>、処置後を<span class="math notranslate nohighlight">\(\text{Post}\)</span>とする。DID推定量は各群の処置前後の<span class="math notranslate nohighlight">\(Y\)</span>の平均の差</p>
+<div class="math notranslate nohighlight">
+\[
+\def\pre{ \text{Pre} }
+\def\post{ \text{Post} }
+\hat{\delta}^{2\times 2}_{TU}
+= \big( E[Y_T | \post] - E[Y_T | \pre] \big)
+- \big( E[Y_U | \post] - E[Y_U | \pre] \big)
+\]</div>
+<p>である。潜在的結果で表記すると次のようになる。</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\delta}^{2\times 2}_{TU}
+= \big( E[Y^1_T | \post] - E[Y^0_T | \pre] \big)
+- \big( E[Y^0_U | \post] - E[Y^0_U | \pre] \big)
+\]</div>
+<p>ゼロを加えて整理すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\hat{\delta}^{2\times 2}_{TU}
+&amp;= \big( E[Y^1_T | \post] - E[Y^0_T | \pre] \big)
+- \big( E[Y^0_U | \post] - E[Y^0_U | \pre] \big)
++ \underbrace{ E[Y^0_T | \post] - E[Y^0_T | \post] }_{0}
+\\
+&amp;= \underbrace{ E[Y^1_T | \post]  - E[Y^0_T | \post] }_{ATT}
++ \underbrace{ 
+    \big[ E[Y^0_T | \post] - E[Y^0_T | \pre] \big]
+    - \big[ E[Y^0_U | \post] - E[Y^0_U | \pre] \big]
+}_{並行トレンドが成り立たない場合のバイアス}
+\end{align}
+\end{split}\]</div>
+<p>となり、並行トレンドの仮定が成り立てばDID推定量はATTを推定することになる。</p>
+<p>ここで<span class="math notranslate nohighlight">\(E[Y^0_T|\post]\)</span>は実際には観測できない反実仮想であるため、並行トレンドの存在は検証不可能である。</p>
+</section>
+<section id="id1">
+<h2>DIDの仮定<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
+<section id="id2">
+<h3>並行トレンドの仮定<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h3>
+<p>時間固定効果がすべてのユニット（観測対象）で同じであり、期間の間で変化しないことを<strong>並行トレンド</strong>（parallel trends）の仮定と呼ぶ。</p>
+</section>
+</section>
 <section id="multiple">
 <h2>Multiple<a class="headerlink" href="#multiple" title="Permalink to this headline">#</a></h2>
 <p>介入時点が複数ある時のための理論</p>
