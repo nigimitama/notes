@@ -55,7 +55,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="概要" href="../financial_economics/introduction.html" />
+    <link rel="next" title="Synthetic Control" href="synthetic_control.html" />
     <link rel="prev" title="固定効果モデル" href="fixed_effect_model.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -391,11 +391,6 @@ const thebe_selector_output = ".output, .cell_output"
    不均衡データ
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../machine_learning/distilation.html">
-   Distillation
-  </a>
- </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -544,6 +539,11 @@ const thebe_selector_output = ".output, .cell_output"
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    Difference In Differences
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="synthetic_control.html">
+   Synthetic Control
   </a>
  </li>
 </ul>
@@ -795,42 +795,51 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#times-2">
-   <span class="math notranslate nohighlight">
-    \(2\times 2\)
-   </span>
-   差の差
+  <a class="reference internal nav-link" href="#id1">
+   2×2 DID
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id1">
+  <a class="reference internal nav-link" href="#twfe">
+   TWFE推定量との関係
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#bacon">
+     Baconの分解定理
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
    標準誤差
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id2">
+    <a class="reference internal nav-link" href="#id3">
      クラスタ数が少ない場合
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id3">
+    <a class="reference internal nav-link" href="#id4">
      ランダム化推論
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id4">
+  <a class="reference internal nav-link" href="#id5">
    並行トレンドの仮定の検証
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id5">
+    <a class="reference internal nav-link" href="#id6">
      並行リード
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id6">
+    <a class="reference internal nav-link" href="#id7">
      外生性
     </a>
    </li>
@@ -840,7 +849,7 @@ title="Print to PDF"
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#id7">
+      <a class="reference internal nav-link" href="#id8">
        1. 生データを年ごとにプロットする方法
       </a>
      </li>
@@ -869,7 +878,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id8">
+  <a class="reference internal nav-link" href="#id9">
    論文
   </a>
   <ul class="nav section-nav flex-column">
@@ -886,7 +895,7 @@ title="Print to PDF"
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id9">
+  <a class="reference internal nav-link" href="#id10">
    パッケージ
   </a>
   <ul class="nav section-nav flex-column">
@@ -904,12 +913,12 @@ title="Print to PDF"
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id10">
+  <a class="reference internal nav-link" href="#id11">
    参考文献
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id11">
+    <a class="reference internal nav-link" href="#id12">
      サーベイ
     </a>
    </li>
@@ -940,42 +949,51 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#times-2">
-   <span class="math notranslate nohighlight">
-    \(2\times 2\)
-   </span>
-   差の差
+  <a class="reference internal nav-link" href="#id1">
+   2×2 DID
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id1">
+  <a class="reference internal nav-link" href="#twfe">
+   TWFE推定量との関係
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#bacon">
+     Baconの分解定理
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
    標準誤差
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id2">
+    <a class="reference internal nav-link" href="#id3">
      クラスタ数が少ない場合
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id3">
+    <a class="reference internal nav-link" href="#id4">
      ランダム化推論
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id4">
+  <a class="reference internal nav-link" href="#id5">
    並行トレンドの仮定の検証
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id5">
+    <a class="reference internal nav-link" href="#id6">
      並行リード
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id6">
+    <a class="reference internal nav-link" href="#id7">
      外生性
     </a>
    </li>
@@ -985,7 +1003,7 @@ title="Print to PDF"
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#id7">
+      <a class="reference internal nav-link" href="#id8">
        1. 生データを年ごとにプロットする方法
       </a>
      </li>
@@ -1014,7 +1032,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id8">
+  <a class="reference internal nav-link" href="#id9">
    論文
   </a>
   <ul class="nav section-nav flex-column">
@@ -1031,7 +1049,7 @@ title="Print to PDF"
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id9">
+  <a class="reference internal nav-link" href="#id10">
    パッケージ
   </a>
   <ul class="nav section-nav flex-column">
@@ -1049,12 +1067,12 @@ title="Print to PDF"
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id10">
+  <a class="reference internal nav-link" href="#id11">
    参考文献
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id11">
+    <a class="reference internal nav-link" href="#id12">
      サーベイ
     </a>
    </li>
@@ -1120,8 +1138,8 @@ Y_{01} - Y_{00}
 \end{split}\]</div>
 <p>となる</p>
 </section>
-<section id="times-2">
-<h2><span class="math notranslate nohighlight">\(2\times 2\)</span>差の差<a class="headerlink" href="#times-2" title="Permalink to this headline">#</a></h2>
+<section id="id1">
+<h2>2×2 DID<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
 <p>2群2期間の最もシンプルなDIDを例に取る</p>
 <p>処置群<span class="math notranslate nohighlight">\(T\)</span>と対照群<span class="math notranslate nohighlight">\(U\)</span>が存在し、処置前を<span class="math notranslate nohighlight">\(\text{Pre}\)</span>、処置後を<span class="math notranslate nohighlight">\(\text{Post}\)</span>とする。DID推定量は各群の処置前後の<span class="math notranslate nohighlight">\(Y\)</span>の平均の差</p>
 <div class="math notranslate nohighlight">
@@ -1159,10 +1177,42 @@ Y_{01} - Y_{00}
 <p>時間固定効果がすべてのユニット（観測対象）で同じであり、期間の間で変化しないことを<strong>並行トレンド</strong>（parallel trends）の仮定と呼ぶ。並行トレンドの仮定が成り立てばDID推定量はATTを推定することになる。</p>
 <p>なお、ここで<span class="math notranslate nohighlight">\(E[Y^0_T|\post]\)</span>は実際には観測できない反実仮想であるため、並行トレンドの存在は検証不可能である。</p>
 </section>
-<section id="id1">
-<h2>標準誤差<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
+<section id="twfe">
+<h2>TWFE推定量との関係<a class="headerlink" href="#twfe" title="Permalink to this headline">#</a></h2>
+<p><strong>二元配置固定効果（Two-Ways Fixed Effect: TWFE）モデル</strong></p>
+<div class="math notranslate nohighlight">
+\[
+Y_{it} = \alpha_i + \lambda_t + \delta X_{it} + \epsilon_{it}
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\alpha_i\)</span>：個体固定効果</p></li>
+<li><p><span class="math notranslate nohighlight">\(\lambda_t\)</span>：時間固定効果</p></li>
+<li><p><span class="math notranslate nohighlight">\(X_{it}\)</span>：処置変数</p></li>
+</ul>
+<p>TWFEモデルはDIDの推定に使われる</p>
+<section id="bacon">
+<h3>Baconの分解定理<a class="headerlink" href="#bacon" title="Permalink to this headline">#</a></h3>
+<p>TWFE推定量は2×2DID推定量の加重和となる（なお重みはすべて正）</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>定理（Theorem 1, <a class="reference external" href="https://www.sciencedirect.com/science/article/abs/pii/S0304407621001445">Goodman-Bacon 2021</a>）
+$$
+\hat{\delta}^{TWFE} = \sum_{k\neq u} s_{ku} \hat{\delta}_{ku}^{2\times 2}</p>
+<ul class="simple">
+<li><p>\sum_{k\neq u} \sum_{l &gt; k}
+\left[
+s_{kl}^k \hat{\delta}^{2\times 2, k}<em>{kl} +
+s</em>{kl}^l \hat{\delta}^{2\times 2, l}_{kl}
+\right]
+$$</p></li>
+</ul>
+</div>
+</section>
+</section>
 <section id="id2">
-<h3>クラスタ数が少ない場合<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h3>
+<h2>標準誤差<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<section id="id3">
+<h3>クラスタ数が少ない場合<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
 <p>処置ユニット数が1つしかない、という極端なケースではクラスタ数が少ない場合に向けて提案されたワイルドブートストラップであっても、シミュレーション上では有意水準5%での過剰棄却率は80%となる( <a class="reference external" href="https://direct.mit.edu/rest/article-abstract/90/3/414/57731/Bootstrap-Based-Improvements-for-Inference-with?redirectedFrom=fulltext">Cameron et al., 2008</a>; <a class="reference external" href="https://academic.oup.com/ectj/article-abstract/21/2/114/5078969">MacKinnon &amp; Webb, 2018</a>)。</p>
 <p>処置群のユニット数が1つしかないような極端なケースでは<strong>ランダム化推論</strong>（randomization inference）を使用することが好ましいとされる（<a class="reference external" href="https://www.aeaweb.org/articles?id=10.1257/pol.3.4.25">Buchmueller et al., 2011</a>）。</p>
 <aside class="margin sidebar">
@@ -1174,15 +1224,15 @@ Y_{01} - Y_{00}
 </ul>
 </aside>
 </section>
-<section id="id3">
-<h3>ランダム化推論<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
+<section id="id4">
+<h3>ランダム化推論<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
 <p>TODO</p>
 </section>
 </section>
-<section id="id4">
-<h2>並行トレンドの仮定の検証<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h2>
 <section id="id5">
-<h3>並行リード<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
+<h2>並行トレンドの仮定の検証<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h2>
+<section id="id6">
+<h3>並行リード<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h3>
 <p>処置が行われる前の時点（リード lead）において並行なトレンドが存在していたことを確認する、という方法。</p>
 <p>ある程度の確認はできるが、直接的に並行トレンドの存在を検証できるわけではない（例えばコインを2回投げて2回とも表が出たからと言って、3回目も表が出るとは限らない）</p>
 <aside class="margin sidebar">
@@ -1194,15 +1244,15 @@ Y_{01} - Y_{00}
 </div></blockquote>
 </aside>
 </section>
-<section id="id6">
-<h3>外生性<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h3>
+<section id="id7">
+<h3>外生性<a class="headerlink" href="#id7" title="Permalink to this headline">#</a></h3>
 <p>並行トレンドの仮定が明らかに成立しない状況は、処置そのものが内生的である場合である。この場合は処置は潜在的結果に依存し、処置がもしなければ結果も平行じゃない変化をしていたと考えられる。</p>
 </section>
 <section id="multiple-timeperiod">
 <h3>Multiple Timeperiod<a class="headerlink" href="#multiple-timeperiod" title="Permalink to this headline">#</a></h3>
 <p>処置を行う時点が複数ある場合の対処について。</p>
-<section id="id7">
-<h4>1. 生データを年ごとにプロットする方法<a class="headerlink" href="#id7" title="Permalink to this headline">#</a></h4>
+<section id="id8">
+<h4>1. 生データを年ごとにプロットする方法<a class="headerlink" href="#id8" title="Permalink to this headline">#</a></h4>
 <p>デメリットは</p>
 <ol class="simple">
 <li><p>グラフが多すぎて、手間がかかり、見栄えが悪い</p></li>
@@ -1242,8 +1292,8 @@ Y_{01} - Y_{00}
 <p><a class="reference external" href="https://www.tandfonline.com/doi/abs/10.1080/01621459.2021.1891924">Athey et al. (2021). Matrix completion methods for causal panel data models. Journal of the American Statistical Association, 116(536), 1716-1730.</a></p>
 <p>行列補完（matrix completion）という機械学習ベースの手法</p>
 </section>
-<section id="id8">
-<h2>論文<a class="headerlink" href="#id8" title="Permalink to this headline">#</a></h2>
+<section id="id9">
+<h2>論文<a class="headerlink" href="#id9" title="Permalink to this headline">#</a></h2>
 <section id="goodman-bacon-2019">
 <h3>Goodman-Bacon (2019)<a class="headerlink" href="#goodman-bacon-2019" title="Permalink to this headline">#</a></h3>
 <p><strong>Goodman-Bacon (2019) “Difference-in-Differences with Variation in Treatment Timing”</strong></p>
@@ -1284,8 +1334,8 @@ s_{\ell k} \hat{\beta}^{DD}_{\ell k} ]
 </div></blockquote>
 </section>
 </section>
-<section id="id9">
-<h2>パッケージ<a class="headerlink" href="#id9" title="Permalink to this headline">#</a></h2>
+<section id="id10">
+<h2>パッケージ<a class="headerlink" href="#id10" title="Permalink to this headline">#</a></h2>
 <section id="r-did">
 <h3>R: <code class="docutils literal notranslate"><span class="pre">{did}</span></code>パッケージ<a class="headerlink" href="#r-did" title="Permalink to this headline">#</a></h3>
 <p><a class="reference external" href="https://bcallaway11.github.io/did/">Treatment Effects with Multiple Periods and Groups • did</a></p>
@@ -1302,14 +1352,15 @@ s_{\ell k} \hat{\beta}^{DD}_{\ell k} ]
 </ul>
 </section>
 </section>
-<section id="id10">
-<h2>参考文献<a class="headerlink" href="#id10" title="Permalink to this headline">#</a></h2>
+<section id="id11">
+<h2>参考文献<a class="headerlink" href="#id11" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://mixtape.scunning.com/09-difference_in_differences">Causal Inference The Mixtape - 9  Difference-in-Differences</a></p></li>
 <li><p><a class="reference external" href="http://applied-economics.org/docs/SDID.pdf">小西祥文 (2021) Staggered DIDの近年の動向</a></p></li>
+<li><p><a class="reference external" href="https://kazuyanagimoto.com/staggered_did_tutorial/slides/SDID_Tutorial_Main.pdf">小西祥文 (2023) DIDの計量経済手法の近年の展開</a></p></li>
 </ul>
-<section id="id11">
-<h3>サーベイ<a class="headerlink" href="#id11" title="Permalink to this headline">#</a></h3>
+<section id="id12">
+<h3>サーベイ<a class="headerlink" href="#id12" title="Permalink to this headline">#</a></h3>
 <p><a class="reference external" href="https://arxiv.org/abs/2201.01194">[2201.01194] What’s Trending in Difference-in-Differences? A Synthesis of the Recent Econometrics Literature</a></p>
 <table class="colwidths-auto table">
 <thead>
@@ -1367,10 +1418,10 @@ s_{\ell k} \hat{\beta}^{DD}_{\ell k} ]
             <p class="prev-next-title">固定効果モデル</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="../financial_economics/introduction.html" title="next page">
+    <a class='right-next' id="next-link" href="synthetic_control.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">概要</p>
+        <p class="prev-next-title">Synthetic Control</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
