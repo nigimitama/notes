@@ -159,13 +159,18 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="../../mathematics/mathematical_optimization/optimality_conditions.html">
+     最適性条件
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../../mathematics/mathematical_optimization/lagrange.html">
      ラグランジュの未定乗数法
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../../mathematics/mathematical_optimization/gradient_descent.html">
-     勾配降下法
+     勾配法
     </a>
    </li>
    <li class="toctree-l2">
@@ -765,12 +770,53 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#adaboost">
+   AdaBoost
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   勾配ブースティング
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   加法モデルの観点からの説明
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     最急降下法からの説明
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
 </div>
     </div>
     <div class="article row">
@@ -782,6 +828,36 @@ title="Print to PDF"
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#adaboost">
+   AdaBoost
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   勾配ブースティング
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   加法モデルの観点からの説明
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     最急降下法からの説明
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -791,20 +867,100 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>ブースティング<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
-<p>ブースティング（boosting）は「（0.5よりわずかに正解率が高い程度の）弱い学習器を使って強い学習器を作ることはできるか？」という仮説（boosting hypothethis）から生まれた</p>
-<p>Schapireの提案は</p>
+<p>ブースティング（boosting）は<a class="reference external" href="https://www.cis.upenn.edu/~mkearns/papers/boostnote.pdf">Kearns (1988)</a>の「（0.5よりわずかに正解率が高い程度の）弱い学習器を使って強い学習器を作ることはできるか？」という仮説（boosting hypothethis）から生まれた</p>
+<p><a class="reference external" href="https://link.springer.com/content/pdf/10.1007/BF00116037.pdf">Schapire (1990) The strength of weak learnability.</a>
+の提案は</p>
 <ol class="simple">
 <li><p>分類器<span class="math notranslate nohighlight">\(h_1\)</span>を<span class="math notranslate nohighlight">\(N\)</span>個のサンプルで訓練する</p></li>
 <li><p><span class="math notranslate nohighlight">\(h_1\)</span>で分類に失敗したサンプルと正しく分類できたサンプルを半々にした<span class="math notranslate nohighlight">\(N\)</span>個のサンプルで<span class="math notranslate nohighlight">\(h_2\)</span>を訓練する</p></li>
 <li><p><span class="math notranslate nohighlight">\(h_1\)</span>と<span class="math notranslate nohighlight">\(h_2\)</span>で分類結果が一致しない<span class="math notranslate nohighlight">\(N\)</span>個で<span class="math notranslate nohighlight">\(h_3\)</span>を訓練する</p></li>
 <li><p>ブーストされた分類器<span class="math notranslate nohighlight">\(h_B\)</span>は<span class="math notranslate nohighlight">\(h_1, h_2, h_3\)</span>の分類結果の多数決で分類を行う</p></li>
 </ol>
-<p>複数の学習器<span class="math notranslate nohighlight">\(f_k(x)\)</span>の線形和</p>
+<section id="adaboost">
+<h2>AdaBoost<a class="headerlink" href="#adaboost" title="Permalink to this headline">#</a></h2>
+<p>誤差に適応的に重みをかけてブースティングする。</p>
+<p>2000年代前半に大ヒットした</p>
+<p>後に誤差関数を指数誤差としたときの勾配ブースティングと同値であることが確認された</p>
+</section>
+<section id="id2">
+<h2>勾配ブースティング<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<p><a class="reference external" href="https://www.jstor.org/stable/2699986">Friedman, J. H. (2001). Greedy function approximation: a gradient boosting machine. Annals of statistics, 1189-1232.</a></p>
+<p>勾配が0なのが最適性の1次条件なので、勾配を説明して0に近づける</p>
+</section>
+<section id="id3">
+<h2>加法モデルの観点からの説明<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
+<p>複数の関数に重みをかけて足し合わせた関数</p>
 <div class="math notranslate nohighlight">
 \[
-\hat{y}_i = \sum^K_{k=1} w_k f_k(x_i)
+\newcommand{\argmin}{\mathop{\rm arg~min}\limits}
+f(x; \boldsymbol{\theta}) = f_0(x; \theta_0) + \beta_1 f_1(x; \theta_1) + \cdots + \beta_M f_M(x; \theta_M)
 \]</div>
-<p>によって予測値<span class="math notranslate nohighlight">\(\hat{y}_i\)</span>を出力する。</p>
+<p>の形で予測モデルを構築することを考える。ここで<span class="math notranslate nohighlight">\(\boldsymbol{\theta} = (\theta_0, \dots, \theta_M)\)</span>は関数を形づくるパラメータ（例えば線形回帰の重み）である。</p>
+<p>このモデルは<span class="math notranslate nohighlight">\(\boldsymbol{\beta}, \boldsymbol{\theta}\)</span>の2つのパラメータベクトルを推定する必要がある。
+すべてのパラメータを一度に学習するのではなく、<span class="math notranslate nohighlight">\(\beta_m f_m(x; \theta_m)\)</span>を一つずつ学習していく方法で考える。全体としては次のように行う</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Algorithm: Forward Stagewise Additive Modeling</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(f_0(x) = 0\)</span>で初期化</p></li>
+<li><p><span class="math notranslate nohighlight">\(m = 1\)</span>から<span class="math notranslate nohighlight">\(M\)</span>までについて、</p>
+<ol class="simple">
+<li><p>パラメータを推定する：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\((\beta_m, \theta_m) = \argmin_{\beta, \theta} \sum^N_{i=1} L(y_i, f_{m-1}(x_i) + \beta f(x_i; \theta) )\)</span></p></li>
+</ul>
+</li>
+<li><p><span class="math notranslate nohighlight">\(f_m(x) = f_{m-1}(x) + \beta_m f(x; \theta_m)\)</span></p></li>
+</ol>
+</li>
+</ol>
+</div>
+<p>誤差関数が二乗誤差<span class="math notranslate nohighlight">\(L(y, f(x)) = (y - f(x))^2\)</span>の場合、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+L(y_i, f_{m-1}(x_i) + \beta f(x_i; \theta))
+&amp;= (y_i - f_{m-1}(x_i) - \beta f(x_i; \theta))^2 \\
+&amp;= (\text{residual}_{im} - \beta f(x_i; \theta))^2
+\end{align}
+\end{split}\]</div>
+<p>となり、これは<span class="math notranslate nohighlight">\(m-1\)</span>回目のモデルの残差<span class="math notranslate nohighlight">\(y_i - f_{m-1}(x_i)\)</span>を近似するように<span class="math notranslate nohighlight">\(m\)</span>回目のモデルを学習させると捉えることができる</p>
+<p><a class="reference external" href="https://hastie.su.domains/Papers/AdditiveLogisticRegression/alr.pdf">Friedman et al. (2000)</a>はAdaboostが段階的加法モデルと等しいことを指摘した。</p>
+<section id="id4">
+<h3>最急降下法からの説明<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
+<p>最急降下法は最小化問題</p>
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\b}[1]{\boldsymbol{#1}}
+\min_{\b{x}} f(\b{x})
+\]</div>
+<p>において、勾配</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\nabla f(\b{x}) =
+\begin{pmatrix}
+\frac{\partial f(\b{x})}{ \partial x_1 }\\
+\\
+\vdots
+\\
+\frac{\partial f(\b{x})}{ \partial x_n }
+\end{pmatrix}
+\end{split}\]</div>
+<p>を用いて</p>
+<div class="math notranslate nohighlight">
+\[
+\b{x}_{t+1} = \b{x}_t - \alpha_t \nabla f(\b{x}_t)
+\]</div>
+<p>のような更新を反復して最適な<span class="math notranslate nohighlight">\(\b{x}\)</span>を探索する方法である</p>
+<p>書き方を変えると、<span class="math notranslate nohighlight">\(t+1\)</span>回目の入力<span class="math notranslate nohighlight">\(\b{x}_t+1\)</span>はそれまでの反復の和</p>
+<div class="math notranslate nohighlight">
+\[
+\b{x}_{t+1} = \b{x}_0 - \alpha_1 \nabla f(\b{x}_1) - \alpha_2 \nabla f(\b{x}_2) - \cdots - \alpha_t \nabla f(\b{x}_t)
+\]</div>
+<p>であり、負の勾配<span class="math notranslate nohighlight">\(-\nabla f(\b{x}_t)\)</span>を<span class="math notranslate nohighlight">\(\alpha_t\)</span>で加重和していることがわかる。</p>
+<p>この負の勾配を再現して加重和を行うのが段階的加法モデルでありブースティングであり、勾配ブースティングである</p>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">

@@ -51,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -157,13 +159,18 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="../../mathematics/mathematical_optimization/optimality_conditions.html">
+     最適性条件
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../../mathematics/mathematical_optimization/lagrange.html">
      ラグランジュの未定乗数法
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../../mathematics/mathematical_optimization/gradient_descent.html">
-     勾配降下法
+     勾配法
     </a>
    </li>
    <li class="toctree-l2">
@@ -763,12 +770,58 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   様々な誤差の指標
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     汎化誤差
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     期待誤差
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     訓練誤差
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id6">
+   参考
+  </a>
+ </li>
+</ul>
+
+    </nav>
 </div>
     </div>
     <div class="article row">
@@ -780,6 +833,41 @@ title="Print to PDF"
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   様々な誤差の指標
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     汎化誤差
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     期待誤差
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     訓練誤差
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id6">
+   参考
+  </a>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -789,6 +877,43 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>予測モデルの評価<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<section id="id2">
+<h2>様々な誤差の指標<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<section id="id3">
+<h3>汎化誤差<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h3>
+<p>訓練データ<span class="math notranslate nohighlight">\(\mathcal{T} = \{(x_i, y_i)\}_{i=1}^n\)</span>のもとでのモデル<span class="math notranslate nohighlight">\(\hat{f}\)</span>の**真の誤差（true error）<strong>あるいは</strong>汎化誤差（generatization error）**とは、真の分布で誤差関数の期待値をとったもの</p>
+<div class="math notranslate nohighlight">
+\[
+\text{GE}
+= E_{X^0, Y^0} [ L(Y^0, \hat{f}(X^0) ) | \mathcal{T} ]
+\]</div>
+<p>ここで<span class="math notranslate nohighlight">\((X^0, Y^0)\)</span>は新しいデータ点。</p>
+</section>
+<section id="id4">
+<h3>期待誤差<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
+<p>訓練セットで汎化誤差の期待値をとった</p>
+<div class="math notranslate nohighlight">
+\[
+\text{EE} = E_{\mathcal{T}}E_{X^0, Y^0} [ L(Y^0, \hat{f}(X^0) ) | \mathcal{T} ]
+\]</div>
+<p>を**期待誤差（expected error）**という。</p>
+<p>期待誤差のほうが統計的に扱いやすい</p>
+</section>
+<section id="id5">
+<h3>訓練誤差<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
+<p>訓練データで誤差の平均値をとったもの</p>
+<div class="math notranslate nohighlight">
+\[
+\text{TE} = \frac{1}{N} \sum^N_{i=1} L(y_i, \hat{f}(x_i))
+\]</div>
+<p>を**訓練誤差（training error）<strong>あるいは</strong>再代入誤り率（redistribution error）**という。</p>
+<p>訓練誤差は汎化誤差以下になることが知られている</p>
+</section>
+</section>
+<section id="id6">
+<h2>参考<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h2>
+<p>カステラ本 ch7.4</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">

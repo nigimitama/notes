@@ -1,0 +1,1493 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>都道府県ごとの集計データの扱い &#8212; データサイエンスの勉強ノート</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GXSWJY51EG"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-GXSWJY51EG');
+                </script>
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">データサイエンスの勉強ノート</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    データサイエンス関連まとめメモ
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  数学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../mathematics/introduction.html">
+   数学の初歩
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../mathematics/set_theory.html">
+   集合論
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../mathematics/functions.html">
+   関数
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../mathematics/calculus.html">
+   微分積分学
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../mathematics/linear_algebra.html">
+   線形代数学
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mathematics/mathematical_optimization/index.html">
+   数理最適化
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mathematics/mathematical_optimization/optimality_conditions.html">
+     最適性条件
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mathematics/mathematical_optimization/lagrange.html">
+     ラグランジュの未定乗数法
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mathematics/mathematical_optimization/gradient_descent.html">
+     勾配法
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mathematics/mathematical_optimization/knapsack_problem.html">
+     ナップサック問題
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  統計学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/probability_and_expectation.html">
+   確率と期待値・分散
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/distributions.html">
+   確率分布
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../statistics/statistical_inference/index.html">
+   統計的推測
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../statistics/statistical_inference/01_sample_distribution.html">
+     標本分布
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../statistics/statistical_inference/02_generating_functions.html">
+     母関数
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../statistics/statistical_inference/03_central_limit_theorem.html">
+     中心極限定理
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../statistics/statistical_inference/04_point_estimation.html">
+     点推定
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../statistics/statistical_inference/05_interval_inference.html">
+     区間推定
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../statistics/statistical_inference/06_test.html">
+     検定
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/likelihood_and_probability.html">
+   尤度関数と確率関数の違いは何なのか？
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/bootstrap.html">
+   Bootstrap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/nonparametric_density_estimation.html">
+   ノンパラメトリック密度推定
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistics/correlation.html">
+   順序尺度の相関係数
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  統計モデリング
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../statistical_modeling/factor_analysis.html">
+   因子分析
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  機械学習
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../machine_learning/linear_models/index.html">
+   線形モデル
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/linear_models/regression/linear_regression.html">
+     線形回帰
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/linear_models/regression/ridge_regression.html">
+     Ridge回帰
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/linear_models/regression/lasso.html">
+     LASSO
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/linear_models/classification/linear_discriminant_analysis.html">
+     線形判別モデル
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/linear_models/classification/logistic_regression.html">
+     ロジスティック回帰
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../machine_learning/svm.html">
+   Support Vector Machine
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../machine_learning/trees/index.html">
+   Tree-based Algorithms
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/trees/decision_tree.html">
+     決定木
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/trees/gbdt.html">
+     勾配ブースティング決定木
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../machine_learning/deep_learning/index.html">
+   深層学習
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/deep_learning/neural_network.html">
+     Feed-Forward Neural Network
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/deep_learning/cnn.html">
+     CNN
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/deep_learning/rnn.html">
+     RNN
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/deep_learning/lstm.html">
+     LSTM
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/deep_learning/transformer.html">
+     Transformer
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../machine_learning/deep_learning/dl_and_tabular_data.html">
+     Deep Learning and Tabular data
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../machine_learning/dimension_reduction.html">
+   次元削減
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../machine_learning/imbalanced_data.html">
+   不均衡データ
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  生成モデル
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../generative_models/generative_models.html">
+   生成モデル
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../generative_models/autoencoder.html">
+   Autoencoder
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../generative_models/gan.html">
+   GAN
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../generative_models/diffusion_models.html">
+   Diffusion Models
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  自然言語処理
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../natural_language_processing/introduction.html">
+   自然言語処理
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../natural_language_processing/embedding.html">
+   単語の埋め込み
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../natural_language_processing/rnn.html">
+   言語モデルとRNN
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  画像処理
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../image_processing/introduction.html">
+   画像認識
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  計量経済学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="rubin_causal_model.html">
+   ルービンの因果モデル
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="hte.html">
+   Heterogeneous Treatment Effectsの推定
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="ols/index.html">
+   回帰分析
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/ols.html">
+     概要
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/test_of_ols.html">
+     OLSの検定・区間推定
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/nature_of_ols_estimator.html">
+     OLS推定量の性質
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/ols_robust_standard_error.html">
+     OLSのロバスト標準誤差
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/log_transformation.html">
+     対数変換
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/omitted_variable_bias.html">
+     欠落変数バイアス
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ols/fwl.html">
+     FWL定理
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="propensity_score.html">
+   傾向スコア
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="instrumental_variables.html">
+   操作変数法
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="regression_discontinuity.html">
+   RDD
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="fixed_effect_model.html">
+   固定効果モデル
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="difference_in_differences.html">
+   Difference In Differences
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="synthetic_control.html">
+   Synthetic Control
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  金融経済学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/introduction.html">
+   概要
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/optimal_portfolio.html">
+   最適ポートフォリオ
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/capm.html">
+   CAPM
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/metrics.html">
+   ファイナンスの指標たち
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/feature_neutralization.html">
+   Feature Neutralization
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../financial_economics/statistical_arbitrage.html">
+   統計的裁定
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/nigimitama/notes/gh-pages?urlpath=tree/docs/econometrics/experiment_aggregated_data.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/nigimitama/notes"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Feconometrics/experiment_aggregated_data.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/econometrics/experiment_aggregated_data.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   そもそもなんで交絡してると割らないといけないの
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   まとめ
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     データ生成過程１
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     データ生成過程２
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     結論
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#x-y">
+   データ１：人口と相関するx,y
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id7">
+   データ２：人口が部分的に影響する駅
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>都道府県ごとの集計データの扱い</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   そもそもなんで交絡してると割らないといけないの
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   まとめ
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     データ生成過程１
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     データ生成過程２
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     結論
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#x-y">
+   データ１：人口と相関するx,y
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id7">
+   データ２：人口が部分的に影響する駅
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>都道府県ごとの集計データの扱い<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<p>人口1人あたりにすべき</p>
+<p>駅数のような人口だけでなく面積にも関係しそうなものは面積あたりにすべき？</p>
+<section id="id2">
+<h2>そもそもなんで交絡してると割らないといけないの<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<p>DGP:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+x &amp;= \alpha_x p + x^*\\
+y &amp;= \alpha_y p + \beta x
+\end{align}
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+y = \alpha_y p + \beta (\alpha_x p + x^*)\\
+= \alpha_y p + \beta \alpha_x p + \beta x^*
+\end{split}\]</div>
+</section>
+<section id="id3">
+<h2>まとめ<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
+<p>想定するデータ生成過程に依存する？</p>
+<section id="id4">
+<h3>データ生成過程１<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
+<p><span class="math notranslate nohighlight">\(y\)</span>のデータ生成過程を次のように想定する。<span class="math notranslate nohighlight">\(y\)</span>は<span class="math notranslate nohighlight">\(x\)</span>だけでなく人口<span class="math notranslate nohighlight">\(p\)</span>からの影響も受けており、<span class="math notranslate nohighlight">\(x\)</span>の項には<span class="math notranslate nohighlight">\(\beta x\)</span>だけだとする。
+<span class="math notranslate nohighlight">\(x\to y\)</span>の効果<span class="math notranslate nohighlight">\(\beta\)</span>を推定したいとする。</p>
+<div class="math notranslate nohighlight">
+\[
+y = \alpha p + \beta x
+\]</div>
+<p><span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(p\)</span>で割った変換後の変数は、データ生成過程から次のようになると考えられる</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{y}{p}= \frac{ \alpha p + \beta x }{p} = \alpha + \beta \frac{x}{p}
+\]</div>
+<p>この生成過程の下では、<span class="math notranslate nohighlight">\(\beta\)</span>を推定するためには<span class="math notranslate nohighlight">\(\dfrac{y}{p}\)</span>を<span class="math notranslate nohighlight">\(\dfrac{x}{p}\)</span>に回帰させる必要がある</p>
+</section>
+<section id="id5">
+<h3>データ生成過程２<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
+<p><span class="math notranslate nohighlight">\(y\)</span>のデータ生成過程を次のように想定する。<span class="math notranslate nohighlight">\(y\)</span>は<span class="math notranslate nohighlight">\(x\)</span>だけでなく人口<span class="math notranslate nohighlight">\(p\)</span>からの影響も受けており、<span class="math notranslate nohighlight">\(x\)</span>の項には<span class="math notranslate nohighlight">\(\beta x\)</span>だけでなく<span class="math notranslate nohighlight">\(p\)</span>も掛かっているとする。
+ここで<span class="math notranslate nohighlight">\(\beta\)</span>を推定したいとする。</p>
+<div class="math notranslate nohighlight">
+\[
+y = \alpha p + \beta x p = (\alpha + \beta x)p
+\]</div>
+<p><span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(p\)</span>で割った変換後の変数は、データ生成過程から次のようになると考えられる</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{y}{p}= \frac{ \alpha p + \beta x p}{p} = \alpha + \beta x
+\]</div>
+<p>この生成過程の下では、<span class="math notranslate nohighlight">\(\beta\)</span>を推定するためには<span class="math notranslate nohighlight">\(\dfrac{y}{p}\)</span>を<span class="math notranslate nohighlight">\(x\)</span>に回帰させる必要がある</p>
+</section>
+<section id="id6">
+<h3>結論<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h3>
+<hr class="docutils" />
+<p><span class="math notranslate nohighlight">\(y\)</span>のデータ生成過程を次のように、<span class="math notranslate nohighlight">\(x\)</span>だけでなく人口<span class="math notranslate nohighlight">\(p\)</span>からの影響も受けると想定する。</p>
+<div class="math notranslate nohighlight">
+\[
+y = \alpha p + \beta x
+\]</div>
+<p><span class="math notranslate nohighlight">\(x\to y\)</span>の効果である<span class="math notranslate nohighlight">\(\beta\)</span>を推定したい</p>
+<p><span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(p\)</span>で割った変換後の変数は、データ生成過程から次のようになると考えられる</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{y}{p}= \frac{ \alpha p + \beta x }{p} = \alpha + \beta \frac{x}{p}
+\]</div>
+<p>なので、<span class="math notranslate nohighlight">\(\beta\)</span>を推定するためには<span class="math notranslate nohighlight">\(\dfrac{y}{p}\)</span>を<span class="math notranslate nohighlight">\(\dfrac{x}{p}\)</span>に回帰させる必要がある</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="x-y">
+<h2>データ１：人口と相関するx,y<a class="headerlink" href="#x-y" title="Permalink to this headline">#</a></h2>
+<p>データ生成過程を次のように、<span class="math notranslate nohighlight">\(x, y\)</span>ともに人口<span class="math notranslate nohighlight">\(p\)</span>からの影響を受けると想定する。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+x &amp;= \alpha_x p\\
+y &amp;= \alpha_y p + \beta x
+\end{align}
+\end{split}\]</div>
+<p><span class="math notranslate nohighlight">\(x\to y\)</span>の効果である<span class="math notranslate nohighlight">\(\beta\)</span>を推定したい</p>
+<p>yとxをpで割った変換後の変数は次のようになる</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{y}{p}= \frac{\alpha_y p + \beta x}{p} = \alpha_y + \beta \frac{x}{p}
+\]</div>
+<p>なので、<span class="math notranslate nohighlight">\(\beta\)</span>を推定するためには<span class="math notranslate nohighlight">\(\dfrac{y}{p}\)</span>を<span class="math notranslate nohighlight">\(\dfrac{x}{p}\)</span>に回帰させる必要がある</p>
+<p>もし<span class="math notranslate nohighlight">\(\dfrac{y}{p}\)</span>をそのままの<span class="math notranslate nohighlight">\(x\)</span>に回帰させると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\frac{y}{p} &amp;= \alpha_y + \beta (\alpha_x p)\\
+  &amp;= (\alpha_y + \beta \alpha_x) p\\
+\end{align}
+\end{split}\]</div>
+<p>もし<span class="math notranslate nohighlight">\(x\)</span>を<span class="math notranslate nohighlight">\(p\)</span>で割らずにそのまま回帰させると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+y &amp;= \alpha_y p + \beta (\alpha_x p)\\
+  &amp;= (\alpha_y + \beta \alpha_x) p\\
+\end{align}
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">populations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">alpha_x</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">alpha_y</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">alpha_x</span> <span class="o">*</span> <span class="n">populations</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">alpha_y</span> <span class="o">*</span> <span class="n">populations</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># xとyは微弱な相関</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">populations</span><span class="p">))</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;population&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+    <span class="c1"># 人口あたりのy, xを計算する</span>
+    <span class="n">ypp</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="p">,</span>
+    <span class="n">xpp</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>y</th>
+      <th>x</th>
+      <th>population</th>
+      <th>ypp</th>
+      <th>xpp</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>589</th>
+      <td>2549.340193</td>
+      <td>662.781881</td>
+      <td>1047</td>
+      <td>2.434900</td>
+      <td>0.633029</td>
+    </tr>
+    <tr>
+      <th>685</th>
+      <td>1382.162125</td>
+      <td>43.685046</td>
+      <td>1293</td>
+      <td>1.068958</td>
+      <td>0.033786</td>
+    </tr>
+    <tr>
+      <th>271</th>
+      <td>758.073247</td>
+      <td>1542.965439</td>
+      <td>1376</td>
+      <td>0.550925</td>
+      <td>1.121341</td>
+    </tr>
+    <tr>
+      <th>427</th>
+      <td>1615.118228</td>
+      <td>1120.767297</td>
+      <td>1422</td>
+      <td>1.135807</td>
+      <td>0.788163</td>
+    </tr>
+    <tr>
+      <th>334</th>
+      <td>970.870187</td>
+      <td>-458.525739</td>
+      <td>1541</td>
+      <td>0.630026</td>
+      <td>-0.297551</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>465</th>
+      <td>123228.375468</td>
+      <td>23928.854971</td>
+      <td>245844</td>
+      <td>0.501246</td>
+      <td>0.097333</td>
+    </tr>
+    <tr>
+      <th>734</th>
+      <td>136400.262268</td>
+      <td>26900.506639</td>
+      <td>267587</td>
+      <td>0.509742</td>
+      <td>0.100530</td>
+    </tr>
+    <tr>
+      <th>898</th>
+      <td>150004.237466</td>
+      <td>29789.613660</td>
+      <td>294909</td>
+      <td>0.508646</td>
+      <td>0.101013</td>
+    </tr>
+    <tr>
+      <th>494</th>
+      <td>166002.567127</td>
+      <td>30493.131436</td>
+      <td>326512</td>
+      <td>0.508412</td>
+      <td>0.093391</td>
+    </tr>
+    <tr>
+      <th>943</th>
+      <td>178173.778084</td>
+      <td>34421.420968</td>
+      <td>347790</td>
+      <td>0.512303</td>
+      <td>0.098972</td>
+    </tr>
+  </tbody>
+</table>
+<p>1000 rows × 5 columns</p>
+</div></div></div>
+</div>
+<p>yppとxppの相関が弱いことから、
+xとyの相関はpopulationによる交絡の影響を受けていることがわかる</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">fix</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;population&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;ypp&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;xpp&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;ypp&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:xlabel=&#39;xpp&#39;, ylabel=&#39;ypp&#39;&gt;
+</pre></div>
+</div>
+<img alt="../_images/experiment_aggregated_data_11_1.png" src="../_images/experiment_aggregated_data_11_1.png" />
+</div>
+</div>
+<p>しかし、可能なら<code class="docutils literal notranslate"><span class="pre">ypp</span> <span class="pre">~</span> <span class="pre">xpp</span></code>よりも<code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">~</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">population</span></code>のほうが良い気がする</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
+<span class="kn">from</span> <span class="nn">stargazer.stargazer</span> <span class="kn">import</span> <span class="n">Stargazer</span>
+
+<span class="n">Stargazer</span><span class="p">([</span>
+    <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s2">&quot;y ~ x&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
+    <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s2">&quot;y ~ x + population&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
+    <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s2">&quot;ypp ~ x&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
+    <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s2">&quot;ypp ~ xpp&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table style="text-align:center"><tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td></tr><tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Intercept</td><td>780.561<sup>***</sup></td><td>8.424<sup></sup></td><td>0.507<sup>***</sup></td><td>0.495<sup>***</sup></td></tr><tr><td style="text-align:left"></td><td>(196.804)</td><td>(39.255)</td><td>(0.005)</td><td>(0.005)</td></tr><tr><td style="text-align:left">population</td><td></td><td>0.498<sup>***</sup></td><td></td><td></td></tr><tr><td style="text-align:left"></td><td></td><td>(0.003)</td><td></td><td></td></tr><tr><td style="text-align:left">x</td><td>4.838<sup>***</sup></td><td>0.098<sup>***</sup></td><td>0.000<sup></sup></td><td></td></tr><tr><td style="text-align:left"></td><td>(0.036)</td><td>(0.031)</td><td>(0.000)</td><td></td></tr><tr><td style="text-align:left">xpp</td><td></td><td></td><td></td><td>0.123<sup>***</sup></td></tr><tr><td style="text-align:left"></td><td></td><td></td><td></td><td>(0.035)</td></tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Observations</td><td>1,000</td><td>1,000</td><td>1,000</td><td>1,000</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.947</td><td>0.998</td><td>0.000</td><td>0.012</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.947</td><td>0.998</td><td>-0.001</td><td>0.011</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>4815.392 (df=998)</td><td>952.868 (df=997)</td><td>0.124 (df=998)</td><td>0.123 (df=998)</td></tr><tr><td style="text-align: left">F Statistic</td><td>17833.134<sup>***</sup> (df=1; 998)</td><td>239962.111<sup>***</sup> (df=2; 997)</td><td>0.210<sup></sup> (df=1; 998)</td><td>12.095<sup>***</sup> (df=1; 998)</td></tr><tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Note:</td>
+ <td colspan="4" style="text-align: right">
+  <sup>*</sup>p&lt;0.1;
+  <sup>**</sup>p&lt;0.05;
+  <sup>***</sup>p&lt;0.01
+ </td></tr></table></div></div>
+</div>
+</section>
+<section id="id7">
+<h2>データ２：人口が部分的に影響する駅<a class="headerlink" href="#id7" title="Permalink to this headline">#</a></h2>
+<p>データ生成過程を次のように想定する。<span class="math notranslate nohighlight">\(p\)</span>は人口、<span class="math notranslate nohighlight">\(s\)</span>は面積</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+x &amp;= \alpha_x p + \gamma s \\
+y &amp;= \alpha_y p + \beta x
+\end{align}
+\end{split}\]</div>
+<p><span class="math notranslate nohighlight">\(x\to y\)</span>の効果である<span class="math notranslate nohighlight">\(\beta\)</span>を推定したい</p>
+<p>yをpで割った変換後の変数は</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{y}{p} = \alpha_y + \beta \frac{x}{p}
+\]</div>
+<p>となるので、<span class="math notranslate nohighlight">\(\beta\)</span>を知りたいならやはり<span class="math notranslate nohighlight">\(\frac{x}{p}\)</span>を説明変数としたほうがいい</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">populations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">populations</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">size</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">populations</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># xとyは微弱な相関</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">populations</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;population&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+    <span class="c1"># 人口あたりのy, xを計算する</span>
+    <span class="n">ypp</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="p">,</span>
+    <span class="n">xpp</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="p">,</span>
+    <span class="c1"># 面積あたりのy, xを計算する</span>
+    <span class="n">yps</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+    <span class="n">xps</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>y</th>
+      <th>x</th>
+      <th>population</th>
+      <th>size</th>
+      <th>ypp</th>
+      <th>xpp</th>
+      <th>yps</th>
+      <th>xps</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>589</th>
+      <td>-22259.518123</td>
+      <td>21726.562005</td>
+      <td>1047</td>
+      <td>38487</td>
+      <td>-21.260285</td>
+      <td>20.751253</td>
+      <td>-3.709920</td>
+      <td>3.103795</td>
+    </tr>
+    <tr>
+      <th>685</th>
+      <td>-12338.863722</td>
+      <td>11487.293621</td>
+      <td>1293</td>
+      <td>20219</td>
+      <td>-9.542818</td>
+      <td>8.884218</td>
+      <td>-2.056477</td>
+      <td>1.641042</td>
+    </tr>
+    <tr>
+      <th>271</th>
+      <td>-43709.248686</td>
+      <td>45504.776703</td>
+      <td>1376</td>
+      <td>89802</td>
+      <td>-31.765442</td>
+      <td>33.070332</td>
+      <td>-7.284875</td>
+      <td>6.500682</td>
+    </tr>
+    <tr>
+      <th>427</th>
+      <td>-31217.924818</td>
+      <td>30805.041498</td>
+      <td>1422</td>
+      <td>58604</td>
+      <td>-21.953534</td>
+      <td>21.663180</td>
+      <td>-5.202987</td>
+      <td>4.400720</td>
+    </tr>
+    <tr>
+      <th>334</th>
+      <td>-4475.946338</td>
+      <td>6984.722761</td>
+      <td>1541</td>
+      <td>11936</td>
+      <td>-2.904573</td>
+      <td>4.532591</td>
+      <td>-0.745991</td>
+      <td>0.997818</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>465</th>
+      <td>-65085.128773</td>
+      <td>126552.989971</td>
+      <td>245844</td>
+      <td>11435</td>
+      <td>-0.264742</td>
+      <td>0.514769</td>
+      <td>-10.847521</td>
+      <td>18.078999</td>
+    </tr>
+    <tr>
+      <th>734</th>
+      <td>-80569.609709</td>
+      <td>146401.211604</td>
+      <td>267587</td>
+      <td>25382</td>
+      <td>-0.301097</td>
+      <td>0.547116</td>
+      <td>-13.428268</td>
+      <td>20.914459</td>
+    </tr>
+    <tr>
+      <th>898</th>
+      <td>-87462.856618</td>
+      <td>161872.276100</td>
+      <td>294909</td>
+      <td>29694</td>
+      <td>-0.296576</td>
+      <td>0.548889</td>
+      <td>-14.577143</td>
+      <td>23.124611</td>
+    </tr>
+    <tr>
+      <th>494</th>
+      <td>-82865.501781</td>
+      <td>164225.753983</td>
+      <td>326512</td>
+      <td>2545</td>
+      <td>-0.253790</td>
+      <td>0.502970</td>
+      <td>-13.810917</td>
+      <td>23.460822</td>
+    </tr>
+    <tr>
+      <th>943</th>
+      <td>-95508.047223</td>
+      <td>182433.635987</td>
+      <td>347790</td>
+      <td>15404</td>
+      <td>-0.274614</td>
+      <td>0.524551</td>
+      <td>-15.918008</td>
+      <td>26.061948</td>
+    </tr>
+  </tbody>
+</table>
+<p>1000 rows × 8 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">fix</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;population&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;xpp&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;ypp&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;xps&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;yps&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:xlabel=&#39;xps&#39;, ylabel=&#39;yps&#39;&gt;
+</pre></div>
+</div>
+<img alt="../_images/experiment_aggregated_data_18_1.png" src="../_images/experiment_aggregated_data_18_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
+<span class="kn">from</span> <span class="nn">stargazer.stargazer</span> <span class="kn">import</span> <span class="n">Stargazer</span>
+
+<span class="n">Stargazer</span><span class="p">([</span>
+    <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s2">&quot;y ~ x&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
+    <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s2">&quot;y ~ x + population&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
+    <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s2">&quot;ypp ~ xpp&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
+    <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s2">&quot;ypp ~ xps&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
+    <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s2">&quot;yps ~ xps&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table style="text-align:center"><tr><td colspan="6" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td><td>(5)</td></tr><tr><td colspan="6" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Intercept</td><td>248.937<sup></sup></td><td>-44.568<sup></sup></td><td>0.256<sup>***</sup></td><td>-0.856<sup>***</sup></td><td>0.041<sup></sup></td></tr><tr><td style="text-align:left"></td><td>(371.740)</td><td>(49.805)</td><td>(0.005)</td><td>(0.135)</td><td>(0.062)</td></tr><tr><td style="text-align:left">population</td><td></td><td>0.250<sup>***</sup></td><td></td><td></td><td></td></tr><tr><td style="text-align:left"></td><td></td><td>(0.001)</td><td></td><td></td><td></td></tr><tr><td style="text-align:left">x</td><td>-0.763<sup>***</sup></td><td>-1.000<sup>***</sup></td><td></td><td></td><td></td></tr><tr><td style="text-align:left"></td><td>(0.008)</td><td>(0.001)</td><td></td><td></td><td></td></tr><tr><td style="text-align:left">xpp</td><td></td><td></td><td>-1.005<sup>***</sup></td><td></td><td></td></tr><tr><td style="text-align:left"></td><td></td><td></td><td>(0.002)</td><td></td><td></td></tr><tr><td style="text-align:left">xps</td><td></td><td></td><td></td><td>-0.159<sup>***</sup></td><td>-0.890<sup>***</sup></td></tr><tr><td style="text-align:left"></td><td></td><td></td><td></td><td>(0.021)</td><td>(0.009)</td></tr><td colspan="6" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Observations</td><td>1,000</td><td>1,000</td><td>1,000</td><td>1,000</td><td>1,000</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.899</td><td>0.998</td><td>0.998</td><td>0.056</td><td>0.899</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.898</td><td>0.998</td><td>0.998</td><td>0.055</td><td>0.898</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>7593.848 (df=998)</td><td>1017.083 (df=997)</td><td>0.141 (df=998)</td><td>2.767 (df=998)</td><td>1.266 (df=998)</td></tr><tr><td style="text-align: left">F Statistic</td><td>8843.578<sup>***</sup> (df=1; 998)</td><td>273814.210<sup>***</sup> (df=2; 997)</td><td>405079.870<sup>***</sup> (df=1; 998)</td><td>58.687<sup>***</sup> (df=1; 998)</td><td>8843.578<sup>***</sup> (df=1; 998)</td></tr><tr><td colspan="6" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Note:</td>
+ <td colspan="5" style="text-align: right">
+  <sup>*</sup>p&lt;0.1;
+  <sup>**</sup>p&lt;0.05;
+  <sup>***</sup>p&lt;0.01
+ </td></tr></table></div></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./econometrics"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By mitama<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

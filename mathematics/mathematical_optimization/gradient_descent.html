@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>勾配降下法 &#8212; データサイエンスの勉強ノート</title>
+    <title>勾配法 &#8212; データサイエンスの勉強ノート</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -161,13 +161,18 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul class="current">
    <li class="toctree-l2">
+    <a class="reference internal" href="optimality_conditions.html">
+     最適性条件
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="lagrange.html">
      ラグランジュの未定乗数法
     </a>
    </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     勾配降下法
+     勾配法
     </a>
    </li>
    <li class="toctree-l2">
@@ -767,23 +772,112 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   最急降下法
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   ニュートン法
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#x">
+     導出（
+     <span class="math notranslate nohighlight">
+      \(x\)
+     </span>
+     がスカラーの場合）
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     別の見方
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     疑問
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
 </div>
     </div>
     <div class="article row">
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>勾配降下法</h1>
+                <h1>勾配法</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   最急降下法
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   ニュートン法
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#x">
+     導出（
+     <span class="math notranslate nohighlight">
+      \(x\)
+     </span>
+     がスカラーの場合）
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     別の見方
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     疑問
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -791,23 +885,66 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="id1">
-<h1>勾配降下法<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>勾配法<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
 <p>モデルのパラメータ<span class="math notranslate nohighlight">\(w=(w_0, ..., w_d)^\top\)</span>を変えて誤差関数<span class="math notranslate nohighlight">\(L(w)\)</span>を最小化する問題</p>
 <div class="math notranslate nohighlight">
 \[
 \min_{w} L(w)
 \]</div>
 <p>を考える。</p>
-<p>勾配降下法（gradient descent method）は勾配<span class="math notranslate nohighlight">\(\nabla L(w) = \partial L(w) / \partial w\)</span>と学習率<span class="math notranslate nohighlight">\(\eta\)</span>を使って逐次的に重みを更新して最適化していく。<span class="math notranslate nohighlight">\(t\)</span>回目の反復（iteration）における重みは</p>
+<p><strong>勾配法</strong>あるいは<strong>勾配降下法</strong>（gradient descent method）は勾配を用いる最適化手法の総称である。</p>
+<p>基本的に反復計算によって徐々に勾配を下っていき最適化を行う。<span class="math notranslate nohighlight">\(t\)</span>回目の反復における点<span class="math notranslate nohighlight">\(x_t\)</span>について、探索方向<span class="math notranslate nohighlight">\(d_t\)</span>とステップ幅<span class="math notranslate nohighlight">\(\alpha_t\)</span>を用いて</p>
 <div class="math notranslate nohighlight">
 \[
-w^{(t)} = w^{(t - 1)} + \eta \nabla L(w)
+x_{t+1} = x_t + \alpha_t d_t
+\]</div>
+<p>という更新を反復していく</p>
+<section id="id2">
+<h2>最急降下法<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<p>最急降下法（steepest descent method）は負の勾配<span class="math notranslate nohighlight">\(-\nabla f(x) = -\frac{\partial f(x)}{\partial x}\)</span>の方向に<span class="math notranslate nohighlight">\(x\)</span>を更新して最適化していく。</p>
+<p>つまり探索方向<span class="math notranslate nohighlight">\(d_t = -\nabla f(x)\)</span>ということである。</p>
+<p>ステップ幅<span class="math notranslate nohighlight">\(\alpha_t\)</span>は固定値で行う方法もあるし、動的に変化させる方法もある。</p>
+<p><span class="math notranslate nohighlight">\(t+1\)</span>回目の反復（iteration）における<span class="math notranslate nohighlight">\(x\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[
+x_{t+1} = x_t - \alpha_t \nabla f(x_t)
 \]</div>
 <p>のように算出される</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;f(x)&quot;</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="mf">0.7</span>
+<span class="n">eta</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Iter</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> | x=</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, f(x)=</span><span class="si">{</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, grad(x)=</span><span class="si">{</span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/gradient_descent_2_0.png" src="../../_images/gradient_descent_2_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 機械学習っぽい想定をしたバージョン</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">w_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">])</span>
@@ -875,6 +1012,166 @@ Final Model:
 </div>
 </div>
 </div>
+</section>
+<section id="id3">
+<h2>ニュートン法<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
+<p>ニュートン法（Newton’s method）は勾配だけでなくヘッセ行列の情報も用いる。ステップ幅は固定である</p>
+<ul class="simple">
+<li><p>探索方向<span class="math notranslate nohighlight">\(d_t = - (\nabla^2 f(x_t))^{-1} \nabla f(x_t)\)</span></p></li>
+<li><p>ステップ幅<span class="math notranslate nohighlight">\(\alpha_t = 1\)</span></p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+x_{t+1} = x_t -  (\nabla^2 f(x_t))^{-1} \nabla f(x_t)
+\]</div>
+<p>テイラーの定理（テイラー展開）で2次まで使ったときの最適解が上記の探索方向となる</p>
+<section id="x">
+<h3>導出（<span class="math notranslate nohighlight">\(x\)</span>がスカラーの場合）<a class="headerlink" href="#x" title="Permalink to this headline">#</a></h3>
+<p>（局所）最適解は</p>
+<div class="math notranslate nohighlight">
+\[
+f'(x) = \frac{d}{d x} f(x) = 0
+\]</div>
+<p>を満たす。<span class="math notranslate nohighlight">\(f'(x)\)</span>を<span class="math notranslate nohighlight">\(x=x_t\)</span>の周りでテーラー展開すると</p>
+<div class="math notranslate nohighlight">
+\[
+0 = f'(x) = f'(x_t) + f''(x_t) (x - x_t) + O(1)
+\]</div>
+<p>となり、これを整理すると</p>
+<div class="math notranslate nohighlight">
+\[
+x = x_t + \frac{ f'(x_t) }{ - f''(x_t) } + O(n^{-1})
+\]</div>
+<p>となる。</p>
+<p>よって</p>
+<div class="math notranslate nohighlight">
+\[
+x_{t+1} = x_t - \frac{ f'(x_t) } { f''(x_t) }
+\]</div>
+<p>のように更新していく</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>テイラーの定理
+<span class="math notranslate nohighlight">\(\def\R{\mathbb{R}} \def\b#1{\boldsymbol{#1}}\)</span>
+関数<span class="math notranslate nohighlight">\(f: \R^n \to \R\)</span>が1回微分可能のとき、<span class="math notranslate nohighlight">\(\b{x}, \b{\delta} \in \R^n\)</span>に対して実数<span class="math notranslate nohighlight">\(c\in (0, 1)\)</span>が存在して</p>
+<div class="math notranslate nohighlight">
+\[
+f(\b{x} + \b{\delta}) = f(\b{x}) + \nabla f(\b{x} + c\b{\delta})^\top \b{\delta}
+\]</div>
+<p>が成り立つ。また2回微分可能なとき、</p>
+<div class="math notranslate nohighlight">
+\[
+f(\b{x} + \b{\delta}) = f(\b{x}) + \nabla f(\b{x})^\top \b{\delta}
++ \frac{1}{2} \b{\delta}^\top \nabla^2 f(\b{x}+c\b{\delta}) \b{\delta}
+\]</div>
+<p>が成り立つ。</p>
+</div>
+</section>
+<section id="id4">
+<h3>別の見方<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
+<p>ニュートン法はある関数がゼロになる条件を求めるアルゴリズムであるとも考えられる。</p>
+<div class="math notranslate nohighlight">
+\[
+f(x) = 0
+\]</div>
+<p>を求める場合は</p>
+<div class="math notranslate nohighlight">
+\[
+x_{t+1} = x_t - \frac{f(x_t)}{f'(x_t)}
+\]</div>
+<p>となり、</p>
+<div class="math notranslate nohighlight">
+\[
+f'(x) = 0
+\]</div>
+<p>を求める場合は</p>
+<div class="math notranslate nohighlight">
+\[
+x_{t+1} = x_t - \frac{f'(x_t)}{f''(x_t)}
+\]</div>
+<p>となる。</p>
+</section>
+<section id="id5">
+<h3>疑問<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
+<p><span class="math notranslate nohighlight">\(f(x) = x^2\)</span>のとき、</p>
+<div class="math notranslate nohighlight">
+\[
+x_{t+1} = x_t - \frac{ f'(x_t) } { f''(x_t) }
+= x_t - \frac{ 2 x_t } { 2 } = 0
+\]</div>
+<p>となってうまく動作しない</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
+
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;f(x)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;grad(x)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/gradient_descent_9_0.png" src="../../_images/gradient_descent_9_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
+
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;f(x)&quot;</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="mf">0.7</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Iter</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> | x=</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, f(x)=</span><span class="si">{</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, grad(x)=</span><span class="si">{</span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/gradient_descent_10_0.png" src="../../_images/gradient_descent_10_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">hess</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">2</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;f(x)&quot;</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="mf">0.7</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">hess</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Iter</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> | x=</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, f(x)=</span><span class="si">{</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, grad(x)=</span><span class="si">{</span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/gradient_descent_11_0.png" src="../../_images/gradient_descent_11_0.png" />
+</div>
+</div>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
