@@ -51,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Support Vector Machine" href="../../svm.html" />
@@ -797,6 +799,33 @@ title="Print to PDF"
    モデル
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   誤差関数
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     ベルヌーイ分布
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     尤度関数
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     交差エントロピー誤差
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id7">
+     勾配
+    </a>
+   </li>
+  </ul>
+ </li>
 </ul>
 
     </nav>
@@ -821,6 +850,33 @@ title="Print to PDF"
    モデル
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   誤差関数
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     ベルヌーイ分布
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     尤度関数
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     交差エントロピー誤差
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id7">
+     勾配
+    </a>
+   </li>
+  </ul>
+ </li>
 </ul>
 
                         </nav>
@@ -835,32 +891,161 @@ title="Print to PDF"
 <h1>ロジスティック回帰<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
 <section id="id2">
 <h2>モデル<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
-<p>クラスの判別あるいはその確率値の予測を行いたい場合を想定する。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
-<span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-</pre></div>
+<p>目的変数<span class="math notranslate nohighlight">\(y\in\{0,1\}\)</span>の二値分類において、<span class="math notranslate nohighlight">\(y=1\)</span>である確率を<span class="math notranslate nohighlight">\(p\)</span>、<span class="math notranslate nohighlight">\(y=0\)</span>である確率を<span class="math notranslate nohighlight">\(1-p\)</span>とする。
+ロジスティック回帰はそのオッズ比の対数を線形モデルで説明するモデル</p>
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\b}[1]{\boldsymbol{#1}}
+\log\left( \frac{p}{1-p} \right) = \b{\beta}^\top \b{x}
+\]</div>
+<p>である。</p>
+<p>両辺の指数をとると</p>
+<div class="math notranslate nohighlight">
+\[
+p = \frac{ \exp(\b{\beta}^\top \b{x}) }{ 1 + \exp(\b{\beta}^\top \b{x}) }
+\]</div>
+<p>となる。</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+導出<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\frac{p}{1-p} &amp;= \exp(\b{\beta}^\top \b{x})\\
+\implies
+p &amp;= \exp(\b{\beta}^\top \b{x}) (1-p)\\
+  &amp;= \exp(\b{\beta}^\top \b{x}) - p \exp(\b{\beta}^\top \b{x})
+\end{align}
+\end{split}\]</div>
+<p class="sd-card-text">両辺を<span class="math notranslate nohighlight">\(p\)</span>で割ると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+1  &amp;= \exp(\b{\beta}^\top \b{x}) \frac{1}{p} - \exp(\b{\beta}^\top \b{x})\\
+1 + \exp(\b{\beta}^\top \b{x}) &amp;= \exp(\b{\beta}^\top \b{x}) \frac{1}{p}\\
+\implies p &amp;= \frac{ \exp(\b{\beta}^\top \b{x}) }{ 1 + \exp(\b{\beta}^\top \b{x}) }
+\end{align}
+\end{split}\]</div>
 </div>
+</details><p>ロジスティック・シグモイド関数</p>
+<div class="math notranslate nohighlight">
+\[
+\sigma(z) = \frac{\exp(z)}{1 + \exp(z)}
+\]</div>
+</section>
+<section id="id3">
+<h2>誤差関数<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
+<p>ロジスティック回帰は統計学的な言い方だと最尤推定法でパラメータを推定する。
+機械学習的な言い方をすると交差エントロピー誤差を最小化するようにパラメータを推定する。</p>
+<section id="id4">
+<h3>ベルヌーイ分布<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
+<p>ロジスティック回帰は<span class="math notranslate nohighlight">\(P(y=1) = p, P(y = 0) = 1-p\)</span>のベルヌーイ分布に従う。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+P(y) = \begin{cases}
+p &amp; \text{if } y = 1\\
+1-p &amp; \text{if } y = 0
+\end{cases}
+\end{split}\]</div>
+<p>この確率質量関数は一括で書くと</p>
+<div class="math notranslate nohighlight">
+\[
+P(Y=y) = p^y (1 - p)^{1-y}
+\]</div>
+<p>と書くことができる。</p>
+</section>
+<section id="id5">
+<h3>尤度関数<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
+<p>尤度関数<span class="math notranslate nohighlight">\(L(\theta)\)</span>とは一般に確率(密度/質量)関数<span class="math notranslate nohighlight">\(f(x| \theta)\)</span>の積</p>
+<div class="math notranslate nohighlight">
+\[
+L(\theta) = \prod^n_{i=1} f(x_i| \theta)
+\]</div>
+<p>である（独立に得られたサンプルを仮定するので単純な積が同時確率を意味する）。</p>
+<p>そのため、ベルヌーイ分布の尤度関数は</p>
+<div class="math notranslate nohighlight">
+\[
+L(p) = \prod^n_{i=1} p^{y_i} (1 - p)^{1- y_i}
+\]</div>
+<p>となる。</p>
+<p>ロジスティック回帰で使う場合、<span class="math notranslate nohighlight">\(p \in [0, 1]\)</span>はロジスティック回帰の予測値<span class="math notranslate nohighlight">\(p_i=\sigma(\beta^\top x_i)\)</span>、<span class="math notranslate nohighlight">\(y \in \{0, 1\}\)</span>は実測値である。</p>
+<div class="math notranslate nohighlight">
+\[
+L(\beta) = \prod^n_{i=1} p_i^{y_i} (1 - p_i)^{1- y_i}
+\]</div>
+</section>
+<section id="id6">
+<h3>交差エントロピー誤差<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h3>
+<p>尤度関数の対数を取って符号を負に反転させたものを<strong>交差エントロピー誤差</strong>（cross entropy loss）という。log lossやlogistic lossとも呼ばれる</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}(\beta) = -\ln L(\beta)
+= -\sum^n_{i=1} \{ y_i \ln p_i + (1 - y_i) \ln (1 - p_i) \}
+\]</div>
+</section>
+<section id="id7">
+<h3>勾配<a class="headerlink" href="#id7" title="Permalink to this headline">#</a></h3>
+<p>交差エントロピーの勾配は</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla \mathcal{L}(\beta)
+= \frac{ \partial \mathcal{L}(\beta) } { \partial \beta }
+= \sum^n_{i=1} (p_i - y_i) x_i
+\]</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+導出<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">総和を取るまえの1レコード単位のものを使う。</p>
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\s}{ \sigma(\beta^\top x) }
+\ell(\beta) = y \ln \s + (1 - y) \ln (1 - \s)
+\]</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(\s\)</span>に関する微分</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\frac{d \ln \s}{d \beta}
+&amp;= \frac{d \ln \s}{d \s} \frac{d \s}{d (\beta^\top x)} \frac{d (\beta^\top x)}{d \beta}\\
+&amp;= \frac{1}{\s} \cdot \s (1 - \s) \cdot x\\
+&amp;= 1 - \s x
+\\
+\frac{d \ln (1 -\s)}{d \beta}
+&amp;= \frac{d \ln (1 -\s)}{d \s} \frac{d \s}{d (\beta^\top x)} \frac{d (\beta^\top x)}{d \beta}\\
+&amp;= -\frac{1}{1-\s} \cdot \s (1 - \s) \cdot x\\
+&amp;= - \s x
+\end{align}
+\end{split}\]</div>
+<p class="sd-card-text">より、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\frac{d \ell(\beta)}{d\beta}
+&amp;= y (1 - \s)x - (1 - y) \s x\\
+&amp;= (y - y\s - \s + y\s) x\\
+&amp;= (y - \s ) x\\
+\end{align}
+\end{split}\]</div>
+<p class="sd-card-text">（参考）使った微分</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\frac{d \log x}{dx} &amp;= \frac{1}{x}\\
+\frac{d \sigma(x)}{dx} &amp;= \sigma(x) (1- \sigma(x))\\
+\frac{d \sigma(\beta^\top x)}{dx} &amp;= \frac{d \sigma(\beta^\top x)}{d(\beta^\top x)} \times \frac{d (\beta^\top x)}{dx}
+= \sigma(\beta^\top x) (1- \sigma(\beta^\top x)) \times x \\
+\end{align}
+\end{split}\]</div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10.000000000000002
-</pre></div>
-</div>
-</div>
-</div>
+</details></section>
 </section>
 </section>
 
