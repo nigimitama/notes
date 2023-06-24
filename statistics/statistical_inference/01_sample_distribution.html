@@ -273,6 +273,11 @@ const thebe_selector_output = ".output, .cell_output"
    因子分析
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../statistical_modeling/sem.html">
+   Structural Equation Modeling（SEM）
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -796,7 +801,21 @@ title="Print to PDF"
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id2">
+   統計量の確率分布
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
    不偏分散
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#n">
+   最尤推定は
+   <span class="math notranslate nohighlight">
+    \(n\)
+   </span>
+   で割る
   </a>
  </li>
 </ul>
@@ -820,7 +839,21 @@ title="Print to PDF"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id2">
+   統計量の確率分布
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
    不偏分散
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#n">
+   最尤推定は
+   <span class="math notranslate nohighlight">
+    \(n\)
+   </span>
+   で割る
   </a>
  </li>
 </ul>
@@ -835,6 +868,8 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>標本分布<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<section id="id2">
+<h2>統計量の確率分布<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
 <p>統計的性質を分析したい対象を<strong>母集団</strong>（population）といい、調査等により母集団から得られたデータを<strong>標本</strong>（sample）という。</p>
 <p>統計的推測では母集団の平均（<strong>母平均</strong>）<span class="math notranslate nohighlight">\(\mu\)</span>や分散（<strong>母分散</strong>）<span class="math notranslate nohighlight">\(\sigma^2\)</span>といった<strong>母数</strong>（population parameter）を標本に基づいて推定する。</p>
 <p>標本から得られた平均や分散</p>
@@ -915,8 +950,9 @@ V \left[ \sum^k_{i=1} a_i X_i \right] = \sum^k_{i=1} a_i^2 \sigma_{ii}
 </div>
 </div>
 </div>
-<section id="id2">
-<h2>不偏分散<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+</section>
+<section id="id3">
+<h2>不偏分散<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
 <p>なお、<span class="math notranslate nohighlight">\(\bar{X}\)</span>は期待値をとると<span class="math notranslate nohighlight">\(\mu\)</span>になるが、<span class="math notranslate nohighlight">\(S^2\)</span>の期待値は<span class="math notranslate nohighlight">\(\sigma^2\)</span>にはならない。</p>
 <p><span class="math notranslate nohighlight">\(X_i - \bar{X} = X_i - \mu - (\bar{X} - \mu)\)</span>と代入すると、</p>
 <div class="math notranslate nohighlight">
@@ -958,6 +994,64 @@ E[\sum_{i=1}^n (X_i - \bar{X})^2]
 V^2 = \frac{1}{n-1} \sum^n_{i=1} (X_i - \bar{X})^2
 \]</div>
 <p>を不偏分散という。</p>
+</section>
+<section id="n">
+<h2>最尤推定は<span class="math notranslate nohighlight">\(n\)</span>で割る<a class="headerlink" href="#n" title="Permalink to this headline">#</a></h2>
+<p>データ<span class="math notranslate nohighlight">\(\boldsymbol{x} = (x_1, x_2, \dots, x_n)\)</span>が正規分布</p>
+<div class="math notranslate nohighlight">
+\[
+P(x|\mu, \sigma^2)
+ = \frac{1}{\sqrt{2\pi}\sigma}
+ \exp \left\{ - \frac{(x-\mu)^2}{2\sigma^2} \right\}
+\]</div>
+<p>に従う独立に得られたサンプルだとする。</p>
+<p>対数尤度関数は次のものになる。</p>
+<div class="math notranslate nohighlight">
+\[
+\ell(\mu, \sigma^2 |\boldsymbol{x}) =
+    - \frac{n}{2} \log(2\pi)
+    - \frac{n}{2} \log (\sigma^2)
+    - \frac{1}{2\sigma^2} \sum^n_{i=1} (x_i - \mu)^2
+\]</div>
+<p>まず<span class="math notranslate nohighlight">\(\mu\)</span>に関して偏微分してゼロとおくと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\frac{\partial}{\partial \mu} \ell(\mu, \sigma^2 |\boldsymbol{x})
+&amp;= -1 \times 2 \times - \frac{1}{2\sigma^2} \sum^n_{i=1} (x_i - \mu)\\
+&amp;= \frac{1}{\sigma^2} \sum^n_{i=1} (x_i - \mu)\\
+&amp;= \frac{1}{\sigma^2} \sum^n_{i=1} x_i - \frac{1}{\sigma^2} \sum^n_{i=1} \mu
+= 0\\
+\implies \frac{1}{\sigma^2} \sum^n_{i=1} x_i &amp;= \frac{1}{\sigma^2} \sum^n_{i=1} \mu\\
+\implies \frac{1}{\sigma^2} \sum^n_{i=1} x_i &amp;= \frac{n}{\sigma^2} \mu\\
+\implies \frac{1}{n} \sum^n_{i=1} x_i &amp;= \mu
+\end{align}
+\end{split}\]</div>
+<p>よって</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\mu} = \frac{1}{n} \sum^n_{i=1} x_i = \bar{x}
+\]</div>
+<p>なので、最尤推定量とモーメント推定量は一致する。</p>
+<p>続いて<span class="math notranslate nohighlight">\(\sigma^2\)</span>について偏微分してゼロとおくと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\frac{\partial}{\partial \sigma^2} \ell(\mu, \sigma^2 |\boldsymbol{x})
+&amp;= - \frac{n}{2 \sigma^2} + \frac{1}{2 \sigma^4} \sum^n_{i=1} (x_i - \mu)^2 = 0
+\\
+\implies \frac{n}{2 \sigma^2} &amp;= \frac{1}{2 \sigma^4} \sum^n_{i=1} (x_i - \mu)^2\\
+\implies n &amp;= \frac{1}{\sigma^2} \sum^n_{i=1} (x_i - \mu)^2\\
+\implies \sigma^2 &amp;= \frac{1}{n} \sum^n_{i=1} (x_i - \mu)^2\\
+\end{align}
+\end{split}\]</div>
+<p>よって</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\sigma}^2 &amp;= \frac{1}{n} \sum^n_{i=1} (x_i - \bar{x})^2
+\]</div>
+<p>となり、こちらもモーメント推定量と一致する</p>
+<p><a class="reference external" href="https://twitter.com/Idesan/status/1668032205942079492?t=CkumtNhVoR5VZrcYXlOh5Q&amp;s=19">Tsuyoshi Ide (井手 剛)さんはTwitterを使っています: 「標本分散の定義式は、いわゆる不偏推定量（N-1で割る）と最尤推定量（Nで割る）という2通りあり、わかりにくいと思います混乱しがちですので、初心者向けのラフな解説を書きました。 https://t.co/hDBcKYd2Pf こう対比してみると、頻度派と言われる統計学者の論法の不自然さが際立つ感じがします。」 / Twitter</a></p>
 </section>
 </section>
 
