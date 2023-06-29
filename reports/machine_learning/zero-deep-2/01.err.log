@@ -1,0 +1,81 @@
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.9.17/x64/lib/python3.9/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/opt/hostedtoolcache/Python/3.9.17/x64/lib/python3.9/site-packages/nbclient/client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/hostedtoolcache/Python/3.9.17/x64/lib/python3.9/site-packages/jupyter_core/utils/__init__.py", line 166, in wrapped
+    return loop.run_until_complete(inner)
+  File "/opt/hostedtoolcache/Python/3.9.17/x64/lib/python3.9/asyncio/base_events.py", line 647, in run_until_complete
+    return future.result()
+  File "/opt/hostedtoolcache/Python/3.9.17/x64/lib/python3.9/site-packages/nbclient/client.py", line 705, in async_execute
+    await self.async_execute_cell(
+  File "/opt/hostedtoolcache/Python/3.9.17/x64/lib/python3.9/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/opt/hostedtoolcache/Python/3.9.17/x64/lib/python3.9/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+def spiral_data(seed=1984):
+    np.random.seed(seed)
+    N = 100  # クラスごとのサンプル数
+    DIM = 2  # データの要素数
+    CLS_NUM = 3  # クラス数
+
+    x = np.zeros((N*CLS_NUM, DIM))
+    t = np.zeros((N*CLS_NUM, CLS_NUM), dtype=np.int)
+
+    for j in range(CLS_NUM):
+        for i in range(N):#N*j, N*(j+1)):
+            rate = i / N
+            radius = 1.0*rate
+            theta = j*4.0 + 4.0*rate + np.random.randn()*0.2
+
+            ix = N*j + i
+            x[ix] = np.array([radius*np.sin(theta),
+                              radius*np.cos(theta)]).flatten()
+            t[ix, j] = 1
+
+    return x, t
+
+
+# ハイパーパラメータの設定
+max_epoch = 300
+batch_size = 30
+hidden_size = 10
+learning_rate = 1.0
+
+x, t = spiral_data()
+model = TwoLayerNet(input_size=2, hidden_size=hidden_size, output_size=3)
+
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mAttributeError[0m                            Traceback (most recent call last)
+Cell [0;32mIn[5], line 30[0m
+[1;32m     27[0m hidden_size [38;5;241m=[39m [38;5;241m10[39m
+[1;32m     28[0m learning_rate [38;5;241m=[39m [38;5;241m1.0[39m
+[0;32m---> 30[0m x, t [38;5;241m=[39m [43mspiral_data[49m[43m([49m[43m)[49m
+[1;32m     31[0m model [38;5;241m=[39m TwoLayerNet(input_size[38;5;241m=[39m[38;5;241m2[39m, hidden_size[38;5;241m=[39mhidden_size, output_size[38;5;241m=[39m[38;5;241m3[39m)
+
+Cell [0;32mIn[5], line 8[0m, in [0;36mspiral_data[0;34m(seed)[0m
+[1;32m      5[0m CLS_NUM [38;5;241m=[39m [38;5;241m3[39m  [38;5;66;03m# クラス数[39;00m
+[1;32m      7[0m x [38;5;241m=[39m np[38;5;241m.[39mzeros((N[38;5;241m*[39mCLS_NUM, DIM))
+[0;32m----> 8[0m t [38;5;241m=[39m np[38;5;241m.[39mzeros((N[38;5;241m*[39mCLS_NUM, CLS_NUM), dtype[38;5;241m=[39m[43mnp[49m[38;5;241;43m.[39;49m[43mint[49m)
+[1;32m     10[0m [38;5;28;01mfor[39;00m j [38;5;129;01min[39;00m [38;5;28mrange[39m(CLS_NUM):
+[1;32m     11[0m     [38;5;28;01mfor[39;00m i [38;5;129;01min[39;00m [38;5;28mrange[39m(N):[38;5;66;03m#N*j, N*(j+1)):[39;00m
+
+File [0;32m/opt/hostedtoolcache/Python/3.9.17/x64/lib/python3.9/site-packages/numpy/__init__.py:313[0m, in [0;36m__getattr__[0;34m(attr)[0m
+[1;32m    308[0m     warnings[38;5;241m.[39mwarn(
+[1;32m    309[0m         [38;5;124mf[39m[38;5;124m"[39m[38;5;124mIn the future `np.[39m[38;5;132;01m{[39;00mattr[38;5;132;01m}[39;00m[38;5;124m` will be defined as the [39m[38;5;124m"[39m
+[1;32m    310[0m         [38;5;124m"[39m[38;5;124mcorresponding NumPy scalar.[39m[38;5;124m"[39m, [38;5;167;01mFutureWarning[39;00m, stacklevel[38;5;241m=[39m[38;5;241m2[39m)
+[1;32m    312[0m [38;5;28;01mif[39;00m attr [38;5;129;01min[39;00m __former_attrs__:
+[0;32m--> 313[0m     [38;5;28;01mraise[39;00m [38;5;167;01mAttributeError[39;00m(__former_attrs__[attr])
+[1;32m    315[0m [38;5;28;01mif[39;00m attr [38;5;241m==[39m [38;5;124m'[39m[38;5;124mtesting[39m[38;5;124m'[39m:
+[1;32m    316[0m     [38;5;28;01mimport[39;00m [38;5;21;01mnumpy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mtesting[39;00m [38;5;28;01mas[39;00m [38;5;21;01mtesting[39;00m
+
+[0;31mAttributeError[0m: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+

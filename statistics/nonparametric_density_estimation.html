@@ -1,50 +1,68 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>ノンパラメトリック密度推定 &#8212; データサイエンスの勉強ノート</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/style.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-GXSWJY51EG"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-GXSWJY51EG');
+            </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -53,64 +71,87 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'statistics/nonparametric_density_estimation';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="順序尺度の相関係数" href="correlation.html" />
     <link rel="prev" title="Bootstrap" href="bootstrap.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GXSWJY51EG"></script>
-<script>
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){ dataLayer.push(arguments); }
-                    gtag('js', new Date());
-                    gtag('config', 'G-GXSWJY51EG');
-                </script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
 
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../index.html">
-      
-      
-      
-      <h1 class="site-logo" id="site-title">データサイエンスの勉強ノート</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">データサイエンスの勉強ノート</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -119,830 +160,346 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  数学
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">数学</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../mathematics/introduction.html">
-   数学の初歩
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../mathematics/set_theory.html">
-   集合論
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../mathematics/functions.html">
-   関数
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../mathematics/calculus.html">
-   微分積分学
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../mathematics/linear_algebra.html">
-   線形代数学
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../mathematics/mathematical_optimization/index.html">
-   数理最適化
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../mathematics/mathematical_optimization/optimality_conditions.html">
-     最適性条件
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../mathematics/mathematical_optimization/lagrange.html">
-     ラグランジュの未定乗数法
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../mathematics/mathematical_optimization/gradient_descent.html">
-     勾配法
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../mathematics/mathematical_optimization/knapsack_problem.html">
-     ナップサック問題
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../mathematics/mathematical_optimization/optimal_transport.html">
-     最適輸送
-    </a>
-   </li>
-  </ul>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../mathematics/introduction.html">数学の初歩</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mathematics/set_theory.html">集合論</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mathematics/functions.html">関数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mathematics/calculus.html">微分積分学</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mathematics/linear_algebra.html">線形代数学</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mathematics/mathematical_optimization/index.html">数理最適化</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/mathematical_optimization/optimality_conditions.html">最適性条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/mathematical_optimization/lagrange.html">ラグランジュの未定乗数法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/mathematical_optimization/gradient_descent.html">勾配法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/mathematical_optimization/knapsack_problem.html">ナップサック問題</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/mathematical_optimization/optimal_transport.html">最適輸送</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  統計学
- </span>
-</p>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">統計学</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="probability_and_expectation.html">
-   確率と期待値・分散
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="distributions.html">
-   確率分布
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="statistical_inference/index.html">
-   統計的推測
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="statistical_inference/01_sample_distribution.html">
-     標本分布
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="statistical_inference/02_generating_functions.html">
-     母関数
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="statistical_inference/03_central_limit_theorem.html">
-     中心極限定理
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="statistical_inference/04_point_estimation.html">
-     点推定
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="statistical_inference/05_interval_inference.html">
-     区間推定
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="statistical_inference/06_test.html">
-     検定
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="likelihood_and_probability.html">
-   尤度関数と確率関数の違いは何なのか？
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="bootstrap.html">
-   Bootstrap
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   ノンパラメトリック密度推定
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="correlation.html">
-   順序尺度の相関係数
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="probability_and_expectation.html">確率と期待値・分散</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distributions.html">確率分布</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="statistical_inference/index.html">統計的推測</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="statistical_inference/01_sample_distribution.html">標本分布</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_inference/02_generating_functions.html">母関数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_inference/03_central_limit_theorem.html">中心極限定理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_inference/04_point_estimation.html">点推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_inference/05_interval_inference.html">区間推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_inference/06_test.html">検定</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  統計モデリング
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../statistical_modeling/factor_analysis.html">
-   因子分析
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../statistical_modeling/sem/index.html">
-   構造方程式モデリング
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../statistical_modeling/sem/introduction.html">
-     Structural Equation Modeling（SEM）
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../statistical_modeling/sem/regression_analysis.html">
-     回帰分析
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../statistical_modeling/sem/path_analysis.html">
-     パス解析
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../statistical_modeling/sem/factor_analysis.html">
-     因子分析モデル
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../statistical_modeling/bayes_modeling/index.html">
-   ベイズ統計モデリング
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
-  <label for="toctree-checkbox-4">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../statistical_modeling/bayes_modeling/introduction.html">
-     概要
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../statistical_modeling/symbolic_data_analysis.html">
-   Symbolic Data Analysis
-  </a>
- </li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_and_probability.html">尤度関数と確率関数の違いは何なのか？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">ノンパラメトリック密度推定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="correlation.html">順序尺度の相関係数</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  機械学習
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">統計モデリング</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../machine_learning/linear_models/index.html">
-   線形モデル
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/linear_models/regression/linear_regression.html">
-     線形回帰
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/linear_models/regression/ridge_regression.html">
-     Ridge回帰
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/linear_models/regression/lasso.html">
-     LASSO
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/linear_models/classification/linear_discriminant_analysis.html">
-     線形判別モデル
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/linear_models/classification/logistic_regression.html">
-     ロジスティック回帰
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../machine_learning/svm.html">
-   Support Vector Machine
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../machine_learning/trees/index.html">
-   Tree-based Algorithms
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
-  <label for="toctree-checkbox-6">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/trees/decision_tree.html">
-     決定木
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/trees/gbdt.html">
-     勾配ブースティング決定木
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../machine_learning/deep_learning/index.html">
-   深層学習
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
-  <label for="toctree-checkbox-7">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/deep_learning/neural_network.html">
-     Feed-Forward Neural Network
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/deep_learning/cnn.html">
-     CNN
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/deep_learning/rnn.html">
-     RNN
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/deep_learning/lstm.html">
-     LSTM
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/deep_learning/transformer.html">
-     Transformer
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../machine_learning/deep_learning/dl_and_tabular_data.html">
-     Deep Learning and Tabular data
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../machine_learning/dimension_reduction.html">
-   次元削減
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../machine_learning/imbalanced_data.html">
-   不均衡データ
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../machine_learning/ml_ops/index.html">
-   MLOps
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../statistical_modeling/factor_analysis.html">因子分析</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../statistical_modeling/sem/index.html">構造方程式モデリング</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/sem/introduction.html">Structural Equation Modeling（SEM）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/sem/regression_analysis.html">回帰分析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/sem/path_analysis.html">パス解析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/sem/factor_analysis.html">因子分析モデル</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  生成モデル
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../generative_models/generative_models.html">
-   生成モデル
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../generative_models/autoencoder.html">
-   Autoencoder
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../generative_models/gan.html">
-   GAN
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../generative_models/diffusion_models.html">
-   Diffusion Models
-  </a>
- </li>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../statistical_modeling/bayes_modeling/index.html">ベイズ統計モデリング</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/bayes_modeling/introduction.html">概要</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  自然言語処理
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../natural_language_processing/introduction.html">
-   自然言語処理
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../natural_language_processing/embedding.html">
-   単語の埋め込み
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../natural_language_processing/rnn.html">
-   言語モデルとRNN
-  </a>
- </li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../statistical_modeling/symbolic_data_analysis.html">Symbolic Data Analysis</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  画像処理
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">機械学習</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../image_processing/introduction.html">
-   画像認識
-  </a>
- </li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../machine_learning/linear_models/index.html">線形モデル</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/linear_models/regression/linear_regression.html">線形回帰</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/linear_models/regression/ridge_regression.html">Ridge回帰</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/linear_models/regression/lasso.html">LASSO</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/linear_models/classification/linear_discriminant_analysis.html">線形判別モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/linear_models/classification/logistic_regression.html">ロジスティック回帰</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  計量経済学
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../econometrics/rubin_causal_model.html">
-   ルービンの因果モデル
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../econometrics/hte.html">
-   Heterogeneous Treatment Effectsの推定
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../econometrics/ols/index.html">
-   回帰分析
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
-  <label for="toctree-checkbox-8">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../econometrics/ols/ols.html">
-     概要
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../econometrics/ols/test_of_ols.html">
-     OLSの検定・区間推定
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../econometrics/ols/nature_of_ols_estimator.html">
-     OLS推定量の性質
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../econometrics/ols/ols_robust_standard_error.html">
-     OLSのロバスト標準誤差
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../econometrics/ols/log_transformation.html">
-     対数変換
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../econometrics/ols/omitted_variable_bias.html">
-     欠落変数バイアス
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../econometrics/ols/fwl.html">
-     FWL定理
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../econometrics/propensity_score.html">
-   傾向スコア
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../econometrics/instrumental_variables.html">
-   操作変数法
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../econometrics/regression_discontinuity.html">
-   RDD
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../econometrics/fixed_effect_model.html">
-   固定効果モデル
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../econometrics/difference_in_differences.html">
-   Difference In Differences
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../econometrics/synthetic_control.html">
-   Synthetic Control
-  </a>
- </li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning/svm.html">Support Vector Machine</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../machine_learning/trees/index.html">Tree-based Algorithms</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/decision_tree.html">決定木</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/gbdt.html">勾配ブースティング決定木</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  金融経済学
- </span>
-</p>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../machine_learning/deep_learning/index.html">深層学習</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/deep_learning/neural_network.html">Feed-Forward Neural Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/deep_learning/cnn.html">CNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/deep_learning/rnn.html">RNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/deep_learning/lstm.html">LSTM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/deep_learning/transformer.html">Transformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/deep_learning/dl_and_tabular_data.html">Deep Learning and Tabular data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning/dimension_reduction.html">次元削減</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning/imbalanced_data.html">不均衡データ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning/ml_ops/index.html">MLOps</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">生成モデル</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../financial_economics/introduction.html">
-   概要
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../financial_economics/optimal_portfolio.html">
-   最適ポートフォリオ
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../financial_economics/capm.html">
-   CAPM
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../financial_economics/metrics.html">
-   ファイナンスの指標たち
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../financial_economics/feature_neutralization.html">
-   Feature Neutralization
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../financial_economics/statistical_arbitrage.html">
-   統計的裁定
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../generative_models/generative_models.html">生成モデル</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../generative_models/autoencoder.html">Autoencoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../generative_models/gan.html">GAN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../generative_models/diffusion_models.html">Diffusion Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">自然言語処理</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../natural_language_processing/introduction.html">自然言語処理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../natural_language_processing/embedding.html">単語の埋め込み</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../natural_language_processing/rnn.html">言語モデルとRNN</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">画像処理</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../image_processing/introduction.html">画像認識</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">計量経済学</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../econometrics/rubin_causal_model.html">ルービンの因果モデル</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../econometrics/hte.html">Heterogeneous Treatment Effectsの推定</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../econometrics/ols/index.html">回帰分析</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/ols.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/test_of_ols.html">OLSの検定・区間推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/nature_of_ols_estimator.html">OLS推定量の性質</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/ols_robust_standard_error.html">OLSのロバスト標準誤差</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/log_transformation.html">対数変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/omitted_variable_bias.html">欠落変数バイアス</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/fwl.html">FWL定理</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../econometrics/propensity_score.html">傾向スコア</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../econometrics/instrumental_variables.html">操作変数法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../econometrics/regression_discontinuity.html">RDD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../econometrics/fixed_effect_model.html">固定効果モデル</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../econometrics/difference_in_differences.html">Difference In Differences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../econometrics/synthetic_control.html">Synthetic Control</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">金融経済学</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/introduction.html">概要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/optimal_portfolio.html">最適ポートフォリオ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/capm.html">CAPM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/metrics.html">ファイナンスの指標たち</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/feature_neutralization.html">Feature Neutralization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/statistical_arbitrage.html">統計的裁定</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/nigimitama/notes/gh-pages?urlpath=tree/docs/statistics/nonparametric_density_estimation.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
   
-
-<span class="headerbtn__icon-container">
-  
-    <img src="../_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/nigimitama/notes" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Fstatistics/nonparametric_density_estimation.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
 </div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/statistics/nonparametric_density_estimation.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
 
 <button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-expand"></i>
   </span>
 
 </button>
 
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/nigimitama/notes"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
+`);
+</script>
 
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Fstatistics/nonparametric_density_estimation.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../_sources/statistics/nonparametric_density_estimation.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.ipynb</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id2">
-   ヒストグラム密度推定法
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id3">
-   カーネル密度推定法
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id4">
-     カーネル関数
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id5">
-     ガウシアンカーネル
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#scikit-learn">
-   （参考）Scikit-learn実装
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>ノンパラメトリック密度推定</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id2">
-   ヒストグラム密度推定法
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id3">
-   カーネル密度推定法
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id4">
-     カーネル関数
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id5">
-     ガウシアンカーネル
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#scikit-learn">
-   （参考）Scikit-learn実装
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>ノンパラメトリック密度推定</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ヒストグラム密度推定法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">カーネル密度推定法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">カーネル関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">ガウシアンカーネル</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scikit-learn">（参考）Scikit-learn実装</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>ノンパラメトリック密度推定<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h1>
+<h1>ノンパラメトリック密度推定<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <p>2つの正規分布からなる混合分布があるとする</p>
 <div class="math notranslate nohighlight">
 \[
@@ -952,6 +509,11 @@ title="Print to PDF"
 <p>確率密度関数は下の図の左側のようになる。</p>
 <p>この分布から100個のサンプルが得られたとする。ヒストグラムは右側の図のようになる。</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
@@ -985,12 +547,13 @@ title="Print to PDF"
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="../_images/nonparametric_density_estimation_2_0.png" src="../_images/nonparametric_density_estimation_2_0.png" />
+<img alt="../_images/971c89fcab8f93fada0ec9cfade7883fdd70fdce6e17cccff1a5533fe5a89412.png" src="../_images/971c89fcab8f93fada0ec9cfade7883fdd70fdce6e17cccff1a5533fe5a89412.png" />
 </div>
 </div>
 <section id="id2">
-<h2>ヒストグラム密度推定法<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<h2>ヒストグラム密度推定法<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
 <p><strong>ヒストグラム密度推定法</strong>（histogram density estimation method）</p>
 <p>1つの連続変数<span class="math notranslate nohighlight">\(x\)</span>が対象の場合を考える。</p>
 <p>標準的なヒストグラムでは、<span class="math notranslate nohighlight">\(x\)</span>を幅<span class="math notranslate nohighlight">\(\Delta_i\)</span>の区間に区切り、<span class="math notranslate nohighlight">\(i\)</span>番目の区間に入った<span class="math notranslate nohighlight">\(x\)</span>の観測値の数<span class="math notranslate nohighlight">\(n_i\)</span>と観測値の総数<span class="math notranslate nohighlight">\(N\)</span>を用いて、各区間の確率密度を</p>
@@ -1000,6 +563,11 @@ p_i = \frac{n_i}{N \Delta_i}
 \]</div>
 <p>で推定する。</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HistogramEstimator</span><span class="p">:</span>
 
@@ -1056,20 +624,21 @@ p_i = \frac{n_i}{N \Delta_i}
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="../_images/nonparametric_density_estimation_4_0.png" src="../_images/nonparametric_density_estimation_4_0.png" />
+<img alt="../_images/19f38b4fa88d8be640753d60cb709a92f68287867c495d008db749adf73061c1.png" src="../_images/19f38b4fa88d8be640753d60cb709a92f68287867c495d008db749adf73061c1.png" />
 </div>
 </div>
 <p>この方法の結果の良し悪しは区間幅<span class="math notranslate nohighlight">\(\Delta_i\)</span>に大きく依存する。幅が狭すぎても区間に含まれるサンプルが少なすぎて推定のばらつきが大きくなるし、幅が広すぎても表現力が不足して分布をうまく捉えられなくなる。</p>
 <p>また、ヒストグラム法の問題として</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>推定した密度が区間の縁で不連続になる</p></li>
 <li><p>次元の呪いに弱い：次元数を上げていった場合、<span class="math notranslate nohighlight">\(D\)</span>次元空間を各変数につき<span class="math notranslate nohighlight">\(M\)</span>個の区間にすると、区間の総数は<span class="math notranslate nohighlight">\(M^D\)</span>個になり、各区間に含まれるデータ量が不足する</p></li>
 </ol>
 <p>といったものがある</p>
 </section>
 <section id="id3">
-<h2>カーネル密度推定法<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
+<h2>カーネル密度推定法<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
 <p><span class="math notranslate nohighlight">\(D\)</span>次元のユークリッド空間中の未知の確率密度<span class="math notranslate nohighlight">\(p(\boldsymbol{x})\)</span>から観測値の集合が得られていて、この集合から<span class="math notranslate nohighlight">\(p(\boldsymbol{x})\)</span>の値を推定したいとする。</p>
 <p><span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span>を含むある小さな領域<span class="math notranslate nohighlight">\(\mathcal{R}\)</span>を考える。この領域に割り当てられた確率は</p>
 <div class="math notranslate nohighlight">
@@ -1077,16 +646,12 @@ p_i = \frac{n_i}{N \Delta_i}
 P = \int_{\mathcal{R}} p(\boldsymbol{x}) d\boldsymbol{x}
 \]</div>
 <p>と表すことができる。</p>
-<div class="cell tag_remove-output tag_remove-input docutils container">
-</div>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
 （参考）領域<span class="math notranslate nohighlight">\(\mathcal{R}\)</span>のイメージ（1次元の場合）</div>
 <figure class="align-default" id="fig-region" style="width: 80%">
-<div class="cell_output docutils container">
-<img alt="../_images/nonparametric_density_estimation_7_0.png" src="../_images/nonparametric_density_estimation_7_0.png" />
-</div>
+<img alt="../_images/2d23751aeb155d149797a5d8e67f7c147704bbc0c6beda013452c3114cdb4241.png" src="../_images/2d23751aeb155d149797a5d8e67f7c147704bbc0c6beda013452c3114cdb4241.png" />
 </figure>
 </div>
 </div>
@@ -1103,8 +668,6 @@ E[K/N] = P,
 Var[K/N] = \frac{P(1-P)}{N}
 \]</div>
 <p>となる。</p>
-<div class="cell tag_remove-input tag_remove-output docutils container">
-</div>
 <p>大きい<span class="math notranslate nohighlight">\(N\)</span>については、分散が小さくなって平均の周囲で鋭く尖った分布となり、</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1125,13 +688,13 @@ p(\boldsymbol{x}) = \frac{K}{NV}
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>上記の推定量の正しさは、2つの相反する仮定に基づく</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>領域内では密度が一定とみなせるほど十分に領域<span class="math notranslate nohighlight">\(\mathcal{R}\)</span>は小さい</p></li>
 <li><p>領域内のデータ点<span class="math notranslate nohighlight">\(K\)</span>が二項分布が尖るほどに多く存在している</p></li>
 </ol>
 </div>
 <section id="id4">
-<h3>カーネル関数<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
+<h3>カーネル関数<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
 <p>確率密度を求めたいデータ点<span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span>を中心とする小さな超立方体を領域<span class="math notranslate nohighlight">\(\mathcal{R}\)</span>とする。
 この領域内にある点の数<span class="math notranslate nohighlight">\(K\)</span>を数えるには、次の関数を定義しておくと便利である。</p>
 <div class="math notranslate nohighlight">
@@ -1145,6 +708,11 @@ k(\boldsymbol{u}) =
 <p>これは原点を中心とする単位立方体を表す。
 関数<span class="math notranslate nohighlight">\(k(\boldsymbol{u})\)</span>は<strong>カーネル関数</strong>（kernel function）のひとつであり、今回の用途では<strong>Parzen窓</strong>（parzen window）とも呼ばれる。</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">k</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
     <span class="k">return</span> <span class="mi">1</span> <span class="o">*</span> <span class="nb">all</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">ui</span> <span class="ow">in</span> <span class="n">u</span><span class="p">])</span>
@@ -1161,13 +729,19 @@ k(\boldsymbol{u}) =
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="../_images/nonparametric_density_estimation_13_0.png" src="../_images/nonparametric_density_estimation_13_0.png" />
+<img alt="../_images/20a2df31beae883173d7ca9eac9da2357449df47b655ae37b0e11fc6c6f0482b.png" src="../_images/20a2df31beae883173d7ca9eac9da2357449df47b655ae37b0e11fc6c6f0482b.png" />
 </div>
 </div>
 <p><span class="math notranslate nohighlight">\(k((\boldsymbol{x} - \boldsymbol{x}_n)/h)\)</span>は<span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span>を中心とする一辺が<span class="math notranslate nohighlight">\(h\)</span>の立方体の内部に、データ点<span class="math notranslate nohighlight">\(\boldsymbol{x}_n\)</span>があれば1に、そうでなければ0となる。</p>
 <p>例えば<span class="math notranslate nohighlight">\(\boldsymbol{x} = (2, 3), h=2\)</span>の場合は次の図のようになる</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="n">h</span> <span class="o">=</span> <span class="mi">2</span>
@@ -1189,8 +763,9 @@ k(\boldsymbol{u}) =
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="../_images/nonparametric_density_estimation_15_0.png" src="../_images/nonparametric_density_estimation_15_0.png" />
+<img alt="../_images/4bdc98ed6669e80519c6a3ce82131c9dea14bf991e5d23711db669c1af16afa6.png" src="../_images/4bdc98ed6669e80519c6a3ce82131c9dea14bf991e5d23711db669c1af16afa6.png" />
 </div>
 </div>
 <p>この立方体内部の総点数は</p>
@@ -1223,6 +798,11 @@ p(\boldsymbol{x})
 <p>このカーネルを使用した推定結果は次の図のようになる。
 立方体を重ねるような推定を行うため平滑性がなく、ギザギザした密度関数が推定されている。</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">KernelEstimator</span><span class="p">:</span>
 
@@ -1269,13 +849,14 @@ p(\boldsymbol{x})
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="../_images/nonparametric_density_estimation_18_0.png" src="../_images/nonparametric_density_estimation_18_0.png" />
+<img alt="../_images/8fd9a6ffffa9e0942907a85f291496c1341855d3c38a82e9a45c50f6c5e94d6d.png" src="../_images/8fd9a6ffffa9e0942907a85f291496c1341855d3c38a82e9a45c50f6c5e94d6d.png" />
 </div>
 </div>
 </section>
 <section id="id5">
-<h3>ガウシアンカーネル<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
+<h3>ガウシアンカーネル<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
 <p>ガウス分布（正規分布）をカーネル関数に用いることで滑らかな密度推定を行う。</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1286,6 +867,11 @@ p(\boldsymbol{x})
 \exp \left\{ -\frac{ ||\boldsymbol{x} - \boldsymbol{x}_n||^2 }{2 h^2} \right\}
 \]</div>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
 
@@ -1332,12 +918,18 @@ p(\boldsymbol{x})
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="../_images/nonparametric_density_estimation_20_0.png" src="../_images/nonparametric_density_estimation_20_0.png" />
+<img alt="../_images/760dffb8b2cfb5b7ab4a64036ffffb92ba9e948cfa92bef2734b6667828bcf3c.png" src="../_images/760dffb8b2cfb5b7ab4a64036ffffb92ba9e948cfa92bef2734b6667828bcf3c.png" />
 </div>
 </div>
 <div class="cell tag_hide-input tag_hide-output docutils container">
-<div class="cell_input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 数式からガウスカーネルを実装したけど合わなかったやつ</span>
 <span class="k">def</span> <span class="nf">gauss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_n</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">D</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">h</span> <span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_n</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">h</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
@@ -1386,17 +978,29 @@ p(\boldsymbol{x})
 </pre></div>
 </div>
 </div>
+</details>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
 <div class="cell_output docutils container">
-<img alt="../_images/nonparametric_density_estimation_21_0.png" src="../_images/nonparametric_density_estimation_21_0.png" />
+<img alt="../_images/007b48abe0042a77a100403b25b3507a13e97164c1db1374a807c5f29dbad85f.png" src="../_images/007b48abe0042a77a100403b25b3507a13e97164c1db1374a807c5f29dbad85f.png" />
 </div>
+</details>
 </div>
 </section>
 </section>
 <section id="scikit-learn">
-<h2>（参考）Scikit-learn実装<a class="headerlink" href="#scikit-learn" title="Permalink to this headline">#</a></h2>
+<h2>（参考）Scikit-learn実装<a class="headerlink" href="#scikit-learn" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://scikit-learn.org/stable/modules/density.html#kernel-density-estimation">2.8. Density Estimation — scikit-learn 1.2.2 documentation</a></p>
 <p>（※<code class="docutils literal notranslate"><span class="pre">kernel='tophat'</span></code>は立方体カーネルに近い<span class="math notranslate nohighlight">\(k(u; h) \propto 1 \text{ if } u &lt; h\)</span> というもの）</p>
 <div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KernelDensity</span>
 
@@ -1421,8 +1025,9 @@ p(\boldsymbol{x})
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="../_images/nonparametric_density_estimation_23_0.png" src="../_images/nonparametric_density_estimation_23_0.png" />
+<img alt="../_images/3636b12890d969ba4e16347d9b164b467a9560571ee9d4ca5fb333475be1ab05.png" src="../_images/3636b12890d969ba4e16347d9b164b467a9560571ee9d4ca5fb333475be1ab05.png" />
 </div>
 </div>
 </section>
@@ -1440,7 +1045,7 @@ p(\boldsymbol{x})
             mode: "python"
         },
         kernelOptions: {
-            kernelName: "python3",
+            name: "python3",
             path: "./statistics"
         },
         predefinedOutput: true
@@ -1448,50 +1053,111 @@ p(\boldsymbol{x})
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="bootstrap.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Bootstrap</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="bootstrap.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Bootstrap</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="correlation.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="correlation.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">順序尺度の相関係数</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By mitama<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
-    
-</div>
-
-
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ヒストグラム密度推定法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">カーネル密度推定法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">カーネル関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">ガウシアンカーネル</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scikit-learn">（参考）Scikit-learn実装</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By mitama
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>
