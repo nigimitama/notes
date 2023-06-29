@@ -1,0 +1,1234 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Structural Equation Modeling（SEM） &#8212; データサイエンスの勉強ノート</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/style.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="回帰分析" href="regression_analysis.html" />
+    <link rel="prev" title="構造方程式モデリング" href="index.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GXSWJY51EG"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-GXSWJY51EG');
+                </script>
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">データサイエンスの勉強ノート</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    データサイエンス関連まとめメモ
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  数学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../mathematics/introduction.html">
+   数学の初歩
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../mathematics/set_theory.html">
+   集合論
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../mathematics/functions.html">
+   関数
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../mathematics/calculus.html">
+   微分積分学
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../mathematics/linear_algebra.html">
+   線形代数学
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../mathematics/mathematical_optimization/index.html">
+   数理最適化
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../mathematics/mathematical_optimization/optimality_conditions.html">
+     最適性条件
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../mathematics/mathematical_optimization/lagrange.html">
+     ラグランジュの未定乗数法
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../mathematics/mathematical_optimization/gradient_descent.html">
+     勾配法
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../mathematics/mathematical_optimization/knapsack_problem.html">
+     ナップサック問題
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../mathematics/mathematical_optimization/optimal_transport.html">
+     最適輸送
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  統計学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../statistics/probability_and_expectation.html">
+   確率と期待値・分散
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../statistics/distributions.html">
+   確率分布
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../statistics/statistical_inference/index.html">
+   統計的推測
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../statistics/statistical_inference/01_sample_distribution.html">
+     標本分布
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../statistics/statistical_inference/02_generating_functions.html">
+     母関数
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../statistics/statistical_inference/03_central_limit_theorem.html">
+     中心極限定理
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../statistics/statistical_inference/04_point_estimation.html">
+     点推定
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../statistics/statistical_inference/05_interval_inference.html">
+     区間推定
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../statistics/statistical_inference/06_test.html">
+     検定
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../statistics/likelihood_and_probability.html">
+   尤度関数と確率関数の違いは何なのか？
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../statistics/bootstrap.html">
+   Bootstrap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../statistics/nonparametric_density_estimation.html">
+   ノンパラメトリック密度推定
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../statistics/correlation.html">
+   順序尺度の相関係数
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  統計モデリング
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../factor_analysis.html">
+   因子分析
+  </a>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="index.html">
+   構造方程式モデリング
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Structural Equation Modeling（SEM）
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="regression_analysis.html">
+     回帰分析
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="path_analysis.html">
+     パス解析
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="factor_analysis.html">
+     因子分析モデル
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../bayes_modeling/index.html">
+   ベイズ統計モデリング
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../bayes_modeling/introduction.html">
+     概要
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../symbolic_data_analysis.html">
+   Symbolic Data Analysis
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  機械学習
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../machine_learning/linear_models/index.html">
+   線形モデル
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/linear_models/regression/linear_regression.html">
+     線形回帰
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/linear_models/regression/ridge_regression.html">
+     Ridge回帰
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/linear_models/regression/lasso.html">
+     LASSO
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/linear_models/classification/linear_discriminant_analysis.html">
+     線形判別モデル
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/linear_models/classification/logistic_regression.html">
+     ロジスティック回帰
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../machine_learning/svm.html">
+   Support Vector Machine
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../machine_learning/trees/index.html">
+   Tree-based Algorithms
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/trees/decision_tree.html">
+     決定木
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/trees/gbdt.html">
+     勾配ブースティング決定木
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../machine_learning/deep_learning/index.html">
+   深層学習
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+  <label for="toctree-checkbox-7">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/deep_learning/neural_network.html">
+     Feed-Forward Neural Network
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/deep_learning/cnn.html">
+     CNN
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/deep_learning/rnn.html">
+     RNN
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/deep_learning/lstm.html">
+     LSTM
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/deep_learning/transformer.html">
+     Transformer
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../machine_learning/deep_learning/dl_and_tabular_data.html">
+     Deep Learning and Tabular data
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../machine_learning/dimension_reduction.html">
+   次元削減
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../machine_learning/imbalanced_data.html">
+   不均衡データ
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../machine_learning/ml_ops/index.html">
+   MLOps
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  生成モデル
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../generative_models/generative_models.html">
+   生成モデル
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../generative_models/autoencoder.html">
+   Autoencoder
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../generative_models/gan.html">
+   GAN
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../generative_models/diffusion_models.html">
+   Diffusion Models
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  自然言語処理
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../natural_language_processing/introduction.html">
+   自然言語処理
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../natural_language_processing/embedding.html">
+   単語の埋め込み
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../natural_language_processing/rnn.html">
+   言語モデルとRNN
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  画像処理
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../image_processing/introduction.html">
+   画像認識
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  計量経済学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../econometrics/rubin_causal_model.html">
+   ルービンの因果モデル
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../econometrics/hte.html">
+   Heterogeneous Treatment Effectsの推定
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../econometrics/ols/index.html">
+   回帰分析
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+  <label for="toctree-checkbox-8">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../econometrics/ols/ols.html">
+     概要
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../econometrics/ols/test_of_ols.html">
+     OLSの検定・区間推定
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../econometrics/ols/nature_of_ols_estimator.html">
+     OLS推定量の性質
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../econometrics/ols/ols_robust_standard_error.html">
+     OLSのロバスト標準誤差
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../econometrics/ols/log_transformation.html">
+     対数変換
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../econometrics/ols/omitted_variable_bias.html">
+     欠落変数バイアス
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../econometrics/ols/fwl.html">
+     FWL定理
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../econometrics/propensity_score.html">
+   傾向スコア
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../econometrics/instrumental_variables.html">
+   操作変数法
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../econometrics/regression_discontinuity.html">
+   RDD
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../econometrics/fixed_effect_model.html">
+   固定効果モデル
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../econometrics/difference_in_differences.html">
+   Difference In Differences
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../econometrics/synthetic_control.html">
+   Synthetic Control
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  金融経済学
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../financial_economics/introduction.html">
+   概要
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../financial_economics/optimal_portfolio.html">
+   最適ポートフォリオ
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../financial_economics/capm.html">
+   CAPM
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../financial_economics/metrics.html">
+   ファイナンスの指標たち
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../financial_economics/feature_neutralization.html">
+   Feature Neutralization
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../financial_economics/statistical_arbitrage.html">
+   統計的裁定
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/nigimitama/notes/gh-pages?urlpath=tree/docs/statistical_modeling/sem/introduction.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/nigimitama/notes"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Fstatistical_modeling/sem/introduction.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/statistical_modeling/sem/introduction.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   例
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     回帰分析
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   モデリングで用いる変数の分類
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     観測変数と潜在変数
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     構造変数と誤差変数
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     外生変数と内生変数
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id7">
+   モデリングに用いる方程式
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id8">
+     構造方程式
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id9">
+     測定方程式
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id10">
+   パス図
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Structural Equation Modeling（SEM）</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   例
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     回帰分析
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   モデリングで用いる変数の分類
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     観測変数と潜在変数
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     構造変数と誤差変数
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     外生変数と内生変数
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id7">
+   モデリングに用いる方程式
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id8">
+     構造方程式
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id9">
+     測定方程式
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id10">
+   パス図
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="structural-equation-modeling-sem">
+<h1>Structural Equation Modeling（SEM）<a class="headerlink" href="#structural-equation-modeling-sem" title="Permalink to this headline">#</a></h1>
+<p><strong>Structural Equation Modeling（SEM）<strong>はデータの共分散に着目した統計モデリングの手法である。日本語訳としては</strong>共分散構造分析</strong>や<strong>構造方程式モデリング</strong>と呼ばれる。</p>
+<p>SEMは正規分布に従う誤差項を仮定する線形モデルを推定することができ、重回帰分析や因子分析などのモデルを構築可能である。</p>
+<section id="id1">
+<h2>例<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
+<section id="id2">
+<h3>回帰分析<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">semopy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># 適当なデータを生成</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">+</span> <span class="n">e</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="n">x2</span><span class="p">))</span>
+
+<span class="c1"># モデルを構築</span>
+<span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;y ~ x1 + x2&quot;</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">semopy</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">inspect</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lval</th>
+      <th>op</th>
+      <th>rval</th>
+      <th>Estimate</th>
+      <th>Std. Err</th>
+      <th>z-value</th>
+      <th>p-value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>y</td>
+      <td>~</td>
+      <td>x1</td>
+      <td>2.925376</td>
+      <td>0.105805</td>
+      <td>27.648636</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>y</td>
+      <td>~</td>
+      <td>x2</td>
+      <td>4.870594</td>
+      <td>0.102847</td>
+      <td>47.357702</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>y</td>
+      <td>~~</td>
+      <td>y</td>
+      <td>0.945340</td>
+      <td>0.042277</td>
+      <td>22.360680</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># パス図</span>
+<span class="n">semopy</span><span class="o">.</span><span class="n">semplot</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;/tmp/path_diagram.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/introduction_3_0.svg" src="../../_images/introduction_3_0.svg" /></div>
+</div>
+</section>
+</section>
+<section id="id3">
+<h2>モデリングで用いる変数の分類<a class="headerlink" href="#id3" title="Permalink to this headline">#</a></h2>
+<p>3つの軸がある</p>
+<section id="id4">
+<h3>観測変数と潜在変数<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><strong>観測変数</strong>（observed variable）：直接観測することが可能な変数（例：年収、身長など）</p></li>
+<li><p><strong>潜在変数</strong>（latent variable）：直接観測することができず、モデルから推定される変数（例：学力、プライドの高さなど）</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>構造変数と誤差変数<a class="headerlink" href="#id5" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><strong>構造変数</strong>：分析の対象となっている構成概念の変動を含んでいる変数</p></li>
+<li><p><strong>誤差変数</strong>：モデルで説明しきれない要因による変動を含む変数</p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>外生変数と内生変数<a class="headerlink" href="#id6" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><strong>外生変数</strong>：モデル内で1度も他の変数の結果にならない変数（推定の方程式の左辺に置かれない変数）</p></li>
+<li><p><strong>内生変数</strong>：少なくとも1回は他の変数の結果となる変数</p></li>
+</ul>
+</section>
+</section>
+<section id="id7">
+<h2>モデリングに用いる方程式<a class="headerlink" href="#id7" title="Permalink to this headline">#</a></h2>
+<section id="id8">
+<h3>構造方程式<a class="headerlink" href="#id8" title="Permalink to this headline">#</a></h3>
+<p>構造変数同士の関係性の推定のために用いる。</p>
+<p>例えば方程式の両辺が観測変数の場合は回帰分析に相当する。
+（潜在変数同士で構造方程式を組むこともできる）</p>
+<p>Rの{lavaan}パッケージやPythonのsemopyパッケージでは<code class="docutils literal notranslate"><span class="pre">~</span></code>の演算子を用いる。例えば</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">~</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span>
+</pre></div>
+</div>
+<p>のように表現される</p>
+</section>
+<section id="id9">
+<h3>測定方程式<a class="headerlink" href="#id9" title="Permalink to this headline">#</a></h3>
+<p>潜在変数の推定のために用いる</p>
+<p>Rの{lavaan}パッケージやPythonのsemopyパッケージでは<code class="docutils literal notranslate"><span class="pre">~~</span></code>の演算子を用いる。例えば</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=~</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span>
+</pre></div>
+</div>
+<p>のように表現される</p>
+</section>
+</section>
+<section id="id10">
+<h2>パス図<a class="headerlink" href="#id10" title="Permalink to this headline">#</a></h2>
+<p>SEMのモデルを視覚的にわかりやすく表現したものがパス図。</p>
+<p>記法のルールとしては</p>
+<ol class="simple">
+<li><p>観測変数は四角形で囲む</p></li>
+<li><p>潜在変数は円で囲む</p></li>
+<li><p>誤差変数は囲まない</p></li>
+<li><p>影響を与える変数から、与えられる変数に単方向の矢印を書き、矢印に因果の影響力を示す数値を付与する</p></li>
+<li><p>共変動を示す2つの外生変数に因果関係を仮定しないとき、双方向の矢印を書き、矢印に共分散あるいは相関を示す数値を付与する</p></li>
+</ol>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./statistical_modeling/sem"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="index.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">構造方程式モデリング</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="regression_analysis.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">回帰分析</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By mitama<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
