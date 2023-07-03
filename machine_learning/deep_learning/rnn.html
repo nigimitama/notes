@@ -481,6 +481,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">シンプルなRNN</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">定数項を書く場合</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keras">実装（Keras）</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch">実装（Pytorch）</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">実装（Python）</a></li>
@@ -531,6 +532,35 @@ document.write(`
 f_{tanh}(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
 \]</div>
 <p>を用いることが多い。tanhはシグモイド関数と形状が似ているが、値域が<span class="math notranslate nohighlight">\([-1, 1]\)</span>と負の値を許しており、また二次微分の減衰がゆっくりとゼロになるため勾配消失が起きにくいという特性がある。</p>
+</section>
+<section id="id2">
+<h2>定数項を書く場合<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<p>中間層</p>
+<div class="math notranslate nohighlight">
+\[
+h_t = f(W^{(in)} x_t + W^{(hidden)} h_{t-1} + b_f)
+\]</div>
+<p>出力層</p>
+<div class="math notranslate nohighlight">
+\[
+y_t = g(W^{(out)} h_{t} + b_g)
+\]</div>
+<p>行列じゃない表記にすると、<span class="math notranslate nohighlight">\(j\)</span>番目のユニットは</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+h^{(t)}_j &amp;= f\left(
+    \sum^{N(in)}_{i=1} w^{(in)}_{ij} x_j +
+    \sum^{N(hidden)}_{i=1} w^{(hidden)}_{ij} h_j^{(t-1)} + 
+    b_j^{(f)}
+\right)
+\\
+y^{(t)}_j &amp;= g \left(
+    \sum^{N(out)}_{i=1} w^{(out)}_{ij} h_j^{(t)} + b^{(g)}_j
+\right)
+\end{align}
+\end{split}\]</div>
+<p>と思われる</p>
 </section>
 <section id="keras">
 <h2>実装（Keras）<a class="headerlink" href="#keras" title="Permalink to this heading">#</a></h2>
@@ -613,6 +643,7 @@ f_{tanh}(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">シンプルなRNN</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">定数項を書く場合</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keras">実装（Keras）</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch">実装（Pytorch）</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">実装（Python）</a></li>
