@@ -69,6 +69,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'natural_language_processing/large_language_models/gpt';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -235,6 +237,11 @@ const thebe_selector_output = ".output, .cell_output"
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../machine_learning/dimension_reduction.html">次元削減</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../machine_learning/imbalanced_data.html">不均衡データ</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/metrics.html">Metrics</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/cross_validation.html">交差検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/generalization_error.html">汎化誤差</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../machine_learning/ml_ops/index.html">MLOps</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">生成モデル</span></p>
@@ -258,7 +265,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/rubin_causal_model.html">ルービンの因果モデル</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/hte.html">Heterogeneous Treatment Effectsの推定</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../econometrics/ols/index.html">回帰分析</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../econometrics/ols/index.html">回帰分析</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/ols.html">概要</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/test_of_ols.html">OLSの検定・区間推定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/nature_of_ols_estimator.html">OLS推定量の性質</a></li>
@@ -476,7 +483,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gpt">GPT</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gpt">GPT</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gpttransformer">GPTのTransformer</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gpt-2">GPT-2</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gpt-3">GPT-3</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-context-learning">in-context learning</a></li>
@@ -536,15 +546,86 @@ document.write(`
 <h2>GPT<a class="headerlink" href="#gpt" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.cs.ubc.ca/~amuham01/LING530/papers/radford2018improving.pdf">Radford, A., Narasimhan, K., Salimans, T., &amp; Sutskever, I. (2018). Improving language understanding by generative pre-training.</a></p></li>
+<li><p>モデルはデコーダー型Transformer（<a class="reference external" href="https://arxiv.org/abs/1801.10198">[1801.10198] Generating Wikipedia by Summarizing Long Sequences</a>）</p></li>
+<li><p>次の単語を予測する問題として事前学習</p>
+<ul>
+<li><p>BERTのようにタスクに合わせて教師あり学習でFine-tuningする</p></li>
 </ul>
-<p>デコーダー型。次の単語を予測する問題として訓練した</p>
-<p>BERTのようにタスクに合わせて教師あり学習でFine-tuningする</p>
-<p>このあとにBERTが出て注目されにくかった模様</p>
+</li>
+<li><p>このあとにBERTが出て注目されにくかった模様</p></li>
+</ul>
+<section id="gpttransformer">
+<h3>GPTのTransformer<a class="headerlink" href="#gpttransformer" title="Permalink to this heading">#</a></h3>
+<p>デコーダー型Transformer（<a class="reference external" href="https://arxiv.org/abs/1801.10198">[1801.10198] Generating Wikipedia by Summarizing Long Sequences</a>）</p>
+<p>前処理</p>
+<div class="math notranslate nohighlight">
+\[
+h_0 = U W_e + W_p
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(U = (u_{-k}, \dots, u_{-1})\)</span>：トークンの文脈ベクトルたち</p></li>
+<li><p><span class="math notranslate nohighlight">\(W_e\)</span>: token embedding matrix</p></li>
+<li><p><span class="math notranslate nohighlight">\(W_p\)</span>: potision embedding matrix</p></li>
+</ul>
+<p><strong>Text &amp; Position Embedding</strong></p>
+<ul class="simple">
+<li><p>text embedding</p>
+<ul>
+<li><p>少なくともEncoder-Decoder型のTransformerでは、ここの単語埋め込みも他のパラメータと同時に学習される</p></li>
+</ul>
+</li>
+<li><p>position embedding</p></li>
+</ul>
+<p><strong>Masked Multi Self Attention</strong></p>
+<ul class="simple">
+<li><p>Masked: 次の単語予測</p></li>
+<li><p>Multi: データを分割して複数のAttentionで評価</p></li>
+</ul>
+<p><strong>residual conneciton</strong></p>
+<p>1つ前の層の結果を現在の層の出力結果に足し合わせる処理</p>
+<p><span class="math notranslate nohighlight">\(l\)</span>番目のレイヤーの入力を<span class="math notranslate nohighlight">\(\boldsymbol{p}^{(l)}_t\)</span>、出力を<span class="math notranslate nohighlight">\(\boldsymbol{o}^{(l)}_t\)</span>とすると、残差結合では</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{p}^{(l)}_t = \boldsymbol{o}^{(l)}_t + \boldsymbol{p}^{(l-1)}_t
+\]</div>
+<p><strong>Layer Norm</strong></p>
+<p>Layer Normalizationは、学習中に過剰に値が大きくならないようにベクトルの各要素を正規化する（<a class="reference external" href="https://arxiv.org/abs/1607.06450">[1607.06450] Layer Normalization</a>）</p>
+<p>スケールを調整するパラメータ<span class="math notranslate nohighlight">\(\boldsymbol{a} = (a_1, \dots, a_d)^\top\)</span>と平行移動を調整する<span class="math notranslate nohighlight">\(\boldsymbol{b} = (b_1, \dots, b_d)^\top\)</span>を用いて<span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span>を<span class="math notranslate nohighlight">\(\boldsymbol{x}'\)</span>に変換する。</p>
+<div class="math notranslate nohighlight">
+\[
+x'_k = a_k
+\left(
+    \frac{ x_k - \mu_{\boldsymbol{x}} }
+    { \sigma_{\boldsymbol{x}} + \epsilon }
+    + b_k
+\right)
+\]</div>
+<p>ここで</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\mu_{\boldsymbol{x}} = \frac{1}{d} \sum_{k=1}^d x_k\\
+\sigma_{\boldsymbol{x}} = \sqrt{ \frac{1}{d} \sum_{k=1}^d (x_k - \mu_{\boldsymbol{x}})^2 }
+\end{split}\]</div>
+<p><strong>Feed Forward</strong></p>
+<p>DNNだが</p>
+<ul class="simple">
+<li><p>中間層は入力層の4倍程度大きくすることが多い</p></li>
+<li><p>系列ではなく入力位置ごと（position-wise）に計算する</p></li>
+</ul>
+<p>という違いが有る</p>
+<p><span class="math notranslate nohighlight">\(i\)</span>番目の隠れベクトルを<span class="math notranslate nohighlight">\(h_i\)</span>とすると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\hat{h}_i = W_2 h'_i + b_2\\
+h'_i = f(W_1 h_i + b_1)
+\end{split}\]</div>
+</section>
 </section>
 <section id="gpt-2">
 <h2>GPT-2<a class="headerlink" href="#gpt-2" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://d4mucfpksywv.cloudfront.net/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">Language Models are Unsupervised Multitask Learners</a></p>
 <ul class="simple">
+<li><p>GPTとほとんど同じモデル</p></li>
 <li><p>データは新たに作ったWebTextデータセットで、数百万のテキスト</p></li>
 <li><p>fine-tuneしないzero-shot learningが可能</p>
 <ul>
@@ -565,6 +646,7 @@ document.write(`
 <ul class="simple">
 <li><p>arXiv: <a class="reference external" href="https://arxiv.org/abs/2005.14165">[2005.14165] Language Models are Few-Shot Learners</a></p></li>
 <li><p>Github: <a class="reference external" href="https://github.com/openai/gpt-3">openai/gpt-3: GPT-3: Language Models are Few-Shot Learners</a></p></li>
+<li><p>GPT2と同じモデル</p></li>
 </ul>
 <section id="in-context-learning">
 <h3>in-context learning<a class="headerlink" href="#in-context-learning" title="Permalink to this heading">#</a></h3>
@@ -628,7 +710,10 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gpt">GPT</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gpt">GPT</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gpttransformer">GPTのTransformer</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gpt-2">GPT-2</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gpt-3">GPT-3</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-context-learning">in-context learning</a></li>
