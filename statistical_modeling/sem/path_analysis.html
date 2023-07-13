@@ -188,6 +188,7 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/likelihood_and_probability.html">尤度関数と確率関数の違いは何なのか？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../statistics/divergence.html">ダイバージェンス</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/bootstrap.html">Bootstrap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/nonparametric_density_estimation.html">ノンパラメトリック密度推定</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/correlation.html">順序尺度の相関係数</a></li>
@@ -480,7 +481,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -496,6 +499,17 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">逐次モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">考察</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -507,6 +521,210 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>パス解析<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
+<section id="id2">
+<h2>逐次モデル<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<p>逐次モデルは内生変数間の双方向のパスが無いモデル</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../../_images/a5c4658679c43658688ad533b51c586564aa4711392cc5d8a30de35bf479c201.svg" src="../../_images/a5c4658679c43658688ad533b51c586564aa4711392cc5d8a30de35bf479c201.svg" /></div>
+</div>
+<p>semopyはRの<code class="docutils literal notranslate"><span class="pre">{lavaan}</span></code>とは異なり、外生変数間の共変関係や分散を推定してくれない（そのため自由度が上がり適合度系の指標がおかしくなったりする）</p>
+<p>なので</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x1</span> <span class="o">~~</span> <span class="n">x2</span>
+<span class="n">x1</span> <span class="o">~~</span> <span class="n">x1</span>
+<span class="n">x2</span> <span class="o">~~</span> <span class="n">x2</span>
+</pre></div>
+</div>
+<p>も指定してやる必要がある</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">semopy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># データ生成</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">e1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">e2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">y1</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">+</span> <span class="n">e1</span>
+<span class="n">y2</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">+</span> <span class="mi">15</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">+</span> <span class="n">e2</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">y1</span><span class="o">=</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="n">y2</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="n">x2</span><span class="p">))</span>
+
+<span class="c1"># モデルを構築</span>
+<span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">y1 ~ x1 + x2</span>
+<span class="s2">y2 ~ x1 + x2</span>
+<span class="s2">x1 ~~ x2</span>
+<span class="s2">x1 ~~ x1</span>
+<span class="s2">x2 ~~ x2</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">semopy</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">inspect</span><span class="p">(</span><span class="n">std_est</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lval</th>
+      <th>op</th>
+      <th>rval</th>
+      <th>Estimate</th>
+      <th>Est. Std</th>
+      <th>Std. Err</th>
+      <th>z-value</th>
+      <th>p-value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>y1</td>
+      <td>~</td>
+      <td>x1</td>
+      <td>2.925519</td>
+      <td>0.436027</td>
+      <td>0.105815</td>
+      <td>27.647431</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>y1</td>
+      <td>~</td>
+      <td>x2</td>
+      <td>4.869452</td>
+      <td>0.746582</td>
+      <td>0.102864</td>
+      <td>47.338955</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>y2</td>
+      <td>~</td>
+      <td>x1</td>
+      <td>9.907544</td>
+      <td>0.527969</td>
+      <td>0.106711</td>
+      <td>92.844695</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>y2</td>
+      <td>~</td>
+      <td>x2</td>
+      <td>15.085120</td>
+      <td>0.826948</td>
+      <td>0.103734</td>
+      <td>145.420835</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>x1</td>
+      <td>~~</td>
+      <td>x2</td>
+      <td>0.000504</td>
+      <td>0.005806</td>
+      <td>0.002747</td>
+      <td>0.183614</td>
+      <td>0.854317</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>x1</td>
+      <td>~~</td>
+      <td>x1</td>
+      <td>0.084435</td>
+      <td>1.000000</td>
+      <td>0.003776</td>
+      <td>22.360680</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>x2</td>
+      <td>~~</td>
+      <td>x2</td>
+      <td>0.089350</td>
+      <td>1.000000</td>
+      <td>0.003996</td>
+      <td>22.360680</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>y2</td>
+      <td>~~</td>
+      <td>y2</td>
+      <td>0.961450</td>
+      <td>0.032336</td>
+      <td>0.042997</td>
+      <td>22.360680</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>y1</td>
+      <td>~~</td>
+      <td>y1</td>
+      <td>0.945377</td>
+      <td>0.248716</td>
+      <td>0.042279</td>
+      <td>22.360680</td>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># パス図</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">semopy</span><span class="o">.</span><span class="n">semplot</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;/tmp/path_diagram.png&quot;</span><span class="p">,</span> <span class="n">plot_covs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># rank = same</span>
+<span class="k">with</span> <span class="n">g</span><span class="o">.</span><span class="n">subgraph</span><span class="p">()</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">rank</span> <span class="o">=</span> <span class="s2">&quot;same&quot;</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;x1&quot;</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;x2&quot;</span><span class="p">)</span>
+
+<span class="n">g</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">rankdir</span> <span class="o">=</span> <span class="s2">&quot;RL&quot;</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">pad</span> <span class="o">=</span> <span class="s2">&quot;0.2&quot;</span><span class="p">)</span> <span class="c1"># padding</span>
+<span class="n">g</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/2eb1e1959aedf063559371e7c11d25bf2888fcd6079188a1cd1f7be68331a785.svg" src="../../_images/2eb1e1959aedf063559371e7c11d25bf2888fcd6079188a1cd1f7be68331a785.svg" /></div>
+</div>
+<section id="id3">
+<h3>考察<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<p>上記x1,x2は共変関係は考えるが一方向への関係（例えばx2→x1）は考えていない。そのため、もしデータ側にそういう関係があった場合は欠落変数バイアスが発生する様子。</p>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -567,6 +785,23 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">逐次モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">考察</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
