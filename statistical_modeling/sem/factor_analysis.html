@@ -205,6 +205,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../factor_analysis.html">因子分析</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">構造方程式モデリング</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="introduction.html">Structural Equation Modeling（SEM）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistic.html">統計量</a></li>
 <li class="toctree-l2"><a class="reference internal" href="regression_analysis.html">回帰分析</a></li>
 <li class="toctree-l2"><a class="reference internal" href="path_analysis.html">パス解析</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">因子分析モデル</a></li>
@@ -253,6 +254,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/trees/index.html">Tree-based Algorithms</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/decision_tree.html">決定木</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/gbdt.html">勾配ブースティング決定木</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/gbdt_quantize.html">GBDTの勾配の量子化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/ngboost.html">NGBoost</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../machine_learning/dimension_reduction.html">次元削減</a></li>
@@ -507,7 +510,13 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">歴史</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">推定</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">共分散の構造化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">推定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">標準化解</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">測定方程式の行列表記</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -531,6 +540,13 @@ v_3 = \alpha_{31} f_1 + e_3\\
 \end{split}\]</div>
 <p>ここで<span class="math notranslate nohighlight">\(v\)</span>は観測値の偏差<span class="math notranslate nohighlight">\(v = x - E[x]\)</span>、<span class="math notranslate nohighlight">\(\alpha\)</span>は<strong>因子負荷量</strong>（factor loading）、<span class="math notranslate nohighlight">\(f\)</span>は構成概念を表す変数で<strong>因子スコア</strong>（factor score）あるいは因子と呼ばれる。</p>
 <p><span class="math notranslate nohighlight">\(f\)</span>は構造的な潜在変数である。</p>
+<p>また、モデルの仮定として</p>
+<ol class="arabic simple">
+<li><p>潜在変数は原則 <span class="math notranslate nohighlight">\(E[f_i] = 0, V[f_i] = 1\)</span></p></li>
+<li><p>誤差は平均ゼロ、均一分散 <span class="math notranslate nohighlight">\(E[e_i]=0, V[e_i] = \sigma^2_{e_i}\)</span></p></li>
+<li><p>誤差と因子スコアは無相関 <span class="math notranslate nohighlight">\(E[f_i e_i] = 0\)</span></p></li>
+</ol>
+<p>をおく</p>
 <section id="id2">
 <h2>歴史<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
 <p>まず、現在は<strong>探索的因子分析</strong>（exploratory factor analysis: EFA)と呼ばれる、事前に特定の仮説を置かずにデータの共分散に基づいて（主成分分析のように）因子スコアを推定する方法が提案された</p>
@@ -539,6 +555,272 @@ v_3 = \alpha_{31} f_1 + e_3\\
 </section>
 <section id="id3">
 <h2>推定<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+v_1 = \alpha_{11} f_1 + e_1\\
+v_2 = \alpha_{21} f_1 + e_2\\
+v_3 = \alpha_{31} f_1 + e_3\\
+\end{split}\]</div>
+<p>のモデルを例にとる。</p>
+<section id="id4">
+<h3>共分散の構造化<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<p>観測変数の分散共分散行列を計算していく。</p>
+<p><span class="math notranslate nohighlight">\(v_1\)</span>の分散<span class="math notranslate nohighlight">\(\sigma^2_1\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\sigma^2_1 &amp;= E[v^2_1]\\
+    &amp;= E[(\alpha_{11} f_1 + e_1)(\alpha_{11} f_1 + e_1)]\\
+    &amp;= E[\alpha_{11}^2 f_1^2 + 2 \alpha_{11} f_1 e_1 + e^2_1]\\
+    &amp;= \alpha_{11}^2 E[f_1^2] + 2 \alpha_{11} E[f_1 e_1] + E[e^2_1]\\
+    &amp;= \alpha_{11}^2 + \sigma^2_{e_1}
+\end{align}
+\end{split}\]</div>
+<p>となる。最後の行は仮定より<span class="math notranslate nohighlight">\(E[f_1 e_1] = 0\)</span>となること、それから仮定より<span class="math notranslate nohighlight">\(E[e_1]=0\)</span>ゆえに<span class="math notranslate nohighlight">\(E[e^2_1]=V[e_1]=\sigma^2_{e_1}\)</span>であり、同様に<span class="math notranslate nohighlight">\(E[f_1]=0\)</span>から<span class="math notranslate nohighlight">\(E[f_1^2]=V[f_1]=1\)</span>となることを利用している。</p>
+<p><span class="math notranslate nohighlight">\(v_2\)</span>と<span class="math notranslate nohighlight">\(v_3\)</span>の分散も同様なので、分散は最終的に</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\sigma^2_1 = \alpha^2_{11} + \sigma^2_{e_1}\\
+\sigma^2_2 = \alpha^2_{21} + \sigma^2_{e_2}\\
+\sigma^2_3 = \alpha^2_{31} + \sigma^2_{e_3}\\
+\end{split}\]</div>
+<p>となる。</p>
+<p>つづいて共分散は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\sigma_{21} &amp;= E[v_2 v_1]\\
+    &amp;= E[(\alpha_{21} f_1 + e_2)(\alpha_{11} f_1 + e_1)]\\
+    &amp;= E[\alpha_{21}\alpha_{11} f_1^2
+            + \alpha_{21} f_1 e_1
+            + \alpha_{11} f_1 e_2
+            + e_1 e_2]\\
+    &amp;= \alpha_{21} \alpha_{11}
+\end{align}
+\end{split}\]</div>
+<p>となるため</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\sigma_{21} = \alpha_{21} \alpha_{11}\\
+\sigma_{31} = \alpha_{31} \alpha_{11}\\
+\sigma_{32} = \alpha_{31} \alpha_{21}\\
+\end{split}\]</div>
+<p>となる。</p>
+<p>観測変数の共分散行列は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Sigma
+= \begin{bmatrix}
+    \sigma^2_1 \\
+    \sigma_{21} &amp; \sigma^2_2\\
+    \sigma_{31} &amp; \sigma_{32} &amp; \sigma^2_3
+\end{bmatrix}
+= \begin{bmatrix}
+    \alpha^2_{11} + \sigma^2_{e_1}\\
+    \alpha_{21} \alpha_{11} &amp; \alpha^2_{21} + \sigma^2_{e_2}\\
+    \alpha_{31} \alpha_{11} &amp; \alpha_{31} \alpha_{21} &amp; \alpha^2_{31} + \sigma^2_{e_3}
+\end{bmatrix}
+\end{split}\]</div>
+<p>と書き直すことができる。このように共分散を母数の関数で表現することを「構造化」という。上記の式のように共分散を方程式モデルの母数で表現したものを「共分散構造」とよぶ。</p>
+</section>
+<section id="id5">
+<h3>推定<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
+<p>モデルの<span class="math notranslate nohighlight">\(\alpha, f, e\)</span>を推定していく。</p>
+<p>共分散構造を用いて、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\sigma_{21} = \alpha_{21} \alpha_{11}\\
+\sigma_{31} = \alpha_{31} \alpha_{11}\\
+\sigma_{32} = \alpha_{31} \alpha_{21}\\
+\end{split}\]</div>
+<p>を<span class="math notranslate nohighlight">\(\alpha_{11}\)</span>について解くと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\frac{ \sigma_{21} \sigma_{31} }{ \sigma_{32} }
+= \frac{ \alpha_{21} \alpha_{11} \times \alpha_{31} \alpha_{11} }{ \alpha_{31} \alpha_{21} }
+= \alpha_{11}^2
+\\
+\to \alpha_{11} = \pm \sqrt{ \frac{ \sigma_{21} \sigma_{31} }{ \sigma_{32} } }
+\end{split}\]</div>
+<p>で、これを利用して</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\alpha_{21} = \frac{ \sigma_{21} }{ \alpha_{11} }\\
+\alpha_{31} = \frac{ \sigma_{31} }{ \alpha_{11} }
+\end{split}\]</div>
+<p>となる。</p>
+<p>誤差分散は</p>
+<p><span class="math notranslate nohighlight">\(\sigma^2_i = \alpha^2_{ij} + \sigma^2_{e_i} \implies \sigma^2_{e_i} = \sigma^2_i - \alpha^2_{ij}\)</span>より</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\sigma^2_{e_1} = \sigma^2_1 - \alpha^2_{11}\\
+\sigma^2_{e_2} = \sigma^2_2 - \alpha^2_{21}\\
+\sigma^2_{e_3} = \sigma^2_3 - \alpha^2_{31}
+\end{split}\]</div>
+<p>となる。</p>
+<p>上記の式は母分散を利用しているが、実際には標本分散を用いた推定量とする</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># データの生成</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">multivariate_normal</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">1.2</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>  <span class="mf">0.7</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>
+<span class="p">])</span>
+<span class="n">mvn</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">cov</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="c1"># データ行列</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">mvn</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># 平均偏差行列</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="n">X</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># 分散共分散行列</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">rowvar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">S</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[2.275, 0.578, 1.278],
+       [0.578, 0.976, 0.69 ],
+       [1.278, 0.69 , 1.42 ]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># alphaの推定</span>
+<span class="c1"># pythonは0始まりなのでインデックスが全部1ずれる</span>
+<span class="n">a11</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+<span class="n">a21</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">a11</span>
+<span class="n">a31</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">a11</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 誤差分散sigma_eの推定</span>
+<span class="n">s_e1</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">a11</span>
+<span class="n">s_e2</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">a21</span>
+<span class="n">s_e3</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">a31</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 再現された分散行列</span>
+<span class="n">Sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[(</span><span class="n">a11</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">s_e1</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">a21</span> <span class="o">*</span> <span class="n">a11</span><span class="p">,</span> <span class="n">a31</span> <span class="o">*</span> <span class="n">a11</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">a21</span> <span class="o">*</span> <span class="n">a11</span><span class="p">,</span> <span class="p">(</span><span class="n">a21</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">s_e2</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">a31</span> <span class="o">*</span> <span class="n">a21</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">a31</span> <span class="o">*</span> <span class="n">a11</span><span class="p">,</span> <span class="n">a31</span> <span class="o">*</span> <span class="n">a21</span><span class="p">,</span> <span class="p">(</span><span class="n">a31</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">s_e3</span><span class="o">**</span><span class="mi">2</span><span class="p">)],</span>
+<span class="p">])</span>
+<span class="n">Sigma</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[2.609, 0.578, 1.278],
+       [0.578, 0.486, 0.69 ],
+       [1.278, 0.69 , 1.559]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># residual</span>
+<span class="p">(</span><span class="n">S</span> <span class="o">-</span> <span class="n">Sigma</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-0.334,  0.   ,  0.   ],
+       [ 0.   ,  0.49 , -0.   ],
+       [ 0.   , -0.   , -0.138]])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id6">
+<h3>標準化解<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(z, f, e\)</span>の分散が1に標準化されたモデル（標準化モデル）</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+z_1 = \alpha_{11}^* f_1 + \beta_1 e_1^*\\
+z_2 = \alpha_{21}^* f_1 + \beta_2 e_2^*\\
+z_3 = \alpha_{31}^* f_1 + \beta_3 e_3^*\\
+\end{split}\]</div>
+<p><span class="math notranslate nohighlight">\(\beta\)</span>は誤差の係数（<span class="math notranslate nohighlight">\(\alpha\)</span>は区別のため係数に<span class="math notranslate nohighlight">\(*\)</span>をつけている）</p>
+<p><span class="math notranslate nohighlight">\(z, f, e\)</span>の分散は1になるから、その係数は合計が1になる：<span class="math notranslate nohighlight">\(1 = \alpha_{11}^{*2} + \beta_1^2\)</span></p>
+<p>共分散（相関）も<span class="math notranslate nohighlight">\(\sigma_{r21} = \alpha_{21}^* \alpha_{11}^*\)</span>のようになる</p>
+<p>共分散行列は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Sigma
+= \begin{bmatrix}
+    \sigma^2_1 \\
+    \sigma_{r21} &amp; \sigma^2_2\\
+    \sigma_{r31} &amp; \sigma_{r32} &amp; \sigma^2_3
+\end{bmatrix}
+= \begin{bmatrix}
+    \alpha^{*2}_{11} + \beta^2_1\\
+    \alpha_{21}^* \alpha_{11}^* &amp; \alpha^{*2}_{21} + \beta^2_2\\
+    \alpha_{31}^* \alpha_{11}^* &amp; \alpha_{31}^* \alpha_{21}^* &amp; \alpha^{*2}_{31} + \beta^2_3
+\end{bmatrix}
+\end{split}\]</div>
+<p>と構造化される</p>
+</section>
+<section id="id7">
+<h3>測定方程式の行列表記<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
+<p>測定方程式を次のように表記する</p>
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\b}[1]{\boldsymbol{#1}}
+\b{v} = \b{A} \b{f} + \b{e}
+\]</div>
+<p>また仮定については</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+E[\b{f}] = \b{o}\\
+E[\b{e}] = \b{o}\\
+E[\b{fe}^T] = \b{O}
+\end{split}\]</div>
+<p>となる。</p>
+<p>共分散構造は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\b{\Sigma} 
+    &amp;= E[(\b{x} - \b{\mu})(\b{x} - \b{\mu})^T]\\
+    &amp;= E[\b{vv}^T]\\
+    &amp;= E[(\b{Af}+\b{e})(\b{Af}+\b{e})^T]\\
+    &amp;= E[(\b{Af}+\b{e})(\b{f}^T\b{A}^T+\b{e}^T)]\\
+    &amp;= E[\b{Af} \b{f}^T\b{A}^T]
+        + E[\b{Af} \b{e}^T]
+        + E[\b{e} \b{f}^T\b{A}^T]
+        + E[\b{e e}^T]\\
+    &amp;= \b{A} E[\b{f} \b{f}^T] \b{A}^T
+        + \b{A} E[\b{f} \b{e}^T]
+        + E[\b{e} \b{f}^T] \b{A}^T
+        + E[\b{e e}^T]\\
+    &amp;= \b{A} E[\b{f} \b{f}^T] \b{A}^T + E[\b{e e}^T]\\
+    &amp;= \b{A} \b{\Sigma}_{rf} \b{A}^T + \b{\Sigma}_e
+\end{align}
+\end{split}\]</div>
+</section>
 </section>
 </section>
 
@@ -610,7 +892,13 @@ v_3 = \alpha_{31} f_1 + e_3\\
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">歴史</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">推定</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">共分散の構造化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">推定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">標準化解</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">測定方程式の行列表記</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

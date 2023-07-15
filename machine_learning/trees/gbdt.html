@@ -74,7 +74,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'machine_learning/trees/gbdt';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="次元削減" href="../dimension_reduction.html" />
+    <link rel="next" title="GBDTの勾配の量子化" href="gbdt_quantize.html" />
     <link rel="prev" title="決定木" href="decision_tree.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -205,6 +205,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/factor_analysis.html">因子分析</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../statistical_modeling/sem/index.html">構造方程式モデリング</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/introduction.html">Structural Equation Modeling（SEM）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/statistic.html">統計量</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/regression_analysis.html">回帰分析</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/path_analysis.html">パス解析</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/factor_analysis.html">因子分析モデル</a></li>
@@ -253,6 +254,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Tree-based Algorithms</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="decision_tree.html">決定木</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">勾配ブースティング決定木</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbdt_quantize.html">GBDTの勾配の量子化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ngboost.html">NGBoost</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../dimension_reduction.html">次元削減</a></li>
@@ -506,12 +509,19 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-boosting-machine">Gradient Boosting Machine</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gbdt">正則化つきGBDT</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">テイラー展開による近似</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-boosting-machine">Gradient Boosting Machine</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">最適化の観点からの説明</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">勾配降下法</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ブースティング</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gbdt">正則化つきGBDT</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">テイラー展開による近似</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -527,6 +537,105 @@ document.write(`
 <h1>勾配ブースティング決定木<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <section id="gradient-boosting-machine">
 <h2>Gradient Boosting Machine<a class="headerlink" href="#gradient-boosting-machine" title="Permalink to this heading">#</a></h2>
+<p>複数の関数に重みをかけて足し合わせた関数</p>
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\argmin}{\mathop{\rm arg~min}\limits}
+f(x) = f_0(x; \theta_0) + \beta_1 f_1(x; \theta_1) + \cdots + \beta_M f_M(x; \theta_M)
+\]</div>
+<p>の形で予測モデルを構築することを考える。ここで<span class="math notranslate nohighlight">\(\theta_0, \dots, \theta_M\)</span>は関数を形づくるパラメータ（例えば線形回帰の重みや決定木の分岐の閾値）である。</p>
+<p>このモデルは<span class="math notranslate nohighlight">\(\beta_1, \beta_2, \dots, \beta_M\)</span>と<span class="math notranslate nohighlight">\(\theta_0, \theta_1, \dots, \theta_M\)</span>のパラメータを推定する必要がある。
+今回はすべてのパラメータを一度に学習するのではなく、<span class="math notranslate nohighlight">\(\beta_m f_m(x; \theta_m)\)</span>を一つずつ学習していく方法を考える。具体的には次のように行う。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text"><strong>前向き段階的加法モデリング（forward stagewise additive modeling）</strong></p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(f_0(x) = 0\)</span>で初期化</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(m = 1\)</span>から<span class="math notranslate nohighlight">\(M\)</span>までについて、</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">パラメータを推定する：<span class="math notranslate nohighlight">\((\beta_m, \theta_m) = \argmin_{\beta, \theta} \sum^N_{i=1} L(y_i, f_{m-1}(x_i) + \beta f(x_i; \theta))\)</span></p></li>
+<li><p class="sd-card-text">新たなモデルを足す：<span class="math notranslate nohighlight">\(f_m(x) = f_{m-1}(x) + \beta_m f(x; \theta_m)\)</span></p></li>
+</ol>
+</li>
+</ol>
+</div>
+</div>
+<p>これを前向き段階的加法モデリング（forward stagewise additive
+modeling）という。ブースティングはこの方法でアンサンブル学習を行う。</p>
+<p>誤差関数が二乗誤差<span class="math notranslate nohighlight">\(L(y, f(x)) = (y - f(x))^2\)</span>の場合、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+L(y_i, f_{m-1}(x_i) + \beta f(x_i; \theta))
+&amp;= (y_i - f_{m-1}(x_i) - \beta f(x_i; \theta))^2 \\
+&amp;= (\text{residual}_{i,m-1} - \beta f(x_i; \theta))^2
+\end{align}
+\end{split}\]</div>
+<p>となり、<span class="math notranslate nohighlight">\(m-1\)</span>回目のモデルの残差<span class="math notranslate nohighlight">\(\text{residual}_{i,m-1} = y_i - f_{m-1}(x_i)\)</span>を近似するように<span class="math notranslate nohighlight">\(m\)</span>回目のモデル<span class="math notranslate nohighlight">\(\beta f(x_i; \theta)\)</span>を学習させていると捉えることができる。残差が大きければそれだけ訓練中に重視されるため「間違えた箇所を重点的に学習する手法」とも捉えることができる。</p>
+<section id="id2">
+<h3>最適化の観点からの説明<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<section id="id3">
+<h4>勾配降下法<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h4>
+<p>数理最適化において関数の最小化問題</p>
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\b}[1]{ \boldsymbol{#1} }
+\min_\b{x} f(\b{x})
+\]</div>
+<p>を解く方法のひとつに<strong>勾配降下法</strong>（gradient descent method）あるいは<strong>最急降下法</strong>（steepest descent method）と呼ばれるものがある。これは目的関数の微分のベクトルである勾配</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\nabla f(\b{x}) = 
+\begin{bmatrix}
+    \frac{ \partial f(x_1) }{ \partial x_1 }\\
+    \vdots \\
+    \frac{ \partial f(x_m) }{ \partial x_m }
+\end{bmatrix}
+\end{split}\]</div>
+<p>を用いて</p>
+<div class="math notranslate nohighlight">
+\[
+\b{x}_{m} = \b{x}_{m-1} - \alpha_{m-1} \nabla f(\b{x}_{m-1})
+\]</div>
+<p>という値の更新を何度も繰り返して最適化を行っていく。ここで<span class="math notranslate nohighlight">\(\alpha\)</span>は学習率と呼ばれるパラメータで、値の更新量が多すぎると最適解を通り過ぎてしまうことがあるので小さめの値を乗じて更新幅を抑えるために用いられる。</p>
+<p>最終的に<span class="math notranslate nohighlight">\(M\)</span>回反復して得た最適解<span class="math notranslate nohighlight">\(x^*\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[
+x^* = x_0
+- \alpha_1 \frac{\partial f(x_{1})}{\partial x_{1}}
+- \alpha_2 \frac{\partial f(x_{2})}{\partial x_{2}}
+- \cdots
+- \alpha_M \frac{\partial f(x_{M})}{\partial x_{M}}
+\]</div>
+<p>となり、ブースティングにより得られる予測モデル</p>
+<div class="math notranslate nohighlight">
+\[
+f(x) = f_0(x; \theta_0) + \beta_1 f_1(x; \theta_1) + \cdots + \beta_M f_M(x; \theta_M)
+\]</div>
+<p>と同様に重み付き和の形になる。</p>
+</section>
+<section id="id4">
+<h4>ブースティング<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h4>
+<p>ブースティングは勾配降下法を機械学習で行っていると捉えることができる。</p>
+<p>機械学習においては予測値<span class="math notranslate nohighlight">\(f(x)\)</span>と実測値<span class="math notranslate nohighlight">\(y\)</span>の誤差の最小化問題</p>
+<div class="math notranslate nohighlight">
+\[
+\min_{f(x)} L(y, f(x))
+\]</div>
+<p>を解きたいため、勾配は誤差関数の予測モデルによる微分<span class="math notranslate nohighlight">\(\frac{ \partial L(y, f(x)) }{ \partial f(x) }\)</span>によって得られる。</p>
+<p>二乗誤差<span class="math notranslate nohighlight">\(L(y, f(x)) = \frac{1}{2} (y - f(x))^2\)</span>の場合、負の勾配は残差である</p>
+<div class="math notranslate nohighlight">
+\[
+- \frac{ \partial L(y, f(x)) }{ \partial f(x) } = y - f(x) = \text{residual}
+\]</div>
+<p>前向き段階的加法モデルの節で「二乗誤差の場合は残差を近似するように学習している」と述べた。</p>
+<div class="math notranslate nohighlight">
+\[
+L(y_i, f_{m-1}(x_i) + \beta f(x_i; \theta)) = (\text{residual}_{i,m-1} - \beta f(x_i; \theta))^2
+\]</div>
+<p>これにより、学習されるモデル<span class="math notranslate nohighlight">\(\beta f(x; \theta)\)</span>は負の勾配を学習するようになり、最終的にそれらの和となるモデルは勾配降下法を解いた状態を近似することになる。</p>
+</section>
+</section>
 </section>
 <section id="gbdt">
 <h2>正則化つきGBDT<a class="headerlink" href="#gbdt" title="Permalink to this heading">#</a></h2>
@@ -565,8 +674,8 @@ document.write(`
 \[
 \mathcal{L}^{(t)}(\phi) = \sum^n_{i=1} l(y_i, \hat{y}^{(t-1)} + f_t(x_i)) + \Omega(f_t)
 \]</div>
-<section id="id2">
-<h3>テイラー展開による近似<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<section id="id5">
+<h3>テイラー展開による近似<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
 <p>この誤差を二次近似したものを使うことで計算量を削減することもできることが知られている（<a class="reference external" href="https://citeseerx.ist.psu.edu/document?repid=rep1&amp;type=pdf&amp;doi=6f4493eff2531536a7aeb3fc11d62c30a8f487f6">Friedman et al., 2000</a>）</p>
 <div class="math notranslate nohighlight">
 \[
@@ -723,8 +832,8 @@ w^*_j = -\frac
 </div>
 </details></section>
 </section>
-<section id="id3">
-<h2>参考<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<section id="id6">
+<h2>参考<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="http://rob.schapire.net/papers/strengthofweak.pdf">Schapire, R. E. (1990). The strength of weak learnability. Machine learning, 5, 197-227.</a></p></li>
 <li><p><a class="reference external" href="https://citeseerx.ist.psu.edu/document?repid=rep1&amp;type=pdf&amp;doi=6f4493eff2531536a7aeb3fc11d62c30a8f487f6">Friedman, J., Hastie, T., &amp; Tibshirani, R. (2000). Additive logistic regression: a statistical view of boosting (with discussion and a rejoinder by the authors). The annals of statistics, 28(2), 337-407.</a></p></li>
@@ -773,11 +882,11 @@ w^*_j = -\frac
       </div>
     </a>
     <a class="right-next"
-       href="../dimension_reduction.html"
+       href="gbdt_quantize.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">次元削減</p>
+        <p class="prev-next-title">GBDTの勾配の量子化</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -799,12 +908,19 @@ w^*_j = -\frac
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-boosting-machine">Gradient Boosting Machine</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gbdt">正則化つきGBDT</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">テイラー展開による近似</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-boosting-machine">Gradient Boosting Machine</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">最適化の観点からの説明</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">勾配降下法</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ブースティング</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gbdt">正則化つきGBDT</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">テイラー展開による近似</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
 </ul>
   </nav></div>
 
