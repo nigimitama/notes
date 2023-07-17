@@ -223,8 +223,9 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../hte.html">Heterogeneous Treatment Effectsの推定</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">回帰分析</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ols.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cef.html">条件付き期待値関数（CEF）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols_estimator.html">OLS推定量の性質</a></li>
 <li class="toctree-l2"><a class="reference internal" href="test_of_ols.html">OLSの検定・区間推定</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nature_of_ols_estimator.html">OLS推定量の性質</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols_robust_standard_error.html">OLSのロバスト標準誤差</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log_transformation.html">対数変換</a></li>
 <li class="toctree-l2"><a class="reference internal" href="omitted_variable_bias.html">欠落変数バイアス</a></li>
@@ -519,17 +520,21 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#partialling-out">partialling out</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">FWL定理</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">FWL定理の応用</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">データの可視化</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">計算の高速化</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">統計的因果推論</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">FWL定理</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fwl-1">FWL 1の証明</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2変数の場合の証明</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">FWL定理の応用</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">データの可視化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">計算の高速化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">統計的因果推論</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">（考察）再帰的なpartialling outで任意のパラメータを任意の次元で推定できないか？</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1. <span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(x_1\)</span>に回帰する</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">2. <span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(\tilde{x}_1\)</span>に回帰する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">（考察）再帰的なpartialling outで任意のパラメータを任意の次元で推定できないか？</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">1. <span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(x_1\)</span>に回帰する</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">2. <span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(\tilde{x}_1\)</span>に回帰する</a></li>
 </ul>
 </li>
 </ul>
@@ -715,20 +720,58 @@ y = \beta_0 + \beta_1 x_1 + \cdots + \beta_j x_j + \cdots + \beta_d x_d + \varep
 </section>
 <section id="id2">
 <h2>FWL定理<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
-<p><a class="reference external" href="https://www.fbc.keio.ac.jp/~tyabu/keiryo/fwl.pdf">https://www.fbc.keio.ac.jp/~tyabu/keiryo/fwl.pdf</a></p>
+<p>目的変数ベクトル<span class="math notranslate nohighlight">\(Y\in \mathbb{R}^{n\times 1}\)</span>、説明変数行列<span class="math notranslate nohighlight">\(X \in \mathbb{R}^{n\times d}\)</span>があるとする。</p>
+<p><span class="math notranslate nohighlight">\(X\)</span>を<span class="math notranslate nohighlight">\(d_1\)</span>と<span class="math notranslate nohighlight">\(d_2\)</span>変数の2つに分割する: <span class="math notranslate nohighlight">\(X = [X_1 | X_2]\)</span></p>
+<p>回帰係数ベクトル<span class="math notranslate nohighlight">\(\beta\)</span>も<span class="math notranslate nohighlight">\(d_1\)</span>と<span class="math notranslate nohighlight">\(d_2\)</span>に分割する：<span class="math notranslate nohighlight">\(\beta = [\beta_1 | \beta_2]^T\)</span></p>
+<p>回帰モデルは次のようになる</p>
+<div class="math notranslate nohighlight">
+\[
+Y = X\beta + e= X_1 \beta_1 + X_2 \beta_2 + e
+\]</div>
+<p>上記のモデルについて、<strong>残差回帰</strong>（residual regression）と呼ばれる、次のステップによる推定を考える</p>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\(Y\)</span>を<span class="math notranslate nohighlight">\(X_1\)</span>に回帰して残差<span class="math notranslate nohighlight">\(\tilde{Y}\)</span>を得る</p></li>
+<li><p><span class="math notranslate nohighlight">\(X_2\)</span>を<span class="math notranslate nohighlight">\(X_1\)</span>に回帰して残差<span class="math notranslate nohighlight">\(\tilde{X}_2\)</span>を得る</p></li>
+<li><p><span class="math notranslate nohighlight">\(\tilde{Y}\)</span>を<span class="math notranslate nohighlight">\(\tilde{X}_2\)</span>に回帰させる</p></li>
+</ol>
+<p>FWLは、残差回帰について次のことを示す:</p>
+<ol class="arabic simple">
+<li><p>係数<span class="math notranslate nohighlight">\(\beta_2\)</span>は残差回帰の3ステップから得られる</p></li>
+<li><p>残差回帰のステップ3の残差は<span class="math notranslate nohighlight">\(Y = X\beta + e= X_1 \beta_1 + X_2 \beta_2 + e\)</span>のモデルの残差<span class="math notranslate nohighlight">\(e\)</span>と一致する</p></li>
+</ol>
+<section id="fwl-1">
+<h3>FWL 1の証明<a class="headerlink" href="#fwl-1" title="Permalink to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[
+M_1 = I - X_1 (X_1^T X_1)^{-1} X_1^T
+\]</div>
+<p>とおく。</p>
 </section>
 <section id="id3">
-<h2>FWL定理の応用<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<h3>2変数の場合の証明<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<p>定数項を<span class="math notranslate nohighlight">\(x_1\)</span>、説明変数を<span class="math notranslate nohighlight">\(x_2\)</span>とした単回帰モデル</p>
+<div class="math notranslate nohighlight">
+\[
+y = \beta_1 x_1 + \beta_2 x_2 + e
+\]</div>
+<p>の場合</p>
+<p>浅野・中村では誤差が直交することから証明するスタイルで、有斐閣の本はより直接的に証明している</p>
+<p><a class="reference external" href="https://www.fbc.keio.ac.jp/~tyabu/keiryo/fwl.pdf">https://www.fbc.keio.ac.jp/~tyabu/keiryo/fwl.pdf</a></p>
+<p><a class="reference external" href="https://arxiv.org/abs/2307.00369">[2307.00369] The Yule-Frisch-Waugh-Lovell Theorem</a></p>
+</section>
+</section>
 <section id="id4">
-<h3>データの可視化<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<h2>FWL定理の応用<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
+<section id="id5">
+<h3>データの可視化<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
 <p>元のモデルに<span class="math notranslate nohighlight">\(d\)</span>次元の説明変数があったとしても、<span class="math notranslate nohighlight">\(\tilde{x}_j\)</span>と<span class="math notranslate nohighlight">\(y\)</span>の関係へと次元を削減することができるため、グラフに表示しやすい。</p>
 </section>
-<section id="id5">
-<h3>計算の高速化<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
+<section id="id6">
+<h3>計算の高速化<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="https://pyhdfe.readthedocs.io/en/stable/index.html">PyHDFE</a>パッケージのような高次元データの分析において活用されているらしい</p>
 </section>
-<section id="id6">
-<h3>統計的因果推論<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<section id="id7">
+<h3>統計的因果推論<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
 <blockquote>
 <div><p>I am referring to the work on post-double selection by Belloni, Chernozhukov, Hansen (2013) and the follow up work on “double machine learning” by Chernozhukov, Chetverikov, Demirer, Duflo, Hansen, Newey, Robins (2018).</p>
 </div></blockquote>
@@ -750,8 +793,8 @@ y = \beta_0 + \beta_1 x_1 + \cdots + \beta_j x_j + \cdots + \beta_d x_d + \varep
 <li><p>Lovell, M. C. (1963). <a class="reference external" href="https://www.tandfonline.com/doi/abs/10.1080/01621459.1963.10480682">Seasonal adjustment of economic time series and multiple regression analysis</a>. Journal of the American Statistical Association, 58(304), 993-1010.</p></li>
 </ul>
 </section>
-<section id="id7">
-<h2>（考察）再帰的なpartialling outで任意のパラメータを任意の次元で推定できないか？<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
+<section id="id8">
+<h2>（考察）再帰的なpartialling outで任意のパラメータを任意の次元で推定できないか？<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
 <p>→ できなかった</p>
 <p>うまくいってAdditive modelとのつながりが見えれば面白かったんだが</p>
 <div class="cell docutils container">
@@ -786,8 +829,8 @@ y = \beta_0 + \beta_1 x_1 + \cdots + \beta_j x_j + \cdots + \beta_d x_d + \varep
 </div>
 </div>
 </div>
-<section id="id8">
-<h3>1. <span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(x_1\)</span>に回帰する<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h3>
+<section id="id9">
+<h3>1. <span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(x_1\)</span>に回帰する<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(y = \beta_0 + \beta_1 x_1 + \beta_2 z_2 + \varepsilon\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -803,8 +846,8 @@ y = \beta_0 + \beta_1 x_1 + \cdots + \beta_j x_j + \cdots + \beta_d x_d + \varep
 </div>
 </div>
 </section>
-<section id="id9">
-<h3>2. <span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(\tilde{x}_1\)</span>に回帰する<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h3>
+<section id="id10">
+<h3>2. <span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(\tilde{x}_1\)</span>に回帰する<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h3>
 <p>ここで<span class="math notranslate nohighlight">\(\tilde{x}_1\)</span>は<span class="math notranslate nohighlight">\(x_1\)</span>を残りの説明変数に回帰した残差</p>
 <div class="math notranslate nohighlight">
 \[
@@ -836,7 +879,7 @@ y = \beta_0 + \beta_1 x_1 + \cdots + \beta_j x_j + \cdots + \beta_d x_d + \varep
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7fdb81f2f400&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7f437486e610&gt;
 </pre></div>
 </div>
 <img alt="../../_images/22a03e27fc1feb468577b665c942a875ebcb796530db132c22c360db7cac7db0.png" src="../../_images/22a03e27fc1feb468577b665c942a875ebcb796530db132c22c360db7cac7db0.png" />
@@ -1005,17 +1048,21 @@ beta1           : 4.613
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#partialling-out">partialling out</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">FWL定理</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">FWL定理の応用</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">データの可視化</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">計算の高速化</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">統計的因果推論</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">FWL定理</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fwl-1">FWL 1の証明</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2変数の場合の証明</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">FWL定理の応用</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">データの可視化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">計算の高速化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">統計的因果推論</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">（考察）再帰的なpartialling outで任意のパラメータを任意の次元で推定できないか？</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1. <span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(x_1\)</span>に回帰する</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">2. <span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(\tilde{x}_1\)</span>に回帰する</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">（考察）再帰的なpartialling outで任意のパラメータを任意の次元で推定できないか？</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">1. <span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(x_1\)</span>に回帰する</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">2. <span class="math notranslate nohighlight">\(y\)</span>を<span class="math notranslate nohighlight">\(\tilde{x}_1\)</span>に回帰する</a></li>
 </ul>
 </li>
 </ul>

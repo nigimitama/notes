@@ -223,8 +223,9 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/hte.html">Heterogeneous Treatment Effectsの推定</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../econometrics/ols/index.html">回帰分析</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/ols.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/cef.html">条件付き期待値関数（CEF）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/ols_estimator.html">OLS推定量の性質</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/test_of_ols.html">OLSの検定・区間推定</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/nature_of_ols_estimator.html">OLS推定量の性質</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/ols_robust_standard_error.html">OLSのロバスト標準誤差</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/log_transformation.html">対数変換</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../econometrics/ols/omitted_variable_bias.html">欠落変数バイアス</a></li>
@@ -518,14 +519,15 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">行列</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列積</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">直積</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">行列式</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">行列式の幾何的な解釈</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">行列式</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">行列式の幾何的な解釈</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">固有値と固有ベクトル</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">固有値と固有ベクトル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -647,9 +649,109 @@ A B =
 \end{pmatrix}
 \end{split}\]</div>
 </section>
-</section>
 <section id="id7">
-<h2>行列式<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
+<h3>直積<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
+<p>2つのベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a}, \boldsymbol{b}\)</span>のテンソル積</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\boldsymbol{a} \otimes \boldsymbol{b}
+= \boldsymbol{a} \boldsymbol{b}^T
+= \begin{pmatrix}
+a_1 \\ a_2 \\ \vdots \\ a_n
+\end{pmatrix}
+\begin{pmatrix}
+b_1 &amp; b_2 &amp; \cdots &amp; b_n
+\end{pmatrix}
+= \begin{pmatrix}
+    a_1 b_1 &amp; a_1 b_2 &amp; \cdots &amp; a_1 b_n\\
+    a_2 b_1 &amp; a_2 b_2 &amp; \cdots &amp; a_2 b_n\\
+    \vdots  &amp; \vdots  &amp; \ddots &amp; \vdots \\
+    a_n b_1 &amp; a_n b_2 &amp; \cdots &amp; a_n b_n
+\end{pmatrix}
+\end{split}\]</div>
+<p>を<strong>直積</strong>（direct product）あるいは<strong>外積</strong>（outer product）という。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+行列積と直積の関係</div>
+<p class="sd-card-text">行列<span class="math notranslate nohighlight">\(A, B\)</span>の<span class="math notranslate nohighlight">\(i\)</span>番目の列ベクトルを<span class="math notranslate nohighlight">\(\boldsymbol{a}_i, \boldsymbol{b}_i\)</span>とし、行ベクトルを<span class="math notranslate nohighlight">\(\boldsymbol{a}_i^T, \boldsymbol{b}_i^T\)</span>とする。このとき、</p>
+<div class="math notranslate nohighlight">
+\[
+A^T B = \sum^n_{i=1} \boldsymbol{a}_i \boldsymbol{b}_i^T
+\]</div>
+<p class="sd-card-text">が成り立つ。この形式は計量経済学（回帰分析）の漸近正規性の証明などで多用される。</p>
+</div>
+</div>
+<p>（例）<span class="math notranslate nohighlight">\(A, B \in \mathbb{R}^{2\times 2}\)</span>のとき、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+A^T B &amp;= 
+\begin{pmatrix}
+    a_{11} &amp; a_{21}\\
+    a_{12} &amp; a_{22}
+\end{pmatrix}
+\begin{pmatrix}
+    b_{11} &amp; b_{12}\\
+    b_{21} &amp; b_{22}
+\end{pmatrix}
+\\
+&amp;= 
+\begin{pmatrix}
+   a_{11} b_{11} + a_{21} b_{21} &amp; a_{11} b_{12} + a_{21} b_{22}\\
+   a_{12} b_{11} + a_{22} b_{21} &amp; a_{12} b_{12} + a_{22} b_{22}\\
+\end{pmatrix}
+\end{align}
+\end{split}\]</div>
+<p>であり、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+a_1
+= \begin{pmatrix}
+    a_{11} \\
+    a_{12} 
+\end{pmatrix}
+, \hspace{1em}
+b_1^T = 
+\begin{pmatrix}
+    b_{11} &amp; b_{12}\\
+\end{pmatrix}
+\end{split}\]</div>
+<p>から</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\sum^2_{i=1} \boldsymbol{a}_i \boldsymbol{b}_i^T
+&amp;= \begin{pmatrix}
+    a_{11} \\
+    a_{12}
+\end{pmatrix}
+\begin{pmatrix}
+    b_{11} &amp; b_{12}
+\end{pmatrix}
++ \begin{pmatrix}
+    a_{21} \\
+    a_{22}
+\end{pmatrix}
+\begin{pmatrix}
+    b_{21} &amp; b_{22}
+\end{pmatrix}
+\\
+&amp;= \begin{pmatrix}
+    a_{11} b_{11} &amp; a_{11} b_{12}\\
+    a_{12} b_{11} &amp; a_{12} b_{12}
+\end{pmatrix}
++ \begin{pmatrix}
+    a_{21} b_{21} &amp; a_{21} b_{22}\\
+    a_{22} b_{21} &amp; a_{22} b_{22}
+\end{pmatrix}
+\end{align}
+\end{split}\]</div>
+<p>であるため。</p>
+</section>
+</section>
+<section id="id8">
+<h2>行列式<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
 <p>正方行列<span class="math notranslate nohighlight">\(A\)</span>に対して、その<strong>行列式</strong>（determinant）を<span class="math notranslate nohighlight">\(|A|\)</span>や<span class="math notranslate nohighlight">\(\det(A)\)</span>と表す。行列式はスカラーである。</p>
 <p>2次の正方行列に対して、行列式は次のように求めることができる。</p>
 <div class="math notranslate nohighlight">
@@ -707,8 +809,8 @@ a' &amp; b'
 <p>(2’) 2つの列ベクトルを入れ替えると符号が変わる</p>
 <p>(3) <span class="math notranslate nohighlight">\(\det(I) = \det(\b{e}_1, \cdots, \b{e}_d) = 1\)</span> （<span class="math notranslate nohighlight">\(\b{e}_1, \cdots, \b{e}_d\)</span>は基本ベクトル）</p>
 </div>
-<section id="id8">
-<h3>行列式の幾何的な解釈<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h3>
+<section id="id9">
+<h3>行列式の幾何的な解釈<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h3>
 <p>2つのベクトルが四角形を表すとみなす。この四角形を変形させる行列<span class="math notranslate nohighlight">\(A\)</span>があったとき、変換後の四角形の面積はもとの面積の<span class="math notranslate nohighlight">\(\text{det}(A)\)</span>倍である、と解釈できる（行列式の値が正の値のとき。負の場合は軸が反転している）</p>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
@@ -794,8 +896,8 @@ a' &amp; b'
 <p>参考：<a class="reference external" href="https://www.youtube.com/watch?v=K8axNorb1CU">Chapter 6 行列式 | 線形代数のエッセンス - YouTube</a></p>
 </section>
 </section>
-<section id="id9">
-<h2>固有値と固有ベクトル<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h2>
+<section id="id10">
+<h2>固有値と固有ベクトル<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h2>
 <p><span class="math notranslate nohighlight">\(d\)</span>次の正方行列<span class="math notranslate nohighlight">\(A\)</span>に対して</p>
 <div class="math notranslate nohighlight">
 \[
@@ -917,8 +1019,8 @@ y=[-0.707  0.707]
 </div>
 </div>
 </section>
-<section id="id10">
-<h2>参考<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h2>
+<section id="id11">
+<h2>参考<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="http://www.phys.shimane-u.ac.jp/tanaka_lab/lecture/linear_algebra/linear_algebra.pdf">線形代数基礎</a></p></li>
 </ul>
@@ -1001,14 +1103,15 @@ y=[-0.707  0.707]
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">行列</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列積</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">直積</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">行列式</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">行列式の幾何的な解釈</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">行列式</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">行列式の幾何的な解釈</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">固有値と固有ベクトル</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">固有値と固有ベクトル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考</a></li>
 </ul>
   </nav></div>
 
