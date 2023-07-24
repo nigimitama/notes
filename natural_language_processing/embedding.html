@@ -187,6 +187,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../statistics/statistical_inference/04_point_estimation.html">点推定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../statistics/statistical_inference/05_interval_inference.html">区間推定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../statistics/statistical_inference/06_test.html">検定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/statistical_inference/ci_and_test.html">信頼区間と検定の関係性</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../statistics/likelihood_and_probability.html">尤度関数と確率関数の違いは何なのか？</a></li>
@@ -748,27 +749,19 @@ Prediction: programs
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 6.7185e-01, -5.7725e-01,  4.4725e-03,  7.7525e-01, -1.1505e+00,
-          1.4932e+00,  1.4111e+00, -4.9013e-01, -6.4314e-02, -1.6640e+00,
-         -1.3360e-01, -1.9975e+00, -2.9047e-01,  6.4613e-02,  9.3012e-01,
-         -2.6136e+00, -4.8575e-01, -1.0605e+00, -7.7085e-01,  9.0078e-01,
-         -1.8453e+00, -3.7693e-01,  1.5909e-01,  8.4727e-01,  8.0730e-01,
-          6.2882e-01,  1.6168e+00, -1.8196e-01,  1.1604e-01, -4.0944e-01,
-          1.4633e-01, -7.3564e-01,  2.5824e-01, -1.9360e-01, -1.4718e+00,
-          2.3694e+00, -1.4536e-01,  3.2022e-01, -7.1082e-01,  1.3091e+00,
-         -4.0304e-01,  4.7189e-02, -6.1774e-01,  1.2529e+00,  4.4982e-02,
-          3.9702e-01, -5.2162e-01,  5.1042e-01,  3.9052e-01,  1.1161e+00,
-         -1.2349e+00,  1.2394e-01, -2.3560e-01, -3.3047e-01, -5.1820e-01,
-         -1.2324e+00, -6.6424e-01, -1.0481e+00, -1.0482e-01,  2.2945e-01,
-          7.4663e-01,  1.5847e+00, -1.5079e+00,  9.0735e-01,  2.0049e-01,
-          1.3716e+00,  1.2949e+00, -1.1352e-01, -3.2288e+00,  3.5115e-01,
-         -5.2683e-01,  4.4832e-01, -7.4319e-01,  6.3834e-01,  5.8526e-01,
-          5.6281e-01, -2.8460e+00, -6.5134e-01, -8.0574e-01, -1.2110e+00,
-         -3.8098e-01,  2.9646e-01,  8.9186e-01, -5.7155e-02,  1.6698e+00,
-          2.9146e-01,  7.2749e-01, -9.8806e-01, -4.9034e-01,  6.7440e-01,
-         -3.1428e-01, -1.6264e+00,  7.3106e-02,  3.8422e-01,  1.0430e+00,
-         -1.7767e+00, -2.9552e-03, -2.8177e-01,  2.4698e-02,  1.1217e+00]],
-       grad_fn=&lt;ViewBackward0&gt;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[-1.3836,  0.4088,  1.3424, -0.0575,  0.1212,  2.0039,  0.4275, -0.2706,
+         -0.0363,  0.9206, -1.7363,  0.3199, -1.0484, -0.5059, -2.3157, -0.7336,
+         -1.3612,  0.0153,  1.8851, -1.1463,  0.6044,  0.0689, -0.6012, -0.1372,
+         -0.0331, -1.0963, -1.0704, -0.1338, -0.1158, -0.0395,  0.0251, -0.2934,
+          1.5817, -0.1828, -0.4926, -0.8882,  0.7398,  1.2894,  0.3298,  0.7494,
+          1.1527,  0.8885, -0.1786,  0.6838,  0.5358,  0.4314, -0.4528, -0.5100,
+         -1.9175,  0.3648,  0.8467, -0.0647, -0.9966,  1.9853, -1.0632, -1.5384,
+          0.5828,  1.1056, -0.0408,  0.2319,  0.1420, -0.5734,  0.9550, -0.1496,
+         -0.3154,  0.4572,  1.2012, -0.2514, -0.1660,  0.2125, -0.4949,  0.6220,
+          0.2961,  0.5662, -0.4584,  1.1648,  0.7118, -2.1439,  0.1892, -1.5942,
+         -0.0934,  0.2548, -1.3890, -0.7473, -0.9458,  0.0231, -1.4566, -0.5493,
+         -1.0089, -0.9258, -1.5429, -0.3365,  1.9165,  0.1985, -0.7001,  0.1435,
+          0.9122, -0.1243,  0.8259,  1.2791]], grad_fn=&lt;ViewBackward0&gt;)
 </pre></div>
 </div>
 </div>
@@ -871,9 +864,9 @@ p(w_O|w_I) = \frac{\exp( v_{w_O}^T v_{w_I} )}{\sum^W_{w=1} \exp( v_{w}^T v_{w_I}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>queen: 0.00656
-male: -0.0251
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>male: -0.0251
 female: -0.0395
+queen: 0.00656
 ruler: -0.0263
 </pre></div>
 </div>

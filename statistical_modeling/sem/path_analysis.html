@@ -187,6 +187,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../../statistics/statistical_inference/04_point_estimation.html">点推定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../statistics/statistical_inference/05_interval_inference.html">区間推定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../statistics/statistical_inference/06_test.html">検定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistics/statistical_inference/ci_and_test.html">信頼区間と検定の関係性</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/likelihood_and_probability.html">尤度関数と確率関数の違いは何なのか？</a></li>
@@ -743,12 +744,16 @@ E[e_4 v_1] &amp; E[e_4 v_2] &amp; E[e_4 e_3] &amp; E[e_4^2]
 <span class="c1"># データ生成</span>
 <span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># 真のパラメータ</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
     <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="p">])</span>
+
+<span class="c1"># NOTE: eは実際には観測できない。推定前に得らるのはvのみ</span>
 <span class="n">v1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
 <span class="n">v2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
 <span class="n">e3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
@@ -756,6 +761,102 @@ E[e_4 v_1] &amp; E[e_4 v_2] &amp; E[e_4 e_3] &amp; E[e_4^2]
 <span class="n">v3</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v1</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v2</span> <span class="o">+</span> <span class="n">e3</span>
 <span class="n">v4</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v2</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v3</span> <span class="o">+</span> <span class="n">e4</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">v1</span><span class="o">=</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="o">=</span><span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="o">=</span><span class="n">v3</span><span class="p">,</span> <span class="n">v4</span><span class="o">=</span><span class="n">v4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 標本共分散</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">,</span> <span class="n">v4</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">rowvar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">S</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 0.08,  0.  ,  0.25,  0.99],
+       [ 0.  ,  0.09,  0.17,  1.13],
+       [ 0.25,  0.17,  1.99,  8.82],
+       [ 0.99,  1.13,  8.82, 42.01]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>目的関数の設定</p>
+<p><span class="math notranslate nohighlight">\(\b{\theta} = (a_{11}, a_{12}, \dots, a_{pp}, \sigma_{e1}^2, \sigma_{e1 e2}, \dots, \sigma^2_{ep})\)</span>として構造化した共分散を関数とする</p>
+<div class="math notranslate nohighlight">
+\[
+\b{\Sigma}(\b{\theta}) = \b{T \Sigma_e T}^T
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calc_sigma</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">Sigma_e</span><span class="p">):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">A</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">T</span> <span class="o">@</span> <span class="n">Sigma_e</span> <span class="o">@</span> <span class="n">T</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>負の対数尤度</p>
+<div class="math notranslate nohighlight">
+\[
+f_{ML} = \text{tr}(\b{\Sigma}(\b{\theta})^{-1} \b{S})
+- \log | \b{\Sigma}(\b{\theta})^{-1} \b{S}| - n
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="n">Sigma</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="n">SigmaS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Sigma</span><span class="p">)</span> <span class="o">@</span> <span class="n">S</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span> <span class="n">SigmaS</span> <span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">SigmaS</span><span class="p">)</span> <span class="p">)</span> <span class="o">-</span> <span class="n">n</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">A_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span> <span class="c1"># 初期値</span>
+<span class="n">Sigma_e_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span> <span class="c1"># 初期値</span>
+<span class="n">Sigma_hat</span> <span class="o">=</span> <span class="n">calc_sigma</span><span class="p">(</span><span class="n">A_hat</span><span class="p">,</span> <span class="n">Sigma_e_hat</span><span class="p">)</span>
+
+<span class="n">log_likelihood</span><span class="p">(</span><span class="n">Sigma_hat</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_4627/594764428.py:3: RuntimeWarning: invalid value encountered in log
+  return np.trace( SigmaS ) - np.log( np.linalg.det(SigmaS) ) - n
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>nan
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.linalg.lapack</span> <span class="k">as</span> <span class="nn">lapack</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">c</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">lapack</span><span class="o">.</span><span class="n">dpotrf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">lapack</span><span class="o">.</span><span class="n">dpotri</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">overwrite_c</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">diagonal</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">error</span><span class="g g-Whitespace">                                     </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">scipy.linalg.lapack</span> <span class="k">as</span> <span class="nn">lapack</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">x</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="ne">----&gt; </span><span class="mi">3</span> <span class="n">c</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">lapack</span><span class="o">.</span><span class="n">dpotrf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">lapack</span><span class="o">.</span><span class="n">dpotri</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">overwrite_c</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">c</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">diagonal</span><span class="p">())</span>
+
+<span class="ne">error</span>: (shape(a,0)==shape(a,1)) failed for 1st argument a
 </pre></div>
 </div>
 </div>
