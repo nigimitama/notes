@@ -210,6 +210,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="regression_analysis.html">回帰分析</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">パス解析</a></li>
 <li class="toctree-l2"><a class="reference internal" href="factor_analysis.html">因子分析モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluation.html">モデルの評価</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../bayes_modeling/index.html">ベイズ統計モデリング</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -237,6 +238,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../econometrics/iv/index.html">操作変数法</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../econometrics/iv/instrumental_variables.html">操作変数法</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../econometrics/iv/history.html">操作変数法の歴史</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/iv/simulatenous_equasion_model.html">同時方程式モデル</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/regression_discontinuity.html">RDD</a></li>
@@ -523,7 +525,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">考察</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">非逐次モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">非逐次モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sls">考察：2SLS推定量とのつながり</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#iv">IV推定量</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mimic">MIMICモデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
 </ul>
@@ -545,6 +553,8 @@ document.write(`
 <section id="id2">
 <h2>逐次モデル<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
 <p>逐次モデルは内生変数間の双方向のパスが無いモデル</p>
+<div class="cell tag_remove-input docutils container">
+</div>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <img alt="../../_images/18cff059f20579b608ecb1b42914f24dbe4a00ea167d8005e4051df207a5d0cc.svg" src="../../_images/18cff059f20579b608ecb1b42914f24dbe4a00ea167d8005e4051df207a5d0cc.svg" /></div>
@@ -831,7 +841,7 @@ f_{ML} = \text{tr}(\b{\Sigma}(\b{\theta})^{-1} \b{S})
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_4608/594764428.py:3: RuntimeWarning: invalid value encountered in log
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_4738/594764428.py:3: RuntimeWarning: invalid value encountered in log
   return np.trace( SigmaS ) - np.log( np.linalg.det(SigmaS) ) - n
 </pre></div>
 </div>
@@ -853,7 +863,7 @@ f_{ML} = \text{tr}(\b{\Sigma}(\b{\theta})^{-1} \b{S})
 <div class="cell_output docutils container">
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">error</span><span class="g g-Whitespace">                                     </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
 <span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">scipy.linalg.lapack</span> <span class="k">as</span> <span class="nn">lapack</span>
 <span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">x</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="ne">----&gt; </span><span class="mi">3</span> <span class="n">c</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">lapack</span><span class="o">.</span><span class="n">dpotrf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -1325,6 +1335,29 @@ a_{32} \sigma_{21}
 \sigma_3^2 &amp;= a_{32}^2 \sigma^2_2 + \sigma^2_{e3}
 \end{align}
 \end{split}\]</div>
+<section id="sls">
+<h3>考察：2SLS推定量とのつながり<a class="headerlink" href="#sls" title="Permalink to this heading">#</a></h3>
+<section id="iv">
+<h4>IV推定量<a class="headerlink" href="#iv" title="Permalink to this heading">#</a></h4>
+<p>同時方程式モデル</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+Y_1 = \beta_1 Y_2 + \gamma_1 Z_1 + \varepsilon_1\\
+Y_2 = \beta_2 Y_1 + \gamma_2 Z_2 + \varepsilon_2
+\end{split}\]</div>
+<p>があるとする。外生変数が<span class="math notranslate nohighlight">\(Z\)</span>である。</p>
+<p>行列形式で<span class="math notranslate nohighlight">\(\boldsymbol{\beta}_1 = (\beta_1, \gamma_1)^T\)</span>のようにまとめて</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\newcommand{\b}[1]{\boldsymbol{#1}}
+\b{Y}_1 = [\b{Y}_2|\b{Z}_1] \b{\beta}_1 + \b{\varepsilon}_1 = \b{X}_1 \b{\beta}_1 + \b{\varepsilon}_1\\
+\b{Y}_2 = [\b{Y}_1|\b{Z}_2] \b{\beta}_2 + \b{\varepsilon}_2 = \b{X}_2 \b{\beta}_2 + \b{\varepsilon}_2
+\end{split}\]</div>
+<p>と書くことにする。外生変数からなる行列を<span class="math notranslate nohighlight">\(\b{Z} = [\b{Z}_1|\b{Z}_2]\)</span>と表すと</p>
+<div class="math notranslate nohighlight">
+\[\]</div>
+</section>
+</section>
 </section>
 <section id="mimic">
 <h2>MIMICモデル<a class="headerlink" href="#mimic" title="Permalink to this heading">#</a></h2>
@@ -1423,7 +1456,13 @@ a_{32} \sigma_{21}
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">考察</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">非逐次モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">非逐次モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sls">考察：2SLS推定量とのつながり</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#iv">IV推定量</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mimic">MIMICモデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
 </ul>
