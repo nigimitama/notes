@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Double/Debiased Machine Learning &#8212; データサイエンスの勉強ノート</title>
+    <title>一般化モーメント法 &#8212; データサイエンスの勉強ノート</title>
   
   
   
@@ -71,11 +71,9 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/dml';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/gmm';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="線形モデル" href="../machine_learning/linear_models/index.html" />
-    <link rel="prev" title="Synthetic Control" href="synthetic_control.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -221,7 +219,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../statistical_modeling/symbolic_data_analysis.html">Symbolic Data Analysis</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">計量経済学</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="rubin_causal_model.html">ルービンの因果モデル</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hte.html">Heterogeneous Treatment Effectsの推定</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="ols/index.html">回帰分析</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -246,7 +244,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="fixed_effect_model.html">固定効果モデル</a></li>
 <li class="toctree-l1"><a class="reference internal" href="difference_in_differences.html">Difference In Differences</a></li>
 <li class="toctree-l1"><a class="reference internal" href="synthetic_control.html">Synthetic Control</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Double/Debiased Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dml.html">Double/Debiased Machine Learning</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">機械学習</span></p>
 <ul class="nav bd-sidenav">
@@ -401,7 +399,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Feconometrics/dml.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Feconometrics/gmm.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -431,7 +429,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="../_sources/econometrics/dml.ipynb" target="_blank"
+      <li><a href="../_sources/econometrics/gmm.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -513,7 +511,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Double/Debiased Machine Learning</h1>
+    <h1>一般化モーメント法</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -523,22 +521,13 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">モーメント条件</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">外生性</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLS</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">モーメント条件と非線形モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モーメント法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">例：平均と分散</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">例：線形回帰モデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">部分線形モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#donsker">Donsker条件</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">応用研究</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dmldid">DMLによるDID</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gmm">一般化モーメント法（GMM）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -550,194 +539,53 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="double-debiased-machine-learning">
-<h1>Double/Debiased Machine Learning<a class="headerlink" href="#double-debiased-machine-learning" title="Permalink to this heading">#</a></h1>
-<ul class="simple">
-<li><p>Paper: <a class="reference external" href="https://academic.oup.com/ectj/article/21/1/C1/5056401?login=false">Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W., &amp; Robins, J. (2018). Double/debiased machine learning for treatment and structural parameters.</a></p></li>
-<li><p>Python Package: <a class="reference external" href="https://docs.doubleml.org/stable/index.html">DoubleML</a></p></li>
-</ul>
-<p>世の中の多くの現象は非線形な関係性が想定される。回帰分析は線形モデルであるため、モデルの定式化の誤りに起因するバイアスが生じかねない。</p>
-<p>実際に関心のあるパラメータは少なく、交絡のコントロールのために入れている局外母数（nuisance parameters）は高次元になりがち。</p>
-<p>局外母数を非線形モデルで表し、関心のあるパラメータは線形モデルで表現する部分線形モデル</p>
-<div class="math notranslate nohighlight">
-\[
-Y = \theta D + g(X) + e
-\]</div>
-<p>を作り、非線形モデル<span class="math notranslate nohighlight">\(g(X)\)</span>を機械学習で行いたい</p>
-<section id="id1">
-<h2>モーメント条件<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>一般化モーメント法<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <section id="id2">
-<h3>外生性<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
-<p>単回帰モデル<span class="math notranslate nohighlight">\(Y = \alpha + \beta X + u\)</span>を例にとる。</p>
-<div class="admonition- admonition">
-<p class="admonition-title">外生性</p>
-<p>説明変数<span class="math notranslate nohighlight">\(X\)</span>と誤差項<span class="math notranslate nohighlight">\(u\)</span>が</p>
+<h2>モーメント法<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<p>モーメント法（method of moment）は統計的推定における方法の1つで、母集団におけるモーメント（母平均など）を標本におけるモーメント（標本平均など）で置き換えて推定を行う。</p>
+<p>一般に、スコア関数<span class="math notranslate nohighlight">\(\psi(x, \theta)\)</span>について</p>
 <div class="math notranslate nohighlight">
 \[
-E(u | X) = 0
+E[\psi(x, \theta)] = 0
 \]</div>
-<p>を満たすとき、<span class="math notranslate nohighlight">\(X\)</span>は外生変数であるという。</p>
-</div>
-<p>また、外生性の条件は別の表現もできる</p>
-<div class="admonition-x-u admonition">
-<p class="admonition-title"><span class="math notranslate nohighlight">\(X\)</span>と<span class="math notranslate nohighlight">\(u\)</span>の直交</p>
-<p>説明変数<span class="math notranslate nohighlight">\(X\)</span>が外生変数ならば、</p>
-<div class="math notranslate nohighlight">
-\[
-E(u) = 0, E(X, u) = 0
-\]</div>
-</div>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-証明<div class="sd-summary-down docutils">
-<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
-<div class="sd-summary-up docutils">
-<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
-</summary><div class="sd-summary-content sd-card-body docutils">
-<div class="math notranslate nohighlight">
-\[
-E(X u) = E_{X}[ E(X u | X) ] = E_{X}[ X \underbrace{ E(u|X) }_{ =0 } ] = E_{X}(X\cdot 0) = 0
-\]</div>
-<ul class="simple">
-<li><p class="sd-card-text">TODO: E(u) = 0の証明</p></li>
-</ul>
-<p class="sd-card-text">上の式を直交条件と呼ぶ。</p>
-</div>
-</details><p>さらに、共分散との関係も導出できる</p>
-<div class="admonition-x-u admonition">
-<p class="admonition-title"><span class="math notranslate nohighlight">\(X\)</span>と<span class="math notranslate nohighlight">\(u\)</span>の無相関</p>
-<p>説明変数<span class="math notranslate nohighlight">\(X\)</span>が外生変数ならば、</p>
-<div class="math notranslate nohighlight">
-\[
-Cov(X, u) = 0
-\]</div>
-</div>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-証明<div class="sd-summary-down docutils">
-<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
-<div class="sd-summary-up docutils">
-<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
-</summary><div class="sd-summary-content sd-card-body docutils">
-<div class="math notranslate nohighlight">
-\[
-Cov(X, u) = \underbrace{ E(X u) }_{ =0 }
-- E(X) \underbrace{ E(u) }_{ =0 }
-= 0
-\]</div>
-</div>
-</details></section>
-<section id="ols">
-<h3>OLS<a class="headerlink" href="#ols" title="Permalink to this heading">#</a></h3>
-<p>単回帰モデル<span class="math notranslate nohighlight">\(Y = \alpha + \beta X + u\)</span>のOLS推定量<span class="math notranslate nohighlight">\(\beta\)</span>の確率極限は</p>
-<div class="math notranslate nohighlight">
-\[
-\DeclareMathOperator{\cov}{\text{Cov}}
-\DeclareMathOperator{\var}{\text{Var}}
-\DeclareMathOperator{\plim}{\text{plim}}
-\plim \beta = \beta + \frac{\cov(X, u)}{\var(X)}
-\]</div>
-<p>となる。外生性が満たされるとき<span class="math notranslate nohighlight">\(\cov(X, u) = 0\)</span>であるため、<span class="math notranslate nohighlight">\(\plim \beta = \beta\)</span>となり、OLS推定量は母回帰係数の不偏推定量となる。</p>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-証明<div class="sd-summary-down docutils">
-<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
-<div class="sd-summary-up docutils">
-<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
-</summary><div class="sd-summary-content sd-card-body docutils">
+<p>の条件</p>
+<section id="id3">
+<h3>例：平均と分散<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<p>確率変数<span class="math notranslate nohighlight">\(X \sim N(\mu, \sigma^2)\)</span>について、1次と2次のモーメントは</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\DeclareMathOperator{\cov}{\text{Cov}}
-\DeclareMathOperator{\var}{\text{Var}}
-\DeclareMathOperator{\plim}{\text{plim}}
 \begin{align}
-\plim \beta
-&amp;= \frac{\cov(X, Y)}{\var(X)}\\
-&amp;= \frac{\cov(X, \alpha + \beta X + u)}{\var(X)}\\
-&amp;= \frac{\cov(X, \alpha) + \cov(X, \beta X) + \cov(X, u) }{\var(X)}\\
-&amp;= \frac{\beta \var(X) + \cov(X, u) }{\var(X)}\\
-&amp;= \beta + \frac{\cov(X, u)}{\var(X)}
+E[X] &amp;= \mu\\
+E[X^2] &amp;= \sigma^2 + \mu^2
 \end{align}
 \end{split}\]</div>
-<div class="highlight-{admonition}（参考）和の共分散 notranslate"><div class="highlight"><pre><span></span>標本値、確率変数の和は、加える前の個々の共分散の和になる。すなわち、共分散においては分配法則が成り立つ。
-
-$$
-\cov(X + Z, Y) = \cov(X, Y) + \cov(Z, Y)
-$$
-
-参考：[確率統計 – 分散と共分散 – TauStation](http://taustation.com/statistics-variance-and-covariance/)
-</pre></div>
-</div>
-<div class="admonition- admonition">
-<p class="admonition-title">（参考）共分散と定数</p>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(\alpha, \beta\)</span>は定数と考えると、</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\cov(X, \alpha)
-= E(X \alpha) - E(X) E(\alpha)\\
-= \alpha E(X) - \alpha E(X)\\
-= 0
-\end{split}\]</div>
-<p class="sd-card-text">であり</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\cov(X, \beta X)
-= E(X \beta X) - E(X) E(\beta X)\\
-= \beta E(X^2) - \beta E(X)^2\\
-= \beta \var(X)
-\end{split}\]</div>
-</div>
-</div>
-</details></section>
-<section id="id3">
-<h3>モーメント条件と非線形モデル<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
-<p>GMM推定量は非線形モデルに対しても用いることができる（末石2015, p.78）</p>
-</section>
+<p>これを標本で推定することで、平均と分散の推定量を得られる。</p>
 </section>
 <section id="id4">
-<h2>部分線形モデル<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
-<p>結果変数<span class="math notranslate nohighlight">\(Y\)</span>、説明変数<span class="math notranslate nohighlight">\(X, Z\)</span>についての次のようなモデルを**部分線形モデル（Partially Linear Model）**という。</p>
+<h3>例：線形回帰モデル<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-Y &amp;= X^T \beta + g(Z) + u\\
-E[u|X,Z] &amp;= 0\\
-E[u^2|X,Z] &amp;= \sigma^2(X, Z)\\
-\end{align}
-\end{split}\]</div>
-<p>ここで、<span class="math notranslate nohighlight">\(g(\cdot)\)</span>は任意の関数（非線形の関数でもよい）である。<span class="math notranslate nohighlight">\(\sigma^2(\cdot, \cdot)\)</span>も未知の関数で、不均一分散を許容する。</p>
-<p>関心のあるパラメータ<span class="math notranslate nohighlight">\(\beta\)</span>を解釈性の高い線形モデルで推定（パラメトリック推定）しつつ、影響を統制するためだけにモデルに投じている<span class="math notranslate nohighlight">\(Z\)</span>は関数形を特定せず推定（ノンパラメトリック推定）することができるため、部分線形モデルはセミパラメトリックモデルと呼ばれる。</p>
+\[
+Y_i = X_i^T \beta + u_i
+\]</div>
+<p>ここで<span class="math notranslate nohighlight">\(X\)</span>と<span class="math notranslate nohighlight">\(\beta\)</span>は<span class="math notranslate nohighlight">\((K\times 1)\)</span>ベクトルとする。<span class="math notranslate nohighlight">\(X\)</span>は誤差項と無相関<span class="math notranslate nohighlight">\(E[X_i u_i] = 0\)</span>であるとする。</p>
+<p>このモデルから<span class="math notranslate nohighlight">\(K\)</span>本のモーメント条件が得られる</p>
+<div class="math notranslate nohighlight">
+\[
+E[X_i (Y_i - X_i^T \beta)] = 0
+\]</div>
+</section>
+</section>
+<section id="gmm">
+<h2>一般化モーメント法（GMM）<a class="headerlink" href="#gmm" title="Permalink to this heading">#</a></h2>
+<p>未知のパラメータの数<span class="math notranslate nohighlight">\(m\)</span>とモーメント条件の数<span class="math notranslate nohighlight">\(k\)</span>が、<span class="math notranslate nohighlight">\(m&gt;k\)</span>の場合（例えば複数の操作変数を用いる場合）、モーメント法ではパラメータをうまく推定できない。</p>
+<p>**一般化モーメント法（generalized method of moment: GMM）**はモーメント条件の数</p>
+</section>
 <section id="id5">
-<h3>参考<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
+<h2>参考文献<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://sites.google.com/site/naoyasueishij/teaching/nonpara">末石直也 - セミ・ノンパラメトリック計量分析 (京都大学)</a> 第5回 <a class="reference external" href="https://drive.google.com/file/d/0B6W_J4QoAI6wcWdwYkNwUU5DWTA/view?resourcekey=0--WtAUb3PgzgBpsw1XtvhzQ">部分線形モデルとセミパラメトリック推定量の性質</a></p></li>
+<li><p><a class="reference external" href="https://www.nippyo.co.jp/blogkeisemi/wp-content/uploads/sites/5/2021/07/Draft_Keisemi_Demand2_Appendix1_GMM_v3.pdf">補足資料 1：一般化モーメント法 (GMM) に関するノート</a></p></li>
 </ul>
-</section>
-</section>
-<section id="donsker">
-<h2>Donsker条件<a class="headerlink" href="#donsker" title="Permalink to this heading">#</a></h2>
-<p>機械学習モデルの収束レートが遅い（Donsker条件）→Cross Fitting</p>
-<p><a class="reference external" href="https://twitter.com/masakat0/status/1314897112316870657">XユーザーのMasahiro Katoさん: 「Double/debiased machine learningはどういう手法かというと，機械学習はDonsker条件を満たさないので，サンプルを分割することによって，異なる部分集合間で独立だと思えるような局外母数の推定量を構築することで，収束率だけで漸近正規性を出す手法です．」 / X</a></p>
-</section>
-<section id="id6">
-<h2>応用研究<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p>CAのやつ</p></li>
-</ul>
-</section>
-<section id="id7">
-<h2>参考<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p>解説記事: <a class="reference external" href="https://www.web-nippyo.jp/13331/">機械学習×計量経済学：Double/Debiased Machine Learning | Web日本評論</a></p></li>
-</ul>
-<section id="dmldid">
-<h3>DMLによるDID<a class="headerlink" href="#dmldid" title="Permalink to this heading">#</a></h3>
-<p><a class="reference external" href="https://academic.oup.com/ectj/article/23/2/177/5722119">Double/debiased machine learning for difference-in-differences models | The Econometrics Journal | Oxford Academic</a></p>
-<ul class="simple">
-<li><p>解説: <a class="reference external" href="https://speakerdeck.com/masakat0/dmlniyoruchai-fen-falsechai-tui-ding">DMLによる差分の差推定 - Speaker Deck</a></p></li>
-<li><p>関連: <a class="reference external" href="https://www.researchgate.net/profile/Di-Liu-124/publication/370440876_DoubleDebiased_Machine-learning_estimator_for_Difference-in-Difference_with_Multiple_Periods/links/645015ce5762c95ac3676c6e/Double-Debiased-Machine-learning-estimator-for-Difference-in-Difference-with-Multiple-Periods.pdf">Double-Debiased-Machine-learning-estimator-for-Difference-in-Difference-with-Multiple-Periods.pdf</a></p></li>
-</ul>
-</section>
 </section>
 </section>
 
@@ -772,24 +620,6 @@ E[u^2|X,Z] &amp;= \sigma^2(X, Z)\\
   
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="synthetic_control.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Synthetic Control</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="../machine_learning/linear_models/index.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">線形モデル</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div></div>
   
 </div>
@@ -808,22 +638,13 @@ E[u^2|X,Z] &amp;= \sigma^2(X, Z)\\
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">モーメント条件</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">外生性</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLS</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">モーメント条件と非線形モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モーメント法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">例：平均と分散</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">例：線形回帰モデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">部分線形モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#donsker">Donsker条件</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">応用研究</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dmldid">DMLによるDID</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gmm">一般化モーメント法（GMM）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考文献</a></li>
 </ul>
   </nav></div>
 
