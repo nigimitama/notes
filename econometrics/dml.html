@@ -196,6 +196,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../statistics/nonparametric_density_estimation.html">ノンパラメトリック密度推定</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../statistics/correlation.html">順序尺度の相関係数</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../statistics/sandwich_estimator.html">Sandwich Estimator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../statistics/asymptotic_theory.html">漸近理論</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../statistics/bayes_statistics/index.html">ベイズ統計学</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../statistics/bayes_statistics/bayes_estimation.html">ベイズ推定</a></li>
 </ul>
@@ -330,6 +331,10 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../financial_economics/feature_neutralization.html">Feature Neutralization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../financial_economics/statistical_arbitrage.html">統計的裁定</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../financial_economics/asset_pricing.html">Asset Pricing</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../financial_economics/papers/index.html">論文メモ</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../financial_economics/papers/abcd_forcast.html">ABCD Forcast</a></li>
+</ul>
+</li>
 </ul>
 
     </div>
@@ -537,6 +542,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">応用研究</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dmldid">DMLによるDID</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#youtube">講義動画（Youtube）</a></li>
 </ul>
 </li>
 </ul>
@@ -738,6 +744,35 @@ E[u^2|X,Z] &amp;= \sigma^2(X, Z)\\
 <li><p>関連: <a class="reference external" href="https://www.researchgate.net/profile/Di-Liu-124/publication/370440876_DoubleDebiased_Machine-learning_estimator_for_Difference-in-Difference_with_Multiple_Periods/links/645015ce5762c95ac3676c6e/Double-Debiased-Machine-learning-estimator-for-Difference-in-Difference-with-Multiple-Periods.pdf">Double-Debiased-Machine-learning-estimator-for-Difference-in-Difference-with-Multiple-Periods.pdf</a></p></li>
 </ul>
 </section>
+<section id="youtube">
+<h3>講義動画（Youtube）<a class="headerlink" href="#youtube" title="Permalink to this heading">#</a></h3>
+<p><a class="reference external" href="https://www.youtube.com/watch?v=eHOjmyoPCFU&amp;list=PLru50RuxzKFAsi9x3La3pidYURmi17ci6&amp;index=4&amp;t=479s">Double Machine Learning for Causal and Treatment Effects - YouTube</a></p>
+<ul class="simple">
+<li><p>MLでのcausal parametersの推定は良いとは限らない</p></li>
+<li><p>double or orthogonalized MLとsample splittingによって、causal parametersの高精度な推定が可能</p></li>
+</ul>
+<p>Partially Linear Modelを使う</p>
+<div class="math notranslate nohighlight">
+\[
+Y = D \theta_0 + g_0(Z) + U
+, \hspace{1em} E[U|Z, D] = 0
+\]</div>
+<ul class="simple">
+<li><p>MLをそのまま使うと一致推定量にならない（例えば<span class="math notranslate nohighlight">\(Y - D\)</span>で<span class="math notranslate nohighlight">\(g_0(Z)\)</span>をRandom Forestで学習しても、予測精度は良いがバイアスがある）</p></li>
+<li><p>FWL定理を用いて、残差の回帰にするとよい</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\hat{W} = Y - \hat{E[Y|Z]}\\
+\hat{V} = D - \hat{E[D|Z]}
+\end{split}\]</div>
+<p>モーメント条件</p>
+<ol class="arabic simple">
+<li><p>Regression adjustment: <span class="math notranslate nohighlight">\(E[(Y - D \theta_0 - g_0(Z) ) D] = 0\)</span></p></li>
+<li><p>“propensity score adjustment”: <span class="math notranslate nohighlight">\(E[(Y - D \theta_0) (D - E[D|Z])] = 0\)</span></p></li>
+<li><p>Neyman-orthogonal (semi-parametrically efficient under homoscedasticity): <span class="math notranslate nohighlight">\(E[(\hat{W} - \hat{V}\theta_0) \hat{V}] = E[\{(Y - E[Y|Z]) - (D - E[D|Z])\theta_0\} (D - E[D|Z])] = 0\)</span></p></li>
+</ol>
+</section>
 </section>
 </section>
 
@@ -822,6 +857,7 @@ E[u^2|X,Z] &amp;= \sigma^2(X, Z)\\
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">応用研究</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dmldid">DMLによるDID</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#youtube">講義動画（Youtube）</a></li>
 </ul>
 </li>
 </ul>
