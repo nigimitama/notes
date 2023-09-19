@@ -81,7 +81,7 @@ $$
   - ここで$\hat{\theta}_{\epsilon,z}$は訓練データ点$z$において$\epsilon$でup-weightedされたモデルのパラメータ
 
 $$
-\hat{\theta}_{\epsilon,z} = \arg \min_{\theta} \frac{1}{N} \sum^N_{i=1} (L(z_i, \theta), \epsilon L(z, \theta))
+\hat{\theta}_{\epsilon,z} := \arg \min_{\theta} \frac{1}{N} \sum^N_{i=1} L(z_i, \theta) + \epsilon L(z, \theta)
 $$
 
 $\mathcal{I}(z, z_{test})$は計算量が高いため、Koh and Liang 2017では次の近似を行った
