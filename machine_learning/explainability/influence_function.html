@@ -587,6 +587,11 @@ document.write(`
 <h2>LOO<a class="headerlink" href="#loo" title="Permalink to this heading">#</a></h2>
 <p>1つのインスタンスを抜いた状態で訓練した場合にどれだけ予測値が変わるかを考える</p>
 <p><span class="math notranslate nohighlight">\(n\)</span>回学習し直す必要があるので現実的ではない</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\hat{\theta}_{-z} - \hat{\theta}\\
+\hat{\theta}_{-z} := \arg \min_{\theta \in \Theta} \sum_{z_i \neq z} L(z_i, \theta)
+\end{split}\]</div>
 </section>
 <section id="id1">
 <h2>Influence Function<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
@@ -597,6 +602,20 @@ document.write(`
 \hat{\theta}_{\epsilon,z}
 := \arg \min_{\theta} \frac{1}{N} \sum^N_{i=1} L(z_i, \theta) + \epsilon L(z, \theta)
 \]</div>
+<p><span class="math notranslate nohighlight">\(z\)</span>を入れることによる変化分がとれるので、これの<span class="math notranslate nohighlight">\(\epsilon\)</span>での微分の<span class="math notranslate nohighlight">\(\epsilon = 0\)</span>のときの値をパラメータについての上側のinfluence functionとする</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{I}_{up, params} := \left . \frac{d \hat{\theta}_{\epsilon,z} }{ d \epsilon } \right | _{\epsilon = 0}
+= -H^{-1}_{\hat{\theta}} \nabla_{\theta} L(z, \hat{\theta})
+\]</div>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<div class="math notranslate nohighlight">
+\[
+\left. \frac{dy}{dx} \right|_{x=a}
+\]</div>
+<p>は「<span class="math notranslate nohighlight">\(\frac{dy}{dx}\)</span>に<span class="math notranslate nohighlight">\(x=a\)</span>を代入した値」あるいは「<span class="math notranslate nohighlight">\(x=a\)</span>のときの<span class="math notranslate nohighlight">\(\frac{dy}{dx}\)</span>」という意味らしい</p>
+</aside>
 </section>
 <section id="fastfi">
 <h2>FastFI<a class="headerlink" href="#fastfi" title="Permalink to this heading">#</a></h2>
