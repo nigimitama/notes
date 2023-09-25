@@ -213,6 +213,7 @@ const thebe_selector_output = ".output, .cell_output"
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../statistics/bayes_statistics/index.html">ベイズ統計学</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../statistics/bayes_statistics/bayes_estimation.html">ベイズ推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistics/bayes_statistics/waic.html">WAIC / WBIC / 渡辺ベイズ理論</a></li>
 </ul>
 </li>
 </ul>
@@ -549,12 +550,15 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notation">Notation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loo">LOO</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#leave-one-out">Leave-One-Out</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Influence Function</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">アイデア</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loo">LOOの近似</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#upweighting">損失へのupweighting</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fastfi">FastFI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#leafinfluence">LeafInfluence</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考文献</a></li>
 </ul>
             </nav>
@@ -569,9 +573,16 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="influence-function">
 <h1>影響関数（influence function）<a class="headerlink" href="#influence-function" title="Permalink to this heading">#</a></h1>
+<p>データ点<span class="math notranslate nohighlight">\(z_{test}\)</span>の予測において訓練データ点<span class="math notranslate nohighlight">\(z\)</span>が与えた影響の大きさを評価する関数<span class="math notranslate nohighlight">\(\mathcal{I}(z, z_{test})\)</span>を推定する技術</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://arxiv.org/pdf/1703.04730.pdf">Koh &amp; Liang (2017)</a>が提案</p></li>
 <li><p><a class="reference external" href="https://proceedings.neurips.cc/paper/2019/file/5f14615696649541a025d3d0f8e0447f-Paper.pdf">Hara et al. (2019)</a>はconvexでない損失関数にも使えるよう拡張</p></li>
+<li><p><a class="reference external" href="https://arxiv.org/pdf/2012.15781.pdf">Guo et al. (2020)</a>はFastIFを提案：k-最近傍のデータに探索範囲を絞るなどして最大80倍の高速化</p></li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/1802.06640">Sharchilev et al. (2018)</a>は勾配ブースティング決定木に向けたinfluence functionを提案</p>
+<ul>
+<li><p>Influence Functionはモデルのパラメータ<span class="math notranslate nohighlight">\(\theta\)</span>の微分によって近似推定するため、決定木ベースのアルゴリズムなど微分不可能なアルゴリズムでは計算できないため</p></li>
+</ul>
+</li>
 </ul>
 <section id="notation">
 <h2>Notation<a class="headerlink" href="#notation" title="Permalink to this heading">#</a></h2>
@@ -586,8 +597,8 @@ document.write(`
 <li><p>標準的な経験リスク最小化：<span class="math notranslate nohighlight">\(\hat{\theta} = \arg \min_{\theta} \frac{1}{N} \sum^N_{i=1} L(z_i, \theta)\)</span></p></li>
 </ul>
 </section>
-<section id="loo">
-<h2>LOO<a class="headerlink" href="#loo" title="Permalink to this heading">#</a></h2>
+<section id="leave-one-out">
+<h2>Leave-One-Out<a class="headerlink" href="#leave-one-out" title="Permalink to this heading">#</a></h2>
 <p>1つのインスタンスを抜いた状態で訓練した場合にどれだけ予測値が変わるかを考える</p>
 <p><span class="math notranslate nohighlight">\(n\)</span>回学習し直す必要があるので現実的ではない</p>
 <div class="math notranslate nohighlight">
@@ -599,7 +610,7 @@ document.write(`
 <section id="id1">
 <h2>Influence Function<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p>論文：<a class="reference external" href="https://arxiv.org/pdf/1703.04730.pdf">Koh &amp; Liang (2017)</a></p></li>
+<li><p>論文：<a class="reference external" href="https://arxiv.org/pdf/1703.04730.pdf">Koh &amp; Liang (2017)</a> [<a class="reference external" href="https://ar5iv.labs.arxiv.org/html/1703.04730">ar5iv</a>]</p></li>
 <li><p>実装：<a class="reference external" href="https://github.com/kohpangwei/influence-release">kohpangwei/influence-release</a></p></li>
 </ul>
 <section id="id2">
@@ -701,16 +712,40 @@ document.write(`
 \]</div>
 <p class="sd-card-text">（<span class="math notranslate nohighlight">\(\epsilon = 0\)</span>のときなので掛かっていた<span class="math notranslate nohighlight">\(\epsilon\)</span>が消えている？？しかしゼロを掛けたら他のも消えないのか）</p>
 </div>
-</details><p>もし<span class="math notranslate nohighlight">\(\epsilon = -\frac{1}{n}\)</span>なら<span class="math notranslate nohighlight">\(z\)</span>を除去した場合と同様なので、LOOの考え方を近似できる</p>
+</details></section>
+<section id="loo">
+<h3>LOOの近似<a class="headerlink" href="#loo" title="Permalink to this heading">#</a></h3>
+<p>もし<span class="math notranslate nohighlight">\(\epsilon = -\frac{1}{N}\)</span>なら</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\theta}_{\epsilon,z}
+= \arg \min_{\theta} \frac{1}{N} \sum^N_{i=1} L(z_i, \theta) - \frac{1}{N} L(z, \theta)
+\]</div>
+<p>もし<span class="math notranslate nohighlight">\(z\)</span>が訓練データに含まれるなら、訓練データから<span class="math notranslate nohighlight">\(z\)</span>を除去した場合と同様なので、LOOの考え方を近似できる</p>
 <div class="math notranslate nohighlight">
 \[
 \hat{\theta}_{-z} - \hat{\theta}
 \approx -\frac{1}{n} \mathcal{I}_{up, params}(z)
 \]</div>
 </section>
+<section id="upweighting">
+<h3>損失へのupweighting<a class="headerlink" href="#upweighting" title="Permalink to this heading">#</a></h3>
+<p>データ点<span class="math notranslate nohighlight">\(z_{test}\)</span>におけるinfluenceを計算するため、微分の連鎖律を使う</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\mathcal{I}_{up, loss}(z, z_{test})
+:&amp;= \left . \frac{d L(z_{test}, \hat{\theta}_{\epsilon, z}) }{ d \epsilon } \right | _{\epsilon = 0} \\
+&amp;= \nabla_{\theta} L(z_{test}, \hat{\theta})^\top
+    \left . \frac{d \hat{\theta}_{\epsilon, z} }{ d \epsilon } \right | _{\epsilon = 0} \\
+&amp;= - \nabla_{\theta} L(z_{test}, \hat{\theta})^\top H^{-1}_{\hat{\theta}} \nabla_{\theta} L(z, \hat{\theta})
+\end{align}
+\end{split}\]</div>
+</section>
 </section>
 <section id="fastfi">
 <h2>FastFI<a class="headerlink" href="#fastfi" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://arxiv.org/pdf/2012.15781.pdf">Guo, H., Rajani, N. F., Hase, P., Bansal, M., &amp; Xiong, C. (2020). Fastif: Scalable influence functions for efficient model interpretation and debugging. arXiv preprint arXiv:2012.15781.</a></p>
 <p>Influence Functionは計算が重い</p>
 <ol class="arabic simple">
 <li><p>データ点の評価は<span class="math notranslate nohighlight">\(O(n)\)</span></p></li>
@@ -724,6 +759,18 @@ document.write(`
 <li><p>シンプルに並列計算へ拡張し、さらに2倍高速化</p></li>
 </ol>
 <p>実験においてほとんどのケースで全体で2桁程度の高速化が確認された</p>
+</section>
+<section id="leafinfluence">
+<h2>LeafInfluence<a class="headerlink" href="#leafinfluence" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Paper: <a class="reference external" href="https://arxiv.org/abs/1802.06640">[1802.06640] Finding Influential Training Samples for Gradient Boosted Decision Trees</a></p></li>
+<li><p>Code: <a class="reference external" href="https://github.com/bsharchilev/influence_boosting">bsharchilev/influence_boosting</a></p></li>
+<li><p>実装は <a class="reference external" href="https://jmlr.org/papers/v24/22-0449.html">Brophy et al. (2023)</a>のリポジトリ<a class="reference external" href="https://github.com/jjbrophy47/tree_influence">jjbrophy47/tree_influence</a> のほうがいいかも</p>
+<ul>
+<li><p><a class="reference external" href="https://jmlr.org/papers/v24/22-0449.html">Brophy et al. (2023)</a>はDataShapelyなど色々な事例型説明の手法を適用・比較しており、GBDTにおける事例型説明についてまとまっている</p></li>
+</ul>
+</li>
+</ul>
 </section>
 <section id="id3">
 <h2>参考文献<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
@@ -797,12 +844,15 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notation">Notation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loo">LOO</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#leave-one-out">Leave-One-Out</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Influence Function</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">アイデア</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loo">LOOの近似</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#upweighting">損失へのupweighting</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fastfi">FastFI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#leafinfluence">LeafInfluence</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考文献</a></li>
 </ul>
   </nav></div>
