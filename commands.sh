@@ -9,6 +9,7 @@ elif [ ${1} = 'build' ]; then
 elif [ ${1} = 'bash' ]; then
     sudo docker-compose run workspace bash
 elif [ ${1} = 'jupyterlab' ]; then
+    # docker-compose up あるいは commands.sh jupyterlab でjupyter起動
     sudo docker-compose run --publish=8888:8888 workspace jupyter-lab --ip=0.0.0.0 --allow-root
 elif [ ${1} = 'push' ]; then
 	git add .
