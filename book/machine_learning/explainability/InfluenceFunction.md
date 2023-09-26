@@ -167,6 +167,51 @@ $$
 $$
 s_{test} := H_{\hat{\theta}}^{-1} \nabla_{\theta} L(z_{test}, \hat{\theta})
 $$
+を行い、
+$$
+\mathcal{I}_{up, loss}(z, z_{test}) = - s_{test} \cdot \nabla_{\theta} L(z,\hat{\theta})
+$$
+を計算する。
+
+これは2つ目の問題も解決する。$s_{test}$を事前に計算しておけば$- s_{test} \cdot \nabla_{\theta} L(z_i,\hat{\theta})$は効率的に計算できるためだ。
+
+$s_{test}$の近似のための2つの技術について述べる。どちらも、$H_{\hat\theta}$と$[\nabla_{\theta}^2 L(z_i, \hat{\theta})]v$のHVPが任意の$v$について$\nabla_{\theta} L(z_i,\hat{\theta})$と同じ計算時間で計算可能であり、典型的には$O(p)$になるということだ。
+
+#### Conjugate gradients (CG)
+
+第一の技術は、行列の逆化を最適化問題に変換する標準的な技術である。
+$$
+H^{-1}_{\hat{\theta}} v := \arg \min_t \{ t^\top H_{\hat{\theta}} t - v^\top t \}
+$$
+これは$H_{\hat{\theta}} t$だけを計算すれば良く、$O(np)$である
+
+### Stochastic estimation
+
+標準的なCGだけでは大規模なデータセットで遅くなる可能性がある。そこで、各iterationで1サンプルだけを抽出して推定する方法がある
+
+# 4. Validation and extensions
+
+LOOは次の2つの仮定を置いている
+
+1. モデルパラメータ$\hat{\theta}$は経験リスクを最小化する
+2. 経験リスクは2回微分可能で厳密に凸である
+
+influence functionsもLOOの漸近近似であるが、これらの仮定が破られた場合であっても有用な情報を提供することを示す
+
+## 4.1. Influence functions vs. leave-one-out retraining
+
+influence functionはtraining pointを変化させる重み$\epsilon$が無限小に小さいことを仮定する。
+
+IFでの近似の精度をしらべるため、
+$$
+-\frac{1}{n} \mathcal{I}_{up, params}(z)
+$$
+を実際にLOO retrainingを行う
+$$
+L(z_{test}, \hat{\theta}_{-z}) - L(z_{test}, \hat{\theta})
+$$
+と比較する。10-classes MNISTとロジスティック回帰で比較しても、実測値と予測値は非常に近い（Fig2-left）
+
 
 
 
