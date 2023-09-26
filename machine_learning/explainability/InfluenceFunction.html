@@ -553,7 +553,15 @@ document.write(`
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#upweighting-a-training-point">2.1 Upweighting a training point</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#perturbing-a-training-input">2.2 Perturbing a training input</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#relation-to-euclidean-distance">2.3. Relation to Euclidean distance</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#efficiently-calculating-influence">3. Efficiently calculating influence</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#efficiently-calculating-influence">3. Efficiently calculating influence</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugate-gradients-cg">Conjugate gradients (CG)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-estimation">Stochastic estimation</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#validation-and-extensions">4. Validation and extensions</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-functions-vs-leave-one-out-retraining">4.1. Influence functions vs. leave-one-out retraining</a></li>
+</ul>
+</li>
 </ul>
 
             </nav>
@@ -718,7 +726,48 @@ H_{\hat{\theta}} = \frac{1}{n} \sum^n_{i=1} \nabla_{\theta}^2 L(z_i, \hat{\theta
 <p>1つ目のヘシアンの問題は2次最適化においてよく研究された問題である。明示的にヘシアンを計算することを避け、代わりにHessian-vector products (HVPs）を使って効率的な近似
 $<span class="math notranslate nohighlight">\(
 s_{test} := H_{\hat{\theta}}^{-1} \nabla_{\theta} L(z_{test}, \hat{\theta})
-\)</span>$</p>
+\)</span><span class="math notranslate nohighlight">\(
+を行い、
+\)</span><span class="math notranslate nohighlight">\(
+\mathcal{I}_{up, loss}(z, z_{test}) = - s_{test} \cdot \nabla_{\theta} L(z,\hat{\theta})
+\)</span>$
+を計算する。</p>
+<p>これは2つ目の問題も解決する。<span class="math notranslate nohighlight">\(s_{test}\)</span>を事前に計算しておけば<span class="math notranslate nohighlight">\(- s_{test} \cdot \nabla_{\theta} L(z_i,\hat{\theta})\)</span>は効率的に計算できるためだ。</p>
+<p><span class="math notranslate nohighlight">\(s_{test}\)</span>の近似のための2つの技術について述べる。どちらも、<span class="math notranslate nohighlight">\(H_{\hat\theta}\)</span>と<span class="math notranslate nohighlight">\([\nabla_{\theta}^2 L(z_i, \hat{\theta})]v\)</span>のHVPが任意の<span class="math notranslate nohighlight">\(v\)</span>について<span class="math notranslate nohighlight">\(\nabla_{\theta} L(z_i,\hat{\theta})\)</span>と同じ計算時間で計算可能であり、典型的には<span class="math notranslate nohighlight">\(O(p)\)</span>になるということだ。</p>
+<section id="conjugate-gradients-cg">
+<h2>Conjugate gradients (CG)<a class="headerlink" href="#conjugate-gradients-cg" title="Permalink to this heading">#</a></h2>
+<p>第一の技術は、行列の逆化を最適化問題に変換する標準的な技術である。
+$<span class="math notranslate nohighlight">\(
+H^{-1}_{\hat{\theta}} v := \arg \min_t \{ t^\top H_{\hat{\theta}} t - v^\top t \}
+\)</span><span class="math notranslate nohighlight">\(
+これは\)</span>H_{\hat{\theta}} t<span class="math notranslate nohighlight">\(だけを計算すれば良く、\)</span>O(np)$である</p>
+</section>
+<section id="stochastic-estimation">
+<h2>Stochastic estimation<a class="headerlink" href="#stochastic-estimation" title="Permalink to this heading">#</a></h2>
+<p>標準的なCGだけでは大規模なデータセットで遅くなる可能性がある。そこで、各iterationで1サンプルだけを抽出して推定する方法がある</p>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="validation-and-extensions">
+<h1>4. Validation and extensions<a class="headerlink" href="#validation-and-extensions" title="Permalink to this heading">#</a></h1>
+<p>LOOは次の2つの仮定を置いている</p>
+<ol class="arabic simple">
+<li><p>モデルパラメータ<span class="math notranslate nohighlight">\(\hat{\theta}\)</span>は経験リスクを最小化する</p></li>
+<li><p>経験リスクは2回微分可能で厳密に凸である</p></li>
+</ol>
+<p>influence functionsもLOOの漸近近似であるが、これらの仮定が破られた場合であっても有用な情報を提供することを示す</p>
+<section id="influence-functions-vs-leave-one-out-retraining">
+<h2>4.1. Influence functions vs. leave-one-out retraining<a class="headerlink" href="#influence-functions-vs-leave-one-out-retraining" title="Permalink to this heading">#</a></h2>
+<p>influence functionはtraining pointを変化させる重み<span class="math notranslate nohighlight">\(\epsilon\)</span>が無限小に小さいことを仮定する。</p>
+<p>IFでの近似の精度をしらべるため、
+$<span class="math notranslate nohighlight">\(
+-\frac{1}{n} \mathcal{I}_{up, params}(z)
+\)</span><span class="math notranslate nohighlight">\(
+を実際にLOO retrainingを行う
+\)</span><span class="math notranslate nohighlight">\(
+L(z_{test}, \hat{\theta}_{-z}) - L(z_{test}, \hat{\theta})
+\)</span>$
+と比較する。10-classes MNISTとロジスティック回帰で比較しても、実測値と予測値は非常に近い（Fig2-left）</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -772,7 +821,15 @@ s_{test} := H_{\hat{\theta}}^{-1} \nabla_{\theta} L(z_{test}, \hat{\theta})
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#upweighting-a-training-point">2.1 Upweighting a training point</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#perturbing-a-training-input">2.2 Perturbing a training input</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#relation-to-euclidean-distance">2.3. Relation to Euclidean distance</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#efficiently-calculating-influence">3. Efficiently calculating influence</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#efficiently-calculating-influence">3. Efficiently calculating influence</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugate-gradients-cg">Conjugate gradients (CG)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-estimation">Stochastic estimation</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#validation-and-extensions">4. Validation and extensions</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-functions-vs-leave-one-out-retraining">4.1. Influence functions vs. leave-one-out retraining</a></li>
+</ul>
+</li>
 </ul>
 
   </nav></div>
