@@ -557,6 +557,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">勾配</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#y-in-1-1"><span class="math notranslate nohighlight">\(y \in \{-1, 1\}\)</span>にする場合</a></li>
 </ul>
             </nav>
         </div>
@@ -612,11 +613,34 @@ p &amp;= \exp(\b{\beta}^\top \b{x}) (1-p)\\
 \end{align}
 \end{split}\]</div>
 </div>
-</details><p>ロジスティック・シグモイド関数</p>
+</details><p>この<span class="math notranslate nohighlight">\(p\)</span>はロジスティック・シグモイド関数</p>
 <div class="math notranslate nohighlight">
 \[
 \sigma(z) = \frac{\exp(z)}{1 + \exp(z)}
+= \frac{1}{1 + \exp(-z)}
 \]</div>
+<p>と呼ばれる、<span class="math notranslate nohighlight">\((-\infty, \infty)\)</span>の入力を<span class="math notranslate nohighlight">\((0, 1)\)</span>に変換する関数である。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>:::{dropdown} 導出
+
+$$
+\frac{ \exp(z) }{ 1+\exp(z) }
+$$
+
+:::
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>  <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+    <span class="p">:::{</span><span class="n">dropdown</span><span class="p">}</span> <span class="n">導出</span>
+    <span class="o">^</span>
+<span class="ne">SyntaxError</span>: invalid syntax
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 <section id="id3">
 <h2>誤差関数<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
@@ -728,6 +752,54 @@ L(\beta) = \prod^n_{i=1} p_i^{y_i} (1 - p_i)^{1- y_i}
 </div>
 </details></section>
 </section>
+<section id="y-in-1-1">
+<h2><span class="math notranslate nohighlight">\(y \in \{-1, 1\}\)</span>にする場合<a class="headerlink" href="#y-in-1-1" title="Permalink to this heading">#</a></h2>
+<p>上記の例では<span class="math notranslate nohighlight">\(y \in \{0, 1\}\)</span>としていた。<span class="math notranslate nohighlight">\(y\in \{-1, 1\}\)</span>とする場合は少し書き方が変わる</p>
+<p><span class="math notranslate nohighlight">\(y=1\)</span>の確率と<span class="math notranslate nohighlight">\(y=-1\)</span>の確率がそれぞれ</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+p(y=1|x) &amp;= \frac{\exp(\beta^\top x)}{1 + \exp(\beta^\top x)}
+  = \frac{ 1 }{1 + \exp(- \beta^\top x)}\\
+p(y=-1|x) &amp;= 1 - p(y=1|x)\\
+  &amp;= \frac{ 1 + \exp(\beta^\top x)}{1 + \exp(\beta^\top x)} - \frac{\exp(\beta^\top x)}{1 + \exp(\beta^\top x)}
+  = \frac{ 1 }{1 + \exp(\beta^\top x)}\\
+\end{align}
+\end{split}\]</div>
+<p>で表されるとする。<span class="math notranslate nohighlight">\(y\in \{-1, 1\}\)</span>のとき、これらを1つにまとめて、<span class="math notranslate nohighlight">\(y\)</span>の確率を</p>
+<div class="math notranslate nohighlight">
+\[
+p(y|x) = \frac{1}{1 + \exp(- y \beta^\top x )}
+\]</div>
+<p>と書くことができる。</p>
+<p>尤度は</p>
+<div class="math notranslate nohighlight">
+\[
+\prod^n_{i=1} \frac{1}{1 + \exp(- y_i \beta^\top x_i )}
+\]</div>
+<p>負の対数尤度は</p>
+<div class="math notranslate nohighlight">
+\[
+\sum^n_{i=1} \log \big( 1 + \exp(- y_i \beta^\top x_i ) \big)
+\]</div>
+<p>と書くことができる。機械学習の分野だとこちらの表現のほうが目にするかも。</p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<div class="math notranslate nohighlight">
+\[
+\log \frac{M}{N} = \log M - \log N
+\]</div>
+<p>のため</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\log \frac{1}{1 + \exp(- y_i \beta^\top x_i )}
+= \log 1 - \log (1 + \exp(- y_i \beta^\top x_i ))\\
+= 0 - \log (1 + \exp(- y_i \beta^\top x_i ))
+\end{align}
+\end{split}\]</div>
+</aside>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -801,6 +873,7 @@ L(\beta) = \prod^n_{i=1} p_i^{y_i} (1 - p_i)^{1- y_i}
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">勾配</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#y-in-1-1"><span class="math notranslate nohighlight">\(y \in \{-1, 1\}\)</span>にする場合</a></li>
 </ul>
   </nav></div>
 
