@@ -212,6 +212,73 @@ L(z_{test}, \hat{\theta}_{-z}) - L(z_{test}, \hat{\theta})
 $$
 と比較する。10-classes MNISTとロジスティック回帰で比較しても、実測値と予測値は非常に近い（Fig2-left）
 
+stochastic approximationも正確である（Fig2-Mid）
+
+
+
+## 4.2. Non-convexity and non-convergence
+
+第2節では$\hat{\theta}$を大域最小値としていた。しかし実際にはearly stoppingつきのSGDなどで推定したり、非凸の目的関数を使用することによって、得られる$\tilde{\theta}$は$\hat{\theta}$と一致しない。
+
+その結果、$H_{\tilde{\theta}}$は負の固有値を持つ可能性がある。
+
+その場合でもinfluence functionsは有用な結果をもたらす。
+
+$\tilde{\theta}$の周辺で誤差の二次近似、つまり
+$$
+\tilde{L}(z, \theta) = L(z, \tilde\theta) 
++ \nabla L(z, \tilde \theta)^\top (\theta - \tilde\theta)
++ \frac{1}{2} (\theta - \tilde\theta)^\top
+(H_{\tilde\theta} + \lambda I) (\theta - \tilde\theta)
+$$
+ここで$\lambda$は$H_{\tilde\theta}$が負の固有値をもつ場合に追加されるdamping termで、$L_2$正則化を追加することと対応する。
+
+そして$\mathcal{I}_{up, loss}$を計算する
+
+もし$\tilde\theta$が局所最適解に近い場合、結果はニュートン・ステップに相関する（Appendix B）
+
+
+
+CNNの訓練によるnon-convexでnon-convergentにおける$\mathcal{I}_{up, loss}$の挙動を確認した。HはPD（正定値？）にならなかったのでdamping termを$\lambda = 0.01$で追加した。
+
+それでも予実の相関係数は0.86と高い
+
+
+
+## 4.3. Non-differentiable losses
+
+$\nabla_{\theta}L$と$\nabla_{\theta}^2 L$が無かったらどうなるか？
+
+微分不可能な損失でも平滑近似してinfluenceを計算できることを示す
+
+2.3節での線形SVMはヒンジ損失の最小化をしている
+$$
+Hinge(s) = \max(0, 1-s)
+$$
+を
+$$
+SmoothHinge(s, t) = t \log (1 + \exp(\frac{1-s}{t}))
+$$
+で近似すると、平滑化度合いが高ければ予測精度は上がる（FIg３）
+
+# 5. Use cases of influence functions
+
+
+
+## 5.1. Understanding model behavior
+
+2つのモデルが同じ正しい予測値を異なるやり方で出したことを示す
+
+Inception v3 Network と RBFカーネルのSVMを使い、
+
+ImageNetから各クラスに900訓練事例を抽出したデータにおけるdog / fishの二値分類を行う
+
+kの方法でのNNのFreezingはCVの界隈では一般的で、ロジスティック回帰をbottleneck featuresで学習することと同値である
+
+２つのモデル両方が正解しているtest imageを選ぶ（Fig4-top）
+
+SVMではSmoothHinge(0.001)を使った
+
 
 
 
