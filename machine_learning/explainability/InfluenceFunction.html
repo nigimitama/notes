@@ -566,7 +566,15 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases-of-influence-functions">5. Use cases of influence functions</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-model-behavior">5.1. Understanding model behavior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-model-behavior">5.1. Understanding model behavior</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">結果</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adversarial-training-examples">5.2. Adversarial training examples</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test">複数のtestに同時に攻撃する</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-domain-mismatch">5.3. Debugging domain mismatch</a></li>
 </ul>
 </li>
 </ul>
@@ -816,11 +824,46 @@ SmoothHinge(s, t) = t \log (1 + \exp(\frac{1-s}{t}))
 <section id="understanding-model-behavior">
 <h2>5.1. Understanding model behavior<a class="headerlink" href="#understanding-model-behavior" title="Permalink to this heading">#</a></h2>
 <p>2つのモデルが同じ正しい予測値を異なるやり方で出したことを示す</p>
-<p>Inception v3 Network と RBFカーネルのSVMを使い、</p>
-<p>ImageNetから各クラスに900訓練事例を抽出したデータにおけるdog / fishの二値分類を行う</p>
+<p>Inception v3 Network と RBFカーネルのSVMを使い、ImageNetから各クラスに900訓練事例を抽出したデータにおけるdog / fishの二値分類を行う。</p>
 <p>kの方法でのNNのFreezingはCVの界隈では一般的で、ロジスティック回帰をbottleneck featuresで学習することと同値である</p>
 <p>２つのモデル両方が正解しているtest imageを選ぶ（Fig4-top）</p>
-<p>SVMではSmoothHinge(0.001)を使った</p>
+<p>SVMではSmoothHinge(0.001)を使った。</p>
+<section id="id1">
+<h3>結果<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<p>期待通り、RBF SVMの<span class="math notranslate nohighlight">\(\mathcal{I}_{up,loss}\)</span>はピクセル距離と逆に変動し、Inceptionはpixel spaceのdistanceとは相関が非常に低かった。Fig4-Left</p>
+<p>2つの最もhelpfulな画像（most positive -<span class="math notranslate nohighlight">\(\mathcal{I}_{up,loss}\)</span>）がFig4-Right</p>
+<p>RBF SVMにおいてtest image近くのfish（緑の点）は大多数がhelpfulで、dogs（赤い点）は多くがharmfulで、soft nearest neighbor functionのようにRBFがふるまっていた（fig4-left）</p>
+<p>対照的にinceptionではfishもdogもhelpfulにもharmfulにもなりうる。実際、5つ目にもっともhelpfulな訓練データはdogであった（Fig4-top）</p>
+</section>
+</section>
+<section id="adversarial-training-examples">
+<h2>5.2. Adversarial training examples<a class="headerlink" href="#adversarial-training-examples" title="Permalink to this heading">#</a></h2>
+<p>分類器は誤分類するが視覚的には判別できない画像であるadversarial test imageの先行研究はある</p>
+<p>influence functionでadversarial training imageを作ることができる</p>
+<p><span class="math notranslate nohighlight">\(z_{test}\)</span>において最もlossを増やす訓練データ<span class="math notranslate nohighlight">\(z\)</span>がわかるので、adversarial versionの訓練データ点
+$<span class="math notranslate nohighlight">\(
+\tilde{z}_i := z_i\\
+\tilde{z}_i := \Pi (\tilde{z}_i + \alpha \mathop{\text{sign}}(\mathcal{I}_{pert, loss}(\tilde{z}_i, z_{test})))
+\)</span>$
+のように反復的に更新する</p>
+<p><span class="math notranslate nohighlight">\(\alpha\)</span>はステップ幅、<span class="math notranslate nohighlight">\(\Pi\)</span>は同じ8bit表現を共有する正しい画像の集合へ射影する。この方法はadversarial test imageの方法の類推である</p>
+<p>inception networkを使う</p>
+<ul class="simple">
+<li><p>1訓練事例だけを加工して、正しく分類できていた591件のうち57%が誤分類</p></li>
+<li><p>2件で77%</p></li>
+<li><p>10件で590/591が誤分類</p></li>
+</ul>
+<section id="test">
+<h3>複数のtestに同時に攻撃する<a class="headerlink" href="#test" title="Permalink to this heading">#</a></h3>
+<p>testのaverage lossを上げる</p>
+<p>1つのtrainingの加工が複数のtestの予測に影響を与えた</p>
+</section>
+</section>
+<section id="debugging-domain-mismatch">
+<h2>5.3. Debugging domain mismatch<a class="headerlink" href="#debugging-domain-mismatch" title="Permalink to this heading">#</a></h2>
+<p>trainとtestの分布の不一致は予測精度を悪化させる</p>
+<p>We show that influence functions can identifythe training examples most responsible for the errors, help-ing model developers identify domain mismatch</p>
+<p>20Kサンプルの糖尿病患者のデータセットで10歳未満の24件のうち3件がre-admitted。そのうち20件消して4件中3件がre-admittedとすることでmismatchを人工的に作った</p>
 </section>
 </section>
 
@@ -887,7 +930,15 @@ SmoothHinge(s, t) = t \log (1 + \exp(\frac{1-s}{t}))
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases-of-influence-functions">5. Use cases of influence functions</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-model-behavior">5.1. Understanding model behavior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-model-behavior">5.1. Understanding model behavior</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">結果</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adversarial-training-examples">5.2. Adversarial training examples</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test">複数のtestに同時に攻撃する</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-domain-mismatch">5.3. Debugging domain mismatch</a></li>
 </ul>
 </li>
 </ul>

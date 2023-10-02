@@ -269,31 +269,62 @@ $$
 
 2つのモデルが同じ正しい予測値を異なるやり方で出したことを示す
 
-Inception v3 Network と RBFカーネルのSVMを使い、
-
-ImageNetから各クラスに900訓練事例を抽出したデータにおけるdog / fishの二値分類を行う
+Inception v3 Network と RBFカーネルのSVMを使い、ImageNetから各クラスに900訓練事例を抽出したデータにおけるdog / fishの二値分類を行う。
 
 kの方法でのNNのFreezingはCVの界隈では一般的で、ロジスティック回帰をbottleneck featuresで学習することと同値である
 
 ２つのモデル両方が正解しているtest imageを選ぶ（Fig4-top）
 
-SVMではSmoothHinge(0.001)を使った
+SVMではSmoothHinge(0.001)を使った。
+
+#### 結果
+
+期待通り、RBF SVMの$\mathcal{I}_{up,loss}$はピクセル距離と逆に変動し、Inceptionはpixel spaceのdistanceとは相関が非常に低かった。Fig4-Left
+
+2つの最もhelpfulな画像（most positive -$\mathcal{I}_{up,loss}$）がFig4-Right
+
+RBF SVMにおいてtest image近くのfish（緑の点）は大多数がhelpfulで、dogs（赤い点）は多くがharmfulで、soft nearest neighbor functionのようにRBFがふるまっていた（fig4-left）
+
+対照的にinceptionではfishもdogもhelpfulにもharmfulにもなりうる。実際、5つ目にもっともhelpfulな訓練データはdogであった（Fig4-top）
 
 
 
+## 5.2. Adversarial training examples
+
+分類器は誤分類するが視覚的には判別できない画像であるadversarial test imageの先行研究はある
+
+influence functionでadversarial training imageを作ることができる
+
+$z_{test}$において最もlossを増やす訓練データ$z$がわかるので、adversarial versionの訓練データ点
+$$
+\tilde{z}_i := z_i\\
+\tilde{z}_i := \Pi (\tilde{z}_i + \alpha \mathop{\text{sign}}(\mathcal{I}_{pert, loss}(\tilde{z}_i, z_{test})))
+$$
+のように反復的に更新する
+
+$\alpha$はステップ幅、$\Pi$は同じ8bit表現を共有する正しい画像の集合へ射影する。この方法はadversarial test imageの方法の類推である
+
+inception networkを使う
+
+- 1訓練事例だけを加工して、正しく分類できていた591件のうち57%が誤分類
+- 2件で77%
+- 10件で590/591が誤分類
 
 
 
+#### 複数のtestに同時に攻撃する
 
+testのaverage lossを上げる
 
+1つのtrainingの加工が複数のtestの予測に影響を与えた
 
+## 5.3. Debugging domain mismatch
 
+trainとtestの分布の不一致は予測精度を悪化させる
 
+We show that influence functions can identifythe training examples most responsible for the errors, help-ing model developers identify domain mismatch
 
-
-
-
-
+20Kサンプルの糖尿病患者のデータセットで10歳未満の24件のうち3件がre-admitted。そのうち20件消して4件中3件がre-admittedとすることでmismatchを人工的に作った
 
 
 
