@@ -70,6 +70,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'machine_learning/explainability/tree_influence';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -295,6 +297,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../overfitting.html">過学習と良性の過学習（Double Descent, Grokking）</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="introduction.html">説明可能性</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="influence_function.html">影響関数（influence function）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="influence_function_with_linear_regression.html">Influence Function 線形回帰での例</a></li>
 </ul>
 </li>
 </ul>
@@ -554,6 +557,7 @@ document.write(`
 <li><p>Repository: <a class="reference external" href="https://github.com/jjbrophy47/tree_influence">jjbrophy47/tree_influence: Influence Estimation for Gradient-Boosted Decision Trees</a></p></li>
 <li><p>Paper: <a class="reference external" href="https://jmlr.org/papers/v24/22-0449.html">Brophy, J., Hammoudeh, Z., &amp; Lowd, D. (2023). Adapting and Evaluating Influence-Estimation Methods for Gradient-Boosted Decision Trees. J. Mach. Learn. Res., 24, 154-1.</a></p></li>
 </ul>
+<p>途中で <span class="math notranslate nohighlight">\(n\)</span>×木の数のnp.arrayを作るタイミングがあり、例えば100万レコード×5万の決定木ではfloat32だとしても186GiBになってしまう</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -592,7 +596,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[LightGBM] [Info] Number of positive: 43, number of negative: 47
-[LightGBM] [Info] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000043 seconds.
+[LightGBM] [Info] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000037 seconds.
 You can set `force_col_wise=true` to remove the overhead.
 [LightGBM] [Info] Total Bins 68
 [LightGBM] [Info] Number of data points in the train set: 90, number of used features: 4

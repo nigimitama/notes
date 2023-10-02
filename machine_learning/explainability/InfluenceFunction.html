@@ -297,6 +297,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../overfitting.html">過学習と良性の過学習（Double Descent, Grokking）</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="introduction.html">説明可能性</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="influence_function.html">影響関数（influence function）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="influence_function_with_linear_regression.html">Influence Function 線形回帰での例</a></li>
 </ul>
 </li>
 </ul>
@@ -560,6 +561,12 @@ document.write(`
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#validation-and-extensions">4. Validation and extensions</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-functions-vs-leave-one-out-retraining">4.1. Influence functions vs. leave-one-out retraining</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-convexity-and-non-convergence">4.2. Non-convexity and non-convergence</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-differentiable-losses">4.3. Non-differentiable losses</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases-of-influence-functions">5. Use cases of influence functions</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-model-behavior">5.1. Understanding model behavior</a></li>
 </ul>
 </li>
 </ul>
@@ -767,6 +774,53 @@ $<span class="math notranslate nohighlight">\(
 L(z_{test}, \hat{\theta}_{-z}) - L(z_{test}, \hat{\theta})
 \)</span>$
 と比較する。10-classes MNISTとロジスティック回帰で比較しても、実測値と予測値は非常に近い（Fig2-left）</p>
+<p>stochastic approximationも正確である（Fig2-Mid）</p>
+</section>
+<section id="non-convexity-and-non-convergence">
+<h2>4.2. Non-convexity and non-convergence<a class="headerlink" href="#non-convexity-and-non-convergence" title="Permalink to this heading">#</a></h2>
+<p>第2節では<span class="math notranslate nohighlight">\(\hat{\theta}\)</span>を大域最小値としていた。しかし実際にはearly stoppingつきのSGDなどで推定したり、非凸の目的関数を使用することによって、得られる<span class="math notranslate nohighlight">\(\tilde{\theta}\)</span>は<span class="math notranslate nohighlight">\(\hat{\theta}\)</span>と一致しない。</p>
+<p>その結果、<span class="math notranslate nohighlight">\(H_{\tilde{\theta}}\)</span>は負の固有値を持つ可能性がある。</p>
+<p>その場合でもinfluence functionsは有用な結果をもたらす。</p>
+<p><span class="math notranslate nohighlight">\(\tilde{\theta}\)</span>の周辺で誤差の二次近似、つまり
+$$
+\tilde{L}(z, \theta) = L(z, \tilde\theta)</p>
+<ul class="simple">
+<li><p>\nabla L(z, \tilde \theta)^\top (\theta - \tilde\theta)</p></li>
+<li><p>\frac{1}{2} (\theta - \tilde\theta)^\top
+(H_{\tilde\theta} + \lambda I) (\theta - \tilde\theta)
+$<span class="math notranslate nohighlight">\(
+ここで\)</span>\lambda<span class="math notranslate nohighlight">\(は\)</span>H_{\tilde\theta}<span class="math notranslate nohighlight">\(が負の固有値をもつ場合に追加されるdamping termで、\)</span>L_2$正則化を追加することと対応する。</p></li>
+</ul>
+<p>そして<span class="math notranslate nohighlight">\(\mathcal{I}_{up, loss}\)</span>を計算する</p>
+<p>もし<span class="math notranslate nohighlight">\(\tilde\theta\)</span>が局所最適解に近い場合、結果はニュートン・ステップに相関する（Appendix B）</p>
+<p>CNNの訓練によるnon-convexでnon-convergentにおける<span class="math notranslate nohighlight">\(\mathcal{I}_{up, loss}\)</span>の挙動を確認した。HはPD（正定値？）にならなかったのでdamping termを<span class="math notranslate nohighlight">\(\lambda = 0.01\)</span>で追加した。</p>
+<p>それでも予実の相関係数は0.86と高い</p>
+</section>
+<section id="non-differentiable-losses">
+<h2>4.3. Non-differentiable losses<a class="headerlink" href="#non-differentiable-losses" title="Permalink to this heading">#</a></h2>
+<p><span class="math notranslate nohighlight">\(\nabla_{\theta}L\)</span>と<span class="math notranslate nohighlight">\(\nabla_{\theta}^2 L\)</span>が無かったらどうなるか？</p>
+<p>微分不可能な損失でも平滑近似してinfluenceを計算できることを示す</p>
+<p>2.3節での線形SVMはヒンジ損失の最小化をしている
+$<span class="math notranslate nohighlight">\(
+Hinge(s) = \max(0, 1-s)
+\)</span><span class="math notranslate nohighlight">\(
+を
+\)</span><span class="math notranslate nohighlight">\(
+SmoothHinge(s, t) = t \log (1 + \exp(\frac{1-s}{t}))
+\)</span>$
+で近似すると、平滑化度合いが高ければ予測精度は上がる（FIg３）</p>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="use-cases-of-influence-functions">
+<h1>5. Use cases of influence functions<a class="headerlink" href="#use-cases-of-influence-functions" title="Permalink to this heading">#</a></h1>
+<section id="understanding-model-behavior">
+<h2>5.1. Understanding model behavior<a class="headerlink" href="#understanding-model-behavior" title="Permalink to this heading">#</a></h2>
+<p>2つのモデルが同じ正しい予測値を異なるやり方で出したことを示す</p>
+<p>Inception v3 Network と RBFカーネルのSVMを使い、</p>
+<p>ImageNetから各クラスに900訓練事例を抽出したデータにおけるdog / fishの二値分類を行う</p>
+<p>kの方法でのNNのFreezingはCVの界隈では一般的で、ロジスティック回帰をbottleneck featuresで学習することと同値である</p>
+<p>２つのモデル両方が正解しているtest imageを選ぶ（Fig4-top）</p>
+<p>SVMではSmoothHinge(0.001)を使った</p>
 </section>
 </section>
 
@@ -828,6 +882,12 @@ L(z_{test}, \hat{\theta}_{-z}) - L(z_{test}, \hat{\theta})
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#validation-and-extensions">4. Validation and extensions</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-functions-vs-leave-one-out-retraining">4.1. Influence functions vs. leave-one-out retraining</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-convexity-and-non-convergence">4.2. Non-convexity and non-convergence</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-differentiable-losses">4.3. Non-differentiable losses</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases-of-influence-functions">5. Use cases of influence functions</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-model-behavior">5.1. Understanding model behavior</a></li>
 </ul>
 </li>
 </ul>
