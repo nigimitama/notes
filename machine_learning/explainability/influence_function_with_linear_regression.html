@@ -550,12 +550,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#params">Params</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-params">Influence (params)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loo">LOO</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Influence Function</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loss">Loss</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-loss">Influence (loss)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">LOO</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Influence Function</a></li>
 </ul>
@@ -585,8 +585,9 @@ H = \nabla_{\theta}^2 R(\theta) &amp;= 2 (X^\top X)\\
 \hat{\theta} &amp;= (X^\top X)^{-1} X^\top y
 \end{align}
 \end{split}\]</div>
-<p>なので
-$<span class="math notranslate nohighlight">\(
+<p>なので</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \begin{align}
 \mathcal{I}_{up, params}(z)
     &amp;= -H^{-1}_{\hat{\theta}} \nabla_{\theta} L(z, \hat{\theta})\\
@@ -596,7 +597,7 @@ $<span class="math notranslate nohighlight">\(
     &amp;= - \nabla_{\theta} L(z_{test}, \hat{\theta})^\top H^{-1}_{\hat{\theta}} \nabla_{\theta} L(z, \hat{\theta}) \\
     &amp;= (2 (y_{test} - x_{test}^\top \hat\theta) x_{test} )^\top ( 2X^\top X )^{-1} ( - 2 (y - x^\top \hat\theta) x )
 \end{align}
-\)</span>$</p>
+\end{split}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">influence_params</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
@@ -668,8 +669,8 @@ $<span class="math notranslate nohighlight">\(
 </div>
 </div>
 </div>
-<section id="params">
-<h2>Params<a class="headerlink" href="#params" title="Permalink to this heading">#</a></h2>
+<section id="influence-params">
+<h2>Influence (params)<a class="headerlink" href="#influence-params" title="Permalink to this heading">#</a></h2>
 <section id="loo">
 <h3>LOO<a class="headerlink" href="#loo" title="Permalink to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
@@ -743,24 +744,11 @@ $<span class="math notranslate nohighlight">\(
 <h3>Influence Function<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[
-\mathcal{I}_{up, params}
+-\frac{1}{n}\mathcal{I}_{up, params}
 \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">influence_params</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta_hat</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([-0.00253057,  0.00388923])
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># influence (params)</span>
-
 <span class="n">diffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="n">values</span> <span class="o">=</span> <span class="n">influence_params</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta_hat</span><span class="p">)</span>
@@ -806,8 +794,8 @@ $<span class="math notranslate nohighlight">\(
 </div>
 </section>
 </section>
-<section id="loss">
-<h2>Loss<a class="headerlink" href="#loss" title="Permalink to this heading">#</a></h2>
+<section id="influence-loss">
+<h2>Influence (loss)<a class="headerlink" href="#influence-loss" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="mi">7</span>
@@ -900,7 +888,7 @@ L(z_{test}, \hat{\theta}_{-z})
 <h3>Influence Function<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[
-\mathcal{I}_{up, loss}
+-\frac{1}{n}\mathcal{I}_{up, loss}
 \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1015,12 +1003,12 @@ L(z_{test}, \hat{\theta}_{-z})
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#params">Params</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-params">Influence (params)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loo">LOO</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Influence Function</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loss">Loss</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-loss">Influence (loss)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">LOO</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Influence Function</a></li>
 </ul>
