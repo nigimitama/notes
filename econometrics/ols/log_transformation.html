@@ -554,6 +554,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#y-beta-0-beta-1-ln-x">(2) <span class="math notranslate nohighlight">\(Y = \beta_0 + \beta_1 \ln(X)\)</span></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ln-y-beta-0-beta-1-x">(3) <span class="math notranslate nohighlight">\(\ln(Y) = \beta_0 + \beta_1 X\)</span></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ln-y-beta-0-beta-1-ln-x">(4) <span class="math notranslate nohighlight">\(\ln(Y) = \beta_0 + \beta_1 \ln(X)\)</span></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">別データ例：賃金データ</a></li>
 </ul>
             </nav>
         </div>
@@ -753,7 +754,7 @@ f^{(n)}(0) = (-1)^{n-1} \frac{(n-1)!}{(1)^n} = (-1)^{n-1} (n-1)!
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/1fe67f73f59e5db90942951397f21a1adaa93ba78aaeabc666af85010a9f6a77.png" src="../../_images/1fe67f73f59e5db90942951397f21a1adaa93ba78aaeabc666af85010a9f6a77.png" />
+<img alt="../../_images/61c9099a55b9c659734778e1815a21381cd62930c48fe7b02b2fdd2cccab2105.png" src="../../_images/61c9099a55b9c659734778e1815a21381cd62930c48fe7b02b2fdd2cccab2105.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -921,7 +922,7 @@ exp(x) - 1: 0.1051709
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/9fbfc44c2d05adb3c4b9206c5292f1691076753cdbbf9bcaf95ee4cc1fd46e9c.png" src="../../_images/9fbfc44c2d05adb3c4b9206c5292f1691076753cdbbf9bcaf95ee4cc1fd46e9c.png" />
+<img alt="../../_images/e077170f000318bb1b3412c82655a3ab201f79f788e8a246f03ebe8f9db0b0de.png" src="../../_images/e077170f000318bb1b3412c82655a3ab201f79f788e8a246f03ebe8f9db0b0de.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -972,7 +973,7 @@ exp(x) - 1: 0.1051709
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/83025aa63b910f4f579961b836767200402ab959e6f16311a6918e42c50c8dfd.png" src="../../_images/83025aa63b910f4f579961b836767200402ab959e6f16311a6918e42c50c8dfd.png" />
+<img alt="../../_images/fc833f9479e18be520f8b74bebe51ee141afc919c96852b6b4b3286e8d8f4986.png" src="../../_images/fc833f9479e18be520f8b74bebe51ee141afc919c96852b6b4b3286e8d8f4986.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1003,6 +1004,185 @@ exp(x) - 1: 0.1051709
 </pre></div>
 </div>
 </div>
+</div>
+</section>
+<section id="id2">
+<h2>別データ例：賃金データ<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<p>RのAERパッケージに含まれるCPS1985という1985年の賃金のデータを例に取る。教育年数が1年ふえるごとに賃金は何%増えるのだろうか。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="n">cps</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;CPS1985&quot;</span><span class="p">,</span> <span class="s2">&quot;AER&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">log_wage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">cps</span><span class="p">[</span><span class="s2">&quot;wage&quot;</span><span class="p">]))</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+<span class="n">reg</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s1">&#39;wage ~ education&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">cps</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">cps</span><span class="p">[</span><span class="s2">&quot;education&quot;</span><span class="p">],</span> <span class="n">cps</span><span class="p">[</span><span class="s2">&quot;wage&quot;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="p">)</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;education&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;wage&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cps</span><span class="p">[</span><span class="s2">&quot;education&quot;</span><span class="p">],</span> <span class="n">reg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">cps</span><span class="p">),</span>
+             <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;wage = </span><span class="si">{</span><span class="n">reg</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;Intercept&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> + </span><span class="si">{</span><span class="n">reg</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;education&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> education&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+
+<span class="n">reg</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s1">&#39;log_wage ~ education&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">cps</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">cps</span><span class="p">[</span><span class="s2">&quot;education&quot;</span><span class="p">],</span> <span class="n">cps</span><span class="p">[</span><span class="s2">&quot;log_wage&quot;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;education&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;log_wage&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cps</span><span class="p">[</span><span class="s2">&quot;education&quot;</span><span class="p">],</span> <span class="n">reg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">cps</span><span class="p">),</span>
+             <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;log_wage = </span><span class="si">{</span><span class="n">reg</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;Intercept&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> + </span><span class="si">{</span><span class="n">reg</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;education&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> education&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>  <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">12</span><span class="p">],</span> <span class="n">line</span> <span class="mi">8</span>
+    <span class="p">)</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;education&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;wage&quot;</span><span class="p">)</span>
+     <span class="o">^</span>
+<span class="ne">SyntaxError</span>: invalid syntax
+</pre></div>
+</div>
+</div>
+</div>
+<p>モデルに投入するeducationの値が1上がるごとに、概ね0.079 = 7.9%程度上がる</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">reg</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s1">&#39;log_wage ~ education&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">cps</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;education&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">21</span><span class="p">)})</span>
+<span class="n">test</span><span class="p">[</span><span class="s2">&quot;log_wage_pred&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>  <span class="c1"># 予測値を入れる</span>
+<span class="n">test</span><span class="p">[</span><span class="s2">&quot;wage_pred&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="s2">&quot;log_wage_pred&quot;</span><span class="p">])</span>
+<span class="n">test</span><span class="p">[</span><span class="s2">&quot;wage_pred_diff&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="s2">&quot;wage_pred&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
+<span class="n">test</span><span class="p">[</span><span class="s2">&quot;wage_pred_change&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="s2">&quot;wage_pred&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span>
+<span class="n">test</span><span class="p">[</span><span class="s2">&quot;log_wage_pred_change&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="s2">&quot;log_wage_pred&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span>
+<span class="n">test</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>education</th>
+      <th>log_wage_pred</th>
+      <th>wage_pred</th>
+      <th>wage_pred_diff</th>
+      <th>wage_pred_change</th>
+      <th>log_wage_pred_change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>1.059890</td>
+      <td>2.886053</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>1.136648</td>
+      <td>3.116306</td>
+      <td>0.230253</td>
+      <td>0.079781</td>
+      <td>0.072421</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>1.213407</td>
+      <td>3.364929</td>
+      <td>0.248623</td>
+      <td>0.079781</td>
+      <td>0.067531</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>1.290166</td>
+      <td>3.633388</td>
+      <td>0.268459</td>
+      <td>0.079781</td>
+      <td>0.063259</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>1.366924</td>
+      <td>3.923265</td>
+      <td>0.289877</td>
+      <td>0.079781</td>
+      <td>0.059495</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>5</td>
+      <td>1.443683</td>
+      <td>4.236268</td>
+      <td>0.313003</td>
+      <td>0.079781</td>
+      <td>0.056154</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>6</td>
+      <td>1.520441</td>
+      <td>4.574243</td>
+      <td>0.337975</td>
+      <td>0.079781</td>
+      <td>0.053169</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>7</td>
+      <td>1.597200</td>
+      <td>4.939182</td>
+      <td>0.364939</td>
+      <td>0.079781</td>
+      <td>0.050484</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>8</td>
+      <td>1.673958</td>
+      <td>5.333237</td>
+      <td>0.394055</td>
+      <td>0.079781</td>
+      <td>0.048058</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>9</td>
+      <td>1.750717</td>
+      <td>5.758730</td>
+      <td>0.425493</td>
+      <td>0.079781</td>
+      <td>0.045855</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 </section>
 </section>
@@ -1074,6 +1254,7 @@ exp(x) - 1: 0.1051709
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#y-beta-0-beta-1-ln-x">(2) <span class="math notranslate nohighlight">\(Y = \beta_0 + \beta_1 \ln(X)\)</span></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ln-y-beta-0-beta-1-x">(3) <span class="math notranslate nohighlight">\(\ln(Y) = \beta_0 + \beta_1 X\)</span></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ln-y-beta-0-beta-1-ln-x">(4) <span class="math notranslate nohighlight">\(\ln(Y) = \beta_0 + \beta_1 \ln(X)\)</span></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">別データ例：賃金データ</a></li>
 </ul>
   </nav></div>
 
