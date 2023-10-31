@@ -915,7 +915,8 @@ RMSE = \sqrt{
 <p><span class="math notranslate nohighlight">\(\sigma^2\)</span>は一定（均一分散）とすると、尤度関数は</p>
 <div class="math notranslate nohighlight">
 \[
-L(\b{y}| \b{\beta}, \sigma) = \prod^N_{i=1} \mathcal{N}(y_i| \b{x}_i^T \b{\beta}, \sigma^2)
+\newcommand{\b}[1]{\boldsymbol{#1}}
+L(\b{y}| \b{X}, \b{\beta}, \sigma) = \prod^N_{i=1} \mathcal{N}(y_i| \b{x}_i^\top \b{\beta}, \sigma^2)
 \]</div>
 <p>ただし、<span class="math notranslate nohighlight">\(\mathcal{N}\)</span>は正規分布</p>
 <div class="math notranslate nohighlight">
@@ -929,11 +930,94 @@ L(\b{y}| \b{\beta}, \sigma) = \prod^N_{i=1} \mathcal{N}(y_i| \b{x}_i^T \b{\beta}
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
-\ln L(\b{y}| \b{\beta}, \sigma^2)
-&amp;= \sum^N_{i=1} \ln \mathcal{N}(y_i| \b{x}_i^T \b{\beta}, \sigma^2)\\
-&amp;= \frac{N}{2} \ln \sigma^2 - \frac{N}{2} \ln (2\pi) - \frac{1}{2} \sum^N_{i=1} (y_i - \b{x}_i^T \b{\beta})^2\\
+\ln L(\b{y}| \b{X}, \b{\beta}, \sigma)
+&amp;= \sum^N_{i=1} \ln \mathcal{N}(y_i| \b{x}_i^\top \b{\beta}, \sigma^2)
+\\
+&amp;= - \frac{N}{2} \ln (2\pi)
+    - \frac{N}{2} \ln \sigma^2
+    - \frac{1}{2\sigma^2} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2
 \end{align}
 \end{split}\]</div>
+<div class="dropdown admonition">
+<p class="admonition-title">導出メモ</p>
+<p>まず尤度を軽く整理する</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+L(\mu, \sigma^2)
+&amp;= \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}}
+\exp \left \{ - \frac{(x_i - \mu)^2}{2\sigma^2} \right \}
+\\
+&amp;= \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^n
+\prod_{i=1}^n
+\exp \left \{ - \frac{(x_i - \mu)^2}{2\sigma^2} \right \}
+\end{align}
+\end{split}\]</div>
+<p>対数をとると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\ln L(\mu, \sigma^2)
+&amp;= n \ln \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)
++ \sum^n_{i=1} \ln \left(
+\exp \left\{ - \frac{(x_i - \mu)^2}{2\sigma^2} \right\}
+\right)
+\\
+&amp;= n \ln ( 2\pi\sigma^2 )^{-1/2}
++ \sum^n_{i=1} \left(
+- \frac{(x_i - \mu)^2}{2\sigma^2}
+\ln e
+\right)
+\\
+&amp;= - \frac{n}{2} \ln ( 2\pi\sigma^2 )
+- \sum^n_{i=1} \frac{(x_i - \mu)^2}{2\sigma^2}
+\\
+&amp;= - \frac{n}{2} \ln (2\pi)
+- \frac{n}{2} \ln \sigma^2
+- \frac{1}{2\sigma^2} \sum^n_{i=1} (x_i - \mu)^2
+\end{align}
+\end{split}\]</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text">（参考）対数の公式</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\log 1 &amp;= 0\\
+\log_e e &amp;= 1\\
+\log x^a &amp;= a\log x\\
+\log \sqrt{a} &amp;= \log a^{1/2} = \textstyle \frac{1}{2} \log a\\
+\log ab &amp;= \log a + \log b\\
+\log \frac{a}{b} &amp;= \log a - \log b
+\end{align}
+\end{split}\]</div>
+</div>
+</div>
+</div>
+<p>これを微分して解くと</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{ \partial \ln L(\b{y}| \b{X}, \b{\beta}, \sigma)}
+{\partial \b{\beta} }
+= \frac{1}{\sigma^2} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})\b{x}_i^\top
+\]</div>
+<div class="math notranslate nohighlight">
+\[\]</div>
+<div class="dropdown admonition">
+<p class="admonition-title">導出メモ</p>
+<p>スカラーの場合、合成関数の微分より</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{d (y - \hat{y})^2 }{d \hat{y}} = 2 (y - \hat{y}) \times (-1)
+\]</div>
+<p>の形になるがベクトルなので</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial (y_i - \b{x}_i^\top \b{\beta})^2 }{\partial \beta_j}
+= - 2 (y_i - \b{x}_i^\top \b{\beta}) \b{x}_i^\top
+\]</div>
+<p>これを各<span class="math notranslate nohighlight">\(j\)</span>について計算してベクトル（勾配）とし、それを<span class="math notranslate nohighlight">\(i\)</span>ごとに和する</p>
+</div>
 </section>
 <section id="id9">
 <h2>最小二乗推定量の性質<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h2>
