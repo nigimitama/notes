@@ -575,18 +575,25 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">パネルデータ</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pooled-ols">Pooled OLS</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">固定効果モデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-way-fixed-effect-model">one-way fixed effect model</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">個体固定効果モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">個体固定効果モデル</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#first-difference-model-ols">(1) “一回の階差モデル（first difference model）”によるOLS推定</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#n-1ols">(2) “<span class="math notranslate nohighlight">\(N-1\)</span>個のダミー説明変数”を用いたOLS推定</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#entity-demeaned-ols">(3) ”平均差分法（Entity-demeaned）”を用いたOLS推定</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">導出</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">導出</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-way-effect-model">two-way effect model</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">比較</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">比較</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">変量効果モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Pooled OLSでも推定できる</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">変量効果モデル</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -603,7 +610,14 @@ document.write(`
 <section id="id2">
 <h2>パネルデータ<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
 <p>異なる時点で同じ個体についての情報を観測したデータを<strong>パネルデータ</strong> （panel data）という。</p>
-<p>パネルデータを分析する際は個体差による効果や時点ごとの固有の効果の影響を除く必要があり、そうしたことができる代表的な分析手法が<strong>固定効果モデル</strong>（fixed effect model）である</p>
+<p>被説明変数<span class="math notranslate nohighlight">\(Y\)</span>と説明変数<span class="math notranslate nohighlight">\(X = (X_1, \dots, X_K)\)</span>に時点<span class="math notranslate nohighlight">\(t\)</span>と個体<span class="math notranslate nohighlight">\(i\)</span>の添字をつけて</p>
+<div class="math notranslate nohighlight">
+\[
+\{ (Y_{it}, X_{it}) \},
+\hspace{2em} i = 1, \dots, N,
+\hspace{1em} t = 1, \dots, T
+\]</div>
+<p>のような形で表記される</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
@@ -748,7 +762,11 @@ document.write(`
 </section>
 <section id="pooled-ols">
 <h2>Pooled OLS<a class="headerlink" href="#pooled-ols" title="Permalink to this heading">#</a></h2>
-<p>パネルデータ分析において、固定効果を特に考慮しないで通常の重回帰モデルを用いたモデルを<strong>Pooled OLS</strong>と呼ぶ。</p>
+<p>パネルデータ分析において、個体や時間による固定効果（fixed effect）を特に考慮しないで（固定効果が無いと仮定して）通常の重回帰モデルを用いたモデルを<strong>Pooled OLS</strong>と呼ぶ。</p>
+<div class="math notranslate nohighlight">
+\[
+Y_{it} = \boldsymbol{\beta} X_{it} + \varepsilon_{it}
+\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pooled_ols</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="o">.</span><span class="n">from_formula</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s2">&quot;inv ~ value + capital&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
@@ -772,7 +790,7 @@ document.write(`
   <th>Date:</th>             <td>Sun, 26 Nov 2023</td> <th>  Prob (F-statistic):</th> <td>2.58e-72</td>
 </tr>
 <tr>
-  <th>Time:</th>                 <td>03:10:46</td>     <th>  Log-Likelihood:    </th> <td> -1191.8</td>
+  <th>Time:</th>                 <td>04:58:14</td>     <th>  Log-Likelihood:    </th> <td> -1191.8</td>
 </tr>
 <tr>
   <th>No. Observations:</th>      <td>   200</td>      <th>  AIC:               </th> <td>   2390.</td>
@@ -817,12 +835,21 @@ document.write(`
 </table><br/><br/>Notes:<br/>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.<br/>[2] The condition number is large, 2.46e+03. This might indicate that there are<br/>strong multicollinearity or other numerical problems.</div></div>
 </div>
 </section>
+<section id="id3">
+<h2>固定効果モデル<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<p>パネルデータを分析する際に個体差による効果（個体固定効果）や時点ごとの固有の効果（時間固定効果）の影響を除くように作ったモデルのことを<strong>固定効果モデル</strong>（fixed effect model）という。</p>
+<div class="math notranslate nohighlight">
+\[
+Y_{it} = \boldsymbol{\beta} X_{it} +\theta_i + \pi_t + \varepsilon_{it}
+\]</div>
+<p>個体内の変動を使うため、固定効果推定量は「群内（within）推定量」と呼ばれたりもする。</p>
+</section>
 <section id="one-way-fixed-effect-model">
 <h2>one-way fixed effect model<a class="headerlink" href="#one-way-fixed-effect-model" title="Permalink to this heading">#</a></h2>
 <p>時点や個体など、1つの固定効果に対処するモデル。一元配置固定効果モデル（one-way fixed effect model）などと呼ばれる。その推定量は「群内（within）」推定量や「固定効果（fixed effect）」推定量などとも呼ばれる。</p>
-<section id="id3">
-<h3>個体固定効果モデル<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
-<p>以下のような個体固定効果モデルを考える。</p>
+<section id="id4">
+<h3>個体固定効果モデル<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<p>以下のような個体固定効果モデルを考える。（単純化のため説明変数<span class="math notranslate nohighlight">\(X\)</span>は1つのみとする）</p>
 <div class="math notranslate nohighlight">
 \[
 Y_{it} = \beta_0 + \beta_1 X_{it} +\theta_i + \varepsilon_{it}
@@ -1009,7 +1036,7 @@ Y_{it} = \beta_0 + \beta_1 X_{it} +\theta_i + \varepsilon_{it}
   <th>Date:</th>             <td>Sun, 26 Nov 2023</td> <th>  Prob (F-statistic):</th>          <td>1.36e-23</td>
 </tr>
 <tr>
-  <th>Time:</th>                 <td>03:10:46</td>     <th>  Log-Likelihood:    </th>          <td> -982.76</td>
+  <th>Time:</th>                 <td>04:58:14</td>     <th>  Log-Likelihood:    </th>          <td> -982.76</td>
 </tr>
 <tr>
   <th>No. Observations:</th>      <td>   190</td>      <th>  AIC:               </th>          <td>   1970.</td>
@@ -1099,7 +1126,7 @@ Y_{it} = \beta_0 + \beta_1 X_{it} + \gamma_2 D^{(2)}_i + \cdots + \gamma_N D^{(N
   <th>Date:</th>             <td>Sun, 26 Nov 2023</td> <th>  Prob (F-statistic):</th> <td>2.41e-111</td>
 </tr>
 <tr>
-  <th>Time:</th>                 <td>03:10:46</td>     <th>  Log-Likelihood:    </th> <td> -1070.8</td> 
+  <th>Time:</th>                 <td>04:58:14</td>     <th>  Log-Likelihood:    </th> <td> -1070.8</td> 
 </tr>
 <tr>
   <th>No. Observations:</th>      <td>   200</td>      <th>  AIC:               </th> <td>   2166.</td> 
@@ -1226,7 +1253,7 @@ Y_{it} = \beta_0 + \beta_1 X_{it} + \gamma_2 D^{(2)}_i + \cdots + \gamma_N D^{(N
   <th>Date:</th>             <td>Sun, 26 Nov 2023</td> <th>  Prob (F-statistic):</th>          <td>2.59e-63</td>
 </tr>
 <tr>
-  <th>Time:</th>                 <td>03:10:46</td>     <th>  Log-Likelihood:    </th>          <td> -1070.8</td>
+  <th>Time:</th>                 <td>04:58:14</td>     <th>  Log-Likelihood:    </th>          <td> -1070.8</td>
 </tr>
 <tr>
   <th>No. Observations:</th>      <td>   200</td>      <th>  AIC:               </th>          <td>   2146.</td>
@@ -1317,8 +1344,8 @@ Group Var    0.585
 </div>
 </div>
 </section>
-<section id="id4">
-<h4>導出<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h4>
+<section id="id5">
+<h4>導出<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h4>
 <p>固定効果のある</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1460,7 +1487,7 @@ Y_{it} =\beta_1 X_{it} +\theta_i + \pi_t + \varepsilon_{it}
   <th>Date:</th>             <td>Sun, 26 Nov 2023</td> <th>  Prob (F-statistic):</th>          <td>1.24e-14</td>
 </tr>
 <tr>
-  <th>Time:</th>                 <td>03:10:47</td>     <th>  Log-Likelihood:    </th>          <td> -173.11</td>
+  <th>Time:</th>                 <td>04:58:15</td>     <th>  Log-Likelihood:    </th>          <td> -173.11</td>
 </tr>
 <tr>
   <th>No. Observations:</th>      <td>    30</td>      <th>  AIC:               </th>          <td>   350.2</td>
@@ -1502,8 +1529,8 @@ Y_{it} =\beta_1 X_{it} +\theta_i + \pi_t + \varepsilon_{it}
 </table><br/><br/>Notes:<br/>[1] R² is computed without centering (uncentered) since the model does not contain a constant.<br/>[2] Standard Errors assume that the covariance matrix of the errors is correctly specified.</div></div>
 </div>
 </section>
-<section id="id5">
-<h2>比較<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
+<section id="id6">
+<h2>比較<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">stargazer.stargazer</span> <span class="kn">import</span> <span class="n">Stargazer</span>
@@ -1548,6 +1575,40 @@ Y_{it} =\beta_1 X_{it} +\theta_i + \pi_t + \varepsilon_{it}
 <tr><td style="text-align: left">Observations</td><td>200</td><td>190</td><td>200</td><td>200</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.812</td><td>0.429</td><td>0.944</td><td>0.767</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.811</td><td>0.423</td><td>0.941</td><td>0.764</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>94.408 (df=197)</td><td>42.896 (df=188)</td><td>52.768 (df=188)</td><td>51.418 (df=198)</td></tr><tr><td style="text-align: left">F Statistic</td><td>426.576<sup>***</sup> (df=2; 197)</td><td>70.578<sup>***</sup> (df=2; 188)</td><td>288.500<sup>***</sup> (df=11; 188)</td><td>325.451<sup>***</sup> (df=2; 198)</td></tr>
 <tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Note:</td><td colspan="4" style="text-align: right"><sup>*</sup>p&lt;0.1; <sup>**</sup>p&lt;0.05; <sup>***</sup>p&lt;0.01</td></tr></table></div></div>
 </div>
+</section>
+<section id="id7">
+<h2>変量効果モデル<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
+<p>変量効果という概念もある</p>
+<ul class="simple">
+<li><p>個体に固有の効果が説明変数と<strong>相関する</strong>場合、その効果を**固定効果（fixed effect）**と呼ぶ。</p></li>
+<li><p>個体に固有の効果が説明変数と<strong>相関しない</strong>場合、その効果を**変量効果（random effect）**と呼ぶ。</p></li>
+</ul>
+<section id="id8">
+<h3>Pooled OLSでも推定できる<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(\theta_i\)</span>を個体に固有の効果として</p>
+<div class="math notranslate nohighlight">
+\[
+Y_{it} = \boldsymbol{\beta} X_{it} + \theta_i + \varepsilon_{it}
+\]</div>
+<p>という線形モデルを考えたとき、変量効果モデルでは<span class="math notranslate nohighlight">\(\theta_i\)</span>は<span class="math notranslate nohighlight">\(X_{it}\)</span>と無相関であるため<span class="math notranslate nohighlight">\(\theta_i + \varepsilon_{it}\)</span>をひとまとめに誤差項<span class="math notranslate nohighlight">\(\epsilon_{it}\)</span>として捉えて</p>
+<div class="math notranslate nohighlight">
+\[
+Y_{it} = \boldsymbol{\beta} X_{it} + \epsilon_{it}
+\]</div>
+<p>のように扱いPooled OLSとして推定すると、通常の最小二乗法の仮定を満たすためPooled OLS推定量は一致性をもつ。</p>
+</section>
+<section id="id9">
+<h3>変量効果モデル<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h3>
+<p>通常、変量効果モデルと呼ぶ場合は<span class="math notranslate nohighlight">\(\theta_i\)</span>と<span class="math notranslate nohighlight">\(X_{it}\)</span>の独立を仮定し、FGLSで推定を行うらしい</p>
+</section>
+</section>
+<section id="id10">
+<h2>参考文献<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>mixtape</p></li>
+<li><p>西山ほか（2019）『計量経済学』有斐閣</p></li>
+<li><p><a class="reference external" href="https://www.fbc.keio.ac.jp/~tyabu/econometrics/econome1_11.pdf?utm_source=pocket_saves">藪友良 パネル分析</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -1616,18 +1677,25 @@ Y_{it} =\beta_1 X_{it} +\theta_i + \pi_t + \varepsilon_{it}
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">パネルデータ</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pooled-ols">Pooled OLS</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">固定効果モデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-way-fixed-effect-model">one-way fixed effect model</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">個体固定効果モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">個体固定効果モデル</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#first-difference-model-ols">(1) “一回の階差モデル（first difference model）”によるOLS推定</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#n-1ols">(2) “<span class="math notranslate nohighlight">\(N-1\)</span>個のダミー説明変数”を用いたOLS推定</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#entity-demeaned-ols">(3) ”平均差分法（Entity-demeaned）”を用いたOLS推定</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">導出</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">導出</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-way-effect-model">two-way effect model</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">比較</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">比較</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">変量効果モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Pooled OLSでも推定できる</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">変量効果モデル</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考文献</a></li>
 </ul>
   </nav></div>
 
