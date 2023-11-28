@@ -578,9 +578,17 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lu">LU分解</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">計算手順</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">分解すると何が嬉しいのか？</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">計算手順（ドゥーリトル法）</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">一般化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#python">pythonの例</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">行列式をLU分解で求める</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">連立一次方程式をLU分解で解く</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -604,7 +612,47 @@ A = LU
 <p>を<strong>LU分解</strong>と呼ぶ。</p>
 <p>実際には<span class="math notranslate nohighlight">\(L\)</span>の対角成分を1に固定し、残りの部分を推定する</p>
 <section id="id2">
-<h3>計算手順<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<h3>分解すると何が嬉しいのか？<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<p>行列式や一次方程式を少ない計算量で求められる材料として<span class="math notranslate nohighlight">\(L,U\)</span>が手に入り、全体としての計算を効率化できる可能性がある。</p>
+<p>例えば様々な<span class="math notranslate nohighlight">\(y\)</span>に対して<span class="math notranslate nohighlight">\(Ax=y\)</span>を解く場合は<span class="math notranslate nohighlight">\(A=LU\)</span>と一旦分解して、後で<span class="math notranslate nohighlight">\(L,U\)</span>を使い回せばよい（後述）</p>
+</section>
+<section id="id3">
+<h3>計算手順（ドゥーリトル法）<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(L\)</span>の対角成分は1に固定し、次のような分解を仮定する</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A =
+\left[\begin{array}{cc}
+1 &amp; 0 \\
+l_{21} &amp; 1
+\end{array}\right]
+\left[\begin{array}{cc}
+u_{11} &amp; u_{12} \\
+0 &amp; u_{22}
+\end{array}\right]
+\end{split}\]</div>
+<p><span class="math notranslate nohighlight">\(LU\)</span>の積を計算すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A=\left[\begin{array}{ccc}
+u_{11} &amp; u_{12}\\
+l_{21} u_{11} &amp; l_{21} u_{12} + u_{22}
+\end{array}\right]
+\end{split}\]</div>
+<p>となるため、<span class="math notranslate nohighlight">\(A\)</span>の各要素との対応がとれる</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; a_{11}=u_{11} \\
+&amp; a_{12}=u_{12} \\
+&amp; a_{21}=l_{21} u_{11} \\
+&amp; a_{22}=l_{21} u_{12}+u_{22}
+\end{aligned}
+\end{split}\]</div>
+<p>これらを解いていく</p>
+<section id="id4">
+<h4>一般化<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h4>
+<p>もっと一般化すると次のようになる</p>
 <p><span class="math notranslate nohighlight">\(m\times n\)</span>行列<span class="math notranslate nohighlight">\(A=(a_{ij})\)</span>に対して、<span class="math notranslate nohighlight">\(s=\min(m,n)\)</span>とおき、<span class="math notranslate nohighlight">\(m\times s\)</span>の<span class="math notranslate nohighlight">\(L\)</span>と<span class="math notranslate nohighlight">\(s\times n\)</span>の<span class="math notranslate nohighlight">\(U\)</span>で分解することを考える。</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -720,6 +768,179 @@ U = \left(\begin{array}{c}
 \end{split}\]</div>
 <p>のように行列<span class="math notranslate nohighlight">\(L,U\)</span>を作ればよい</p>
 </section>
+<section id="python">
+<h4>pythonの例<a class="headerlink" href="#python" title="Permalink to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># 対象の行列</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># iter 1</span>
+<span class="n">l1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">u1</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">l1</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">u1</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>l1=array([1., 3.]), u1=array([1, 2])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ベクトルの外積</span>
+<span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">u1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[1., 2.],
+       [3., 6.]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A2</span> <span class="o">=</span> <span class="n">A</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">u1</span><span class="p">)</span>
+<span class="n">A2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 0.,  0.],
+       [ 0., -2.]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A_</span> <span class="o">=</span> <span class="n">A2</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">1</span><span class="p">:]</span>
+
+<span class="n">l2_</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">A_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">A_</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">u2_</span> <span class="o">=</span> <span class="n">A_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">l2_</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">u2_</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>l2_=array([1.]), u2_=array([-2.])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 残りがゼロに</span>
+<span class="n">A3</span> <span class="o">=</span> <span class="n">A_</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">l2_</span><span class="p">,</span> <span class="n">u2_</span><span class="p">)</span>
+<span class="n">A3</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 先頭にゼロを足して次元を合わせる</span>
+<span class="n">l2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">l2_</span><span class="p">])</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">u2_</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># それぞれのiterationの外積の和が元の行列になる</span>
+<span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">u1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">l2</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[1., 2.],
+       [3., 4.]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="n">L</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[1., 0.],
+       [3., 1.]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">])</span>
+<span class="n">U</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 1.,  2.],
+       [ 0., -2.]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">@</span> <span class="n">U</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[1., 2.],
+       [3., 4.]])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="id5">
+<h2>行列式をLU分解で求める<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
+<p>積の行列式は行列式の積になる</p>
+<div class="math notranslate nohighlight">
+\[
+\det A = \det(LU) = (\det L)(\det U)
+\]</div>
+<p>下三角行列や上三角行列の行列式は対角成分の積になる</p>
+</section>
+<section id="id6">
+<h2>連立一次方程式をLU分解で解く<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
+</section>
+<section id="id7">
+<h2>参考文献<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>ドゥーリトル法：<a class="reference external" href="https://ja.wikipedia.org/wiki/LU%E5%88%86%E8%A7%A3">LU分解 - Wikipedia</a></p></li>
+<li><p>一般化した計算手順：『プログラミングのための線形代数』</p></li>
+</ul>
 </section>
 </section>
 
@@ -787,9 +1008,17 @@ U = \left(\begin{array}{c}
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lu">LU分解</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">計算手順</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">分解すると何が嬉しいのか？</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">計算手順（ドゥーリトル法）</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">一般化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#python">pythonの例</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">行列式をLU分解で求める</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">連立一次方程式をLU分解で解く</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
 </ul>
   </nav></div>
 
