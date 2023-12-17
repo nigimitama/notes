@@ -576,7 +576,16 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">時系列データ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">時系列データ</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">対数系列、差分系列</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">定常性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">ホワイトノイズ</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iid">iid系列</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">ホワイトノイズ</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -592,12 +601,16 @@ document.write(`
 <h1>時系列データの特徴<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <section id="id2">
 <h2>時系列データ<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
-<p>各時点<span class="math notranslate nohighlight">\(t\)</span>（<span class="math notranslate nohighlight">\(t=1,\dots,T\)</span>）で観測されたデータ</p>
+<p>時系列分析では、各時点<span class="math notranslate nohighlight">\(t\)</span>（<span class="math notranslate nohighlight">\(t=1,\dots,T\)</span>）で観測されたデータ</p>
 <div class="math notranslate nohighlight">
 \[
 \{y_t\}_{t=1}^T
 \]</div>
-<p>もとのデータは<strong>原系列</strong>と呼ばれるが、前処理した系列に特有の名前があったりする</p>
+<p>を、ある確率変数列<span class="math notranslate nohighlight">\(\{y_t\}_{t=-\infty}^{\infty}\)</span>からの1つの実現値とみなし、その確率変数列の生成過程に関する性質や構造を仮定（モデリング）していく。</p>
+<p>この<span class="math notranslate nohighlight">\(\{y_t\}_{t=-\infty}^{\infty}\)</span>を**データ生成過程（data generating process: DGP）<strong>や</strong>確率過程（stochastic process）**とよぶ。</p>
+<section id="id3">
+<h3>対数系列、差分系列<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<p>時系列分析においては、もとのデータは<strong>原系列</strong>と呼ばれ、前処理した系列のことをそれぞれ次のように呼ぶ</p>
 <ul class="simple">
 <li><p><strong>対数系列</strong>…対数変換したもの：<span class="math notranslate nohighlight">\(\log y_t\)</span></p></li>
 <li><p><strong>差分系列</strong>（<strong>階差系列</strong>）…差分をとったもの：<span class="math notranslate nohighlight">\(\Delta y_t = y_t - y_{t-1}\)</span></p></li>
@@ -625,6 +638,67 @@ document.write(`
 \approx \frac{y_t-y_{t-1}}{y_{t-1}}
 \]</div>
 </div>
+</section>
+</section>
+<section id="id4">
+<h2>定常性<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
+<p>時間によって分布の形状が変化する場合、分析の難度が上がる。
+定常性（stationary）が仮定できる確率過程であれば、各時点におけるサンプルが同じ分布から得られたものと捉えて一般的な統計解析の枠組みを援用しやすい。</p>
+<p>厳密には弱定常性と強定常性がある。</p>
+<ul class="simple">
+<li><p>弱定常性：過程の期待値と自己共分散が時間を通じて一定である</p></li>
+<li><p>強定常性：同時分布が時間を通じて不変である</p></li>
+</ul>
+<div class="admonition- admonition">
+<p class="admonition-title">定義（弱定常性）</p>
+<p>任意の<span class="math notranslate nohighlight">\(t\)</span>と<span class="math notranslate nohighlight">\(k\)</span>に対して、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+E\left(y_t\right)
+&amp;=\mu \\
+\operatorname{Cov}\left(y_t, y_{t-k}\right)
+&amp;=E\left[\left(y_t-\mu\right)\left(y_{t-k}-\mu\right)\right]=\gamma_k
+\end{aligned}
+\end{split}\]</div>
+<p>が成立する場合、過程は<strong>弱定常</strong>（weak stationary）といわれる</p>
+</div>
+<div class="admonition- admonition">
+<p class="admonition-title">定義（強定常性）</p>
+<p>任意の<span class="math notranslate nohighlight">\(t\)</span>と<span class="math notranslate nohighlight">\(k\)</span>に対して、</p>
+<div class="math notranslate nohighlight">
+\[
+(y_t, y_{t+1}, \ldots, y_{t+k})^\top
+\]</div>
+<p>の同時分布が同一となる場合、過程は<strong>強定常</strong>（strict stationary）と言われる</p>
+</div>
+</section>
+<section id="id5">
+<h2>ホワイトノイズ<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
+<section id="iid">
+<h3>iid系列<a class="headerlink" href="#iid" title="Permalink to this heading">#</a></h3>
+<p>各時点のデータが互いに独立でかつ同一の分布に従う系列は <strong>iid系列</strong> と呼ばれる。</p>
+<p>時系列データにおいてi.i.dを仮定できることはまれだが、**撹乱項（disturbance term）**をi.i.d.で仮定することはできる。
+また、もっと仮定が弱いものでホワイトノイズというものもある。</p>
+</section>
+<section id="id6">
+<h3>ホワイトノイズ<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<div class="admonition- admonition">
+<p class="admonition-title">定義（ホワイトノイズ）</p>
+<p>すべての時点<span class="math notranslate nohighlight">\(t\)</span>において</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+E\left(\varepsilon_t\right) &amp;= 0 \\
+Cov[\varepsilon_t, \varepsilon_{t-k}]
+&amp; =E(\varepsilon_t \varepsilon_{t-k}) = \begin{cases}\sigma^2, &amp; k=0 \\
+0, &amp; k \neq 0\end{cases}
+\end{aligned}
+\end{split}\]</div>
+<p>が成立するとき、<span class="math notranslate nohighlight">\(\varepsilon_t\)</span>は**ホワイトノイズ（white noise）**と呼ばれる</p>
+</div>
+<p>ホワイトノイズはすべての時点において期待値がゼロで、分散が一定の確率過程である</p>
+</section>
 </section>
 </section>
 
@@ -673,7 +747,16 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">時系列データ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">時系列データ</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">対数系列、差分系列</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">定常性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">ホワイトノイズ</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iid">iid系列</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">ホワイトノイズ</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
