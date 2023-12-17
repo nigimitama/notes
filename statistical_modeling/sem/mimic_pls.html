@@ -70,6 +70,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'statistical_modeling/sem/mimic_pls';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -175,6 +177,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../mathematics/introduction.html">数学の初歩</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../mathematics/set_theory.html">集合論</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../mathematics/functions.html">関数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mathematics/taylor_approximation.html">テイラー近似</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../mathematics/calculus.html">微分積分学</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/linear_algebra/index.html">線形代数学</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../mathematics/linear_algebra/vector.html">ベクトルとベクトル空間</a></li>
@@ -187,8 +190,8 @@ const thebe_selector_output = ".output, .cell_output"
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/mathematical_optimization/index.html">数理最適化</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/optimality_conditions.html">最適性条件</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/lagrange.html">ラグランジュの未定乗数法</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/gradient_descent.html">勾配法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/lagrange.html">ラグランジュの未定乗数法</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/knapsack_problem.html">ナップサック問題</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/optimal_transport.html">最適輸送</a></li>
 </ul>
@@ -575,12 +578,19 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">多重指標モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">正準相関分析モデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mimic">MIMICモデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">歴史</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">参考</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">歴史</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">関連文献</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pls-partial-least-square-model">PLSモデル (Partial Least Square Model)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pls-partial-least-square-model">PLSモデル (Partial Least Square Model)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#semopy">semopyによる実行例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pls-ccascikit-learn">PLS, CCAはscikit-learnにも実装がある</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">関連文献</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -594,23 +604,349 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="mimic-pls">
 <h1>MIMICモデル &amp; PLSモデル<a class="headerlink" href="#mimic-pls" title="Permalink to this heading">#</a></h1>
-<section id="mimic">
-<h2>MIMICモデル<a class="headerlink" href="#mimic" title="Permalink to this heading">#</a></h2>
-<p><strong>MIMIC (Multiple Indicator Multiple Cause) モデル</strong>は、観測変数をまとめた合成変数を観測変数で説明するという、回帰分析と因子分析を合わせたようなモデル。</p>
 <section id="id1">
-<h3>歴史<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
-<p>経済学者のArthur Goldbergerが統計学者との共著で1975年に提案</p>
+<h2>多重指標モデル<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
+<p>複数の観測変数によって測定される構成概念（潜在変数）同士の関係性を回帰分析にかけるようなモデル</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../../_images/3d9f72d028758c6c8dc25d331bfdaa89fd95eb4cbba4443918dbfad48e20c277.svg" src="../../_images/3d9f72d028758c6c8dc25d331bfdaa89fd95eb4cbba4443918dbfad48e20c277.svg" /></div>
+</div>
 </section>
 <section id="id2">
-<h3>参考<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<h2>正準相関分析モデル<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<p>複数の潜在変数同士の相関関係を分析するモデルを**正準相関分析（Canonical Correlation Analysis: CCA）**モデルという（<a class="reference external" href="https://www.jstage.jst.go.jp/article/jjep1953/39/4/39_467/_pdf">豊田 (1991)</a>）。</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../../_images/753cd1e96405b86c99f1b8486eb3c65f731418d10a657f07461ef191b9bbdd29.svg" src="../../_images/753cd1e96405b86c99f1b8486eb3c65f731418d10a657f07461ef191b9bbdd29.svg" /></div>
+</div>
+</section>
+<section id="mimic">
+<h2>MIMICモデル<a class="headerlink" href="#mimic" title="Permalink to this heading">#</a></h2>
+<p><strong>MIMIC (Multiple Indicator Multiple Cause) モデル</strong>は、観測変数<span class="math notranslate nohighlight">\(x4,x5,x6\)</span>をまとめた合成変数<span class="math notranslate nohighlight">\(f1\)</span>（共通因子）を別の観測変数<span class="math notranslate nohighlight">\(x1,x2,x3\)</span>に回帰するという、因子分析と回帰分析を組み合わせたようなモデル。</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../../_images/79c94897ee429fedd5bf678c5b0d0801db1f7bb0aa9b53661c6ed5f28977be42.svg" src="../../_images/79c94897ee429fedd5bf678c5b0d0801db1f7bb0aa9b53661c6ed5f28977be42.svg" /></div>
+</div>
+<section id="id3">
+<h3>歴史<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<p>経済学者のArthur Goldbergerが統計学者との共著で1975年に提案</p>
+</section>
+<section id="id4">
+<h3>関連文献<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="http://www.nasonline.org/publications/biographical-memoirs/memoir-pdfs/goldberger-arthur.pdf">Charles F. Manski, “Arthur S. Goldberger”, Biographical Memoirs of the National Academy of Sciences (2013)</a></p>
-<p>GoldbergerはMIMICモデルだけでなく、”mean independence”の提案やSelection Biasに関する研究など因果推論への貢献も多い</p>
+<ul class="simple">
+<li><p>ManskiによるGoldbergerの業績についての記述</p></li>
+<li><p>GoldbergerはMIMICモデルだけでなく、”mean independence”の提案やSelection Biasに関する研究など因果推論への貢献も多いとのこと</p></li>
+</ul>
 </section>
 </section>
 <section id="pls-partial-least-square-model">
 <h2>PLSモデル (Partial Least Square Model)<a class="headerlink" href="#pls-partial-least-square-model" title="Permalink to this heading">#</a></h2>
 <p>MIMICモデルにおける合成変数を別の因子の説明に使ったもの。</p>
+<p>観測変数の線形和による合成変数（作成した指標）が別の共通因子にどのくらい影響しているかを測る。</p>
 <p>観測変数をまとめた合成変数から、別の複数の観測変数の潜在変数に与える影響の強さを検討するモデル</p>
+<p>多重指標モデルでは「潜在変数→観測変数」というパス（観測変数に共通する潜在的な因子）を引いて測定するのみだった。
+PLSでは「潜在変数→観測変数」という方向のパスだけでなく「観測変数→潜在変数」の方向のパスも両方含まれる</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../../_images/de0bdb99b97dc53bc0e0cc6ca803e418157055566b52353aba07a4574eaddc87.svg" src="../../_images/de0bdb99b97dc53bc0e0cc6ca803e418157055566b52353aba07a4574eaddc87.svg" /></div>
+</div>
+<section id="semopy">
+<h3>semopyによる実行例<a class="headerlink" href="#semopy" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># データ生成</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">r_12</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># x1とx2の関連性（f1）</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">r_12</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+<span class="n">r_f1f2</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="c1"># f1とf2の関連性</span>
+<span class="n">r_34</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">r_f1f2</span>
+<span class="n">x3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">x4</span> <span class="o">=</span> <span class="n">r_34</span> <span class="o">*</span> <span class="n">x3</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="o">=</span><span class="n">x3</span><span class="p">,</span> <span class="n">x4</span><span class="o">=</span><span class="n">x4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>f1の分散は0に固定する（誤差項を想定せず、単なる重み付き和による合成変数ということ）</p>
+<p>※このような定数に固定した母数は**固定母数（fixed parameter）**という</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">semopy</span>
+<span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">f1 ~ x1 + x2</span>
+<span class="s2">f2 =~ x3 + x4</span>
+<span class="s2">f1 =~ f2</span>
+<span class="s2">f1 ~~ 0*f1</span>
+
+<span class="s2">f2 ~~ f2</span>
+<span class="s2">x1 ~~ x1</span>
+<span class="s2">x2 ~~ x2</span>
+<span class="s2">x3 ~~ x3</span>
+<span class="s2">x4 ~~ x4</span>
+
+<span class="s2">x1 ~~ x2</span>
+<span class="s2">x3 ~~ x4</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">semopy</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">inspect</span><span class="p">(</span><span class="n">std_est</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lval</th>
+      <th>op</th>
+      <th>rval</th>
+      <th>Estimate</th>
+      <th>Est. Std</th>
+      <th>Std. Err</th>
+      <th>z-value</th>
+      <th>p-value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>f1</td>
+      <td>~</td>
+      <td>x1</td>
+      <td>-0.03</td>
+      <td>-0.71</td>
+      <td>0.023718</td>
+      <td>-1.1484</td>
+      <td>0.250803</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>f1</td>
+      <td>~</td>
+      <td>x2</td>
+      <td>-0.06</td>
+      <td>-0.48</td>
+      <td>0.057586</td>
+      <td>-1.001833</td>
+      <td>0.316424</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>f2</td>
+      <td>~</td>
+      <td>f1</td>
+      <td>1.00</td>
+      <td>0.12</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>x3</td>
+      <td>~</td>
+      <td>f2</td>
+      <td>1.00</td>
+      <td>0.33</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>x4</td>
+      <td>~</td>
+      <td>f2</td>
+      <td>-0.50</td>
+      <td>-0.44</td>
+      <td>0.638508</td>
+      <td>-0.783489</td>
+      <td>0.43334</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>f1</td>
+      <td>~~</td>
+      <td>f1</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>f2</td>
+      <td>~~</td>
+      <td>f2</td>
+      <td>0.10</td>
+      <td>0.99</td>
+      <td>468442.904933</td>
+      <td>0.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>x1</td>
+      <td>~~</td>
+      <td>x1</td>
+      <td>0.97</td>
+      <td>1.00</td>
+      <td>0.043569</td>
+      <td>22.36068</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>x1</td>
+      <td>~~</td>
+      <td>x2</td>
+      <td>0.12</td>
+      <td>0.38</td>
+      <td>0.010516</td>
+      <td>11.231212</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>x2</td>
+      <td>~~</td>
+      <td>x2</td>
+      <td>0.10</td>
+      <td>1.00</td>
+      <td>0.004436</td>
+      <td>22.36068</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>x3</td>
+      <td>~~</td>
+      <td>x3</td>
+      <td>0.82</td>
+      <td>0.89</td>
+      <td>468442.904933</td>
+      <td>0.000002</td>
+      <td>0.999999</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>x3</td>
+      <td>~~</td>
+      <td>x4</td>
+      <td>0.27</td>
+      <td>0.77</td>
+      <td>234345.054399</td>
+      <td>0.000001</td>
+      <td>0.999999</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>x4</td>
+      <td>~~</td>
+      <td>x4</td>
+      <td>0.11</td>
+      <td>0.81</td>
+      <td>117234.360779</td>
+      <td>0.000001</td>
+      <td>0.999999</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../../_images/d2ef574e33b705491a4a9f8fe922f98adce54110ef193293940df01e026bb823.svg" src="../../_images/d2ef574e33b705491a4a9f8fe922f98adce54110ef193293940df01e026bb823.svg" /></div>
+</div>
+</section>
+<section id="pls-ccascikit-learn">
+<h3>PLS, CCAはscikit-learnにも実装がある<a class="headerlink" href="#pls-ccascikit-learn" title="Permalink to this heading">#</a></h3>
+<p><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.cross_decomposition.PLSRegression.html">sklearn.cross_decomposition.PLSRegression — scikit-learn 1.3.2 documentation</a></p>
+<p>推定結果は結構違う、アルゴリズムも違うっぽい</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cross_decomposition</span> <span class="kn">import</span> <span class="n">PLSRegression</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="s2">&quot;x2&quot;</span><span class="p">]]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s2">&quot;x3&quot;</span><span class="p">,</span> <span class="s2">&quot;x4&quot;</span><span class="p">]]</span>
+<span class="n">pls</span> <span class="o">=</span> <span class="n">PLSRegression</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">pls</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+<span class="n">pls</span><span class="o">.</span><span class="n">coef_</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-0.02380083, -0.02041537],
+       [ 0.01237008,  0.01061055]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pls</span><span class="o">.</span><span class="n">x_loadings_</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.73164947],
+       [0.68297665]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pls</span><span class="o">.</span><span class="n">y_loadings_</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-0.03267168],
+       [ 0.04496658]])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id5">
+<h3>関連文献<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
+<p>Lohmöller, J. B. (1989). The Basic and the Extended PLS Method. Latent Variable Path Modeling with Partial Least Squares, 27-61.</p>
+<ul class="simple">
+<li><p>PLSを主軸にした教科書。豊田（2003）（疑問編）で紹介されていた</p></li>
+<li><p><a class="reference external" href="https://link.springer.com/chapter/10.1007/978-3-642-52512-4_2">SpringerLink</a></p></li>
+<li><p><a class="reference external" href="https://books.google.co.jp/books?hl=ja&amp;lr=lang_ja%7Clang_en&amp;id=xU_mCAAAQBAJ&amp;oi=fnd&amp;pg=PA11&amp;dq=Latent+Variable+Path+Modeling+with+Partial+Least+Squares&amp;ots=r0UMdL6vxS&amp;sig=fw7I8kg47jjsQR3_DnaeFDCgaUY#v=onepage&amp;q=Latent%20Variable%20Path%20Modeling%20with%20Partial%20Least%20Squares&amp;f=false">Google ブックス</a></p></li>
+</ul>
+<p><a class="reference external" href="https://citeseerx.ist.psu.edu/document?repid=rep1&amp;type=pdf&amp;doi=502b24b0277cf026c6b75111d3537874db9463d2">Kelly, B., &amp; Pruitt, S. (2013). Market expectations in the cross‐section of present values. The Journal of Finance, 68(5), 1721-1756.</a></p>
+<ul class="simple">
+<li><p>PLSを株価予測に応用したもの</p></li>
+<li><p>特徴量を低次元に圧縮して予測する</p></li>
+</ul>
+</section>
 </section>
 </section>
 
@@ -677,12 +1013,19 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">多重指標モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">正準相関分析モデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mimic">MIMICモデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">歴史</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">参考</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">歴史</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">関連文献</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pls-partial-least-square-model">PLSモデル (Partial Least Square Model)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pls-partial-least-square-model">PLSモデル (Partial Least Square Model)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#semopy">semopyによる実行例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pls-ccascikit-learn">PLS, CCAはscikit-learnにも実装がある</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">関連文献</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
