@@ -589,7 +589,6 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pls-partial-least-square-model">PLSモデル (Partial Least Square Model)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#semopy">semopyによる実行例</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pls-ccascikit-learn">PLS, CCAはscikit-learnにも実装がある</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">関連文献</a></li>
 </ul>
 </li>
@@ -885,53 +884,47 @@ PLSでは「潜在変数→観測変数」という方向のパスだけでな�
 <div class="cell_output docutils container">
 <img alt="../../_images/d2ef574e33b705491a4a9f8fe922f98adce54110ef193293940df01e026bb823.svg" src="../../_images/d2ef574e33b705491a4a9f8fe922f98adce54110ef193293940df01e026bb823.svg" /></div>
 </div>
-</section>
-<section id="pls-ccascikit-learn">
-<h3>PLS, CCAはscikit-learnにも実装がある<a class="headerlink" href="#pls-ccascikit-learn" title="Permalink to this heading">#</a></h3>
+<div class="note admonition">
+<p class="admonition-title">PLS RegressionとSEMにおける「PLS Model」は違うもの</p>
+<p>PLS, CCAはscikit-learnにも実装があり、一見同様のものに見える</p>
 <p><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.cross_decomposition.PLSRegression.html">sklearn.cross_decomposition.PLSRegression — scikit-learn 1.3.2 documentation</a></p>
-<p>推定結果は結構違う、アルゴリズムも違うっぽい</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cross_decomposition</span> <span class="kn">import</span> <span class="n">PLSRegression</span>
+<p>しかし、これは違うもの。</p>
+<p>モデル構造の違い：</p>
+<ul class="simple">
+<li><p>SEMにおけるPLSモデル：合成変数で別の潜在変数を説明する</p></li>
+<li><p>PLS回帰：合成変数で観測変数を説明する（次元削減してからOLSにかける「主成分回帰」に近い）</p></li>
+</ul>
+<p>アルゴリズムの違い：</p>
+<ul class="simple">
+<li><p>PLSモデル：SEMなので最尤推定などを使う</p></li>
+<li><p>PLS回帰：非線形反復部分最小二乗法（Nonlinear Iterative Partial Least Squares: NIPALS）</p></li>
+</ul>
+<p>参考：</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://ja.wikipedia.org/wiki/%E9%83%A8%E5%88%86%E7%9A%84%E6%9C%80%E5%B0%8F%E4%BA%8C%E4%B9%97%E5%9B%9E%E5%B8%B0">部分的最小二乗回帰 - Wikipedia</a></p></li>
+<li><p><a class="reference external" href="https://link.springer.com/chapter/10.1007/978-3-030-80519-7_1#Sec7">An Introduction to Structural Equation Modeling | SpringerLink</a></p>
+<ul>
+<li><p>1.3節の最後にATTENTIONという項目があり、両者が違うことを述べている</p></li>
+</ul>
+</li>
+<li><p>藤原幸一（2022）『スモールデータ解析と機械学習』オーム社</p>
+<ul>
+<li><p>PLS回帰のアルゴリズムが詳しく載っている</p></li>
+</ul>
+</li>
+</ul>
+<p>推定結果も違う：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cross_decomposition</span> <span class="kn">import</span> <span class="n">PLSRegression</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="s2">&quot;x2&quot;</span><span class="p">]]</span>
 <span class="n">Y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s2">&quot;x3&quot;</span><span class="p">,</span> <span class="s2">&quot;x4&quot;</span><span class="p">]]</span>
 <span class="n">pls</span> <span class="o">=</span> <span class="n">PLSRegression</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">pls</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
-<span class="n">pls</span><span class="o">.</span><span class="n">coef_</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-0.02380083, -0.02041537],
-       [ 0.01237008,  0.01061055]])
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pls</span><span class="o">.</span><span class="n">coef_</span>
+<span class="go">array([[-0.02380083, -0.02041537],</span>
+<span class="go">       [ 0.01237008,  0.01061055]])</span>
 </pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pls</span><span class="o">.</span><span class="n">x_loadings_</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.73164947],
-       [0.68297665]])
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pls</span><span class="o">.</span><span class="n">y_loadings_</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-0.03267168],
-       [ 0.04496658]])
-</pre></div>
-</div>
 </div>
 </div>
 </section>
@@ -942,11 +935,6 @@ PLSでは「潜在変数→観測変数」という方向のパスだけでな�
 <li><p>PLSを主軸にした教科書。豊田（2003）（疑問編）で紹介されていた</p></li>
 <li><p><a class="reference external" href="https://link.springer.com/chapter/10.1007/978-3-642-52512-4_2">SpringerLink</a></p></li>
 <li><p><a class="reference external" href="https://books.google.co.jp/books?hl=ja&amp;lr=lang_ja%7Clang_en&amp;id=xU_mCAAAQBAJ&amp;oi=fnd&amp;pg=PA11&amp;dq=Latent+Variable+Path+Modeling+with+Partial+Least+Squares&amp;ots=r0UMdL6vxS&amp;sig=fw7I8kg47jjsQR3_DnaeFDCgaUY#v=onepage&amp;q=Latent%20Variable%20Path%20Modeling%20with%20Partial%20Least%20Squares&amp;f=false">Google ブックス</a></p></li>
-</ul>
-<p><a class="reference external" href="https://citeseerx.ist.psu.edu/document?repid=rep1&amp;type=pdf&amp;doi=502b24b0277cf026c6b75111d3537874db9463d2">Kelly, B., &amp; Pruitt, S. (2013). Market expectations in the cross‐section of present values. The Journal of Finance, 68(5), 1721-1756.</a></p>
-<ul class="simple">
-<li><p>PLSを株価予測に応用したもの</p></li>
-<li><p>特徴量を低次元に圧縮して予測する</p></li>
 </ul>
 </section>
 </section>
@@ -1024,7 +1012,6 @@ PLSでは「潜在変数→観測変数」という方向のパスだけでな�
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pls-partial-least-square-model">PLSモデル (Partial Least Square Model)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#semopy">semopyによる実行例</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pls-ccascikit-learn">PLS, CCAはscikit-learnにも実装がある</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">関連文献</a></li>
 </ul>
 </li>
