@@ -384,6 +384,18 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../business_administration/history.html">経営学史</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../business_administration/causal_process_tracing.html">因果過程追跡</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">ソフトウェア開発</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/development/index.html">ソフトウェア開発</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/frontend.html">フロントエンド開発</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/backend.html">バックエンド開発</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/product_management/index.html">プロダクトマネジメント</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/product_management/prd.html">PRD（Product Requirements Document）</a></li>
+</ul>
+</li>
+</ul>
 
     </div>
 </nav></div>
@@ -579,12 +591,17 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">カイ2乗検定</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semopy">semopyの推定方法</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lavaan">lavaanの推定方法</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">独立モデルの定義</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semopy">semopyの推定方法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">自由度の推定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">独立モデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">一般の定義</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lavaan">lavaanの推定方法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">自由度の推定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">独立モデルの定義</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">一般の定義</a></li>
 </ul>
             </nav>
         </div>
@@ -606,6 +623,8 @@ document.write(`
 </section>
 <section id="semopy">
 <h2>semopyの推定方法<a class="headerlink" href="#semopy" title="Permalink to this heading">#</a></h2>
+<section id="id3">
+<h3>自由度の推定<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
 <p>Pythonのsemopyパッケージでの自由度の推定方法も豊田同様</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calc_dof</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
     <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">vars</span><span class="p">[</span><span class="s1">&#39;observed&#39;</span><span class="p">])</span>
@@ -614,8 +633,19 @@ document.write(`
 </div>
 <p><a class="gitlab reference external" href="https://gitlab.com/georgy.m/semopy/-/blob/fa9f3e0bd2bdacac377c8ee339255b27f4ca22f8/semopy/stats.py#L187">georgy.m/semopy/-/blob/fa9f3e0bd2bdacac377c8ee339255b27f4ca22f8/semopy/stats.py#L187</a></p>
 </section>
+<section id="id4">
+<h3>独立モデル<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">semopy.stats</span> <span class="kn">import</span> <span class="n">get_baseline_model</span>
+<span class="n">baseline</span> <span class="o">=</span> <span class="n">get_baseline_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="n">baseline</span><span class="o">.</span><span class="n">inspect</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
 <section id="lavaan">
 <h2>lavaanの推定方法<a class="headerlink" href="#lavaan" title="Permalink to this heading">#</a></h2>
+<section id="id5">
+<h3>自由度の推定<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
 <p><a class="reference external" href="https://github.com/yrosseel/lavaan/blob/6f047c800206d23f246d484b9522295257614222/R/lav_partable_utils.R#L242-L256">ソースコード</a>を見ると</p>
 <div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># degrees of freedom</span>
 <span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ndat</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">npar</span>
@@ -629,20 +659,36 @@ document.write(`
 標本母数 - 自由母数
 \]</div>
 <p>とのこと。標本母数のコードは複雑すぎてよくわからず…。</p>
-<section id="id3">
-<h3>独立モデルの定義<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+</section>
+<section id="id6">
+<h3>独立モデルの定義<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
 <p>lavaanでもUser ModelのDoFはsemopyと一致しているので、独立モデルの定義の問題かもしれない。</p>
 <p>独立モデル <code class="docutils literal notranslate"><span class="pre">lav_partable_independence()</span></code>は</p>
 <p><a class="github reference external" href="https://github.com/yrosseel/lavaan/blob/a271f07a212fcf2902352833a37bde2202eb6b00/R/lav_partable_unrestricted.R#L34">yrosseel/lavaan</a></p>
-<p>で定義されているが、結構複雑でよくわからず…</p>
+<p>で定義されている</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">lav</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lav_partable_independence</span><span class="p">(</span><span class="n">fit4_P</span><span class="p">)</span>
+<span class="nf">data.frame</span><span class="p">(</span><span class="n">lav</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">lav_partable_npar()</span></code>で自由母数の数を調べることができる</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># 自由母数の数</span>
+<span class="nf">lav_partable_npar</span><span class="p">(</span><span class="n">lav</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>lavaanの独立モデルでは共分散も自由母数として推定される</strong>。そのため、semopyと一致しない。</p>
+<p>この考え方についてはlavaanのメーリングリストの<a class="reference external" href="https://groups.google.com/g/lavaan/c/zqjDtUx_b9c">Degrees of Freedom Calculations</a>というスレッドがよさそう</p>
+<blockquote>
+<div><p>Ed Rigdon has proposed an even more conservative option that fixes the covariances to the average covariance.</p>
+</div></blockquote>
+<p>として、<a class="reference external" href="https://www.tandfonline.com/doi/abs/10.1080/10705519809540089">Rigdon, E. E. (1998). The equal correlation baseline model for comparative fit assessment in structural equation modeling.</a>が紹介されている</p>
 <p>lavaanのメーリングリストの<a class="reference external" href="https://groups.google.com/g/lavaan/c/iX2usbOxLlg">Null/baseline model</a>というスレッドをみると</p>
 <blockquote>
 <div><p>For continuous data, the default null model in lavaan (and all other SEM software I am aware of) is the “independence” model, which constraints all covariances to zero, and only freely estimates means and variances.</p>
 </div></blockquote>
 </section>
 </section>
-<section id="id4">
-<h2>一般の定義<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
+<section id="id7">
+<h2>一般の定義<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://www.researchgate.net/publication/233149968_Calculating_Degrees_of_Freedom_for_a_Structural_Equation_Model">(PDF) Calculating Degrees of Freedom for a Structural Equation Model</a></p>
 </section>
 </section>
@@ -693,12 +739,17 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">カイ2乗検定</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semopy">semopyの推定方法</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lavaan">lavaanの推定方法</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">独立モデルの定義</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semopy">semopyの推定方法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">自由度の推定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">独立モデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">一般の定義</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lavaan">lavaanの推定方法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">自由度の推定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">独立モデルの定義</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">一般の定義</a></li>
 </ul>
   </nav></div>
 
