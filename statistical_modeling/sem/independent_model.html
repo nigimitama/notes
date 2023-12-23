@@ -619,12 +619,15 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">独立モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">semopy</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">lavaan</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">両者の差異</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">関連するlavaanのメーリングリストのスレッド</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">semopyでの確認方法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">lavaanでの確認方法</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">両者の差異</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-x"><code class="docutils literal notranslate"><span class="pre">fixed.x</span></code>とは</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">関連するlavaanのメーリングリストのスレッド</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
 </ul>
             </nav>
@@ -686,7 +689,7 @@ df = \frac{1}{2} p (p + 1) - q
 <div><p>すべての観測変数間に一切のパスを引かず、各変数の分散のみを自由推定するモデルを独立モデルと考えることが一般的です。 （豊田 2014, p.193）</p>
 </div></blockquote>
 <section id="id3">
-<h3>semopy<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<h3>semopyでの確認方法<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">get_baseline_model()</span></code>で具体的なモデルの状況を確認することができる</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">semopy.stats</span> <span class="kn">import</span> <span class="n">get_baseline_model</span>
 <span class="n">baseline</span> <span class="o">=</span> <span class="n">get_baseline_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
@@ -695,7 +698,7 @@ df = \frac{1}{2} p (p + 1) - q
 </div>
 </section>
 <section id="id4">
-<h3>lavaan<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<h3>lavaanでの確認方法<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
 <p>独立モデルは<code class="docutils literal notranslate"><span class="pre">lav_partable_independence()</span></code>（<a class="reference external" href="https://github.com/yrosseel/lavaan/blob/a271f07a212fcf2902352833a37bde2202eb6b00/R/lav_partable_unrestricted.R#L34">source</a>）で取得できる</p>
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">lav</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lav_partable_independence</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
 <span class="nf">data.frame</span><span class="p">(</span><span class="n">lav</span><span class="p">)</span>
@@ -707,13 +710,43 @@ df = \frac{1}{2} p (p + 1) - q
 </pre></div>
 </div>
 </section>
+</section>
 <section id="id5">
-<h3>両者の差異<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
-<p>一部のモデルでは、<strong>lavaanの独立モデルでは共分散も自由母数として推定される</strong>。
-そのため、semopyと一致しないことがある。</p>
+<h2>両者の差異<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
+<p>lavaanにて、豊田（2014）のコードを実行したとき、独立モデルにて共分散も自由母数となっていた。</p>
+<p>豊田のコードは<code class="docutils literal notranslate"><span class="pre">fixed.x=FALSE</span></code>という引数を指定している</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="w"> </span><span class="n">fit4_P</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sem</span><span class="p">(</span><span class="n">model4_PLS</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">data4</span><span class="p">,</span><span class="w"> </span><span class="n">fixed.x</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">lav</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lav_partable_independence</span><span class="p">(</span><span class="n">fit4_P</span><span class="p">)</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">lav</span><span class="p">)</span>
+<span class="w">   </span><span class="n">id</span><span class="w"> </span><span class="n">lhs</span><span class="w"> </span><span class="n">op</span><span class="w"> </span><span class="n">rhs</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="n">free</span><span class="w">    </span><span class="n">ustart</span><span class="w"> </span><span class="n">exo</span>
+<span class="m">1</span><span class="w">   </span><span class="m">1</span><span class="w">  </span><span class="n">x5</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x5</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">1</span><span class="w"> </span><span class="m">1.9928182</span><span class="w">   </span><span class="m">0</span>
+<span class="m">2</span><span class="w">   </span><span class="m">2</span><span class="w">  </span><span class="n">x6</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x6</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">2</span><span class="w"> </span><span class="m">1.7437518</span><span class="w">   </span><span class="m">0</span>
+<span class="m">3</span><span class="w">   </span><span class="m">3</span><span class="w">  </span><span class="n">x7</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x7</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">3</span><span class="w"> </span><span class="m">0.8440103</span><span class="w">   </span><span class="m">0</span>
+<span class="m">4</span><span class="w">   </span><span class="m">4</span><span class="w">  </span><span class="n">x1</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x1</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">4</span><span class="w"> </span><span class="m">1.0494829</span><span class="w">   </span><span class="m">0</span>
+<span class="m">5</span><span class="w">   </span><span class="m">5</span><span class="w">  </span><span class="n">x2</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x2</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">5</span><span class="w"> </span><span class="m">0.8159293</span><span class="w">   </span><span class="m">0</span>
+<span class="m">6</span><span class="w">   </span><span class="m">6</span><span class="w">  </span><span class="n">x3</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x3</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">6</span><span class="w"> </span><span class="m">1.4174088</span><span class="w">   </span><span class="m">0</span>
+<span class="m">7</span><span class="w">   </span><span class="m">7</span><span class="w">  </span><span class="n">x4</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x4</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">7</span><span class="w"> </span><span class="m">1.2734846</span><span class="w">   </span><span class="m">0</span>
+<span class="m">8</span><span class="w">   </span><span class="m">8</span><span class="w">  </span><span class="n">x1</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x2</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">8</span><span class="w">        </span><span class="kc">NA</span><span class="w">   </span><span class="m">0</span>
+<span class="m">9</span><span class="w">   </span><span class="m">9</span><span class="w">  </span><span class="n">x1</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x3</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">9</span><span class="w">        </span><span class="kc">NA</span><span class="w">   </span><span class="m">0</span>
+<span class="m">10</span><span class="w"> </span><span class="m">10</span><span class="w">  </span><span class="n">x1</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x4</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">   </span><span class="m">10</span><span class="w">        </span><span class="kc">NA</span><span class="w">   </span><span class="m">0</span>
+<span class="m">11</span><span class="w"> </span><span class="m">11</span><span class="w">  </span><span class="n">x2</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x3</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">   </span><span class="m">11</span><span class="w">        </span><span class="kc">NA</span><span class="w">   </span><span class="m">0</span>
+<span class="m">12</span><span class="w"> </span><span class="m">12</span><span class="w">  </span><span class="n">x2</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x4</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">   </span><span class="m">12</span><span class="w">        </span><span class="kc">NA</span><span class="w">   </span><span class="m">0</span>
+<span class="m">13</span><span class="w"> </span><span class="m">13</span><span class="w">  </span><span class="n">x3</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x4</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">   </span><span class="m">13</span><span class="w">        </span><span class="kc">NA</span><span class="w">   </span><span class="m">0</span>
+</pre></div>
+</div>
+<section id="fixed-x">
+<h3><code class="docutils literal notranslate"><span class="pre">fixed.x</span></code>とは<a class="headerlink" href="#fixed-x" title="Permalink to this heading">#</a></h3>
+<p><a class="reference external" href="https://search.r-project.org/CRAN/refmans/lavaan/html/lavOptions.html">R: lavaan Options</a>を見ると</p>
+<blockquote>
+<div><p>fixed.x:</p>
+<p>If TRUE, the exogenous ‘x’ covariates are considered fixed variables and the means, variances and covariances of these variables are fixed to their sample values. If FALSE, they are considered random, and the means, variances and covariances are free parameters. If “default”, the value is set depending on the mimic option.</p>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">fixed.x=TRUE</span></code>だと外生変数は平均・分散・共分散がサンプルの値に固定される。<code class="docutils literal notranslate"><span class="pre">FALSE</span></code>だと平均・分散・共分散が自由母数として扱われる。デフォルトだと<code class="docutils literal notranslate"><span class="pre">mimic</span></code>のオプション（こちらのデフォルトは<code class="docutils literal notranslate"><span class="pre">mimic=&quot;lavaan&quot;</span></code>）に依存する</p>
+<p>User Modelのほうで共分散を自由母数にするように指定していたため独立モデルもそれに引っ張られて共分散を自由母数にしている？？</p>
+</section>
 </section>
 <section id="id6">
-<h3>関連するlavaanのメーリングリストのスレッド<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<h2>関連するlavaanのメーリングリストのスレッド<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <p class="sd-card-text"><a class="reference external" href="https://groups.google.com/g/lavaan/c/zqjDtUx_b9c">Degrees of Freedom Calculations</a></p>
@@ -740,7 +773,6 @@ df = \frac{1}{2} p (p + 1) - q
 </div></blockquote>
 </div>
 </div>
-</section>
 </section>
 <section id="id7">
 <h2>参考文献<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
@@ -820,12 +852,15 @@ df = \frac{1}{2} p (p + 1) - q
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">独立モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">semopy</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">lavaan</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">両者の差異</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">関連するlavaanのメーリングリストのスレッド</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">semopyでの確認方法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">lavaanでの確認方法</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">両者の差異</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-x"><code class="docutils literal notranslate"><span class="pre">fixed.x</span></code>とは</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">関連するlavaanのメーリングリストのスレッド</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
 </ul>
   </nav></div>
