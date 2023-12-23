@@ -72,7 +72,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'statistical_modeling/sem/independent_model';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'statistical_modeling/sem/independence_model';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="ベイズ統計モデリング" href="../bayes_modeling/index.html" />
@@ -489,7 +489,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Fstatistical_modeling/sem/independent_model.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Fstatistical_modeling/sem/independence_model.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -519,7 +519,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="../../_sources/statistical_modeling/sem/independent_model.ipynb" target="_blank"
+      <li><a href="../../_sources/statistical_modeling/sem/independence_model.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -625,10 +625,14 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">両者の差異</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-x"><code class="docutils literal notranslate"><span class="pre">fixed.x</span></code>とは</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#baseline-model">外生変数の共分散も推定するBaseline Modelの定義もある</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">他のBaseline Modelの説明</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uclalavaan">UCLAのLavaanのセミナーにおける説明</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mplusbaseline-model">MplusにおけるBaseline Model</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">関連するlavaanのメーリングリストのスレッド</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">関連するlavaanのメーリングリストのスレッド</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -742,11 +746,96 @@ df = \frac{1}{2} p (p + 1) - q
 <p>If TRUE, the exogenous ‘x’ covariates are considered fixed variables and the means, variances and covariances of these variables are fixed to their sample values. If FALSE, they are considered random, and the means, variances and covariances are free parameters. If “default”, the value is set depending on the mimic option.</p>
 </div></blockquote>
 <p><code class="docutils literal notranslate"><span class="pre">fixed.x=TRUE</span></code>だと外生変数は平均・分散・共分散がサンプルの値に固定される。<code class="docutils literal notranslate"><span class="pre">FALSE</span></code>だと平均・分散・共分散が自由母数として扱われる。デフォルトだと<code class="docutils literal notranslate"><span class="pre">mimic</span></code>のオプション（こちらのデフォルトは<code class="docutils literal notranslate"><span class="pre">mimic=&quot;lavaan&quot;</span></code>）に依存する</p>
-<p>User Modelのほうで共分散を自由母数にするように指定していたため独立モデルもそれに引っ張られて共分散を自由母数にしている？？</p>
+<p><strong>→ User Modelのほうで共分散を自由母数にするように指定していたため独立モデルもそれに引っ張られて共分散を自由母数にしている様子</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">fixed.x</span> <span class="pre">=</span> <span class="pre">F</span></code>にするのではなく自分で分散共分散も指定すれば共分散は自由母数にならず、semopyと一致する</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># fixed.x = Fにするのではなく自分で分散共分散も指定</span>
+<span class="n">model4_PLS_2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;</span>
+<span class="s">  f1 ~ x1 + x2 + x3 + x4</span>
+<span class="s">  f2 =~ x5 + x6 + x7</span>
+<span class="s">  f1 =~ f2</span>
+<span class="s">  f1 ~~ 0*f1</span>
+<span class="s">  f2 ~~ f2</span>
+<span class="s">  x1 ~~ x1</span>
+<span class="s">  x2 ~~ x2</span>
+<span class="s">  x3 ~~ x3</span>
+<span class="s">  x4 ~~ x4</span>
+<span class="s">  x1 ~~ x2</span>
+<span class="s">  x1 ~~ x3</span>
+<span class="s">  x1 ~~ x4</span>
+<span class="s">  x2 ~~ x3</span>
+<span class="s">  x2 ~~ x4</span>
+<span class="s">  x3 ~~ x4</span>
+<span class="s">&#39;</span>
+<span class="n">fit4_P</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sem</span><span class="p">(</span><span class="n">model4_PLS_2</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">data4</span><span class="p">,</span><span class="w"> </span><span class="n">fixed.x</span><span class="o">=</span><span class="bp">T</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">fit4_P</span><span class="p">,</span><span class="w"> </span><span class="n">standardized</span><span class="o">=</span><span class="bp">T</span><span class="p">,</span><span class="w"> </span><span class="n">fit.measures</span><span class="o">=</span><span class="bp">T</span><span class="p">)</span>
+
+<span class="n">lav</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lav_partable_independence</span><span class="p">(</span><span class="n">fit4_P</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">lav</span><span class="p">)</span>
+<span class="w">  </span><span class="n">id</span><span class="w"> </span><span class="n">lhs</span><span class="w"> </span><span class="n">op</span><span class="w"> </span><span class="n">rhs</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="n">free</span><span class="w">    </span><span class="n">ustart</span><span class="w"> </span><span class="n">exo</span>
+<span class="m">1</span><span class="w">  </span><span class="m">1</span><span class="w">  </span><span class="n">x5</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x5</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">1</span><span class="w"> </span><span class="m">1.9928182</span><span class="w">   </span><span class="m">0</span>
+<span class="m">2</span><span class="w">  </span><span class="m">2</span><span class="w">  </span><span class="n">x6</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x6</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">2</span><span class="w"> </span><span class="m">1.7437518</span><span class="w">   </span><span class="m">0</span>
+<span class="m">3</span><span class="w">  </span><span class="m">3</span><span class="w">  </span><span class="n">x7</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x7</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">3</span><span class="w"> </span><span class="m">0.8440103</span><span class="w">   </span><span class="m">0</span>
+<span class="m">4</span><span class="w">  </span><span class="m">4</span><span class="w">  </span><span class="n">x1</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x1</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">4</span><span class="w"> </span><span class="m">1.0494829</span><span class="w">   </span><span class="m">0</span>
+<span class="m">5</span><span class="w">  </span><span class="m">5</span><span class="w">  </span><span class="n">x2</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x2</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">5</span><span class="w"> </span><span class="m">0.8159293</span><span class="w">   </span><span class="m">0</span>
+<span class="m">6</span><span class="w">  </span><span class="m">6</span><span class="w">  </span><span class="n">x3</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x3</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">6</span><span class="w"> </span><span class="m">1.4174088</span><span class="w">   </span><span class="m">0</span>
+<span class="m">7</span><span class="w">  </span><span class="m">7</span><span class="w">  </span><span class="n">x4</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">x4</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">7</span><span class="w"> </span><span class="m">1.2734846</span><span class="w">   </span><span class="m">0</span>
+</pre></div>
+</div>
 </section>
+<section id="baseline-model">
+<h3>外生変数の共分散も推定するBaseline Modelの定義もある<a class="headerlink" href="#baseline-model" title="Permalink to this heading">#</a></h3>
+<blockquote>
+<div><p>a model which includes the means and variances of all observed variables plus the covariances of all observed exogenous variables.</p>
+<p><a class="reference external" href="https://stats.oarc.ucla.edu/stata/faq/what-are-the-saturated-and-baseline-models-in-sem/">What are the saturated and baseline models in sem? | Stata FAQ</a></p>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">fixed.x=F</span></code>なので外生変数の分散や共分散も推定する → なのでBaseline Modelに入る、ということ？</p>
 </section>
 <section id="id6">
-<h2>関連するlavaanのメーリングリストのスレッド<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
+<h3>他のBaseline Modelの説明<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<p>baseline modelsには2つのモデルが含まれる</p>
+<ol class="arabic simple">
+<li><p>unrestricted model: saturated model</p></li>
+<li><p>independence model: モデルの変数の平均と分散をfitする。共分散は0に固定される</p></li>
+</ol>
+<blockquote>
+<div><p>The baseline models are an unrestricted model and an independence model.</p>
+</div></blockquote>
+<blockquote>
+<div><p>The unrestricted model is a fully saturated model, which fits all means, variances, and covariances of the specified Model Variables without imposing any structure on the data.</p>
+</div></blockquote>
+<blockquote>
+<div><p>The independence model fits all means and variances of the specified Model Variables. All covariances among the specified Model Variables are fixed to zero, which leads to a highly restrictive model.</p>
+</div></blockquote>
+<p><a class="reference external" href="https://www.jmp.com/support/help/en/17.2/index.shtml#page/jmp/overview-of-structural-equation-models.shtml">Overview of Structural Equation Models</a></p>
+</section>
+<section id="uclalavaan">
+<h3>UCLAのLavaanのセミナーにおける説明<a class="headerlink" href="#uclalavaan" title="Permalink to this heading">#</a></h3>
+<p><a class="reference external" href="https://stats.oarc.ucla.edu/r/seminars/rsem/#s3d">Introduction to Structural Equation Modeling (SEM) in R with lavaan</a></p>
+<blockquote>
+<div><p>The baseline model can be thought of as the “worst-fitting” model and simply assumes that there is absolutely no covariance between variables.</p>
+</div></blockquote>
+<blockquote>
+<div><p>essentially estimating only the variances. Since there is are no regression paths, there are no endogenous variables in our model</p>
+</div></blockquote>
+<p>変数間の共分散がまったくなく、パスがないため分散だけを推定する、という豊田と同じ定義</p>
+</section>
+<section id="mplusbaseline-model">
+<h3>MplusにおけるBaseline Model<a class="headerlink" href="#mplusbaseline-model" title="Permalink to this heading">#</a></h3>
+<p><a class="reference external" href="https://stats.oarc.ucla.edu/mplus/faq/what-is-the-baseline-model-in-mplus/">What is the baseline model in Mplus? | Mplus FAQ</a></p>
+<blockquote>
+<div><p>The baseline model Mplus prints the chi-square statistic for is a model where all of the structural (regression) paths are assumed to be zero (i.e., a null model). For the measurement model, all measurement paths from the latent variable to the observed indicator are 1, and the variance of the latent variable is 0 (since setting the path coefficients to one makes the latent variable just a linear composite of the indicator variables). Only the intercepts and residual variances of the observed endogenous (dependent) variables (i.e., read, math, science, and socst ) are estimated.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>構造方程式のパス係数はゼロと仮定（Null model）</p></li>
+<li><p>測定方程式では因子負荷量が1で潜在変数の分散は0と仮定</p></li>
+<li><p>観測された内生変数の切片と残差分散のみが推定される</p></li>
+</ul>
+</section>
+</section>
+<section id="id7">
+<h2>関連するlavaanのメーリングリストのスレッド<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <p class="sd-card-text"><a class="reference external" href="https://groups.google.com/g/lavaan/c/zqjDtUx_b9c">Degrees of Freedom Calculations</a></p>
@@ -774,8 +863,8 @@ df = \frac{1}{2} p (p + 1) - q
 </div>
 </div>
 </section>
-<section id="id7">
-<h2>参考文献<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
+<section id="id8">
+<h2>参考文献<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>豊田秀樹（2012）『因子分析入門』</p></li>
 <li><p>豊田秀樹（2014）『共分散構造分析［Ｒ編］―構造方程式モデリング―』</p></li>
@@ -858,10 +947,14 @@ df = \frac{1}{2} p (p + 1) - q
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">両者の差異</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-x"><code class="docutils literal notranslate"><span class="pre">fixed.x</span></code>とは</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#baseline-model">外生変数の共分散も推定するBaseline Modelの定義もある</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">他のBaseline Modelの説明</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uclalavaan">UCLAのLavaanのセミナーにおける説明</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mplusbaseline-model">MplusにおけるBaseline Model</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">関連するlavaanのメーリングリストのスレッド</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">関連するlavaanのメーリングリストのスレッド</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
 </ul>
   </nav></div>
 
