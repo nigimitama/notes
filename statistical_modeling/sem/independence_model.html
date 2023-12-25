@@ -632,7 +632,10 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">関連するlavaanのメーリングリストのスレッド</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#semopybaseline-models">例：semopyのbaseline models</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -700,6 +703,90 @@ df = \frac{1}{2} p (p + 1) - q
 <span class="n">baseline</span><span class="o">.</span><span class="n">inspect</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="n">trees</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;trees&quot;</span><span class="p">,</span> <span class="s2">&quot;datasets&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+<span class="kn">import</span> <span class="nn">semopy</span>
+<span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    Volume ~ Height + Girth</span>
+<span class="s2">    Height ~~ Height</span>
+<span class="s2">    Girth ~~ Girth</span>
+<span class="s2">    Height ~~ Girth</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">semopy</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trees</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">semopy.stats</span> <span class="kn">import</span> <span class="n">get_baseline_model</span>
+<span class="n">baseline</span> <span class="o">=</span> <span class="n">get_baseline_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="n">baseline</span><span class="o">.</span><span class="n">inspect</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lval</th>
+      <th>op</th>
+      <th>rval</th>
+      <th>Estimate</th>
+      <th>Std. Err</th>
+      <th>z-value</th>
+      <th>p-value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Height</td>
+      <td>~~</td>
+      <td>Height</td>
+      <td>39.290323</td>
+      <td>9.979752</td>
+      <td>3.937004</td>
+      <td>0.000083</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Girth</td>
+      <td>~~</td>
+      <td>Girth</td>
+      <td>9.530239</td>
+      <td>2.420683</td>
+      <td>3.937004</td>
+      <td>0.000083</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Volume</td>
+      <td>~~</td>
+      <td>Volume</td>
+      <td>130.743288</td>
+      <td>33.208828</td>
+      <td>3.937004</td>
+      <td>0.000083</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
 </section>
 <section id="id4">
 <h3>lavaanでの確認方法<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
@@ -711,6 +798,18 @@ df = \frac{1}{2} p (p + 1) - q
 <p>また、<code class="docutils literal notranslate"><span class="pre">lav_partable_npar()</span></code>で自由母数の数を調べることができる</p>
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># 自由母数の数</span>
 <span class="nf">lav_partable_npar</span><span class="p">(</span><span class="n">lav</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">lavaan</span><span class="p">)</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;Volume ~ Height + Girth&#39;</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sem</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trees</span><span class="p">,</span><span class="w"> </span><span class="n">fixed.x</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">lav</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lav_partable_independence</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">lav</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">free</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0L</span><span class="p">)</span>
+<span class="w">  </span><span class="n">id</span><span class="w">    </span><span class="n">lhs</span><span class="w"> </span><span class="n">op</span><span class="w">    </span><span class="n">rhs</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="n">free</span><span class="w">     </span><span class="n">ustart</span><span class="w"> </span><span class="n">exo</span>
+<span class="m">1</span><span class="w">  </span><span class="m">1</span><span class="w"> </span><span class="n">Volume</span><span class="w"> </span><span class="o">~~</span><span class="w"> </span><span class="n">Volume</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">1</span><span class="w"> </span><span class="m">261.486576</span><span class="w">   </span><span class="m">0</span>
+<span class="m">2</span><span class="w">  </span><span class="m">2</span><span class="w"> </span><span class="n">Height</span><span class="w"> </span><span class="o">~~</span><span class="w"> </span><span class="n">Height</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">2</span><span class="w">  </span><span class="m">39.290323</span><span class="w">   </span><span class="m">0</span>
+<span class="m">3</span><span class="w">  </span><span class="m">3</span><span class="w">  </span><span class="n">Girth</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">Girth</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">3</span><span class="w">   </span><span class="m">9.530239</span><span class="w">   </span><span class="m">0</span>
+<span class="m">4</span><span class="w">  </span><span class="m">4</span><span class="w"> </span><span class="n">Height</span><span class="w"> </span><span class="o">~~</span><span class="w">  </span><span class="n">Girth</span><span class="w">    </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">     </span><span class="m">1</span><span class="w">    </span><span class="m">4</span><span class="w">         </span><span class="kc">NA</span><span class="w">   </span><span class="m">0</span>
 </pre></div>
 </div>
 </section>
@@ -869,6 +968,9 @@ df = \frac{1}{2} p (p + 1) - q
 <li><p>豊田秀樹（2012）『因子分析入門』</p></li>
 <li><p>豊田秀樹（2014）『共分散構造分析［Ｒ編］―構造方程式モデリング―』</p></li>
 </ul>
+<section id="semopybaseline-models">
+<h3>例：semopyのbaseline models<a class="headerlink" href="#semopybaseline-models" title="Permalink to this heading">#</a></h3>
+</section>
 </section>
 </section>
 
@@ -954,7 +1056,10 @@ df = \frac{1}{2} p (p + 1) - q
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">関連するlavaanのメーリングリストのスレッド</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#semopybaseline-models">例：semopyのbaseline models</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
