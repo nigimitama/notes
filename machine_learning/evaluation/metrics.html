@@ -649,6 +649,9 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classification">Classification</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recall">Recall</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#precision">Precision</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f1-score">F1-score</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#roc">ROC曲線</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#precision-recall-curve">Precision-Recall Curve</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#imbalanced-dataprroc">imbalanced dataとPR曲線・ROC曲線</a></li>
@@ -678,16 +681,31 @@ document.write(`
 </section>
 <section id="classification">
 <h2>Classification<a class="headerlink" href="#classification" title="Permalink to this heading">#</a></h2>
+<section id="recall">
+<h3>Recall<a class="headerlink" href="#recall" title="Permalink to this heading">#</a></h3>
 <p>再現率（recall）：実際にPositiveであるデータのうち正しく予測できたものの割合、どれだけFalse Negativeを小さくできたか</p>
 <div class="math notranslate nohighlight">
 \[
 Recall = \frac{TP}{TP+FN}
 \]</div>
+</section>
+<section id="precision">
+<h3>Precision<a class="headerlink" href="#precision" title="Permalink to this heading">#</a></h3>
 <p>適合率（precision）：予測したPositiveにおいて正しく予測できたものの割合、どれだけFalse Positiveを小さくできたか</p>
 <div class="math notranslate nohighlight">
 \[
 Precision = \frac{TP}{TP+FP}
 \]</div>
+</section>
+<section id="f1-score">
+<h3>F1-score<a class="headerlink" href="#f1-score" title="Permalink to this heading">#</a></h3>
+<p>PrecisionとRecallにはトレードオフ関係がある（<a class="reference external" href="https://datawokagaku.com/f1score/">https://datawokagaku.com/f1score/</a> ）ため、調和平均をとったF1-scoreというものもある</p>
+<div class="math notranslate nohighlight">
+\[
+F1 = \frac{2}{\frac{1}{Recall} + \frac{1}{Precision}}
+= 2 \frac{Recall \times Precision}{Recall + Precision}
+\]</div>
+</section>
 <section id="roc">
 <h3>ROC曲線<a class="headerlink" href="#roc" title="Permalink to this heading">#</a></h3>
 <p>true positive rate <span class="math notranslate nohighlight">\(TPR\)</span>（recallの別名、陽性者を正しく陽性だと当てる率、sensitivityとも）とfalse positive rate <span class="math notranslate nohighlight">\(FPR\)</span>（陰性者のうち偽陽性になる率）</p>
@@ -700,42 +718,56 @@ FPR = \frac{FP}{N} = \frac{FP}{FN + TN} =
 \end{split}\]</div>
 <p>を用いて閾値を変えながら描いた曲線をreceiver operating characteristic（ROC; 受信者操作特性）曲線という。</p>
 <p>ROC曲線の下側の面積（Area Under the Curve）を<strong>ROC-AUC</strong>という。ランダムなアルゴリズム（chance level）だとROC-AUCは0.5になる</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
 <span class="n">size</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ランダムなアルゴリズム</span>
-<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_redundant</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                           <span class="n">class_sep</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
+<span class="c1"># ランダムなアルゴリズム</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">random</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+<span class="c1"># Logistic Regression</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">RocCurveDisplay</span>
 <span class="n">RocCurveDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span>
     <span class="n">y</span><span class="p">,</span>
-    <span class="n">f</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkorange&quot;</span>
+    <span class="n">random</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Random Classifier&quot;</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkorange&quot;</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
 <span class="p">)</span>
 <span class="n">RocCurveDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span>
     <span class="n">y</span><span class="p">,</span>
-    <span class="n">f</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span>
+    <span class="n">y_pred</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Logistic Regression&quot;</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">,</span>
+    <span class="n">plot_chance_level</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
 <span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;sklearn.metrics._plot.roc_curve.RocCurveDisplay at 0x7f722c082430&gt;
-</pre></div>
-</div>
-<img alt="../../_images/edd1ceb7968807312fc5456e0ba614a32e17660d3d4070c6c22e9e25079bdc6f.png" src="../../_images/edd1ceb7968807312fc5456e0ba614a32e17660d3d4070c6c22e9e25079bdc6f.png" />
-<img alt="../../_images/2834dee770a03c8bb94b325f6fcd710b07603126ce2646a20670063e6c36c153.png" src="../../_images/2834dee770a03c8bb94b325f6fcd710b07603126ce2646a20670063e6c36c153.png" />
+<img alt="../../_images/f633c22cdec7d5d6f9c7ea2617ed325c69a481342086238a8bf9ca9ffe8e15ae.png" src="../../_images/f633c22cdec7d5d6f9c7ea2617ed325c69a481342086238a8bf9ca9ffe8e15ae.png" />
 </div>
 </div>
 </section>
@@ -747,96 +779,138 @@ FPR = \frac{FP}{N} = \frac{FP}{FN + TN} =
 \[
 AP = \sum^K_{k=1} (R_k - R_{k-1}) P_k
 \]</div>
-<p>ROC曲線とは異なり</p>
+<p>ROC曲線とは異なり、「ランダムなアルゴリズムなら0.5」のような安定したスケールではなく、スケールはクラスのバランス（不均衡具合）に依存する</p>
+<p>その分、不均衡データにおけるモデル評価に向いていると言われている</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
+<span class="n">size</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_redundant</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                           <span class="n">class_sep</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Logistic Regression</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">PrecisionRecallDisplay</span>
+<span class="n">PrecisionRecallDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/41a5dc705009be6a8dda6cec6a5035c6d58ee3d761adb94b14fbaf25063c9ab0.png" src="../../_images/41a5dc705009be6a8dda6cec6a5035c6d58ee3d761adb94b14fbaf25063c9ab0.png" />
+</div>
+</div>
 </section>
 <section id="imbalanced-dataprroc">
 <h3>imbalanced dataとPR曲線・ROC曲線<a class="headerlink" href="#imbalanced-dataprroc" title="Permalink to this heading">#</a></h3>
+<p>ある不均衡データがあったとする</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
+<span class="n">size</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_redundant</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>
+                           <span class="n">class_sep</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
-<span class="n">y</span><span class="p">[</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mf">0.9</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7f71f3a6d220&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0    943
+1     57
+Name: count, dtype: int64
 </pre></div>
 </div>
-<img alt="../../_images/e8b772e5dc83d996253c659250e5aa2e029887f4ce7f524eee237792f3cd2968.png" src="../../_images/e8b772e5dc83d996253c659250e5aa2e029887f4ce7f524eee237792f3cd2968.png" />
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.09
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
-
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Logistic Regression</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
 <span class="n">clf</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
 <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">p_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">p_pred</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<span class="k">for</span> <span class="n">metrics</span> <span class="ow">in</span> <span class="s2">&quot;accuracy_score, recall_score, precision_score, f1_score&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metrics</span><span class="si">}</span><span class="s2">(y, y_pred)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metrics</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(array([31., 13., 10., 13., 10.,  5.,  7.,  2.,  2.,  7.]),
- array([0.0217468 , 0.04332273, 0.06489867, 0.08647461, 0.10805055,
-        0.12962649, 0.15120243, 0.17277836, 0.1943543 , 0.21593024,
-        0.23750618]),
- &lt;BarContainer object of 10 artists&gt;)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>accuracy_score=0.94
+recall_score=0.053
+precision_score=0.43
+f1_score=0.094
 </pre></div>
 </div>
-<img alt="../../_images/75b69b3fbcd622c3ab760b4d35b417d819c11cfc6fedd431083acc14a4886e55.png" src="../../_images/75b69b3fbcd622c3ab760b4d35b417d819c11cfc6fedd431083acc14a4886e55.png" />
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">p_pred</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">ConfusionMatrixDisplay</span>
+<span class="n">ConfusionMatrixDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.07147041581159291
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;sklearn.metrics._plot.confusion_matrix.ConfusionMatrixDisplay at 0x7ffa357b8bb0&gt;
 </pre></div>
 </div>
+<img alt="../../_images/d6a79487300d48117c6783771a0b027dce303de256fc19aeaee0ea94976834ef.png" src="../../_images/d6a79487300d48117c6783771a0b027dce303de256fc19aeaee0ea94976834ef.png" />
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">p_pred</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">RocCurveDisplay</span><span class="p">,</span> <span class="n">PrecisionRecallDisplay</span>
+<span class="n">RocCurveDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">plot_chance_level</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">PrecisionRecallDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.090000036374747
-</pre></div>
-</div>
+<img alt="../../_images/787d8022d7d465e3c916f647948688385ae56055113020ac99e9e21ca09e4858.png" src="../../_images/787d8022d7d465e3c916f647948688385ae56055113020ac99e9e21ca09e4858.png" />
 </div>
 </div>
 </section>
@@ -1045,6 +1119,9 @@ AP = \sum^K_{k=1} (R_k - R_{k-1}) P_k
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classification">Classification</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recall">Recall</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#precision">Precision</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f1-score">F1-score</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#roc">ROC曲線</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#precision-recall-curve">Precision-Recall Curve</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#imbalanced-dataprroc">imbalanced dataとPR曲線・ROC曲線</a></li>
