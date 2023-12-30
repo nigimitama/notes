@@ -1,0 +1,1167 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>統計的因果探索 &#8212; データサイエンスの勉強ノート</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-GXSWJY51EG"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-GXSWJY51EG');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/causal_discovery';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Uplift Modeling" href="uplift_modeling.html" />
+    <link rel="prev" title="Causal ML" href="causal_machine_learning.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">データサイエンスの勉強ノート</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    データサイエンス関連+αまとめメモ
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">データの前処理と管理</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../data_management/preprocessing.html">データの前処理</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">数学</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../mathematics/introduction.html">数学の初歩</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mathematics/set_theory.html">集合論</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mathematics/functions.html">関数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mathematics/taylor_approximation.html">テイラー近似</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mathematics/calculus.html">微分積分学</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mathematics/linear_algebra/index.html">線形代数学</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/vector.html">ベクトルとベクトル空間</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/matrix.html">行列</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/linear_mapping.html">線形写像</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/simultaneous_equation.html">連立一次方程式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/eigenvalue.html">固有値と固有ベクトル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/decomposition.html">行列の分解</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../mathematics/linear_algebra/exercise/index.html">練習問題</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../mathematics/linear_algebra/exercise/exercise_1.html">練習問題 メモ 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mathematics/linear_algebra/exercise/exercise_2.html">練習問題 メモ 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mathematics/linear_algebra/exercise/exercise_3.html">練習問題 メモ 3</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mathematics/mathematical_optimization/index.html">数理最適化</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/mathematical_optimization/optimality_conditions.html">最適性条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/mathematical_optimization/gradient_descent.html">勾配法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/mathematical_optimization/lagrange.html">ラグランジュの未定乗数法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/mathematical_optimization/knapsack_problem.html">ナップサック問題</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/mathematical_optimization/optimal_transport.html">最適輸送</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">統計学</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../statistics/probability/index.html">確率</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/probability/01_probability.html">確率</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/probability/02_expectation.html">確率変数と期待値・分散</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/probability/03_discrete_probability_distribution.html">離散確率分布</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/probability/04_continuous_probability_distribution.html">連続確率分布</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/probability/05_nature_of_distribution.html">確率分布の性質</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../statistics/statistical_inference/index.html">統計的推測</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/statistical_inference/01_sample_distribution.html">標本分布</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/statistical_inference/02_generating_functions.html">母関数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/statistical_inference/03_central_limit_theorem.html">中心極限定理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/statistical_inference/04_point_estimation.html">点推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/statistical_inference/05_interval_inference.html">区間推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/statistical_inference/06_test.html">検定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/statistical_inference/ci_and_test.html">信頼区間と検定の関係性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/statistical_inference/likelihood_and_probability.html">尤度関数と確率関数の違いは何なのか？</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../statistics/divergence.html">ダイバージェンス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../statistics/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../statistics/nonparametric_density_estimation.html">ノンパラメトリック密度推定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../statistics/correlation.html">順序尺度の相関係数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../statistics/sandwich_estimator.html">Sandwich Estimator</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../statistics/asymptotic_theory/index.html">漸近理論</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/asymptotic_theory/introduction.html">漸近理論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/asymptotic_theory/landau_symbol.html">漸近オーダーの表記法</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../statistics/bayes_statistics/index.html">ベイズ統計学</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/bayes_statistics/bayes_estimation.html">ベイズ推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistics/bayes_statistics/mcmc.html">マルコフ連鎖モンテカルロ（MCMC）法</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">統計モデリング</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../statistical_modeling/factor_analysis.html">因子分析</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../statistical_modeling/sem/index.html">構造方程式モデリング</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/sem/introduction.html">Structural Equation Modeling（SEM）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/sem/statistic.html">統計量</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/sem/regression_analysis.html">回帰分析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/sem/path_analysis.html">パス解析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/sem/mimic_pls.html">MIMICモデル &amp; PLSモデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/sem/factor_analysis.html">因子分析モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/sem/evaluation.html">モデルの評価</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/sem/independence_model.html">Lavaanの独立モデル</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../statistical_modeling/bayes_modeling/index.html">ベイズ統計モデリング</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/bayes_modeling/introduction.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/bayes_modeling/aic.html">AIC / BIC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/bayes_modeling/waic.html">WAIC / WBIC / 渡辺ベイズ理論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/bayes_modeling/mcmc.html">MCMC法</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../statistical_modeling/symbolic_data_analysis.html">Symbolic Data Analysis</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">計量経済学・因果推論</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="rubin_causal_model.html">ルービンの因果モデル</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hte.html">Heterogeneous Treatment Effectsの推定</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="ols/index.html">回帰分析</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="ols/ols.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/cef.html">条件付き期待値関数（CEF）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/ols_estimator.html">OLS推定量の性質</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/test_of_ols.html">OLSの検定・区間推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/ols_robust_standard_error.html">OLSのロバスト標準誤差</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/log_transformation.html">対数変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/omitted_variable_bias.html">欠落変数バイアス</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/fwl.html">FWL定理</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="propensity_score.html">傾向スコア</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="iv/index.html">操作変数法</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="iv/instrumental_variables.html">操作変数法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iv/history.html">操作変数法の歴史</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iv/simulatenous_equasion_model.html">同時方程式モデル</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="regression_discontinuity.html">RDD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fixed_effect_model.html">固定効果モデル</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference_in_differences.html">Difference In Differences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic_control.html">Synthetic Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gmm.html">一般化モーメント法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dml.html">Double/Debiased Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="causal_machine_learning.html">Causal ML</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">統計的因果探索</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uplift_modeling.html">Uplift Modeling</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">機械学習</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../machine_learning/linear_models/index.html">線形モデル</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/linear_models/regression/linear_regression.html">線形回帰</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/linear_models/regression/ridge_regression.html">Ridge回帰</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/linear_models/regression/lasso.html">LASSO</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/linear_models/classification/linear_discriminant_analysis.html">線形判別モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/linear_models/classification/logistic_regression.html">ロジスティック回帰</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning/svm.html">Support Vector Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning/factorization_machines.html">Factorization Machines</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../machine_learning/trees/index.html">Tree-based Algorithms</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/decision_tree.html">決定木</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/gbdt.html">勾配ブースティング決定木</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/gbdt_quantize.html">GBDTの勾配の量子化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/ngboost.html">NGBoost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/mondrian_forest.html">Mondrian Forests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/generalized_random_forest.html">Generalized Random Forest (GRF)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/distributional_random_forest.html">Distributional Random Forest</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning/dimension_reduction.html">次元削減</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning/imbalanced_data.html">不均衡データ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning/probability_prediction.html">確率予測</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../machine_learning/evaluation/evaluation.html">予測モデルの評価</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/evaluation/cross_validation.html">交差検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/evaluation/generalization_error.html">汎化誤差</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/evaluation/aic.html">AICとCross Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/evaluation/metrics.html">Metrics</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning/ml_ops/index.html">MLOps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning/overfitting.html">過学習と良性の過学習（Double Descent, Grokking）</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../machine_learning/explainability/introduction.html">説明可能性</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/explainability/influence_function.html">影響関数（influence function）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/explainability/influence_function_with_linear_regression.html">Influence Function 線形回帰での例</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">深層学習</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../deep_learning/history.html">深層学習の歴史</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deep_learning/dl_and_tabular_data.html">Deep Learning and Tabular data</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../deep_learning/dnn/index.html">Deep Neural Network</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../deep_learning/dnn/mlp.html">多層パーセプトロン</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../deep_learning/cnn/index.html">CNN</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../deep_learning/cnn/cnn.html">CNN</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../deep_learning/rnn/index.html">RNN</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../deep_learning/rnn/rnn.html">RNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_learning/rnn/lstm.html">LSTM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_learning/rnn/gru.html">GRU</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../deep_learning/transformer/index.html">Transformer</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../deep_learning/transformer/algorithm.html">Transformerのアルゴリズム</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_learning/transformer/analysis.html">Transformerの理論的解析</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">生成モデル</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../generative_models/generative_models.html">生成モデル</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../generative_models/autoencoder.html">Autoencoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../generative_models/gan.html">GAN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../generative_models/diffusion_models.html">Diffusion Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">自然言語処理</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../natural_language_processing/introduction.html">自然言語処理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../natural_language_processing/embedding.html">単語の埋め込み</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../natural_language_processing/rnn.html">言語モデルとRNN</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">画像処理</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../image_processing/introduction.html">画像認識</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">経済学</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../economics/microeconomics/index.html">ミクロ経済学</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../economics/microeconomics/demand_elasticity.html">需要の弾力性</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../economics/macroeconomics/index.html">マクロ経済学</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../economics/macroeconomics/national_income_accounts.html">国民経済計算</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../economics/macroeconomics/economic_growth.html">経済成長</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../economics/macroeconomics/microfoundations.html">ミクロ的基礎付け</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../economics/quantitative_economics.html">Quantitative Economics</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">金融経済学</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/introduction.html">概要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/optimal_portfolio.html">最適ポートフォリオ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/capm.html">CAPM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/metrics.html">ファイナンスの指標たち</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/feature_neutralization.html">Feature Neutralization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/statistical_arbitrage.html">統計的裁定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../financial_economics/asset_pricing.html">Asset Pricing</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../financial_economics/papers/index.html">論文メモ</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../financial_economics/papers/abcd_forcast.html">ABCD Forcast</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../financial_economics/financial_time_series/index.html">金融時系列解析</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-23"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../financial_economics/financial_time_series/augmentation.html">Data Augmentation</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">ビジネス関連知識</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../business/revenue_structure.html">売上構造やKPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../business/accounting.html">会計</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">経営学</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../business_administration/introduction.html">概要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../business_administration/history.html">経営学史</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../business_administration/causal_process_tracing.html">因果過程追跡</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">ソフトウェア開発</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../software_engineering/foundations/index.html">ソフトウェア開発の基礎</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/foundations/programming.html">プログラミング</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/foundations/data_structure.html">データ構造</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/foundations/search_algorithms.html">探索アルゴリズム</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/foundations/sort_algorithms.html">ソートのアルゴリズム</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/foundations/mathematic_algorithms.html">数学的なアルゴリズム</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/foundations/other_algorithms.html">その他のアルゴリズム</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../software_engineering/development/index.html">ソフトウェア開発</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/frontend.html">フロントエンド開発</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/backend.html">バックエンド開発</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/networking.html">ネットワーク・通信</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../software_engineering/product_management/index.html">プロダクトマネジメント</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-26"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/product_management/prd.html">PRD（Product Requirements Document）</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../software_engineering/project_management/index.html">プロジェクトマネジメント</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-27"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/project_management/development_methods.html">システム開発手法</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/nigimitama/notes" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Feconometrics/causal_discovery.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/econometrics/causal_discovery.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>統計的因果探索</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lingam">LiNGAM</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モデルの例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">係数行列の推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">モデルの変形</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">独立成分分析</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">LiNGAMの計算手順</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">lingamパッケージで実践</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>統計的因果探索<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
+<p>因果グラフ（DAG）を用いて、selection on observableの仮定を置いて因果推論する場合、欠落変数バイアスが起きないように適切なDAGを設定する必要がある。</p>
+<p>通常、DAGはドメイン知識に基づいて作られるが、データにもとづいてDAGを推定しようとするのが因果探索（causal discovery）の分野。</p>
+<section id="lingam">
+<h2>LiNGAM<a class="headerlink" href="#lingam" title="Permalink to this heading">#</a></h2>
+<p><strong>LiNGAM（Linear Non-Gaussian Acyclic Model）</strong> は因果探索の代表的な手法で、</p>
+<ul class="simple">
+<li><p>構造方程式モデル（線形モデル）で</p></li>
+<li><p>誤差項が非ガウスに従う</p></li>
+<li><p>非巡回（Acyclic）グラフを推定する</p></li>
+</ul>
+<p>といった前提をおく手法（<a class="reference external" href="https://www.cs.helsinki.fi/group/neuroinf/lingam/JMLR06.pdf">Shimizu et al., 2006</a>）</p>
+<section id="id2">
+<h3>モデルの例<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<p>モデルは構造方程式で記述される。まずOutcomeもTreatmentもCovariatesも全部<span class="math notranslate nohighlight">\(x_i\)</span>で表現する。</p>
+<p>outcomeを<span class="math notranslate nohighlight">\(x_3\)</span>とし、<span class="math notranslate nohighlight">\(x_1, x_2\)</span>をTreatmentとする。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; x_1= e_1 \\
+&amp; x_2=b_{21} x_1 + e_2 \\
+&amp; x_3=b_{31} x_1 + b_{32} x_2+ e_3
+\end{aligned}
+\end{split}\]</div>
+<p>この構造方程式モデルを行列表記にすると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left(\begin{array}{l}
+x_1 \\
+x_2 \\
+x_3
+\end{array}\right)=\left(\begin{array}{ccc}
+0 &amp; 0 &amp; 0 \\
+b_{21} &amp; 0 &amp; 0 \\
+b_{31} &amp; b_{32} &amp; 0
+\end{array}\right)\left(\begin{array}{l}
+x_1 \\
+x_2 \\
+x_3
+\end{array}\right)+\left(\begin{array}{l}
+e_1 \\
+e_2 \\
+e_3
+\end{array}\right)
+\end{split}\]</div>
+<p>となる。係数行列を<span class="math notranslate nohighlight">\(B\)</span>とおき、それ以外もベクトルにすると</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{x}
+= B \boldsymbol{x}
+ + \boldsymbol{e}
+\]</div>
+<p>となる。</p>
+<p>※非巡回の制約があるため、因果の流れの通りに（最上流を<span class="math notranslate nohighlight">\(x_1\)</span>、最下流を<span class="math notranslate nohighlight">\(x_3\)</span>に）変数を並べると係数行列<span class="math notranslate nohighlight">\(B\)</span>が下三角行列になる</p>
+</section>
+<section id="id3">
+<h3>係数行列の推定<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<section id="id4">
+<h4>モデルの変形<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h4>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{x}
+= B \boldsymbol{x}
+ + \boldsymbol{e}
+\]</div>
+<p>を変形すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\boldsymbol{x} &amp;= B \boldsymbol{x}  + \boldsymbol{e}\\
+\boldsymbol{x} (I - B) &amp;= \boldsymbol{e}\\
+\boldsymbol{x} &amp;= (I - B)^{-1} \boldsymbol{e}\\
+\end{align}
+\end{split}\]</div>
+<p>（ここで<span class="math notranslate nohighlight">\(I\)</span>は単位行列）</p>
+<p><span class="math notranslate nohighlight">\(A := (I - B)^{-1}\)</span>とすると</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{x} = A \boldsymbol{e}
+\]</div>
+<p>この<span class="math notranslate nohighlight">\(A\)</span>を求めれば良い。</p>
+<p><span class="math notranslate nohighlight">\(A\)</span>の推定では独立成分分析を使用する。</p>
+</section>
+<section id="id5">
+<h4>独立成分分析<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h4>
+<p>主成分分析はもとのデータを各変数の相関が0になるような新しい変数に変換する手法。</p>
+<p>ガウス分布に従うデータなら、主成分分析で変数間の関係が独立になる。</p>
+<p>非ガウス分布に従うデータだと相関は0になるが独立にはならない</p>
+<p>独立成分分析は主成分分析の結果<span class="math notranslate nohighlight">\(x_{pca}\)</span>に対して線形変換を施して新たな変数<span class="math notranslate nohighlight">\(x_{ica}\)</span>を作成する。</p>
+<div class="math notranslate nohighlight">
+\[
+x = A_{ica} x_{ica}
+\]</div>
+<p>という分解ができるため、LiNGAMではこれを使う。</p>
+<p>ただし、<span class="math notranslate nohighlight">\(B\)</span>が下三角行列なので、<span class="math notranslate nohighlight">\(A^{-1}\)</span>は対角成分が1で、対角成分より上側のすべての要素が0である必要があり、独立成分分析の後にそうした後処理が必要になる</p>
+</section>
+</section>
+<section id="id6">
+<h3>LiNGAMの計算手順<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<p>※ 小川(2020)と同じように実装したはずだが、一部符号が反転してて、あまりうまくいかなかった</p>
+<p>適当にデータを生成する</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; x_1= e_1 \\
+&amp; x_2= 3 x_1 + e_2 \\
+&amp; x_3= 4 x_1 + 5 x_2+ e_3
+\end{aligned}
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 適当にデータを生成する</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># 非ガウスの誤差</span>
+<span class="n">e1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">e2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">e3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+<span class="c1"># 各変数の生成</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">e1</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">x1</span> <span class="o">+</span> <span class="n">e2</span>
+<span class="n">x3</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">x1</span> <span class="o">+</span> <span class="mi">5</span><span class="o">*</span><span class="n">x2</span> <span class="o">+</span> <span class="n">e3</span>
+
+<span class="c1"># DFにする</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;x1&quot;</span><span class="p">:</span> <span class="n">x1</span><span class="p">,</span> <span class="s2">&quot;x2&quot;</span><span class="p">:</span> <span class="n">x2</span><span class="p">,</span> <span class="s2">&quot;x3&quot;</span><span class="p">:</span> <span class="n">x3</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>続いて、独立成分分析を行う</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">FastICA</span>
+<span class="n">ica</span> <span class="o">=</span> <span class="n">FastICA</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># ICAで求めた行列A</span>
+<span class="n">A_ica</span> <span class="o">=</span> <span class="n">ica</span><span class="o">.</span><span class="n">mixing_</span>
+<span class="n">A_ica_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A_ica</span><span class="p">)</span>
+
+<span class="n">A_ica_inv</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 13.8,  17.5,  -3.5],
+       [  2.9,  -0.7,   0.1],
+       [-10.1,   3.3,   0. ]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>続いて、<span class="math notranslate nohighlight">\(A_{ica}^{-1}\)</span>に対して</p>
+<ol class="arabic simple">
+<li><p>行の順番を変換</p></li>
+<li><p>行の大きさを調整</p></li>
+</ol>
+<p>して対角成分が1で対角成分より上側の要素が全部0な行列になるようにする</p>
+<p>munkresパッケージのハンガリアンアルゴリズムという対角成分の和を最小にする問題を解く</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>munkres
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting munkres
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Downloading munkres-1.1.4-py2.py3-none-any.whl (7.0 kB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Installing collected packages: munkres
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Successfully installed munkres-1.1.4
+<span class=" -Color -Color-Yellow">WARNING: Running pip as the &#39;root&#39; user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv</span>
+
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> A new release of pip is available: <span class=" -Color -Color-Red">23.0.1</span> -&gt; <span class=" -Color -Color-Green">23.3.2</span>
+<span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> To update, run: <span class=" -Color -Color-Green">pip install --upgrade pip</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. 行の順番を変換</span>
+<span class="c1"># 絶対値の逆数にして、対角成分の和を最小化する問題に置き換える</span>
+<span class="n">A_ica_inv_small</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A_ica_inv</span><span class="p">)</span>
+
+<span class="c1"># 対角成分の和を最小にする行の入れ替えを行う</span>
+<span class="kn">from</span> <span class="nn">munkres</span> <span class="kn">import</span> <span class="n">Munkres</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">Munkres</span><span class="p">()</span>
+<span class="n">ixs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">A_ica_inv_small</span><span class="p">))</span>
+
+<span class="c1"># 順番の入れ替え</span>
+<span class="n">ixs</span> <span class="o">=</span> <span class="n">ixs</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">ixs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]),</span> <span class="p">:]</span>
+<span class="n">ixs_perm</span> <span class="o">=</span> <span class="n">ixs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">A_ica_inv_perm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A_ica_inv</span><span class="p">)</span>
+<span class="n">A_ica_inv_perm</span><span class="p">[</span><span class="n">ixs_perm</span><span class="p">]</span> <span class="o">=</span> <span class="n">A_ica_inv</span>
+
+<span class="c1"># 2. 行の大きさを調整</span>
+<span class="c1"># 対角成分が1になるよう調整</span>
+<span class="n">A_ica_inv_perm_adjusted</span> <span class="o">=</span> <span class="n">A_ica_inv_perm</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">A_ica_inv_perm</span><span class="p">)</span>
+
+<span class="n">A_ica_inv_perm_adjusted</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 1. , -0.2, -0. ],
+       [-3.5,  1. , -0. ],
+       [ 4.8,  5.3,  1. ]])
+</pre></div>
+</div>
+</div>
+</div>
+<p><span class="math notranslate nohighlight">\(A^{-1} = I - B\)</span>なので<span class="math notranslate nohighlight">\(B= I - A^{-1}\)</span>として<span class="math notranslate nohighlight">\(B\)</span>を求める</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">I</span> <span class="o">-</span> <span class="n">A_ica_inv_perm_adjusted</span>
+
+<span class="n">B</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 0. ,  0.2,  0. ],
+       [ 3.5,  0. ,  0. ],
+       [-4.8, -5.3,  0. ]])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id7">
+<h3>lingamパッケージで実践<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
+<p>Pythonだと<a class="reference external" href="https://pypi.org/project/lingam/">lingam</a>パッケージがある</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>lingam
+</pre></div>
+</div>
+</div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting lingam
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Downloading lingam-1.8.2-py3-none-any.whl (92 kB)
+?25l     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/92.5 kB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">92.5/92.5 kB</span> <span class=" -Color -Color-Red">5.2 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25hRequirement already satisfied: networkx in /usr/local/lib/python3.9/site-packages (from lingam) (3.2.1)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting psy
+  Downloading psy-0.0.1-py2.py3-none-any.whl (38 kB)
+Requirement already satisfied: scipy in /usr/local/lib/python3.9/site-packages (from lingam) (1.11.4)
+Requirement already satisfied: statsmodels in /usr/local/lib/python3.9/site-packages (from lingam) (0.14.1)
+Requirement already satisfied: graphviz in /usr/local/lib/python3.9/site-packages (from lingam) (0.20.1)
+Requirement already satisfied: pandas in /usr/local/lib/python3.9/site-packages (from lingam) (2.1.4)
+Requirement already satisfied: numpy in /usr/local/lib/python3.9/site-packages (from lingam) (1.26.2)
+Requirement already satisfied: scikit-learn in /usr/local/lib/python3.9/site-packages (from lingam) (1.3.2)
+Requirement already satisfied: matplotlib in /usr/local/lib/python3.9/site-packages (from lingam) (3.5.2)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting pygam
+  Downloading pygam-0.9.0-py3-none-any.whl (522 kB)
+?25l     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/522.2 kB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">522.2/522.2 kB</span> <span class=" -Color -Color-Red">21.5 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25hRequirement already satisfied: kiwisolver&gt;=1.0.1 in /usr/local/lib/python3.9/site-packages (from matplotlib-&gt;lingam) (1.4.5)
+Requirement already satisfied: cycler&gt;=0.10 in /usr/local/lib/python3.9/site-packages (from matplotlib-&gt;lingam) (0.12.1)
+Requirement already satisfied: packaging&gt;=20.0 in /usr/local/lib/python3.9/site-packages (from matplotlib-&gt;lingam) (23.2)
+Requirement already satisfied: python-dateutil&gt;=2.7 in /usr/local/lib/python3.9/site-packages (from matplotlib-&gt;lingam) (2.8.2)
+Requirement already satisfied: pyparsing&gt;=2.2.1 in /usr/local/lib/python3.9/site-packages (from matplotlib-&gt;lingam) (3.1.1)
+Requirement already satisfied: pillow&gt;=6.2.0 in /usr/local/lib/python3.9/site-packages (from matplotlib-&gt;lingam) (10.1.0)
+Requirement already satisfied: fonttools&gt;=4.22.0 in /usr/local/lib/python3.9/site-packages (from matplotlib-&gt;lingam) (4.47.0)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: pytz&gt;=2020.1 in /usr/local/lib/python3.9/site-packages (from pandas-&gt;lingam) (2023.3.post1)
+Requirement already satisfied: tzdata&gt;=2022.1 in /usr/local/lib/python3.9/site-packages (from pandas-&gt;lingam) (2023.4)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting progressbar2
+  Downloading progressbar2-4.3.2-py3-none-any.whl (50 kB)
+?25l     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/50.6 kB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">50.6/50.6 kB</span> <span class=" -Color -Color-Red">20.3 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25h
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: joblib&gt;=1.1.1 in /usr/local/lib/python3.9/site-packages (from scikit-learn-&gt;lingam) (1.3.2)
+Requirement already satisfied: threadpoolctl&gt;=2.0.0 in /usr/local/lib/python3.9/site-packages (from scikit-learn-&gt;lingam) (3.2.0)
+Requirement already satisfied: patsy&gt;=0.5.4 in /usr/local/lib/python3.9/site-packages (from statsmodels-&gt;lingam) (0.5.5)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: six in /usr/local/lib/python3.9/site-packages (from patsy&gt;=0.5.4-&gt;statsmodels-&gt;lingam) (1.16.0)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting python-utils&gt;=3.8.1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Downloading python_utils-3.8.1-py2.py3-none-any.whl (27 kB)
+Requirement already satisfied: typing-extensions&gt;3.10.0.2 in /usr/local/lib/python3.9/site-packages (from python-utils&gt;=3.8.1-&gt;progressbar2-&gt;psy-&gt;lingam) (4.9.0)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Installing collected packages: python-utils, progressbar2, pygam, psy, lingam
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Successfully installed lingam-1.8.2 progressbar2-4.3.2 psy-0.0.1 pygam-0.9.0 python-utils-3.8.1
+<span class=" -Color -Color-Yellow">WARNING: Running pip as the &#39;root&#39; user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv</span>
+
+<span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> A new release of pip is available: <span class=" -Color -Color-Red">23.0.1</span> -&gt; <span class=" -Color -Color-Green">23.3.2</span>
+<span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> To update, run: <span class=" -Color -Color-Green">pip install --upgrade pip</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>Tutorial: <a class="reference external" href="https://lingam.readthedocs.io/en/latest/tutorial/lingam.html#directlingam">DirectLiNGAM — LiNGAM 1.8.2 documentation</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">lingam</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">lingam</span><span class="o">.</span><span class="n">DirectLiNGAM</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># adjacency_matrix_ で推定した係数行列Bを見ることができる</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">adjacency_matrix_</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.  0.  0. ]
+ [3.  0.  0. ]
+ [3.9 5.  0. ]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h2>参考文献<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.cs.helsinki.fi/group/neuroinf/lingam/JMLR06.pdf">Shimizu, S., Hoyer, P. O., Hyvärinen, A., Kerminen, A., &amp; Jordan, M. (2006). A linear non-Gaussian acyclic model for causal discovery. Journal of Machine Learning Research, 7(10).</a></p></li>
+<li><p><a class="reference external" href="https://sites.google.com/view/sshimizu06/lingam">LiNGAM for causal discovery</a>（清水ラボ）</p></li>
+<li><p><a class="reference external" href="https://qiita.com/m__k/items/bd87c063a7496897ba7c#fastica">LiNGAMモデルの推定方法について #Python - Qiita</a></p></li>
+<li><p>小川雄太郎. (2020). つくりながら学ぶ! Python による因果分析. マイナビ出版.</p></li>
+<li><p>清水昌平（2017）統計的因果探索</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./econometrics"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="causal_machine_learning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Causal ML</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="uplift_modeling.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Uplift Modeling</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lingam">LiNGAM</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モデルの例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">係数行列の推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">モデルの変形</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">独立成分分析</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">LiNGAMの計算手順</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">lingamパッケージで実践</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By mitama
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
