@@ -1,35 +1,36 @@
 # 参考: https://jupyterbook.org/en/stable/publish/gh-pages.html#automatically-host-your-book-with-github-actions
 name: deploy-book
 
-# Only run this when the main branch changes
 on:
   push:
     branches:
     - master
+    - develop
 
-# This job installs dependencies, build the book, and pushes it to `gh-pages`
 jobs:
   deploy-book:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
 
-    # Install dependencies
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.9
+    container:
+      image: python:3.9
+      volumes:
+        - .:/workdir
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
 
     - name: Install dependencies
       run: |
-        sudo apt-get install graphviz
+        apt update && \
+        apt install -y graphviz
         pip install -r requirements.txt
-    # Build the book
+
     - name: Build the book
       run: |
         jupyter-book build book/
-    # Push the book's HTML to github-pages
-    - name: GitHub Pages action
+
+    - name: Push the book's HTML to github-pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
