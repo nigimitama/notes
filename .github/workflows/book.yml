@@ -16,15 +16,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Install dependencies
-      container: python:3.9
+    - name: Install dependencies and build a book
+      container:
+        image: python:3.9
+        volumes:
+          - .:/workdir
       run: |
         sudo apt-get install graphviz
         pip install -r requirements.txt
-
-    - name: Build the book
-      container: python:3.9
-      run: |
         jupyter-book build book/
 
     - name: Push the book's HTML to github-pages
