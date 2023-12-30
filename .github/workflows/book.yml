@@ -1,10 +1,6 @@
 # 参考: https://jupyterbook.org/en/stable/publish/gh-pages.html#automatically-host-your-book-with-github-actions
 name: deploy-book
-runs:
-  using: docker
-  image: Dockerfile
 
-# Only run this when the main branch changes
 on:
   push:
     branches:
@@ -20,7 +16,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Install dependencies
+      container: python:3.9
+      run: |
+        sudo apt-get install graphviz
+        pip install -r requirements.txt
+
     - name: Build the book
+      container: python:3.9
       run: |
         jupyter-book build book/
 
