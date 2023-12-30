@@ -4,3 +4,6 @@ RUN apt update && \
     apt install -y graphviz
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
+
+ENV PROJECT_NAME="book/"
+CMD ["jupyter-book", "build", "$PROJECT_NAME"]
