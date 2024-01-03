@@ -660,15 +660,6 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">パラメータの推定</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">最小二乗推定量の性質</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">回帰係数のバイアスとバリアンス</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">不偏性</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">バリアンス</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1058,166 +1049,6 @@ RSS
 <p>となる</p>
 </section>
 </section>
-<section id="id8">
-<h2>最小二乗推定量の性質<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
-<section id="id9">
-<h3>回帰係数のバイアスとバリアンス<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h3>
-<p>最小二乗推定量はすべての線形不偏推定量の中で最もバリアンスが小さい（最良である）ことを示すガウス・マルコフの定理というものがある。</p>
-<aside class="margin sidebar">
-<p class="sidebar-title">バイアスとバリアンス</p>
-<p>統計学・機械学習の分野では誤差をバイアス（bias）とバリアンス（variance）に分けて考えることが多い。</p>
-<p>バイアスは真の値<span class="math notranslate nohighlight">\(\theta\)</span>とサンプルを変えて推定を繰り返したときの個々の推定結果の平均<span class="math notranslate nohighlight">\(E(\hat{\theta})\)</span>との差で、
-バリアンスは推定の分散<span class="math notranslate nohighlight">\(V(\hat{\theta})\)</span>である。</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-Bias = \theta - E(\hat{\theta})\\
-Variance = V(\hat{\theta})
-\end{split}\]</div>
-</aside>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>ガウス・マルコフの定理
-各<span class="math notranslate nohighlight">\(i\)</span>について、</p>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(E[\varepsilon_i] = 0\)</span></p></li>
-<li><p><span class="math notranslate nohighlight">\(V[\varepsilon_i]=\sigma^2 &lt; \infty\)</span> が共通</p></li>
-<li><p><span class="math notranslate nohighlight">\(i \neq j\)</span>のとき<span class="math notranslate nohighlight">\(E[\varepsilon_i \varepsilon_j] = 0\)</span></p></li>
-</ul>
-<p>を満たすとき、最小二乗推定量<span class="math notranslate nohighlight">\(\hat{\beta}_{OLS}\)</span>はBLUEになる</p>
-</div>
-<section id="id10">
-<h4>不偏性<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h4>
-<p>任意のパラメータの線形結合<span class="math notranslate nohighlight">\(\theta=\boldsymbol{\alpha}^\top {\boldsymbol{\beta}}\)</span>を考える。例えば<span class="math notranslate nohighlight">\(f(x_0)=x_0^\top \beta\)</span>がこの形である。</p>
-<p>この最小二乗推定値は</p>
-<div class="math notranslate nohighlight">
-\[
-\hat{\theta} = \boldsymbol{\alpha}^\top \hat{\boldsymbol{\beta}}
-= \boldsymbol{\alpha}^\top (\boldsymbol{X}^\top \boldsymbol{X})^{-1} \boldsymbol{X}^\top \boldsymbol{y}
-\]</div>
-<p>で、期待値をとると</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-E[\hat{\theta}]
-&amp;= E[\boldsymbol{\alpha}^\top \hat{\boldsymbol{\beta}}]\\
-&amp;= E[\boldsymbol{\alpha}^\top (\boldsymbol{X}^\top \boldsymbol{X})^{-1} \boldsymbol{X}^\top \boldsymbol{y}]\\
-% &amp;= \boldsymbol{\alpha}^\top (\boldsymbol{X}^\top \boldsymbol{X})^{-1} \boldsymbol{X}^\top E[\boldsymbol{y}]\\
-&amp;= E[\boldsymbol{\alpha^\top (X^\top X)^{-1} X^\top (X\beta + \varepsilon) }] \\
-&amp;= \boldsymbol{\alpha^\top (X^\top X)^{-1} X^\top X \beta + \alpha^\top (X^\top X)^{-1} X^\top} E[ \varepsilon ] \\
-&amp;= \boldsymbol{\alpha^\top (X^\top X)^{-1} X^\top X \beta}\\
-&amp;= \boldsymbol{\alpha}^\top \boldsymbol{\beta}
-\end{align}
-\end{split}\]</div>
-<aside class="margin sidebar">
-<p class="sidebar-title"></p>
-<p>※誤差項は仮定により<span class="math notranslate nohighlight">\(E[\boldsymbol{\varepsilon}]=0\)</span>であるため</p>
-</aside>
-<p>となり（※）、<span class="math notranslate nohighlight">\(\hat{\theta}\)</span>が不偏推定量である（<span class="math notranslate nohighlight">\(E[\hat{\theta}] = \theta\)</span>）ことがわかる。</p>
-</section>
-<section id="id11">
-<h4>バリアンス<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h4>
-<p><span class="math notranslate nohighlight">\(\boldsymbol{\alpha}^\top \boldsymbol{\beta}\)</span>に対して不偏のまた別の線形推定量<span class="math notranslate nohighlight">\(\boldsymbol{c}^\top \boldsymbol{y}\)</span>があるとする。</p>
-<p>両者の差を</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-\boldsymbol{\alpha}^\top \boldsymbol{\hat{\beta}} - \boldsymbol{c}^\top \boldsymbol{y}
-&amp;= [ \boldsymbol{\alpha}^\top (\boldsymbol{X}^\top \boldsymbol{X})^{-1} \boldsymbol{X} - \boldsymbol{c}^\top ] \boldsymbol{y}\\
-&amp;=: \boldsymbol{d}^\top \boldsymbol{y}
-\end{align}
-\end{split}\]</div>
-<p>とおく。このとき、不偏性<span class="math notranslate nohighlight">\(E[\boldsymbol{c}^\top \boldsymbol{y}] = \boldsymbol{\alpha}^\top \boldsymbol{\beta}\)</span>から両者の差の期待値はゼロになるべきであり、</p>
-<div class="math notranslate nohighlight">
-\[
-E[\boldsymbol{d}^\top \boldsymbol{y}]
-= \boldsymbol{d}^\top \boldsymbol{X} \boldsymbol{\beta} = 0
-\]</div>
-<p>が任意の<span class="math notranslate nohighlight">\(\boldsymbol{\beta}\)</span>について成り立たなければならないため、</p>
-<div class="math notranslate nohighlight">
-\[
-\boldsymbol{d}^\top \boldsymbol{X} = \boldsymbol{0}
-\]</div>
-<p>が成り立つ。</p>
-<p>次に、2つの確率変数<span class="math notranslate nohighlight">\(X, Y\)</span>に対し</p>
-<div class="math notranslate nohighlight">
-\[
-V[X+Y] = V[X] + 2 \text{Cov}[X, Y] + V[Y]
-\]</div>
-<p>が成り立つから、<span class="math notranslate nohighlight">\(\boldsymbol{c}^\top \boldsymbol{y}\)</span>の分散は</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-V[\boldsymbol{c^\top y}] &amp;= V[\boldsymbol{ \alpha^\top \hat{\beta} - d^\top y }]\\
-&amp;= V[\boldsymbol{ \alpha^\top \hat{\beta} }]
-- 2 \text{Cov} [\boldsymbol{ \alpha^\top (X^\top X)^{-1} X^\top y }, \boldsymbol{ d^\top y} ]
-+ V[\boldsymbol{ d^\top y}]
-\end{align}
-\end{split}\]</div>
-<p>と表すことができる。</p>
-<div class="math notranslate nohighlight">
-\[
-\text{Cov}(A, B) = E[(A - E[A])(B - E[B])^\top]
-\]</div>
-<div class="math notranslate nohighlight">
-\[
-\text{Cov}(a^\top y, b^\top y)
-= E[(a^\top y - E[a^\top y])(b^\top y - E[b^\top y])^\top]
-\]</div>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\text{Cov}(a^\top y, b^\top y)
-= E[(a^\top y - E[a^\top y])(b^\top y - E[b^\top y])^\top]\\
-= E[(a^\top y - \alpha^\top \beta)(b^\top y - E[b^\top y])^\top]
-\end{split}\]</div>
-<p>次に、2つの確率変数</p>
-<div class="math notranslate nohighlight">
-\[
-\boldsymbol{a^\top y} = \sum a_i y_i,
-\hspace{2em}
-\boldsymbol{b^\top y} = \sum b_i y_i
-\]</div>
-<p>の共分散は、誤差項<span class="math notranslate nohighlight">\(\boldsymbol{\varepsilon}\)</span>が無相関・等分散の仮定<span class="math notranslate nohighlight">\(V[\boldsymbol{\varepsilon}] = \sigma^2 \boldsymbol{I}\)</span>を満たすとき、</p>
-<div class="math notranslate nohighlight">
-\[
-\text{Cov}[\boldsymbol{a^\top y, b^\top y}]
-= \text{Cov}[\boldsymbol{a^\top \varepsilon, b^\top \varepsilon}]
-= \sum a_i b_i \sigma^2
-= (\boldsymbol{a^\top b}) \sigma^2
-\]</div>
-<aside class="margin sidebar">
-<p class="sidebar-title"></p>
-<p>TODO: 解説書く</p>
-</aside>
-<p>となることから</p>
-<div class="math notranslate nohighlight">
-\[
-\text{Cov}[\boldsymbol{ \alpha^\top (X^\top X)^{-1} X^\top y, d^\top y }]
-= \boldsymbol{\alpha^\top (X^\top X)^{-1} X^\top d } \cdot \sigma^2
-\]</div>
-<p>となり、<span class="math notranslate nohighlight">\(\boldsymbol{d}^\top \boldsymbol{X} = \boldsymbol{0}\)</span>よりこれは0となる。</p>
-<p>よって</p>
-<div class="math notranslate nohighlight">
-\[
-V[\boldsymbol{ c^\top y }] = V[\boldsymbol{ \alpha^\top \hat{\beta} }] + V[\boldsymbol{ d^\top y }]
-\]</div>
-<p>が成り立ち、分散は非負なので</p>
-<div class="math notranslate nohighlight">
-\[
-V[\boldsymbol{ c^\top y }] \geq V[\boldsymbol{ \alpha^\top \hat{\beta} }]
-\]</div>
-<p>を意味する。</p>
-<p>よって<span class="math notranslate nohighlight">\(\boldsymbol{ \alpha^\top \hat{\beta} }\)</span>は最良線形不偏推定量BLUEである。</p>
-</section>
-</section>
-</section>
-<section id="id12">
-<h2>参考文献<a class="headerlink" href="#id12" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p>東京大学出版会『統計学入門』</p></li>
-<li><p>東京大学出版会『自然科学の統計学』</p></li>
-<li><p>Hastie, T., Tibshirani, R., Friedman, J. H., &amp; Friedman, J. H. (2009). The elements of statistical learning: data mining, inference, and prediction (Vol. 2, pp. 1-758). New York: springer.</p></li>
-</ul>
-</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1293,15 +1124,6 @@ V[\boldsymbol{ c^\top y }] \geq V[\boldsymbol{ \alpha^\top \hat{\beta} }]
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">パラメータの推定</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">最小二乗推定量の性質</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">回帰係数のバイアスとバリアンス</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">不偏性</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">バリアンス</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">参考文献</a></li>
 </ul>
   </nav></div>
 
