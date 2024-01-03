@@ -75,7 +75,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/ols/ols';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="条件付き期待値関数（CEF）" href="cef.html" />
+    <link rel="next" title="最尤推定法に基づく正規方程式の導出" href="mle_and_ols.html" />
     <link rel="prev" title="回帰分析" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -275,6 +275,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../hte.html">Heterogeneous Treatment Effectsの推定</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">回帰分析</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mle_and_ols.html">最尤推定法に基づく正規方程式の導出</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cef.html">条件付き期待値関数（CEF）</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols_estimator.html">OLS推定量の性質</a></li>
 <li class="toctree-l2"><a class="reference internal" href="test_of_ols.html">OLSの検定・区間推定</a></li>
@@ -659,16 +660,15 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">パラメータの推定</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">最尤推定法に基づく正規方程式の導出</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">最小二乗推定量の性質</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">回帰係数のバイアスとバリアンス</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">不偏性</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">バリアンス</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">最小二乗推定量の性質</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">回帰係数のバイアスとバリアンス</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">不偏性</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">バリアンス</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1059,217 +1059,9 @@ RSS
 </section>
 </section>
 <section id="id8">
-<h2>最尤推定法に基づく正規方程式の導出<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
-<p>誤差項が正規分布など何らかの分布に従うことを仮定することで最尤推定が可能になる。</p>
-<p>誤差項<span class="math notranslate nohighlight">\(\varepsilon_i = y_i - \boldsymbol{x}_i^\top \boldsymbol{\beta}\)</span>が平均0の正規分布に従い、分散<span class="math notranslate nohighlight">\(\sigma^2\)</span>は一定（均一分散）とする。</p>
-<p>尤度としては、平均<span class="math notranslate nohighlight">\(\boldsymbol{x}_i^\top \boldsymbol{\beta}\)</span>の正規分布で観測値<span class="math notranslate nohighlight">\(y_i\)</span>が得られる確率<span class="math notranslate nohighlight">\(\mathcal{N}(y_i| \boldsymbol{x}_i^\top \boldsymbol{\beta}, \sigma^2)\)</span>を用いて</p>
-<div class="math notranslate nohighlight">
-\[
-\newcommand{\b}[1]{\boldsymbol{#1}}
-L(\b{y}| \b{X}, \b{\beta}, \sigma) = \prod^N_{i=1} \mathcal{N}(y_i| \b{x}_i^\top \b{\beta}, \sigma^2)
-\]</div>
-<p>ただし、<span class="math notranslate nohighlight">\(\mathcal{N}\)</span>は正規分布</p>
-<div class="math notranslate nohighlight">
-\[
-\mathcal{N}(x|\mu, \sigma^2)
- = \frac{1}{\sqrt{2\pi}\sigma}
- \exp \left\{ - \frac{(x-\mu)^2}{2\sigma^2} \right\}
- , \hspace{1em} -\infty &lt; x &lt; \infty
-\]</div>
-<p>対数尤度は</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-\ln L(\b{y}| \b{X}, \b{\beta}, \sigma)
-&amp;= \sum^N_{i=1} \ln \mathcal{N}(y_i| \b{x}_i^\top \b{\beta}, \sigma^2)
-\\
-&amp;= - \frac{N}{2} \ln (2\pi)
-    - \frac{N}{2} \ln \sigma^2
-    - \frac{1}{2\sigma^2} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2
-\end{align}
-\end{split}\]</div>
-<div class="dropdown admonition">
-<p class="admonition-title">導出メモ</p>
-<p>まず尤度を軽く整理する</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-L(\mu, \sigma^2)
-&amp;= \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}}
-\exp \left \{ - \frac{(x_i - \mu)^2}{2\sigma^2} \right \}
-\\
-&amp;= \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^n
-\prod_{i=1}^n
-\exp \left \{ - \frac{(x_i - \mu)^2}{2\sigma^2} \right \}
-\end{align}
-\end{split}\]</div>
-<p>対数をとると</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-\ln L(\mu, \sigma^2)
-&amp;= n \ln \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)
-+ \sum^n_{i=1} \ln \left(
-\exp \left\{ - \frac{(x_i - \mu)^2}{2\sigma^2} \right\}
-\right)
-\\
-&amp;= n \ln ( 2\pi\sigma^2 )^{-1/2}
-+ \sum^n_{i=1} \left(
-- \frac{(x_i - \mu)^2}{2\sigma^2}
-\ln e
-\right)
-\\
-&amp;= - \frac{n}{2} \ln ( 2\pi\sigma^2 )
-- \sum^n_{i=1} \frac{(x_i - \mu)^2}{2\sigma^2}
-\\
-&amp;= - \frac{n}{2} \ln (2\pi)
-- \frac{n}{2} \ln \sigma^2
-- \frac{1}{2\sigma^2} \sum^n_{i=1} (x_i - \mu)^2
-\end{align}
-\end{split}\]</div>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<p class="sd-card-text">（参考）対数の公式</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-\log 1 &amp;= 0\\
-\log_e e &amp;= 1\\
-\log x^a &amp;= a\log x\\
-\log \sqrt{a} &amp;= \log a^{1/2} = \textstyle \frac{1}{2} \log a\\
-\log ab &amp;= \log a + \log b\\
-\log \frac{a}{b} &amp;= \log a - \log b
-\end{align}
-\end{split}\]</div>
-</div>
-</div>
-</div>
-<p>対数尤度を<span class="math notranslate nohighlight">\(\b{\beta}\)</span>について微分した勾配を0と置いて解くと</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-\nabla \ln L(\b{y}| \b{X}, \b{\beta}, \sigma)
-&amp;= \frac{1}{\sigma^2} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})\b{x}_i^\top\\
-&amp;= \frac{1}{\sigma^2} (\sum^N_{i=1} y_i \b{x}_i^\top)
- - \b{\beta}^\top \frac{1}{\sigma^2} (\sum^N_{i=1} \b{x}_i \b{x}_i^\top)\\
-&amp;= \frac{1}{\sigma^2} (\b{X}^\top \b{y})^\top
- - \b{\beta}^\top \frac{1}{\sigma^2} \b{X}^\top \b{X}\\
-&amp;= 0\\
-\to \b{\beta} &amp;= (\b{X}^\top \b{X})^{-1} \b{X}^\top \b{y}\\
-\end{align}
-\end{split}\]</div>
-<p>となり、最尤推定量と最小二乗推定量が同じ方程式になることがわかる</p>
-<div class="dropdown admonition">
-<p class="admonition-title">導出メモ</p>
-<p>対数尤度を<span class="math notranslate nohighlight">\(\b{\beta}\)</span>について微分した勾配を整理すると</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-\nabla \ln L(\b{y}| \b{X}, \b{\beta}, \sigma)
-&amp;= \frac{1}{\sigma^2} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})\b{x}_i^\top\\
-&amp;= \frac{1}{\sigma^2} \sum^N_{i=1} y_i \b{x}_i^\top
- - \frac{1}{\sigma^2} \sum^N_{i=1} \b{x}_i^\top \b{\beta} \b{x}_i^\top\\
-&amp;= \frac{1}{\sigma^2} \sum^N_{i=1} y_i \b{x}_i^\top
- - \frac{1}{\sigma^2} \sum^N_{i=1} \b{\beta}^\top \b{x}_i \b{x}_i^\top\\
-&amp;= \frac{1}{\sigma^2} (\sum^N_{i=1} y_i \b{x}_i^\top)
- - \b{\beta}^\top \frac{1}{\sigma^2} (\sum^N_{i=1} \b{x}_i \b{x}_i^\top)\\
-&amp;= \frac{1}{\sigma^2} (\b{X}^\top \b{y})^\top
- - \b{\beta}^\top \frac{1}{\sigma^2} \b{X}^\top \b{X}
-\end{align}
-\end{split}\]</div>
-<p>（<span class="math notranslate nohighlight">\(\sum^N_{i=1} y_i \b{x}_i^\top = (\b{X}^\top \b{y})^\top\)</span>は行ベクトルで<span class="math notranslate nohighlight">\(\b{\beta}^\top \b{X}^\top \b{X}\)</span>も行ベクトルなので演算できる）</p>
-<p>これを0とおいて</p>
-<div class="math notranslate nohighlight">
-\[
-0 = \frac{1}{\sigma^2} (\b{X}^\top \b{y})^\top
-  - \b{\beta}^\top \frac{1}{\sigma^2} \b{X}^\top \b{X}
-\]</div>
-<p>として整理すると</p>
-<div class="math notranslate nohighlight">
-\[
-\b{\beta}^\top \frac{1}{\sigma^2} \b{X}^\top \b{X}
-  = \frac{1}{\sigma^2} (\b{X}^\top \b{y})^\top
-\]</div>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-&amp;\to \b{\beta}^\top \frac{1}{\sigma^2} \b{X}^\top \b{X} = \frac{1}{\sigma^2} (\b{X}^\top \b{y})^\top\\
-&amp;\to \b{\beta}^\top (\b{X}^\top \b{X}) = (\b{X}^\top \b{y})^\top\\
-&amp;\to \b{\beta}^\top = (\b{X}^\top \b{X})^{-1} (\b{X}^\top \b{y})^\top\\
-&amp;\to \b{\beta} = (\b{X}^\top \b{X})^{-1} \b{X}^\top \b{y}\\
-\end{align}
-\end{split}\]</div>
-<p>（<span class="math notranslate nohighlight">\((\b{X}^\top \b{X})\)</span>は対角行列なので<span class="math notranslate nohighlight">\((\b{X}^\top \b{X})^\top = (\b{X}^\top \b{X})\)</span>）</p>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<p class="sd-card-text">※内積の結果はスカラーになるので、<span class="math notranslate nohighlight">\(\b{x}^\top \b{\beta} = \b{\beta}^\top \b{x}\)</span>である</p>
-</div>
-</div>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<p class="sd-card-text">2つの行列<span class="math notranslate nohighlight">\(A, B\)</span>があるとき、その行ベクトル<span class="math notranslate nohighlight">\(a_i, b_i\)</span>の外積<span class="math notranslate nohighlight">\(\boldsymbol{a}_i \boldsymbol{b}_i^\top\)</span>と行列の積は一致する</p>
-<div class="math notranslate nohighlight">
-\[
-A^\top B = \sum^n_{i=1} \boldsymbol{a}_i \boldsymbol{b}_i^\top
-\]</div>
-</div>
-</div>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<p class="sd-card-text">ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{b} = (b_1, b_2, \dots, b_n)^\top\)</span>とベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a}_i = (a_{i1}, a_{i2}, \cdots, a_{im})\)</span>があるとき、スカラーの<span class="math notranslate nohighlight">\(b_i\)</span>との積の和は</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-&amp;\sum_{i=1}^n b_i \boldsymbol{a}_i^\top\\
-&amp;= \sum_{i=1}^n (b_i a_{i1}, \cdots, b_i a_{im})\\
-&amp;= \begin{pmatrix}
-    b_1 a_{11} &amp; \cdots &amp; b_1 a_{1m}\\
-    + &amp;  &amp; +\\
-    \vdots &amp; \cdots &amp; \vdots\\
-    + &amp;  &amp; +\\
-    b_n a_{n1} &amp; \cdots &amp; b_n a_{nm}\\
-\end{pmatrix}\\
-\end{align}
-\end{split}\]</div>
-<p class="sd-card-text">ベクトル<span class="math notranslate nohighlight">\(\b{a}_i\)</span>を集めた行列<span class="math notranslate nohighlight">\(A\)</span>を考えたとき、</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\b{A}^\top \b{b}
-= \begin{pmatrix}
-    b_1 a_{11} + \cdots + b_n a_{n1}\\
-    \vdots\\
-    b_1 a_{m1} + \cdots + b_n a_{nm}\\
-\end{pmatrix}
-\end{split}\]</div>
-<p class="sd-card-text">ゆえに</p>
-<div class="math notranslate nohighlight">
-\[
-\sum_{i=1}^n b_i \boldsymbol{a}_i^\top
-= (A^\top b)^\top
-\]</div>
-</div>
-</div>
-</div>
-<div class="dropdown admonition">
-<p class="admonition-title">導出メモ</p>
-<p>スカラーの場合、合成関数の微分より</p>
-<div class="math notranslate nohighlight">
-\[
-\frac{d (y - \hat{y})^2 }{d \hat{y}} = 2 (y - \hat{y}) \times (-1)
-\]</div>
-<p>の形になるがベクトルなので</p>
-<div class="math notranslate nohighlight">
-\[
-\frac{\partial (y_i - \b{x}_i^\top \b{\beta})^2 }{\partial \beta_j}
-= - 2 (y_i - \b{x}_i^\top \b{\beta}) \b{x}_i^\top
-\]</div>
-<p>これを各<span class="math notranslate nohighlight">\(j\)</span>について計算してベクトル（勾配）とし、それを<span class="math notranslate nohighlight">\(i\)</span>ごとに和する</p>
-</div>
-</section>
+<h2>最小二乗推定量の性質<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
 <section id="id9">
-<h2>最小二乗推定量の性質<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h2>
-<section id="id10">
-<h3>回帰係数のバイアスとバリアンス<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h3>
+<h3>回帰係数のバイアスとバリアンス<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h3>
 <p>最小二乗推定量はすべての線形不偏推定量の中で最もバリアンスが小さい（最良である）ことを示すガウス・マルコフの定理というものがある。</p>
 <aside class="margin sidebar">
 <p class="sidebar-title">バイアスとバリアンス</p>
@@ -1293,8 +1085,8 @@ Variance = V(\hat{\theta})
 </ul>
 <p>を満たすとき、最小二乗推定量<span class="math notranslate nohighlight">\(\hat{\beta}_{OLS}\)</span>はBLUEになる</p>
 </div>
-<section id="id11">
-<h4>不偏性<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h4>
+<section id="id10">
+<h4>不偏性<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h4>
 <p>任意のパラメータの線形結合<span class="math notranslate nohighlight">\(\theta=\boldsymbol{\alpha}^\top {\boldsymbol{\beta}}\)</span>を考える。例えば<span class="math notranslate nohighlight">\(f(x_0)=x_0^\top \beta\)</span>がこの形である。</p>
 <p>この最小二乗推定値は</p>
 <div class="math notranslate nohighlight">
@@ -1322,8 +1114,8 @@ E[\hat{\theta}]
 </aside>
 <p>となり（※）、<span class="math notranslate nohighlight">\(\hat{\theta}\)</span>が不偏推定量である（<span class="math notranslate nohighlight">\(E[\hat{\theta}] = \theta\)</span>）ことがわかる。</p>
 </section>
-<section id="id12">
-<h4>バリアンス<a class="headerlink" href="#id12" title="Permalink to this heading">#</a></h4>
+<section id="id11">
+<h4>バリアンス<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h4>
 <p><span class="math notranslate nohighlight">\(\boldsymbol{\alpha}^\top \boldsymbol{\beta}\)</span>に対して不偏のまた別の線形推定量<span class="math notranslate nohighlight">\(\boldsymbol{c}^\top \boldsymbol{y}\)</span>があるとする。</p>
 <p>両者の差を</p>
 <div class="math notranslate nohighlight">
@@ -1418,8 +1210,8 @@ V[\boldsymbol{ c^\top y }] \geq V[\boldsymbol{ \alpha^\top \hat{\beta} }]
 </section>
 </section>
 </section>
-<section id="id13">
-<h2>参考文献<a class="headerlink" href="#id13" title="Permalink to this heading">#</a></h2>
+<section id="id12">
+<h2>参考文献<a class="headerlink" href="#id12" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>東京大学出版会『統計学入門』</p></li>
 <li><p>東京大学出版会『自然科学の統計学』</p></li>
@@ -1468,11 +1260,11 @@ V[\boldsymbol{ c^\top y }] \geq V[\boldsymbol{ \alpha^\top \hat{\beta} }]
       </div>
     </a>
     <a class="right-next"
-       href="cef.html"
+       href="mle_and_ols.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">条件付き期待値関数（CEF）</p>
+        <p class="prev-next-title">最尤推定法に基づく正規方程式の導出</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1501,16 +1293,15 @@ V[\boldsymbol{ c^\top y }] \geq V[\boldsymbol{ \alpha^\top \hat{\beta} }]
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">パラメータの推定</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">最尤推定法に基づく正規方程式の導出</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">最小二乗推定量の性質</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">回帰係数のバイアスとバリアンス</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">不偏性</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">バリアンス</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">最小二乗推定量の性質</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">回帰係数のバイアスとバリアンス</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">不偏性</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">バリアンス</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">参考文献</a></li>
 </ul>
   </nav></div>
 
