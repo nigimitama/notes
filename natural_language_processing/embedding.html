@@ -194,6 +194,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mathematics/linear_algebra/index.html">線形代数学</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/vector.html">ベクトルとベクトル空間</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/matrix.html">行列</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/determinant.html">行列式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/inverse_matrix.html">逆行列</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/linear_mapping.html">線形写像</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/simultaneous_equation.html">連立一次方程式</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/eigenvalue.html">固有値と固有ベクトル</a></li>
@@ -388,6 +390,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">自然言語処理</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">単語の埋め込み</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rnn.html">言語モデルとRNN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="document_understanding.html">Document Understanding</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">画像処理</span></p>
 <ul class="nav bd-sidenav">
@@ -899,19 +902,27 @@ Prediction: programs
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[-0.3874,  0.5836, -1.2064, -0.7378,  0.4400,  0.7820, -2.7297,  1.4840,
-         -0.9963,  0.9367,  0.8235, -1.1919, -1.0407, -1.2060, -2.0667, -0.7509,
-         -0.0738, -0.5679, -1.0788,  1.3094, -0.4111, -1.5548, -0.1703,  1.9330,
-         -0.8698,  0.4909,  0.6294, -0.8803,  0.1221, -0.5127,  0.8981, -0.8899,
-          0.3640, -0.1324, -0.3277,  1.1090,  0.4952,  0.2059,  1.6598, -0.6982,
-         -0.4310,  1.1431,  0.3112, -2.5486,  1.5076, -0.9218,  1.4283, -0.1780,
-          0.3796, -0.7976,  0.2783,  0.4064, -0.8666,  0.8885, -0.3138,  0.4323,
-          0.8327,  0.8217,  2.3391,  1.5787, -0.6098, -0.5264,  0.8738, -0.5774,
-          0.2131, -0.7423,  0.6714,  1.1072,  0.1389,  1.1726,  0.6574, -0.9819,
-          1.0651,  0.1078,  0.5367, -1.4187,  0.9345,  0.5727,  0.5395, -0.1713,
-          1.1481,  1.3468,  1.0236,  0.8725, -0.1437, -1.0843, -2.1757, -0.2292,
-         -0.4014,  0.0032, -0.2520,  1.4565, -0.1318, -1.4572, -0.0917, -0.8671,
-          1.0045,  0.9104,  0.5931, -0.9729]], grad_fn=&lt;ViewBackward0&gt;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 1.2689e+00, -2.6865e+00,  1.5131e-02,  9.6079e-01, -1.9527e+00,
+         -4.0655e-01,  7.8757e-01, -1.6547e+00,  6.0513e-01, -3.8383e-01,
+         -8.4910e-02,  4.7760e-02, -7.1712e-01,  2.3586e+00,  3.3077e+00,
+         -9.2684e-01, -3.9775e-03,  1.4157e+00,  4.0300e-01, -8.7465e-01,
+         -5.6087e-01,  1.3020e+00, -1.1319e+00,  8.3494e-01, -1.0665e+00,
+          2.5821e+00, -3.8873e-01,  8.2173e-01,  1.7708e+00, -1.1284e+00,
+          1.3919e+00, -9.2752e-02,  1.3666e+00, -7.3734e-01,  9.8807e-01,
+          4.3767e-01, -6.0369e-02, -4.2538e-01, -3.9057e-01,  2.2112e-01,
+          1.7308e+00,  1.6305e+00,  1.2018e+00,  9.0050e-04,  4.9946e-01,
+         -1.3520e-01, -1.2789e+00, -5.5906e-01, -1.8191e+00, -2.1229e+00,
+          1.3414e+00,  1.3533e+00,  2.0868e+00,  1.4632e+00,  8.5014e-01,
+          2.4306e-01, -1.8145e+00,  1.2575e+00, -5.1963e-01, -1.8021e-02,
+          3.2440e-01,  2.0075e-01,  1.2788e+00, -5.7545e-01,  1.6386e-02,
+          2.4968e-01,  1.4251e+00, -3.0105e+00, -4.4257e-02,  1.9551e+00,
+          5.7265e-02, -1.0851e+00,  1.7294e+00, -2.6442e+00, -2.7201e-01,
+          5.2463e-01, -9.5801e-01,  4.5548e-01,  7.4350e-01, -9.4632e-01,
+         -1.1932e+00,  8.5136e-01, -1.6120e+00, -1.1255e+00, -1.0410e+00,
+          1.0125e+00,  1.4687e+00, -1.5729e-01, -5.5524e-01,  1.1727e-02,
+          2.2914e-01, -1.1310e+00, -1.2035e+00,  1.1894e-01,  1.3105e+00,
+         -4.5303e-02,  1.3475e+00, -6.2805e-01, -1.7496e+00, -1.2696e+00]],
+       grad_fn=&lt;ViewBackward0&gt;)
 </pre></div>
 </div>
 </div>

@@ -75,7 +75,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'mathematics/linear_algebra/matrix';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="線形写像" href="linear_mapping.html" />
+    <link rel="next" title="行列式" href="determinant.html" />
     <link rel="prev" title="ベクトルとベクトル空間" href="vector.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -192,6 +192,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">線形代数学</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="vector.html">ベクトルとベクトル空間</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">行列</a></li>
+<li class="toctree-l2"><a class="reference internal" href="determinant.html">行列式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inverse_matrix.html">逆行列</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_mapping.html">線形写像</a></li>
 <li class="toctree-l2"><a class="reference internal" href="simultaneous_equation.html">連立一次方程式</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eigenvalue.html">固有値と固有ベクトル</a></li>
@@ -386,6 +388,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/introduction.html">自然言語処理</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/embedding.html">単語の埋め込み</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/rnn.html">言語モデルとRNN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/document_understanding.html">Document Understanding</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">画像処理</span></p>
 <ul class="nav bd-sidenav">
@@ -668,42 +671,22 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">行列と写像</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">行列式</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列式の幾何的な解釈＝体積拡大率</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">（例）次のような行列の場合は…？</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">行列の計算規則</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列の和</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">べき乗</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">普通の数取は異なる計算規則</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">多重線形性</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">余因子</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">余因子展開（ラプラス展開）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">余因子行列</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">逆行列</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">左右を入れ替えなければどこにカッコをつけてもおなじ</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">逆行列</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">正則行列の条件</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">逆行列の効率的な計算</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">行列分解で計算する方法</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">共役勾配法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">行列の転置</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">対称行列</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">行列の計算規則</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">行列の和</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">べき乗</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">普通の数取は異なる計算規則</a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">逆行列</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">左右を入れ替えなければどこにカッコをつけてもおなじ</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">行列の転置</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">対称行列</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">可換</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">ブロック行列</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">可換</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">ブロック行列</a></li>
 </ul>
             </nav>
         </div>
@@ -993,465 +976,9 @@ A\b{x} = \b{y}
 <p>と表すことができる。</p>
 </section>
 <section id="id5">
-<h2>行列式<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
-<p>正方行列<span class="math notranslate nohighlight">\(A\)</span>に対して、その<strong>行列式</strong>（determinant）を<span class="math notranslate nohighlight">\(|A|\)</span>や<span class="math notranslate nohighlight">\(\det(A)\)</span>と表す。行列式はスカラーである。</p>
-<p>2次の正方行列に対して、行列式は次のように求めることができる。</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-A = 
-\begin{pmatrix}
-a &amp; b\\
-a' &amp; b'
-\end{pmatrix}
-= (\b{a}, \b{b})
-\\
-\Rightarrow
-|A|
-= |\b{a}, \b{b}|
-= ab' - a'b
-\end{split}\]</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-<span class="p">])</span>
-
-<span class="n">det</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">3</span>
-<span class="n">det</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-2
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-2.0000000000000004
-</pre></div>
-</div>
-</div>
-</div>
-<p>きちんとした定義は次のようになる</p>
-<div class="admonition- admonition">
-<p class="admonition-title">（定義）行列式</p>
-<p>次の4つの条件を満たす<span class="math notranslate nohighlight">\(A\)</span>の列ベクトルの関数<span class="math notranslate nohighlight">\(\det(\b{a}_1, \b{a}_2, \cdots, \b{a}_d)\)</span>を<span class="math notranslate nohighlight">\(A\)</span>の行列式と呼ぶ。</p>
-<p>(1) 各列ベクトルについて線形である</p>
-<p>(2) 2つの列ベクトルが同じならゼロになる</p>
-<p>(2’) 2つの列ベクトルを入れ替えると符号が変わる</p>
-<p>(3) <span class="math notranslate nohighlight">\(\det(I) = \det(\b{e}_1, \cdots, \b{e}_d) = 1\)</span> （<span class="math notranslate nohighlight">\(\b{e}_1, \cdots, \b{e}_d\)</span>は基本ベクトル）</p>
-</div>
+<h2>行列の計算規則<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
 <section id="id6">
-<h3>行列式の幾何的な解釈＝体積拡大率<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
-<p>2つのベクトルが四角形を表すとみなす。この四角形を変形させる行列<span class="math notranslate nohighlight">\(A\)</span>があったとき、変換後の四角形の面積はもとの面積の<span class="math notranslate nohighlight">\(\text{det}(A)\)</span>倍である、と解釈できる（行列式の値が正の値のとき。負の場合は軸が反転して裏返しになる。<span class="math notranslate nohighlight">\(\text{det}(A)=0\)</span>ならぺちゃんこに潰れている状態）</p>
-<p>例えば<span class="math notranslate nohighlight">\(I \in \mathbb{R}^{2\times 2}\)</span>が構成する四角形に<span class="math notranslate nohighlight">\(A\)</span>を乗じて<span class="math notranslate nohighlight">\(AI=A\)</span>とするときの拡大率ともいえるし、<span class="math notranslate nohighlight">\(A\)</span>の面積とも言える</p>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">e1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-
-<span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">e0</span><span class="p">,</span> <span class="n">e1</span><span class="p">])</span>
-<span class="n">O</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="o">*</span><span class="n">O</span><span class="p">,</span> <span class="o">*</span><span class="n">e0</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="o">*</span><span class="n">O</span><span class="p">,</span> <span class="o">*</span><span class="n">e1</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">y1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span> <span class="n">xticks</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/37eca30e2a2ceda8a1fe8bd2661f5f4843e97df02dca0587b49ee837c6d4c966.png" src="../../_images/37eca30e2a2ceda8a1fe8bd2661f5f4843e97df02dca0587b49ee837c6d4c966.png" />
-</div>
-</div>
-<p>適当な行列<span class="math notranslate nohighlight">\(A\)</span>で変換するとこうなる</p>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="p">])</span>
-<span class="n">e0_</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">e0</span>
-<span class="n">e1_</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">e1</span>
-<span class="n">y_</span> <span class="o">=</span> <span class="n">e0_</span> <span class="o">+</span> <span class="n">e1_</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">e0_</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">e1_</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">e0_</span><span class="p">,</span> <span class="n">y_</span><span class="p">])</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">d</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
-<span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">e1_</span><span class="p">,</span> <span class="n">y_</span><span class="p">])</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">d</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">11</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">e</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">x</span><span class="p">],</span> <span class="n">y2</span><span class="o">=</span><span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">x</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">2.25</span><span class="p">],</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">],</span> <span class="n">xticks</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/ee5be523342a2f4d627a025cb187b5751c2e359a533939151ee0aede439a5af0.png" src="../../_images/ee5be523342a2f4d627a025cb187b5751c2e359a533939151ee0aede439a5af0.png" />
-</div>
-</div>
-<p>平行四辺形の面積は底辺×高さ。今回は底辺も高さも1なので、面積は変わっていない。</p>
-<p>この行列<span class="math notranslate nohighlight">\(A\)</span>の行列式は1になる</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0
-</pre></div>
-</div>
-</div>
-</div>
-<p>参考：<a class="reference external" href="https://www.youtube.com/watch?v=K8axNorb1CU">Chapter 6 行列式 | 線形代数のエッセンス - YouTube</a></p>
-<section id="id7">
-<h4>（例）次のような行列の場合は…？<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h4>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-A = 
-\begin{pmatrix}
-1 &amp; 2\\
-1 &amp; 3
-\end{pmatrix}
-, \hspace{2em}
-B = 
-\begin{pmatrix}
-1 &amp; 102\\
-1 &amp; 103
-\end{pmatrix}
-\\
-\text{det}(A) = 3 - 2 = 1
-, \hspace{2em}
-\text{det}(B) = 103 - 102 = 1
-\end{split}\]</div>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="p">])</span>
-<span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">102</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">103</span><span class="p">]</span>
-<span class="p">])</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-
-<span class="k">for</span> <span class="n">X</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">],</span> <span class="n">axes</span><span class="p">):</span>
-    <span class="n">x0_</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">x1_</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">y_</span> <span class="o">=</span> <span class="n">x0_</span> <span class="o">+</span> <span class="n">x1_</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">x0_</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">x1_</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x0_</span><span class="p">,</span> <span class="n">y_</span><span class="p">])</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">d</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1_</span><span class="p">,</span> <span class="n">y_</span><span class="p">])</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">d</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
-
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">11</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;det = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/b1d7c5179bdc52b894d211ab0a8eefd6f03e612ff1066909e5823dbd06c82321.png" src="../../_images/b1d7c5179bdc52b894d211ab0a8eefd6f03e612ff1066909e5823dbd06c82321.png" />
-</div>
-</div>
-</section>
-</section>
-<section id="id8">
-<h3>多重線形性<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h3>
-<p>行列<span class="math notranslate nohighlight">\(A=(a_1, \cdots, a_n)\)</span>について</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\def\b#1{\boldsymbol{#1}}
-\DeclareMathOperator{\det}{\text{det}}
-\begin{align}
-\det(c \b{a}_1, \b{a}_2, \cdots, \b{a}_n) &amp;= c \det(\b{a}_1, \b{a}_2, \cdots, \b{a}_n)\\
-\det(\b{a}_1 + \b{a}_1', \b{a}_2, \cdots, \b{a}_n) &amp;= \det(\b{a}_1, \b{a}_2, \cdots, \b{a}_n) + \det(\b{a}_1', \b{a}_2, \cdots, \b{a}_n)\\
-\det(c\b{A}) = c^n \det(\b{A})
-\end{align}
-\end{split}\]</div>
-<p>のように任意の列への線形和が全体への線形和と等しいような法則性があること</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;det(A) = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="n">c</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;det(cA) = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">A</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;det(cA) - c^n det(A) = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">A</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">c</span><span class="o">**</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>det(A) = 1.0
-det(cA) = 25.0
-det(cA) - c^n det(A) = -0.0
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="n">c</span>
-<span class="n">A</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[5, 2],
-       [5, 3]])
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.999999999999999
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="id9">
-<h3>余因子<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(n\)</span>次の正方行列<span class="math notranslate nohighlight">\(A=(a_{ij})\)</span>から、第<span class="math notranslate nohighlight">\(i\)</span>行と第<span class="math notranslate nohighlight">\(j\)</span>列を取り除いて得られる<span class="math notranslate nohighlight">\(n-1\)</span>次の正方行列を<span class="math notranslate nohighlight">\(A_{ij}\)</span>と書く。</p>
-<div class="math notranslate nohighlight">
-\[
-\tilde{a}_{ij} = (-1)^{i+j} \det(A_{ij})
-\]</div>
-<p>を行列<span class="math notranslate nohighlight">\(A\)</span>における<span class="math notranslate nohighlight">\(a_{ij}\)</span>の<strong>余因子</strong>（cofactor）という。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 例</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
-<span class="p">])</span>
-
-<span class="c1"># 第1行、第1列を除いたA_11行列</span>
-<span class="n">A11</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">1</span><span class="p">:]</span>
-
-<span class="c1"># 余因子</span>
-<span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A11</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-2.9999999999999996
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="id10">
-<h3>余因子展開（ラプラス展開）<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(n\)</span>次正方行列<span class="math notranslate nohighlight">\(A\)</span>の行列式<span class="math notranslate nohighlight">\(\det(A)\)</span>は、任意の行や列についての要素と余因子の重み付き和として展開できる。</p>
-<ul class="simple">
-<li><p>第<span class="math notranslate nohighlight">\(i\)</span>行に関する余因子展開: <span class="math notranslate nohighlight">\(a_{i 1} \tilde{a}_{i 1}+ a_{i 2} \tilde{a}_{i 2} +\cdots+a_{i n} \tilde{a}_{i n} = \det(A)\)</span></p></li>
-<li><p>第<span class="math notranslate nohighlight">\(j\)</span>列に関する余因子展開: <span class="math notranslate nohighlight">\(a_{1 j} \tilde{a}_{1 j}+ a_{2 j} \tilde{a}_{2 j} +\cdots+a_{n j} \tilde{a}_{n j} = \det(A)\)</span></p></li>
-</ul>
-<p>これを<strong>余因子展開</strong>（cofactor expansion）やラプラス展開（Laplace expansion）という。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 例</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
-<span class="p">])</span>
-
-<span class="k">def</span> <span class="nf">cofactor</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;余因子を計算する関数&quot;&quot;&quot;</span>
-    <span class="n">A_minor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">A_minor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">A_minor</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A_minor</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">cofactor_expansion_along_i</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;第i行に関する余因子展開による行列式の計算&quot;&quot;&quot;</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-        <span class="n">result</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">cofactor</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="n">j</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span>
-
-<span class="p">(</span><span class="n">cofactor_expansion_along_i</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e-3</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="id11">
-<h3>余因子行列<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(n\)</span>次の正方行列<span class="math notranslate nohighlight">\(A=(a_{ij})\)</span>の余因子を<span class="math notranslate nohighlight">\(\tilde{a}_{ij}\)</span>とするとき、<span class="math notranslate nohighlight">\((i, j)\)</span>成分に余因子<span class="math notranslate nohighlight">\(\tilde{a}_{ij}\)</span>をもつ行列の転置行列</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\tilde{A}=\left(\begin{array}{cccc}
-\tilde{a}_{11} &amp; \tilde{a}_{21} &amp; \cdots &amp; \tilde{a}_{n 1} \\
-\tilde{a}_{12} &amp; \tilde{a}_{22} &amp; \cdots &amp; \tilde{a}_{n 2} \\
-\vdots &amp; \vdots &amp; &amp; \vdots \\
-\tilde{a}_{1 n} &amp; \tilde{a}_{2 n} &amp; \cdots &amp; \tilde{a}_{n n}
-\end{array}\right)
-\end{split}\]</div>
-<p>を<strong>余因子行列</strong>（adjugate matrix）といい、<span class="math notranslate nohighlight">\(\text{adj}(A)\)</span>や<span class="math notranslate nohighlight">\(\tilde{A}\)</span>と表す。</p>
-</section>
-</section>
-<section id="id12">
-<h2>逆行列<a class="headerlink" href="#id12" title="Permalink to this heading">#</a></h2>
-<p>正方行列<span class="math notranslate nohighlight">\(A\)</span>に対し、</p>
-<div class="math notranslate nohighlight">
-\[
-AA^{-1} = A^{-1} A = I
-\]</div>
-<p>が成立する正方行列<span class="math notranslate nohighlight">\(A^{-1}\)</span>が存在するとき、<span class="math notranslate nohighlight">\(A^{-1}\)</span>を<span class="math notranslate nohighlight">\(A\)</span>の<strong>逆行列</strong>という。（<span class="math notranslate nohighlight">\(I\)</span>は<span class="math notranslate nohighlight">\(A\)</span>と同じサイズの単位行列）</p>
-<p>逆行列が存在する行列のことを**正則行列（regular matrix）<strong>や</strong>可逆行列（invertible matrix）**という。</p>
-<p>正則でない行列は**特異行列（singular matrix）**という</p>
-<section id="id13">
-<h3>正則行列の条件<a class="headerlink" href="#id13" title="Permalink to this heading">#</a></h3>
-<p>正方行列<span class="math notranslate nohighlight">\(A\)</span>が正則行列であるための必要十分条件は<span class="math notranslate nohighlight">\(\det(A) \neq 0\)</span>である。</p>
-<p>また、このとき、<span class="math notranslate nohighlight">\(A\)</span>の逆行列<span class="math notranslate nohighlight">\(A^{-1}\)</span>は</p>
-<div class="math notranslate nohighlight">
-\[
-A^{-1} = \frac{1}{ \det(A) } \tilde{A}
-\]</div>
-<p>で与えられる。ここで<span class="math notranslate nohighlight">\(\tilde{A}\)</span>は<span class="math notranslate nohighlight">\(A\)</span>の余因子行列である。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-<span class="p">])</span>
-
-<span class="c1"># det(A) != 0</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;det(A) = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># 余因子行列の計算</span>
-<span class="n">A_adj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-        <span class="n">A_adj</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cofactor</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
-
-<span class="n">A_adj</span> <span class="o">=</span> <span class="n">A_adj</span><span class="o">.</span><span class="n">T</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">余因子行列 A_adj:</span><span class="se">\n</span><span class="si">{</span><span class="n">A_adj</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># 推定した逆行列</span>
-<span class="n">A_inv</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">))</span> <span class="o">*</span> <span class="n">A_adj</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">逆行列 A^-1:</span><span class="se">\n</span><span class="si">{</span><span class="n">A_inv</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>det(A) = 27.0
-
-余因子行列 A_adj:
-[[-48.  24.  -3.]
- [ 42. -21.   6.]
- [ -3.   6.  -3.]]
-
-逆行列 A^-1:
-[[-1.778  0.889 -0.111]
- [ 1.556 -0.778  0.222]
- [-0.111  0.222 -0.111]]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ちゃんと逆行列になっているか確認</span>
-<span class="p">(</span><span class="n">A_inv</span> <span class="o">@</span> <span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 1.,  0.,  0.],
-       [-0.,  1.,  0.],
-       [ 0.,  0.,  1.]])
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="id14">
-<h3>逆行列の効率的な計算<a class="headerlink" href="#id14" title="Permalink to this heading">#</a></h3>
-<section id="id15">
-<h4>行列分解で計算する方法<a class="headerlink" href="#id15" title="Permalink to this heading">#</a></h4>
-<ul class="simple">
-<li><p><a class="reference external" href="https://speakerdeck.com/nagiss/hiyurisuteitukukontesutodeji-jie-xue-xi-siyou?slide=26">https://speakerdeck.com/nagiss/hiyurisuteitukukontesutodeji-jie-xue-xi-siyou?slide=26</a></p></li>
-</ul>
-</section>
-<section id="id16">
-<h4>共役勾配法<a class="headerlink" href="#id16" title="Permalink to this heading">#</a></h4>
-<p><strong>共役勾配（conjugate gradient: CG）法</strong>は逆行列の計算を二次最適化に落とし込む方法としても使われる</p>
-</section>
-</section>
-</section>
-<section id="id17">
-<h2>行列の計算規則<a class="headerlink" href="#id17" title="Permalink to this heading">#</a></h2>
-<section id="id18">
-<h3>行列の和<a class="headerlink" href="#id18" title="Permalink to this heading">#</a></h3>
+<h3>行列の和<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[
 A(B+C) = AB + AC
@@ -1502,8 +1029,8 @@ A(B+C) = AB + AC
 </div>
 </div>
 </section>
-<section id="id19">
-<h3>べき乗<a class="headerlink" href="#id19" title="Permalink to this heading">#</a></h3>
+<section id="id7">
+<h3>べき乗<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
@@ -1518,8 +1045,8 @@ A^{n+m} &amp;= A^n + A^m\\
 (A^n)^m &amp;= A^{nm}
 \end{align}
 \end{split}\]</div>
-<section id="id20">
-<h4>普通の数取は異なる計算規則<a class="headerlink" href="#id20" title="Permalink to this heading">#</a></h4>
+<section id="id8">
+<h4>普通の数取は異なる計算規則<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h4>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
@@ -1530,8 +1057,8 @@ A^{n+m} &amp;= A^n + A^m\\
 \end{split}\]</div>
 </section>
 </section>
-<section id="id21">
-<h3>逆行列<a class="headerlink" href="#id21" title="Permalink to this heading">#</a></h3>
+<section id="id9">
+<h3>逆行列<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[
 (A^{-1})^{-1} = A
@@ -1545,8 +1072,8 @@ A^{n+m} &amp;= A^n + A^m\\
 (A^k)^{-1} = (A^{-1})^k
 \]</div>
 </section>
-<section id="id22">
-<h3>左右を入れ替えなければどこにカッコをつけてもおなじ<a class="headerlink" href="#id22" title="Permalink to this heading">#</a></h3>
+<section id="id10">
+<h3>左右を入れ替えなければどこにカッコをつけてもおなじ<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h3>
 <p>例えばベクトル<span class="math notranslate nohighlight">\(\boldsymbol{x} = (x_1, x_2, \dots, x_n)\)</span>について、<span class="math notranslate nohighlight">\(\boldsymbol{x} \boldsymbol{x}^T \boldsymbol{x}\)</span>は<span class="math notranslate nohighlight">\((\boldsymbol{x} \boldsymbol{x}^T) \boldsymbol{x}\)</span>と捉えるより<span class="math notranslate nohighlight">\(\boldsymbol{x} (\boldsymbol{x}^T \boldsymbol{x})\)</span>としたほうが楽</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1594,8 +1121,8 @@ x_n
 \end{split}\]</div>
 </section>
 </section>
-<section id="id23">
-<h2>行列の転置<a class="headerlink" href="#id23" title="Permalink to this heading">#</a></h2>
+<section id="id11">
+<h2>行列の転置<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h2>
 <div class="admonition- admonition">
 <p class="admonition-title">行列の転置の性質</p>
 <ol class="arabic simple">
@@ -1606,8 +1133,8 @@ x_n
 <li><p><span class="math notranslate nohighlight">\(|A^T| = |A|\)</span></p></li>
 </ol>
 </div>
-<section id="id24">
-<h3>対称行列<a class="headerlink" href="#id24" title="Permalink to this heading">#</a></h3>
+<section id="id12">
+<h3>対称行列<a class="headerlink" href="#id12" title="Permalink to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[
 A^T = A
@@ -1615,8 +1142,8 @@ A^T = A
 <p>を満たす正方行列<span class="math notranslate nohighlight">\(A\)</span>を<strong>対称行列</strong>（symmetric matrix）という</p>
 </section>
 </section>
-<section id="id25">
-<h2>可換<a class="headerlink" href="#id25" title="Permalink to this heading">#</a></h2>
+<section id="id13">
+<h2>可換<a class="headerlink" href="#id13" title="Permalink to this heading">#</a></h2>
 <p><span class="math notranslate nohighlight">\(AB = BA\)</span>が成り立つとき、<span class="math notranslate nohighlight">\(A\)</span>と<span class="math notranslate nohighlight">\(B\)</span>は<strong>可換</strong>であるという</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1642,8 +1169,8 @@ A^T = A
 </div>
 </div>
 </section>
-<section id="id26">
-<h2>ブロック行列<a class="headerlink" href="#id26" title="Permalink to this heading">#</a></h2>
+<section id="id14">
+<h2>ブロック行列<a class="headerlink" href="#id14" title="Permalink to this heading">#</a></h2>
 <p>行列をいくつかのブロック（小行列）に分けて扱うことがある</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1958,11 +1485,11 @@ O &amp; I
       </div>
     </a>
     <a class="right-next"
-       href="linear_mapping.html"
+       href="determinant.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">線形写像</p>
+        <p class="prev-next-title">行列式</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1987,42 +1514,22 @@ O &amp; I
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">行列と写像</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">行列式</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列式の幾何的な解釈＝体積拡大率</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">（例）次のような行列の場合は…？</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">行列の計算規則</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列の和</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">べき乗</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">普通の数取は異なる計算規則</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">多重線形性</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">余因子</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">余因子展開（ラプラス展開）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">余因子行列</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">逆行列</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">左右を入れ替えなければどこにカッコをつけてもおなじ</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">逆行列</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">正則行列の条件</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">逆行列の効率的な計算</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">行列分解で計算する方法</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">共役勾配法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">行列の転置</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">対称行列</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">行列の計算規則</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">行列の和</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">べき乗</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">普通の数取は異なる計算規則</a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">逆行列</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">左右を入れ替えなければどこにカッコをつけてもおなじ</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">行列の転置</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">対称行列</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">可換</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">ブロック行列</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">可換</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">ブロック行列</a></li>
 </ul>
   </nav></div>
 
