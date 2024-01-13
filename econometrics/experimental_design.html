@@ -75,6 +75,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/experimental_design';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="因果ダイアグラム" href="causal_diagram.html" />
+    <link rel="prev" title="ルービンの因果モデル" href="rubin_causal_model.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -277,8 +279,9 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../statistical_modeling/symbolic_data_analysis.html">Symbolic Data Analysis</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">計量経済学・因果推論</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="rubin_causal_model.html">ルービンの因果モデル</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">実験デザイン</a></li>
 <li class="toctree-l1"><a class="reference internal" href="causal_diagram.html">因果ダイアグラム</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hte.html">Heterogeneous Treatment Effectsの推定</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="ols/index.html">回帰分析</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -674,6 +677,8 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interference">interference</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">interferenceの制約</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-interference">Cluster Interference</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#network-interference">Network Interference</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-randomization-designs-mrds">Multiple Randomization Designs (MRDs)</a></li>
@@ -738,7 +743,7 @@ s_w^2=\frac{1}{N_w-1} \sum_{i: W_i=w}^N\left( Y_i(w)-\bar{Y}_w \right)^2
 <section id="interference">
 <h2>interference<a class="headerlink" href="#interference" title="Permalink to this heading">#</a></h2>
 <p>標準的なRCTはno-interferenceの仮定あるいはSUTVAを仮定する。</p>
-<p>interferenceが存在する場合、あるユニットの処置割当<span class="math notranslate nohighlight">\(w_i\)</span>が他のユニットの処置割当の影響を受ける。</p>
+<p>interference（干渉？）が存在する場合、あるユニットの処置割当<span class="math notranslate nohighlight">\(w_i\)</span>が他のユニットの処置割当の影響を受ける。</p>
 <p>一般に、潜在的結果は<span class="math notranslate nohighlight">\(N\)</span>次元ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{w}=[w_1,\dots,w_N]^\top\)</span>で決められるもの<span class="math notranslate nohighlight">\(Y_i(\boldsymbol{w})\)</span>とする。</p>
 <p>観測できるのは1つの処置ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{w}\)</span>のみであるため、interferenceの範囲に何の制約も課さないと分析を行うことが困難になる。
 そのため潜在的結果に何らかの構造を課するあるいはモデルを仮定することで潜在的結果が割当ベクトルに完全に依存することを制限する。</p>
@@ -769,12 +774,40 @@ s_w^2=\frac{1}{N_w-1} \sum_{i: W_i=w}^N\left( Y_i(w)-\bar{Y}_w \right)^2
 </li>
 </ol>
 </section>
+<section id="cluster-interference">
+<h3>Cluster Interference<a class="headerlink" href="#cluster-interference" title="Permalink to this heading">#</a></h3>
+<p>典型的なタイプのinterferenceで、direct interference（潜在的結果の依存が割当ベクトルの部分集合に制約される）の代表。</p>
+<p>この設定の下での重要な仮定は、ユニットの母集団が事前にクラスターに分割できるというもの。</p>
+<ul class="simple">
+<li><p>この分割されたクラスターは、特定のクラスターのユニットの結果が同じクラスター内の他のユニットが受けた処置にのみ影響を受ける。</p></li>
+<li><p>言い換えれば、interferenceは各クラスター内なら制限がなく、異なるクラスタのユニット間にはinterferenceが起きないというもの。</p></li>
+</ul>
+<p>この状況の例：</p>
+<ul class="simple">
+<li><p>教育：ある生徒の結果が同じクラスの別の生徒の処置の影響を受ける</p></li>
+<li><p>労働市場：職業訓練プログラムのような介入が存在し、特定の個人の結果が同じ労働市場の他の個人の訓練状況に影響を受ける</p></li>
+</ul>
+<p>定式化：</p>
+<p>ユニット<span class="math notranslate nohighlight">\(i\)</span>が属するクラスター（block）を<span class="math notranslate nohighlight">\(B_i\in \{ 1, \dots, B \}\)</span>と表す。</p>
+<p>クラスターの干渉の仮定は、ユニット<span class="math notranslate nohighlight">\(i\)</span>と同じクラスターに属するすべてのユニット<span class="math notranslate nohighlight">\(j\)</span>について<span class="math notranslate nohighlight">\(w_j = w_j'\)</span>となるすべての<span class="math notranslate nohighlight">\(\boldsymbol{w}\)</span>と<span class="math notranslate nohighlight">\(\boldsymbol{w}'\)</span>について</p>
+<div class="math notranslate nohighlight">
+\[
+Y_i(\boldsymbol{w}) = Y_i(\boldsymbol{w}')
+\]</div>
+</section>
+<section id="network-interference">
+<h3>Network Interference<a class="headerlink" href="#network-interference" title="Permalink to this heading">#</a></h3>
+<p><a class="reference external" href="https://www.amazon.science/publications/experimental-design-in-marketplaces">Bajari et al. (2023). Experimental design in marketplaces. Statistical Science, 1(1), 1-19.</a></p>
+</section>
 </section>
 <section id="multiple-randomization-designs-mrds">
 <h2>Multiple Randomization Designs (MRDs)<a class="headerlink" href="#multiple-randomization-designs-mrds" title="Permalink to this heading">#</a></h2>
 <p>処置がpairs of populations（例えば買い手と売り手、ドライバーと乗客、貸し手と貸与物）に割り当てられる状況を扱う</p>
 <ul class="simple">
 <li><p>survey: <a class="reference external" href="https://www.amazon.science/publications/experimental-design-in-marketplaces">Bajari et al. (2023). Experimental design in marketplaces. Statistical Science, 1(1), 1-19.</a></p></li>
+</ul>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.amazon.science/publications/efficient-switchback-experiments-via-multiple-randomization-designs">Masoero et al. (2023). Efficient switchback experiments via multiple randomization designs.</a></p></li>
 </ul>
 </section>
 </section>
@@ -809,6 +842,24 @@ s_w^2=\frac{1}{N_w-1} \sum_{i: W_i=w}^N\left( Y_i(w)-\bar{Y}_w \right)^2
                 <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="rubin_causal_model.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">ルービンの因果モデル</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="causal_diagram.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">因果ダイアグラム</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -831,6 +882,8 @@ s_w^2=\frac{1}{N_w-1} \sum_{i: W_i=w}^N\left( Y_i(w)-\bar{Y}_w \right)^2
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interference">interference</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">interferenceの制約</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-interference">Cluster Interference</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#network-interference">Network Interference</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-randomization-designs-mrds">Multiple Randomization Designs (MRDs)</a></li>
