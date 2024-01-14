@@ -689,7 +689,7 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">可換</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">ブロック行列</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">ブロック対角行列</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">ブロック行列の積</a></li>
 </ul>
 </li>
 </ul>
@@ -1215,56 +1215,92 @@ A B=\left(\begin{array}{llll}
 \end{array}\right)=\left(\boldsymbol{a}_1^{\prime} \boldsymbol{b}_1+\boldsymbol{a}_2^{\prime} \boldsymbol{b}_2+\cdots+\boldsymbol{a}_n{ }^{\prime} \boldsymbol{b}_n\right)
 \end{split}\]</div>
 <section id="id14">
-<h3>ブロック対角行列<a class="headerlink" href="#id14" title="Permalink to this heading">#</a></h3>
+<h3>ブロック行列の積<a class="headerlink" href="#id14" title="Permalink to this heading">#</a></h3>
+<p>一般に、積が定義可能な行列<span class="math notranslate nohighlight">\(A, B\)</span>に対して</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 A =
 \begin{pmatrix}
-    A_1 &amp; O &amp; \cdots &amp; O\\
-    O &amp; A_2 &amp; \cdots &amp; O\\
-    \vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
-    O &amp; O &amp; \cdots &amp; A_n
+A_{11} &amp; A_{12}\\
+A_{21} &amp; A_{22}
+\end{pmatrix},
+\hspace{2em}
+B =
+\begin{pmatrix}
+B_{11} &amp; B_{12}\\
+B_{21} &amp; B_{22}
 \end{pmatrix}
 \end{split}\]</div>
-<p>というブロック行列があったとする。</p>
-<p><span class="math notranslate nohighlight">\(A_1,A_2,\dots,A_n\)</span>が正方行列であり、対角ブロック以外がゼロになるようにブロック分けできるとき、それを<strong>ブロック対角行列</strong>（block diagonal matrix）と呼ぶ。</p>
-<p>零行列があるブロック行列の積は、対角要素に相当する小行列の計算が簡単になる</p>
-<p><span class="math notranslate nohighlight">\(A_1, B_1\)</span>が<span class="math notranslate nohighlight">\(m\)</span>次正方行列、<span class="math notranslate nohighlight">\(A_2, B_2\)</span>が<span class="math notranslate nohighlight">\(n\)</span>次正方行列のとき、</p>
+<p>と分割するとする。ここで<span class="math notranslate nohighlight">\(A_{11} \in \mathbb{R}^{s \times r}, A_{12} \in \mathbb{R}^{s \times n-r}, A_{21} \in \mathbb{R}^{m-s \times r}, A_{22} \in \mathbb{R}^{m-s \times n-r}\)</span>で、
+<span class="math notranslate nohighlight">\(B_{11}\in\mathbb{R}^{r \times t}, B_{12}\in\mathbb{R}^{r \times l-t}, B_{21}\in\mathbb{R}^{n-r \times t}, B_{22}\in\mathbb{R}^{n-r \times l-t}\)</span>である。</p>
+<p>このとき、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A B =
+\begin{pmatrix}
+A_{11} &amp; A_{12}\\
+A_{21} &amp; A_{22}
+\end{pmatrix}
+\begin{pmatrix}
+B_{11} &amp; B_{12}\\
+B_{21} &amp; B_{22}
+\end{pmatrix}
+=
+\begin{pmatrix}
+A_{11} B_{11}+A_{12} B_{21} &amp; A_{11} B_{12}+A_{12} B_{22} \\
+A_{21} B_{11}+A_{22} B_{21} &amp; A_{21} B_{12}+A_{22} B_{22}
+\end{pmatrix}
+\end{split}\]</div>
+<p>が成立する。</p>
+<p>対角以外のブロック（<span class="math notranslate nohighlight">\(A_{12}, A_{21}, B_{12}, B_{21}\)</span>）が零行列である場合</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{pmatrix}
+A_{11} &amp; O\\
+O &amp; A_{22}
+\end{pmatrix}
+\begin{pmatrix}
+B_{11} &amp; O\\
+O &amp; B_{22}
+\end{pmatrix}
+=
+\begin{pmatrix}
+A_{11} B_{11}  &amp; O \\
+O &amp; A_{22} B_{22}
+\end{pmatrix}
+\end{split}\]</div>
+<p>となる</p>
+<p>対角以外の部分に零でないブロック<span class="math notranslate nohighlight">\(*\)</span>があっても、次のようになる</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
-\left(\begin{array}{ll}
-A_1 &amp; O \\
-O &amp; A_2
-\end{array}\right)\left(\begin{array}{ll}
-B_1 &amp; O \\
-O &amp; B_2
-\end{array}\right) &amp; =\left(\begin{array}{cc}
-A_1 B_1 &amp; O \\
-O &amp; A_2 B_2
-\end{array}\right)
+\begin{pmatrix}
+A_{11} &amp; O\\
+* &amp; A_{22}
+\end{pmatrix}
+\begin{pmatrix}
+B_{11} &amp; O\\
+* &amp; B_{22}
+\end{pmatrix}
+&amp;=
+\begin{pmatrix}
+A_{11} B_{11}  &amp; O \\
+*' &amp; A_{22} B_{22}
+\end{pmatrix}
 \\
-\left(\begin{array}{ll}
-A_1 &amp; O \\
-* &amp; A_2
-\end{array}\right)\left(\begin{array}{ll}
-B_1 &amp; O \\
-* &amp; B_2
-\end{array}\right) &amp; =\left(\begin{array}{cc}
-A_1 B_1 &amp; O \\
-*' &amp; A_2 B_2
-\end{array}\right)
-\\
-\left(\begin{array}{cc}
-A_1 &amp; * \\
-O &amp; A_2
-\end{array}\right)\left(\begin{array}{ll}
-B_1 &amp; * \\
-O &amp; B_2
-\end{array}\right) &amp; =\left(\begin{array}{cc}
-A_1 B_1 &amp; *' \\
-O &amp; A_2 B_2
-\end{array}\right)
+\begin{pmatrix}
+A_{11} &amp; *\\
+O &amp; A_{22}
+\end{pmatrix}
+\begin{pmatrix}
+B_{11} &amp; *\\
+O &amp; B_{22}
+\end{pmatrix}
+&amp;=
+\begin{pmatrix}
+A_{11} B_{11}  &amp; *' \\
+O &amp; A_{22} B_{22}
+\end{pmatrix}
 \end{aligned}
 \end{split}\]</div>
 <p>ここで左辺の<span class="math notranslate nohighlight">\(*\)</span>はブロックのサイズが合えばなんでもよいことを意味し、右辺の<span class="math notranslate nohighlight">\(*'\)</span>はそのサイズのある定まった行列を表す（左辺と右辺で<span class="math notranslate nohighlight">\(*\)</span>の部分が等しいわけではない）</p>
@@ -1593,7 +1629,7 @@ O &amp; I
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">可換</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">ブロック行列</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">ブロック対角行列</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">ブロック行列の積</a></li>
 </ul>
 </li>
 </ul>
