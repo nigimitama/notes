@@ -344,6 +344,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../../../machine_learning/evaluation/generalization_error.html">汎化誤差</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../machine_learning/evaluation/aic.html">AICとCross Validation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../machine_learning/evaluation/metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../machine_learning/evaluation/uncertainty_of_prediction.html">予測の不確実性の評価</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../machine_learning/ml_ops/index.html">MLOps</a></li>
@@ -440,6 +441,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/backend.html">バックエンド開発</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/networking.html">ネットワーク・通信</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/domain_driven_design.html">ドメイン駆動設計</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/serverless.html">Serverless</a></li>
 </ul>
 </li>
 </ul>
@@ -773,7 +775,7 @@ O_{n, m} &amp; E_n
 <h2>3.3<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
 <blockquote>
 <div><p>4次の正方行列 <span class="math notranslate nohighlight">\(I, J, K\)</span>を
-<span class="math notranslate nohighlight">\(
+$<span class="math notranslate nohighlight">\(
 I=\left(\begin{array}{cccc}
 0 &amp; -1 &amp; 0 &amp; 0 \\
 1 &amp; 0 &amp; 0 &amp; 0 \\
@@ -790,33 +792,71 @@ I=\left(\begin{array}{cccc}
 0 &amp; 1 &amp; 0 &amp; 0 \\
 1 &amp; 0 &amp; 0 &amp; 0
 \end{array}\right)
-\)</span>
-により定める。 <span class="math notranslate nohighlight">\(I, J, K\)</span> を 2 次の正方行列を用いて分割することにより、積 <span class="math notranslate nohighlight">\(I^2, J^2\)</span>, <span class="math notranslate nohighlight">\(K^2, I J, J I, J K, K J, K I, I K\)</span> を計算せよ。</p>
+\)</span><span class="math notranslate nohighlight">\(
+により定める。 \)</span>I, J, K<span class="math notranslate nohighlight">\( を 2 次の正方行列を用いて分割することにより、積 \)</span>I^2, J^2<span class="math notranslate nohighlight">\(, \)</span>K^2, I J, J I, J K, K J, K I, I K$ を計算せよ。</p>
 </div></blockquote>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A =
+\begin{pmatrix}
+0 &amp; -1\\
+1 &amp; 0
+\end{pmatrix}
+,\hspace{1em}
+B =
+\begin{pmatrix}
+-1 &amp; 0\\
+0 &amp; 1
+\end{pmatrix}
+,\hspace{1em}
+C =
+\begin{pmatrix}
+0 &amp; 1\\
+1 &amp; 0
+\end{pmatrix}
+\end{split}\]</div>
+<p>とおくと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+I=
+\begin{pmatrix}
+A &amp; O\\
+O &amp; A
+\end{pmatrix}, \
+J=
+\begin{pmatrix}
+O &amp; B\\
+-B &amp; O
+\end{pmatrix}, \
+K=
+\begin{pmatrix}
+O &amp; -C\\
+C &amp; O
+\end{pmatrix}
+\end{split}\]</div>
 <blockquote>
 <div><p><span class="math notranslate nohighlight">\(I^2\)</span></p>
 </div></blockquote>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-I =
+I^2 = 
 \begin{pmatrix}
-I_s &amp; O\\
-O &amp; I_s
+A &amp; O\\
+O &amp; A
+\end{pmatrix}
+\begin{pmatrix}
+A &amp; O\\
+O &amp; A
+\end{pmatrix}
+= 
+\begin{pmatrix}
+A^2 &amp; O\\
+O &amp; A^2
 \end{pmatrix}
 \end{split}\]</div>
-<p>とするとブロック行列の性質により</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-I^2 =
-\begin{pmatrix}
-I_s^2 &amp; O\\
-O &amp; I_s^2
-\end{pmatrix}
-\end{split}\]</div>
-<p>であり、</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-I_s^2 = 
+A^2 =
 \begin{pmatrix}
 0 &amp; -1\\
 1 &amp; 0
@@ -830,6 +870,7 @@ I_s^2 =
 -1 &amp; 0\\
 0 &amp; -1
 \end{pmatrix}
+= - E_{2}
 \end{split}\]</div>
 <p>なので</p>
 <div class="math notranslate nohighlight">
@@ -882,46 +923,32 @@ I^2 =
 </div></blockquote>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-J =
+J^2 = 
 \begin{pmatrix}
-O &amp; J_1 \\
-J_2 &amp; O
+O &amp; B\\
+-B &amp; O
 \end{pmatrix}
-\end{split}\]</div>
-<p>とすると</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-J^2 =
 \begin{pmatrix}
-J_1 J_2 &amp; O\\
-O &amp; J_2 J_1
+O &amp; B\\
+-B &amp; O
 \end{pmatrix}
-\end{split}\]</div>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-J_1 J_2
 =
+\begin{pmatrix}
+B (-B) &amp; O\\
+O &amp; -B B
+\end{pmatrix}
+=
+\begin{pmatrix}
+-1 \cdot B^2 &amp; O\\
+O &amp; -1 \cdot B^2
+\end{pmatrix}
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+B^2 =
 \begin{pmatrix}
 -1 &amp; 0 \\
 0 &amp; 1
-\end{pmatrix}
-\begin{pmatrix}
-1 &amp; 0 \\
-0 &amp; -1
-\end{pmatrix}
-=
-\begin{pmatrix}
--1 &amp; 0 \\
-0 &amp; -1
-\end{pmatrix}
-\end{split}\]</div>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-J_2 J_1
-=
-\begin{pmatrix}
-1 &amp; 0 \\
-0 &amp; -1
 \end{pmatrix}
 \begin{pmatrix}
 -1 &amp; 0 \\
@@ -929,9 +956,10 @@ J_2 J_1
 \end{pmatrix}
 =
 \begin{pmatrix}
--1 &amp; 0 \\
-0 &amp; -1
+1 &amp; 0 \\
+0 &amp; 1
 \end{pmatrix}
+= E_2
 \end{split}\]</div>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -983,28 +1011,27 @@ J^2 =
 </div></blockquote>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-K =
+K^2 = 
 \begin{pmatrix}
-O &amp; K_1\\
-K_2 &amp; O
+O &amp; -C\\
+C &amp; O
 \end{pmatrix}
-\end{split}\]</div>
-<p>とすると</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-K^2 =
 \begin{pmatrix}
-K_1 K_2 &amp; O\\
-O &amp; K_2 K_1\\
+O &amp; -C\\
+C &amp; O
 \end{pmatrix}
-\end{split}\]</div>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-K_1 K_2
 =
 \begin{pmatrix}
-0 &amp; -1 \\
--1 &amp; 0
+-1\cdot C^2 &amp; O\\
+O &amp; -1\cdot C^2
+\end{pmatrix}
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+C^2 =
+\begin{pmatrix}
+0 &amp; 1 \\
+1 &amp; 0
 \end{pmatrix}
 \begin{pmatrix}
 0 &amp; 1 \\
@@ -1012,27 +1039,10 @@ K_1 K_2
 \end{pmatrix}
 =
 \begin{pmatrix}
--1 &amp; 0 \\
-0 &amp; -1
+1 &amp; 0 \\
+0 &amp; 1
 \end{pmatrix}
-\end{split}\]</div>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-K_2 K_1
-=
-\begin{pmatrix}
-0 &amp; 1 \\
-1 &amp; 0
-\end{pmatrix}
-\begin{pmatrix}
-0 &amp; -1 \\
--1 &amp; 0
-\end{pmatrix}
-=
-\begin{pmatrix}
--1 &amp; 0 \\
-0 &amp; -1
-\end{pmatrix}
+= E_2
 \end{split}\]</div>
 <div class="math notranslate nohighlight">
 \[\begin{split}
