@@ -75,7 +75,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'mathematics/linear_algebra/linear_mapping';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="連立一次方程式" href="simultaneous_equation.html" />
+    <link rel="next" title="行列の階数（rank）" href="rank.html" />
     <link rel="prev" title="逆行列" href="inverse_matrix.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -191,6 +191,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="determinant.html">行列式</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inverse_matrix.html">逆行列</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">線形写像</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rank.html">行列の階数（rank）</a></li>
 <li class="toctree-l2"><a class="reference internal" href="simultaneous_equation.html">連立一次方程式</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eigenvalue.html">固有値と固有ベクトル</a></li>
 <li class="toctree-l2"><a class="reference internal" href="decomposition.html">行列の分解</a></li>
@@ -681,13 +682,8 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">次元定理</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">ランク</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">さまざまなランクの定義</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">小行列式</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">階数標準形</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">ランク</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1081,114 +1077,9 @@ A: \mathbb{R}^n \to \mathbb{R}^m
 \rank A \leq m\\
 \rank A \leq n
 \end{split}\]</div>
+</section>
 <section id="id11">
-<h3>さまざまなランクの定義<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(m\times n\)</span>行列<span class="math notranslate nohighlight">\(A\)</span>に対し、次の1~5の数は一致する</p>
-<ol class="arabic simple">
-<li><p><span class="math notranslate nohighlight">\(\rank A\)</span></p></li>
-<li><p><span class="math notranslate nohighlight">\(A\)</span>の列ベクトルの中から選び得る1次独立なベクトルの最大個数</p></li>
-<li><p><span class="math notranslate nohighlight">\(A\)</span>の行ベクトルの中から選び得る1次独立なベクトルの最大個数</p></li>
-<li><p><span class="math notranslate nohighlight">\(A\)</span>の行ベクトルが生成する<span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span>の部分空間の次元</p></li>
-<li><p><span class="math notranslate nohighlight">\(A\)</span>の0でない小行列式の最大次数</p></li>
-</ol>
-<p><strong>例1</strong></p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-A = 
-\left(\begin{array}{rrr}
-1 &amp; -1 &amp; 0 \\
-0 &amp; 2 &amp; 2 \\
-1 &amp; 3 &amp; 4
-\end{array}\right)
-\end{split}\]</div>
-<p>のランクを求めるとする。列ベクトルを</p>
-<div class="math notranslate nohighlight">
-\[
-A = 
-\begin{pmatrix}
-\boldsymbol{a}_1 &amp; \boldsymbol{a}_2 &amp; \boldsymbol{a}_3
-\end{pmatrix}
-\]</div>
-<p>とする。</p>
-<div class="math notranslate nohighlight">
-\[
-c_1 \boldsymbol{a}_1 + c_2 \boldsymbol{a}_2 = \boldsymbol{0}
-\]</div>
-<p>とすると、第2成分が0になるためには<span class="math notranslate nohighlight">\(c_2 = 0\)</span>である必要がある。</p>
-<p>そして<span class="math notranslate nohighlight">\(c_1 \boldsymbol{a}_1 = \boldsymbol{0}\)</span>となるためには、<span class="math notranslate nohighlight">\(c_1 = 0\)</span>である必要がある。</p>
-<p>よって<span class="math notranslate nohighlight">\(c_1 = c_2 = 0\)</span>であるため、<span class="math notranslate nohighlight">\(\boldsymbol{a}_1, \boldsymbol{a}_2\)</span>は1️次独立である。</p>
-<p><span class="math notranslate nohighlight">\(\boldsymbol{a}_1 + \boldsymbol{a}_2 = \boldsymbol{a}_3\)</span>であるため、</p>
-<div class="math notranslate nohighlight">
-\[
-\span(\boldsymbol{a}_1, \boldsymbol{a}_2, \boldsymbol{a}_3)
-= \span(\boldsymbol{a}_1, \boldsymbol{a}_2)
-\]</div>
-<p>であるため、<span class="math notranslate nohighlight">\(\rank A = \dim \span(\boldsymbol{a}_1, \boldsymbol{a}_2, \boldsymbol{a}_3) = 2\)</span></p>
-<p><strong>例2</strong></p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\left(\begin{array}{rrr}
-2 &amp; 0 &amp; -1 \\
-5 &amp; 1 &amp; 1 \\
--1 &amp; 2 &amp; 0 \\
-0 &amp; 1 &amp; 0
-\end{array}\right)
-\end{split}\]</div>
-<p>列ベクトルを<span class="math notranslate nohighlight">\(\begin{pmatrix} \boldsymbol{a}_1 &amp; \boldsymbol{a}_2 &amp; \boldsymbol{a}_3 \end{pmatrix}\)</span>とする。</p>
-<div class="math notranslate nohighlight">
-\[
-c_1 \boldsymbol{a}_1 + c_2 \boldsymbol{a}_2 + c_3 \boldsymbol{a}_3 = \boldsymbol{0}
-\]</div>
-<p>とすると、第4成分が<span class="math notranslate nohighlight">\(0\)</span>になるためには<span class="math notranslate nohighlight">\(c_2=0\)</span>となり、第3成分をみることにより<span class="math notranslate nohighlight">\(c_1=0\)</span>であり、第2成分を見ることにより<span class="math notranslate nohighlight">\(c_3=0\)</span>であることがわかるから、
-<span class="math notranslate nohighlight">\(\boldsymbol{a}_1, \boldsymbol{a}_2, \boldsymbol{a}_3\)</span>は1次独立で、ランクは3となる</p>
-</section>
-<section id="id12">
-<h3>小行列式<a class="headerlink" href="#id12" title="Permalink to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(m\times n\)</span>行列<span class="math notranslate nohighlight">\(A\)</span>があるとし、<span class="math notranslate nohighlight">\(p\)</span>を<span class="math notranslate nohighlight">\(p\leq m, p \leq n\)</span>を満たす正の整数とする。<span class="math notranslate nohighlight">\(A\)</span>の<span class="math notranslate nohighlight">\(p\)</span>個の行と列を任意に取り出して作った<span class="math notranslate nohighlight">\(p\)</span>次の正方行列の行列式を<span class="math notranslate nohighlight">\(A\)</span>の <strong><span class="math notranslate nohighlight">\(p\)</span>次の小行列式</strong> という。</p>
-<p>たとえば、</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-A=\left[\begin{array}{llll}
-a_{11} &amp; a_{12} &amp; a_{13} &amp; a_{14} \\
-a_{21} &amp; a_{22} &amp; a_{23} &amp; a_{24} \\
-a_{31} &amp; a_{32} &amp; a_{33} &amp; a_{34}
-\end{array}\right]
-\end{split}\]</div>
-<p>に対して、<span class="math notranslate nohighlight">\(2\)</span>次の小行列式は</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\left|\begin{array}{ll}
-a_{11} &amp; a_{12} \\
-a_{21} &amp; a_{22}
-\end{array}\right|,
-\quad\left|\begin{array}{ll}
-a_{11} &amp; a_{13} \\
-a_{21} &amp; a_{23}
-\end{array}\right|,
-\quad\left|\begin{array}{ll}
-a_{11} &amp; a_{14} \\
-a_{31} &amp; a_{34}
-\end{array}\right|
-\end{split}\]</div>
-<p>などである。</p>
-<p><span class="math notranslate nohighlight">\(m\times n\)</span>行列の<span class="math notranslate nohighlight">\(p\)</span>次の小行列式は全部で<span class="math notranslate nohighlight">\(_mC_p \times _nC_p\)</span>個存在する。</p>
-<p><span class="math notranslate nohighlight">\(A\)</span>の<span class="math notranslate nohighlight">\(r\)</span>次の小行列式の中に<span class="math notranslate nohighlight">\(0\)</span>でないものがあり、<span class="math notranslate nohighlight">\(r+1\)</span>次以上の小行列はすべて<span class="math notranslate nohighlight">\(0\)</span>であるときの<span class="math notranslate nohighlight">\(r\)</span>（0でない小行列式の最大次数）は<span class="math notranslate nohighlight">\(A\)</span>の階数に等しい。</p>
-</section>
-<section id="id13">
-<h3>階数標準形<a class="headerlink" href="#id13" title="Permalink to this heading">#</a></h3>
-<p>行列<span class="math notranslate nohighlight">\(A\)</span>を行基本変形，列基本変形により</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{pmatrix}
-I_k &amp; O\\
-O &amp; O
-\end{pmatrix}
-\end{split}\]</div>
-<p>の形に変形できたとき、これを<span class="math notranslate nohighlight">\(A\)</span>の <strong>階数標準形</strong> という</p>
-</section>
-</section>
-<section id="id14">
-<h2>参考文献<a class="headerlink" href="#id14" title="Permalink to this heading">#</a></h2>
+<h2>参考文献<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://dora.bk.tsukuba.ac.jp/~takeuchi/?%E7%B7%9A%E5%BD%A2%E4%BB%A3%E6%95%B0%EF%BC%A9%2F%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E7%A9%BA%E9%96%93%E3%81%A8%E7%B7%9A%E5%BD%A2%E5%86%99%E5%83%8F#va8ffb2b">線形代数Ｉ/ベクトル空間と線形写像 - 武内＠筑波大</a></p></li>
 <li><p>川久保勝夫（2010）『線形代数学 （新装版）』</p></li>
@@ -1236,11 +1127,11 @@ O &amp; O
       </div>
     </a>
     <a class="right-next"
-       href="simultaneous_equation.html"
+       href="rank.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">連立一次方程式</p>
+        <p class="prev-next-title">行列の階数（rank）</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1273,13 +1164,8 @@ O &amp; O
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">次元定理</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">ランク</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">さまざまなランクの定義</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">小行列式</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">階数標準形</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">ランク</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考文献</a></li>
 </ul>
   </nav></div>
 
