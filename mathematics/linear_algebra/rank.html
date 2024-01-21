@@ -711,11 +711,12 @@ A: \mathbb{R}^n \to \mathbb{R}^m
 \rank A := \dim \Im A
 = \dim \span\{ \boldsymbol{a}_1, \dots, \boldsymbol{a}_n \}
 \]</div>
+<p>（ただし<span class="math notranslate nohighlight">\(\b{a}_1, \dots, \b{a}_n\)</span>は<span class="math notranslate nohighlight">\(A\)</span>の列ベクトル）</p>
 <section id="id1">
 <h2>さまざまなランクの定義<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <p><span class="math notranslate nohighlight">\(m\times n\)</span>行列<span class="math notranslate nohighlight">\(A\)</span>に対し、次の1~6の数は一致する</p>
 <ol class="arabic simple">
-<li><p><span class="math notranslate nohighlight">\(A\)</span>が定義する線形写像の像空間<span class="math notranslate nohighlight">\(\im A\)</span>の次元</p></li>
+<li><p><span class="math notranslate nohighlight">\(A\)</span>が定義する線形写像の像空間<span class="math notranslate nohighlight">\(\im A\)</span>の次元<span class="math notranslate nohighlight">\(\dim \im A = \dim \span \{ \b{a}_1, \dots, \b{a}_n \}\)</span>（ただし<span class="math notranslate nohighlight">\(\b{a}_1, \dots, \b{a}_n\)</span>は<span class="math notranslate nohighlight">\(A\)</span>の列ベクトル）</p></li>
 <li><p><span class="math notranslate nohighlight">\(A\)</span>の列ベクトルの中から選び得る1次独立なベクトルの最大個数</p></li>
 <li><p><span class="math notranslate nohighlight">\(A\)</span>の行ベクトルの中から選び得る1次独立なベクトルの最大個数</p></li>
 <li><p><span class="math notranslate nohighlight">\(A\)</span>の行ベクトルが生成する<span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span>の部分空間の次元</p></li>
@@ -829,19 +830,6 @@ d_1 &lt; d_2 &lt; \cdots &lt; d_i &lt; d_{i+1} = \cdots = d_n = n+1
 \end{split}\]</div>
 <p>ただし、<span class="math notranslate nohighlight">\(*\)</span>は任意の数。</p>
 <p>階段行列の0でない行の個数はその行列のランクに等しい。</p>
-<p>別の定義：</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-A =
-\left(\begin{array}{ccccccccc}
-1 &amp; * &amp; 0 &amp; * &amp; 0 &amp; * &amp; \cdots &amp; 0 &amp; * \\
-&amp; &amp; 1 &amp; * &amp; 0 &amp; * &amp; \cdots &amp; \vdots &amp; \vdots \\
-&amp; &amp; &amp; &amp; 1 &amp; * &amp; \cdots  &amp; \vdots &amp; \vdots \\
-&amp; &amp; &amp; &amp; &amp; &amp; \ddots &amp; 0 &amp; * \\
-&amp; &amp; &amp; &amp; &amp; &amp; &amp; 1 &amp; *
-\end{array}\right)
-\end{split}\]</div>
-<p>のような行列を <strong>階段行列 (step matrix)</strong> という。ただし、<span class="math notranslate nohighlight">\(*\)</span>は任意の数で、何も書かれていないところは0である。</p>
 <p>階段行列の例</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -906,11 +894,94 @@ A =
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{pmatrix}
-I_k &amp; O\\
+I_r &amp; O\\
 O &amp; O
 \end{pmatrix}
 \end{split}\]</div>
-<p>の形に変形できたとき、これを<span class="math notranslate nohighlight">\(A\)</span>の <strong>階数標準形</strong> あるいは単に <strong>標準形</strong> という</p>
+<p>の形に変形できたとき、これを<span class="math notranslate nohighlight">\(A\)</span>の <strong>階数標準形</strong> あるいは単に <strong>標準形</strong> という。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text"><strong>定理</strong> 任意の<span class="math notranslate nohighlight">\(m\times n\)</span>行列<span class="math notranslate nohighlight">\(A\)</span>は基本変形を有限回繰り返して、標準形</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{pmatrix}
+I_r &amp; O_{r, n-r}\\
+O_{m-r, r} &amp; O_{m-r, n-r}
+\end{pmatrix}
+\end{split}\]</div>
+<p class="sd-card-text">に変形することができる。ここで<span class="math notranslate nohighlight">\(r\)</span>は<span class="math notranslate nohighlight">\(A\)</span>のランクに等しい。</p>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 例</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="p">])</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1行目を-1倍して3行目に加える</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+<span class="n">A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[3, 0, 3],
+       [0, 5, 0],
+       [0, 0, 0]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1列目を-1倍して3列目に加える</span>
+<span class="n">A</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[3, 0, 0],
+       [0, 5, 0],
+       [0, 0, 0]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># (1/3)倍、(1/5)倍して1にする</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[1, 0, 0],
+       [0, 1, 0],
+       [0, 0, 0]])
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 <section id="id6">
 <h2>参考文献<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
