@@ -1316,6 +1316,83 @@ r
 \)</span>$
 の解が存在するためのp,q,rの条件を求めよ。</p>
 </div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">symbols</span>
+<span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;p q r&quot;</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span>
+    <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">q</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">r</span><span class="p">],</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1行目と2行目を入れ替える</span>
+<span class="n">a1</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">a2</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">a2</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">a1</span>
+<span class="n">A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}1 &amp; -2 &amp; 1 &amp; q\\-2 &amp; 1 &amp; 1 &amp; p\\1 &amp; 1 &amp; -2 &amp; r\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span>
+<span class="n">A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}1 &amp; -2 &amp; 1 &amp; q\\0 &amp; -3 &amp; 3 &amp; p + 2 q\\1 &amp; 1 &amp; -2 &amp; r\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">+=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span>
+<span class="n">A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}1 &amp; -2 &amp; 1 &amp; q\\0 &amp; -3 &amp; 3 &amp; p + 2 q\\0 &amp; 3 &amp; -3 &amp; - q + r\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span>
+<span class="n">A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}1 &amp; -2 &amp; 1 &amp; q\\0 &amp; -3 &amp; 3 &amp; p + 2 q\\0 &amp; 0 &amp; 0 &amp; p + q + r\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<p><span class="math notranslate nohighlight">\(p+q+r\neq 0\)</span>だと両者のRankが違うので解なし</p>
+<p>連立一次方程式の定理より、両者のランクが合えば解が存在するので<span class="math notranslate nohighlight">\(p+q+r=0\)</span>なら成り立つ</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+x_1 - 2x_2 + x_3 = q\\
+-3x_2 + 3x_3 = p+2q
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+x_1 - 2x_2 + x_3 = q\\
+-3x_2 + 3x_3 = p+2q
+\end{split}\]</div>
 <p>検算用</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://ja.wolframalpha.com/input?i=%E6%8E%83%E3%81%8D%E5%87%BA%E3%81%97%E6%B3%95%E8%A8%88%E7%AE%97%E6%A9%9F">掃き出し法計算機 - Wolfram|Alpha</a></p></li>
