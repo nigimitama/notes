@@ -678,7 +678,12 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">多重線形性</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">余因子</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">余因子展開（ラプラス展開）</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">余因子行列</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">余因子行列</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">余因子行列の性質</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">行列式の積 = 積の行列式</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">ブロック行列の行列式</a></li>
 </ul>
             </nav>
         </div>
@@ -799,12 +804,12 @@ a_{11} a_{22} a_{33}+a_{12} a_{23} a_{31} + a_{13} a_{21} a_{32}
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-2.9999999999999996
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-3.0
 </pre></div>
 </div>
 </div>
@@ -1051,7 +1056,7 @@ det(cA) - c^n det(A) = -0.0
 <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
     <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
     <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="p">])</span>
 
 <span class="c1"># 第1行、第1列を除いたA_11行列</span>
@@ -1063,7 +1068,7 @@ det(cA) - c^n det(A) = -0.0
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-2.9999999999999996
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-47.999999999999986
 </pre></div>
 </div>
 </div>
@@ -1124,7 +1129,122 @@ det(cA) - c^n det(A) = -0.0
 \tilde{a}_{1 n} &amp; \tilde{a}_{2 n} &amp; \cdots &amp; \tilde{a}_{n n}
 \end{array}\right)
 \end{split}\]</div>
-<p>を<strong>余因子行列</strong>（adjugate matrix）といい、<span class="math notranslate nohighlight">\(\text{adj}(A)\)</span>や<span class="math notranslate nohighlight">\(\tilde{A}\)</span>と表す。</p>
+<p>を<strong>余因子行列</strong>（adjugate matrix）といい、<span class="math notranslate nohighlight">\(\text{adj}(A)\)</span>や<span class="math notranslate nohighlight">\(\tilde{A}\)</span>と表す。（※添字が転置したような形になっているのに注意）</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cofactor_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;余因子行列&quot;&quot;&quot;</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cofactor</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="n">j</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">C</span><span class="o">.</span><span class="n">T</span>
+
+<span class="n">A_tilde</span> <span class="o">=</span> <span class="n">cofactor_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">A_tilde</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ -3.,   6.,  -3.],
+       [  6., -12.,   6.],
+       [ -3.,   6.,  -3.]], dtype=float32)
+</pre></div>
+</div>
+</div>
+</div>
+<section id="id8">
+<h3>余因子行列の性質<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h3>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A \tilde{A}=\left(\begin{array}{ccc}
+|A| &amp; &amp; O \\
+&amp; \ddots &amp; \\
+O &amp; &amp; |A|
+\end{array}\right)=|A| E
+\end{split}\]</div>
+</div>
+</div>
+<p>行列 <span class="math notranslate nohighlight">\(A \tilde{A}\)</span> の第 <span class="math notranslate nohighlight">\((i, k)\)</span> 成分は <span class="math notranslate nohighlight">\(\sum_{j=1}^n a_{i j} \tilde{a}_{k j}\)</span> である。</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(a_{i 1} \tilde{a}_{i 1}+a_{i 2} \tilde{a}_{i 2}+\cdots+a_{i n} \tilde{a}_{i n}=|A| \quad\)</span> (第 <span class="math notranslate nohighlight">\(i\)</span> 行に関する余因子展開)</p></li>
+<li><p><span class="math notranslate nohighlight">\(a_{i 1} \tilde{a}_{k 1}+a_{i 2} \tilde{a}_{k 2}+\cdots+a_{i n} \tilde{a}_{k n}=0 \quad(k \neq i)\)</span></p></li>
+</ul>
+<p>を利用すれば,
+$<span class="math notranslate nohighlight">\(
+\sum_{j=1}^n a_{i j} \tilde{a}_{k j}=\left\{\begin{array}{lc}
+|A| &amp; (i=k) \\
+0 &amp; (i \neq k)
+\end{array}\right.
+\)</span>$</p>
+<p>となる. これより，</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A \tilde{A}=\left(\begin{array}{ccc}
+|A| &amp; &amp; O \\
+&amp; \ddots &amp; \\
+O &amp; &amp; |A|
+\end{array}\right)=|A| E
+\end{split}\]</div>
+<p>を得る</p>
+<p>（参考：<a class="reference external" href="https://www.math.aoyama.ac.jp/~syamanaka/Lecture/LinearAlgebra1A_10.pdf">線形代数1A 第10回　講義資料</a>）</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># i != k</span>
+<span class="k">def</span> <span class="nf">cofactor_expansion_not_along_i</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;A[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">] = </span><span class="si">{</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cofactor(A, i=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">, j=</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">) = </span><span class="si">{</span><span class="n">cofactor</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="n">j</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">cofactor</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="n">j</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="nb">round</span><span class="p">(</span><span class="n">cofactor_expansion_not_along_i</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A[0, 0] = 1
+cofactor(A, i=1, j=0) = 6.0
+A[0, 1] = 2
+cofactor(A, i=1, j=1) = -12.0
+A[0, 2] = 3
+cofactor(A, i=1, j=2) = 6.0
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="id9">
+<h2>行列式の積 = 積の行列式<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h2>
+<p><span class="math notranslate nohighlight">\(n\)</span>次正方行列<span class="math notranslate nohighlight">\(A,B\)</span>に対して</p>
+<div class="math notranslate nohighlight">
+\[
+|AB| = |A|\cdot |B|
+\]</div>
+<p>が成り立つ</p>
+</section>
+<section id="id10">
+<h2>ブロック行列の行列式<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+T=\left(\begin{array}{ll}
+A &amp; B \\
+C &amp; D
+\end{array}\right)
+\end{split}\]</div>
+<p>とする。</p>
+<p><span class="math notranslate nohighlight">\(A\)</span> が正則なとき， <span class="math notranslate nohighlight">\(\operatorname{det} T=\operatorname{det} A \operatorname{det}\left(D-C A^{-1} B\right)\)</span></p>
+<p><span class="math notranslate nohighlight">\(D\)</span> が正則なとき， <span class="math notranslate nohighlight">\(\operatorname{det} T=\operatorname{det} D \operatorname{det}\left(A-B D^{-1} C\right)\)</span></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://manabitimes.jp/math/1203#5">ブロック行列の行列式，逆行列の公式と証明 | 高校数学の美しい物語</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -1199,7 +1319,12 @@ det(cA) - c^n det(A) = -0.0
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">多重線形性</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">余因子</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">余因子展開（ラプラス展開）</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">余因子行列</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">余因子行列</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">余因子行列の性質</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">行列式の積 = 積の行列式</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">ブロック行列の行列式</a></li>
 </ul>
   </nav></div>
 

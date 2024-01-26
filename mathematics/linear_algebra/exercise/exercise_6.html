@@ -697,13 +697,13 @@ document.write(`
 <div><p>次の問いに答えよ。</p>
 <p>1.正則行列の定義を書け。</p>
 </div></blockquote>
-<p>逆行列が存在する行列、すなわち、
-<span class="math notranslate nohighlight">\(n\)</span>次正方行列<span class="math notranslate nohighlight">\(A\)</span>に対し</p>
+<p><span class="math notranslate nohighlight">\(n\)</span>次正方行列<span class="math notranslate nohighlight">\(A\)</span>に対し</p>
 <div class="math notranslate nohighlight">
 \[
 A^{-1}A = AA^{-1} = I
 \]</div>
 <p>を満たす正方行列<span class="math notranslate nohighlight">\(A^{-1}\)</span>が存在する行列<span class="math notranslate nohighlight">\(A\)</span>を正則行列という</p>
+<p>また、正則行列であるための必要十分条件は<span class="math notranslate nohighlight">\(\operatorname{det}(A) \neq 0\)</span>である</p>
 <blockquote>
 <div><p>2.次の(ア)、(イ)の正則行列の逆行列を求めよ。
 $<span class="math notranslate nohighlight">\(
@@ -883,7 +883,7 @@ A^{-1} = \frac{1}{|A|} \tilde{A}
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
             <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cofactor</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="n">j</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">C</span>
+    <span class="k">return</span> <span class="n">C</span><span class="o">.</span><span class="n">T</span>
 
 <span class="o">-</span><span class="n">cofactor_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 </pre></div>
@@ -894,6 +894,32 @@ A^{-1} = \frac{1}{|A|} \tilde{A}
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 3., -1., -1.],
        [-1., -0.,  1.],
        [-1.,  1., -0.]], dtype=float16)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 3., -1., -1.],
+       [-1.,  0.,  1.],
+       [-1.,  1.,  0.]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">1</span><span class="p">:])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-2.9999999999999996
 </pre></div>
 </div>
 </div>
@@ -919,6 +945,11 @@ X_{21} &amp; X_{22}
 <li><p><span class="math notranslate nohighlight">\(A_{11}\)</span> および <span class="math notranslate nohighlight">\(A_{22}\)</span> がともに正則ならば、 <span class="math notranslate nohighlight">\(A\)</span> は正則であることを示し、さらに <span class="math notranslate nohighlight">\(A\)</span> の逆行列を求めよ。</p></li>
 </ol>
 </div></blockquote>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>積 <span class="math notranslate nohighlight">\(A X\)</span> を計算せよ。</p></li>
+</ol>
+</div></blockquote>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 AX = 
@@ -926,6 +957,35 @@ AX =
 A_{11} X_{11} + A_{12} X_{21} &amp; A_{11} X_{12} + A_{12} X_{22}\\
 A_{22} X_{21} &amp; A_{22} X_{22}
 \end{pmatrix}
+\end{split}\]</div>
+<blockquote>
+<div><ol class="arabic simple" start="2">
+<li><p><span class="math notranslate nohighlight">\(A_{11}\)</span> および <span class="math notranslate nohighlight">\(A_{22}\)</span> がともに正則ならば、 <span class="math notranslate nohighlight">\(A\)</span> は正則であることを示し</p></li>
+</ol>
+</div></blockquote>
+<div class="math notranslate nohighlight">
+\[
+|A|
+= |A_{11}| \cdot |A_{22} - O A_{12}|
+= |A_{11}| \cdot |A_{22}|
+\]</div>
+<p>よって</p>
+<div class="math notranslate nohighlight">
+\[
+|A_{11}| \neq 0 
+\land
+|A_{22}| \neq 0
+\implies
+|A| \neq 0
+\]</div>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(A\)</span> の逆行列を求めよ。</p>
+</div></blockquote>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A^{-1}
+= \frac{1}{|A|} \tilde{A}\\
+= \frac{1}{|A_{11}|\cdot|A_{2}|} \tilde{A}\\
 \end{split}\]</div>
 </section>
 <section id="id6">
