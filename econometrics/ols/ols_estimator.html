@@ -769,20 +769,21 @@ L(\beta) &amp;= u^T u\\
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-<span class="p">])</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span> <span class="c1"># 真のbeta</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="n">beta</span>
 
-<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">)</span> <span class="o">@</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">b</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1"># OLS推定量</span>
+<span class="n">beta_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">)</span> <span class="o">@</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">beta_hat</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 1., -0.,  0.])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([3., 5., 7.])
 </pre></div>
 </div>
 </div>
@@ -830,16 +831,16 @@ L(\beta) &amp;= u^T u\\
 \frac{1}{N} X^T X
     &amp;= \frac{1}{N} \sum^N_{i=1} X_i X_i^T
     \overset{p}{\longrightarrow}
-    E[X_i X_i^T]
+    E(X_i X_i^T)
 \\
 \frac{1}{N} X^T u
     &amp;= \frac{1}{N} \sum^N_{i=1} X_i u_i
     \overset{p}{\longrightarrow}
-    E[X_i u_i]
+    E(X_i u_i)
     = 0
 \end{align}
 \end{split}\]</div>
-<p>多重共線性がないという仮定により<span class="math notranslate nohighlight">\((E[X_i X_i^T])^{-1}\)</span>が存在する</p>
+<p>多重共線性がないという仮定により<span class="math notranslate nohighlight">\((E(X_i X_i^T))^{-1}\)</span>が存在する</p>
 <div class="math notranslate nohighlight">
 \[
 \left(
@@ -859,7 +860,13 @@ L(\beta) &amp;= u^T u\\
 </section>
 <section id="id5">
 <h2>漸近正規性<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
-<p>式を整理して</p>
+<p>OLS推定量</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\beta}
+= \beta + \left(\frac{1}{N} X^T X\right)^{-1} \frac{1}{N} X^T u
+\]</div>
+<p>を整理して以下の形にする</p>
 <div class="math notranslate nohighlight">
 \[
 \sqrt{N} (\hat{\beta} - \beta)
@@ -869,11 +876,77 @@ L(\beta) &amp;= u^T u\\
 \right)^{-1}
 \frac{1}{\sqrt{N}} X^T u
 \]</div>
-<p>とすると、</p>
+<p><span class="math notranslate nohighlight">\(\frac{1}{\sqrt{N}} X^T u\)</span>は<span class="math notranslate nohighlight">\(\frac{1}{\sqrt{N}} \sum^N_{i=1} X_i u_i\)</span>と書くことができる。OLSの仮定より</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+E(X_i u_i) &amp;= 0\\
+Var(X_i u_i) &amp;= E(u^2 X_i X^T_i)
+\end{align}
+\end{split}\]</div>
+<p>なので、中心極限定理により</p>
 <div class="math notranslate nohighlight">
 \[
-Var[X_i u_i] = E[u^2_i X_i X_i^T]
+\frac{1}{\sqrt{N}} X^T u
+= \frac{1}{\sqrt{N}} \sum^N_{i=1} X_i u_i
+ \overset{d}{\longrightarrow} N\left( 0, E(u_i^2 X_i X_i^{\prime}) \right)
 \]</div>
+<p>となる。</p>
+<p>一致性のときに導出した</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{N} X^T X
+\overset{p}{\longrightarrow} E(X_i X_i^T)
+\]</div>
+<p>を使うと、スルツキーの定理を用いて</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\sqrt{N} (\hat{\beta} - \beta)
+=
+\left(
+    \frac{1}{N} X^T X
+\right)^{-1}
+\frac{1}{\sqrt{N}} X^T u
+&amp;\overset{d}{\longrightarrow} \left( E(X_i X_i^T)  \right)^{-1} \times N\left( 0, E(u_i^2 X_i X_i^{\prime}) \right)\\
+&amp;= N\left( 0,
+    \left( E(X_i X_i^T)  \right)^{-1}  E(u_i^2 X_i X_i^{\prime})  \left( E(X_i X_i^T)  \right)^{-1}
+\right)\\
+&amp;= N(0, V)\\
+\end{align}
+\end{split}\]</div>
+<p>となる。</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+スルツキーの定理<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">確率変数の行列<span class="math notranslate nohighlight">\(Y_N, Y, X_N, X \in \mathbb{R}^{N\times N}\)</span>、正則行列<span class="math notranslate nohighlight">\(C \in \mathbb{R}^{N\times N}\)</span>があるとする。</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(N\to \infty\)</span>のとき</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+X_N \xrightarrow{d} X\\
+Y_N \xrightarrow{d} C\\
+\end{split}\]</div>
+<p class="sd-card-text">とする。</p>
+<p class="sd-card-text">このとき、以下の結果が成り立ち、これを <strong>スルツキーの定理</strong> という</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(X_N + Y_N \xrightarrow{d} X + C\)</span></p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(Y_N X_N \xrightarrow{d} C X\)</span></p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(Y_N^{-1}X_N \xrightarrow{d} C^{-1} X\)</span></p></li>
+</ol>
+</div>
+</details><p><span class="math notranslate nohighlight">\(V\)</span>は以下のように一致推定できる</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{V} &amp; =\left[\frac{1}{N} \sum_{i=1}^N X_i X_i^{\prime}\right]^{-1} \frac{1}{N} \sum_{i=1}^N \hat{u}_i^2 X_i X_i^{\prime}\left[\frac{1}{N} \sum_{i=1}^N X_i X_i^{\prime}\right]^{-1} \\
+&amp; =\left(\frac{1}{N} X^T X\right)^{-1} \frac{1}{N} X^T \hat{U} X\left(\frac{1}{N} X^T X\right)^{-1}
+\end{aligned}
+\end{split}\]</div>
+<p>ただし、<span class="math notranslate nohighlight">\(\hat{U}\)</span>は対角要素に<span class="math notranslate nohighlight">\(\hat{u}_1^2, \dots, \hat{u}_N^2\)</span>を並べた対角行列である。</p>
 </section>
 <section id="id6">
 <h2>バイアスとバリアンス<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
