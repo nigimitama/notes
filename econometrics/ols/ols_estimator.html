@@ -679,18 +679,19 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">重回帰モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">1行単位の重回帰モデルの表記</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">OLS推定量</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">一致性</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">漸近正規性</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">バイアスとバリアンス</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">不偏性</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">バリアンス</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">OLS推定量の別表記</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">一致性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">漸近正規性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">バイアスとバリアンス</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">不偏性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">バリアンス</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">OLS推定の幾何学的意味</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">OLS推定の幾何学的意味</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -706,29 +707,103 @@ document.write(`
 <h1>OLS推定量の性質<a class="headerlink" href="#ols" title="Permalink to this heading">#</a></h1>
 <section id="id1">
 <h2>重回帰モデル<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
-<p><span class="math notranslate nohighlight">\(N\)</span>個のサンプルと<span class="math notranslate nohighlight">\(D\)</span>個の説明変数からなるデータセットがあるとして、被説明変数を<span class="math notranslate nohighlight">\(Y \in \mathbb{R}^N\)</span>、説明変数を<span class="math notranslate nohighlight">\(X\in \mathbb{R}^{N\times D}\)</span>、回帰係数ベクトルを<span class="math notranslate nohighlight">\(\beta \in \mathbb{R}^D\)</span>、誤差項ベクトルを<span class="math notranslate nohighlight">\(u\in\mathbb{R}^N\)</span>とすると、重回帰モデルは</p>
+<p><span class="math notranslate nohighlight">\(N\)</span>個のサンプルがあり、<span class="math notranslate nohighlight">\(i\)</span>番目のサンプルについての回帰式を次のように表記する</p>
+<div class="math notranslate nohighlight">
+\[
+Y_i = X_i^T \beta + u_i, \hspace{1em} i=1,\dots, N
+\]</div>
+<p>ここで<span class="math notranslate nohighlight">\(X_i \in \mathbb{R}^D\)</span>は説明変数の行列<span class="math notranslate nohighlight">\(X\in \mathbb{R}^{N\times D}\)</span>を1行取り出したもので、<span class="math notranslate nohighlight">\(Y_i, u_i \in \mathbb{R}\)</span>も1つのサンプルの被説明変数と誤差項である。</p>
+<p>行列表記にすると</p>
 <div class="math notranslate nohighlight">
 \[
 Y = X \beta + u
 \]</div>
 <p>と表すことができる。</p>
 <section id="id2">
-<h3>1行単位の重回帰モデルの表記<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
-<p>ここで<span class="math notranslate nohighlight">\(i\)</span>番目のサンプルについての回帰式を次のように表記する</p>
+<h3>OLS推定量<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<p>目的関数は残差の二乗和であるため、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+L(\beta) &amp;= u^T u\\
+&amp;= (Y - X \beta)^T (Y - X \beta)\\
+&amp;= Y^T Y - Y^T X \beta - (X\beta)^T Y + (X \beta)^T X \beta\\
+&amp;= Y^T Y - 2 \beta^T X^T Y + \beta^T X^T X \beta\\
+\end{align}
+\end{split}\]</div>
+<aside class="margin sidebar">
+<p class="sidebar-title">式展開メモ</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\((X \beta)^T = \beta^T X^T\)</span> のため</p></li>
+<li><p><span class="math notranslate nohighlight">\(Y^T X \beta\)</span>と<span class="math notranslate nohighlight">\((X\beta)^T Y\)</span>は同値のスカラーになるので<span class="math notranslate nohighlight">\(2 \beta^T X^T Y\)</span>と1つの項にまとめた</p></li>
+</ul>
+</aside>
+<p>である。これを微分してゼロとおくと</p>
 <div class="math notranslate nohighlight">
 \[
-Y_i = X_i^T \beta + u_i, \hspace{1em} i=1,\dots, N
+\frac{\partial L(\beta)}
+{\partial \beta}
+=  - 2 X^T Y + 2 X^T X \beta
+= 0
 \]</div>
-<p>ここで<span class="math notranslate nohighlight">\(X_i \in \mathbb{R}^D\)</span>はデータの行列<span class="math notranslate nohighlight">\(X\)</span>を1行取り出したもので、<span class="math notranslate nohighlight">\(Y_i, u_i \in \mathbb{R}\)</span>も1つのサンプルの被説明変数と誤差項である。</p>
-<p>この書き方をした重回帰モデルのOLS推定量は</p>
+<p>となり、<span class="math notranslate nohighlight">\(\beta\)</span>について解くと</p>
 <div class="math notranslate nohighlight">
 \[
-\hat{\beta} = \beta +
-\left(
-    \frac{1}{N} X^T X
-\right)^{-1}
-\frac{1}{N} X^T u
+\beta
+= (X^T X)^{-1} X^T Y
 \]</div>
+<aside class="margin sidebar">
+<p class="sidebar-title">式展開メモ</p>
+<p>ベクトル<span class="math notranslate nohighlight">\(x\)</span>、行列<span class="math notranslate nohighlight">\(A\)</span>に対し</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial A x}{\partial x^T} = A
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial x^T B x}{\partial x} = (B + B^T) x
+\]</div>
+<p>もしBが対称行列なら<span class="math notranslate nohighlight">\((B + B^T) x = 2Bx\)</span></p>
+</aside>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+<span class="p">])</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">)</span> <span class="o">@</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">b</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 1., -0.,  0.])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="id3">
+<h2>OLS推定量の別表記<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<p>一致性や不偏性の議論のための準備として、OLS推定量を変形する。</p>
+<p>重回帰モデル<span class="math notranslate nohighlight">\(Y = X\beta + u\)</span>をOLS推定量<span class="math notranslate nohighlight">\(\hat{\beta} = (X^T X)^{-1} X^T Y\)</span>に代入して変形すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\hat{\beta}
+&amp;= (X^T X)^{-1} X^T Y\\
+&amp;= (X^T X)^{-1} X^T (X\beta + u)\\
+&amp;= (X^T X)^{-1} X^T X\beta + (X^T X)^{-1} X^T u\\
+&amp;= \beta + (X^T X)^{-1} X^T u\\
+&amp;= \beta + \left(\frac{1}{N} X^T X\right)^{-1} \frac{1}{N} X^T u
+\end{align}
+\end{split}\]</div>
 <p>となる。</p>
 <p>単回帰でいうと</p>
 <div class="math notranslate nohighlight">
@@ -746,9 +821,9 @@ Y_i = X_i^T \beta + u_i, \hspace{1em} i=1,\dots, N
 </ol>
 </div>
 </section>
-</section>
-<section id="id3">
-<h2>一致性<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<section id="id4">
+<h2>一致性<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
+<p>異常値がない（<span class="math notranslate nohighlight">\(X, u\)</span>は4次までのモーメントを持つ）という仮定と大数の法則により以下が成立する</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
@@ -782,12 +857,12 @@ Y_i = X_i^T \beta + u_i, \hspace{1em} i=1,\dots, N
 \beta
 \]</div>
 </section>
-<section id="id4">
-<h2>漸近正規性<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
+<section id="id5">
+<h2>漸近正規性<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
 <p>式を整理して</p>
 <div class="math notranslate nohighlight">
 \[
-\sqrt{N} \hat{\beta} - \beta
+\sqrt{N} (\hat{\beta} - \beta)
 =
 \left(
     \frac{1}{N} X^T X
@@ -800,8 +875,8 @@ Y_i = X_i^T \beta + u_i, \hspace{1em} i=1,\dots, N
 Var[X_i u_i] = E[u^2_i X_i X_i^T]
 \]</div>
 </section>
-<section id="id5">
-<h2>バイアスとバリアンス<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
+<section id="id6">
+<h2>バイアスとバリアンス<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
 <p>最小二乗推定量はすべての線形不偏推定量の中で最もバリアンスが小さい（最良である）ことを示すガウス・マルコフの定理というものがある。</p>
 <aside class="margin sidebar">
 <p class="sidebar-title">バイアスとバリアンス</p>
@@ -825,8 +900,8 @@ Variance = V(\hat{\theta})
 </ul>
 <p>を満たすとき、最小二乗推定量<span class="math notranslate nohighlight">\(\hat{\beta}_{OLS}\)</span>はBLUEになる</p>
 </div>
-<section id="id6">
-<h3>不偏性<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<section id="id7">
+<h3>不偏性<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
 <p>任意のパラメータの線形結合<span class="math notranslate nohighlight">\(\theta=\boldsymbol{\alpha}^\top {\boldsymbol{\beta}}\)</span>を考える。例えば<span class="math notranslate nohighlight">\(f(x_0)=x_0^\top \beta\)</span>がこの形である。</p>
 <p>この最小二乗推定値は</p>
 <div class="math notranslate nohighlight">
@@ -854,8 +929,8 @@ E[\hat{\theta}]
 </aside>
 <p>となり（※）、<span class="math notranslate nohighlight">\(\hat{\theta}\)</span>が不偏推定量である（<span class="math notranslate nohighlight">\(E[\hat{\theta}] = \theta\)</span>）ことがわかる。</p>
 </section>
-<section id="id7">
-<h3>バリアンス<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
+<section id="id8">
+<h3>バリアンス<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(\boldsymbol{\alpha}^\top \boldsymbol{\beta}\)</span>に対して不偏のまた別の線形推定量<span class="math notranslate nohighlight">\(\boldsymbol{c}^\top \boldsymbol{y}\)</span>があるとする。</p>
 <p>両者の差を</p>
 <div class="math notranslate nohighlight">
@@ -949,8 +1024,8 @@ V[\boldsymbol{ c^\top y }] \geq V[\boldsymbol{ \alpha^\top \hat{\beta} }]
 <p>よって<span class="math notranslate nohighlight">\(\boldsymbol{ \alpha^\top \hat{\beta} }\)</span>は最良線形不偏推定量BLUEである。</p>
 </section>
 </section>
-<section id="id8">
-<h2>OLS推定の幾何学的意味<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
+<section id="id9">
+<h2>OLS推定の幾何学的意味<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h2>
 <p>OLS推定量</p>
 <div class="math notranslate nohighlight">
 \[
@@ -981,8 +1056,8 @@ P^2 &amp; = PP \\
 <p>射影行列は、<span class="math notranslate nohighlight">\(X\)</span>の列空間<span class="math notranslate nohighlight">\(\Im X\)</span>にベクトルを正射影するという性質がある。<span class="math notranslate nohighlight">\(\boldsymbol{y}\)</span>の<span class="math notranslate nohighlight">\(\Im X\)</span>への射影が<span class="math notranslate nohighlight">\(\hat{\boldsymbol{y}}\)</span>で、垂線の足が誤差<span class="math notranslate nohighlight">\(\boldsymbol{u}\)</span>となる。</p>
 <p>よって、最小二乗法は<span class="math notranslate nohighlight">\(\boldsymbol{y}\)</span>から<span class="math notranslate nohighlight">\(\Im X\)</span>への射影を求める操作であると捉えることができる。</p>
 </section>
-<section id="id9">
-<h2>参考文献<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h2>
+<section id="id10">
+<h2>参考文献<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>東京大学出版会『統計学入門』</p></li>
 <li><p>東京大学出版会『自然科学の統計学』</p></li>
@@ -1057,18 +1132,19 @@ P^2 &amp; = PP \\
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">重回帰モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">1行単位の重回帰モデルの表記</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">OLS推定量</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">一致性</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">漸近正規性</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">バイアスとバリアンス</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">不偏性</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">バリアンス</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">OLS推定量の別表記</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">一致性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">漸近正規性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">バイアスとバリアンス</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">不偏性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">バリアンス</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">OLS推定の幾何学的意味</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">OLS推定の幾何学的意味</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考文献</a></li>
 </ul>
   </nav></div>
 
