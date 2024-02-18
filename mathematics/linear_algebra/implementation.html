@@ -689,7 +689,7 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">逆行列は連立一次方程式の問題に帰着できる</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lapack">LAPACKで連立一次方程式を解く</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実装を覗く</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">逆行列計算の実装を覗く</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scipy-linalg-inv">scipy.linalg.inv</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#numpy-linalg-inv">numpy.linalg.inv</a></li>
 </ul>
@@ -700,7 +700,9 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xgetri">xGETRI</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">LAPACKはどうやって計算量を下げているのか</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">逆行列の計算量</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -738,7 +740,7 @@ A X = I
 <p>xGESV関数は<span class="math notranslate nohighlight">\(Ax=b\)</span>を<span class="math notranslate nohighlight">\(x\)</span>について解き、<span class="math notranslate nohighlight">\(b:=x\)</span>として<span class="math notranslate nohighlight">\(b\)</span>に代入する関数</p>
 </section>
 <section id="id3">
-<h2>実装を覗く<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<h2>逆行列計算の実装を覗く<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
 <section id="scipy-linalg-inv">
 <h3>scipy.linalg.inv<a class="headerlink" href="#scipy-linalg-inv" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
@@ -805,7 +807,17 @@ A X = I
 <h3>xGESV<a class="headerlink" href="#xgesv" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lapack.dgesv.html#scipy.linalg.lapack.dgesv">scipy.linalg.lapack.dgesv — SciPy v1.12.0 Manual</a></p></li>
+<li><p><a class="reference external" href="https://netlib.org/lapack/explore-html-3.6.1/d7/d3b/group__double_g_esolve_ga5ee879032a8365897c3ba91e3dc8d512.html">LAPACK: dgesv</a></p></li>
 </ul>
+<blockquote>
+<div><p>DGESV computes the solution to a real system of linear equations</p>
+<p>A * X = B,</p>
+<p>where A is an N-by-N matrix and X and B are N-by-NRHS matrices.</p>
+<p>The LU decomposition with partial pivoting and row interchanges is used to factor A as</p>
+<p>A = P * L * U,</p>
+<p>where P is a permutation matrix, L is unit lower triangular, and U is upper triangular.
+The factored form of A is then used to solve the system of equations A * X = B.</p>
+</div></blockquote>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.linalg.lapack</span> <span class="kn">import</span> <span class="n">dgesv</span>
@@ -834,8 +846,9 @@ A X = I
 </section>
 <section id="xgetrf">
 <h3>xGETRF<a class="headerlink" href="#xgetrf" title="Permalink to this heading">#</a></h3>
+<p>LU分解をする関数。</p>
 <p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lapack.dgetrf.html#scipy.linalg.lapack.dgetrf">scipy.linalg.lapack.dgetrf — SciPy v1.12.0 Manual</a></p>
-<p>cpp docs: <a class="reference external" href="https://www.netlib.org/lapack/explore-html-3.6.1/dd/d9a/group__double_g_ecomputational_ga0019443faea08275ca60a734d0593e60.html">LAPACK: dgetrf</a></p>
+<p>docs: <a class="reference external" href="https://www.netlib.org/lapack/explore-html-3.6.1/dd/d9a/group__double_g_ecomputational_ga0019443faea08275ca60a734d0593e60.html">LAPACK: dgetrf</a></p>
 <blockquote>
 <div><p>DGETRF computes an LU factorization of a general M-by-N matrix A using partial pivoting with row interchanges.
 The factorization has the form</p>
@@ -879,6 +892,7 @@ The factorization has the form</p>
 </section>
 <section id="xgetri">
 <h3>xGETRI<a class="headerlink" href="#xgetri" title="Permalink to this heading">#</a></h3>
+<p>LU分解の結果から逆行列を取得する関数</p>
 <p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lapack.dgetri.html#scipy.linalg.lapack.dgetri">scipy.linalg.lapack.dgetri — SciPy v1.12.0 Manual</a></p>
 <p>cpp docs: <a class="reference external" href="https://www.netlib.org/lapack/explore-html-3.6.1/dd/d9a/group__double_g_ecomputational_ga56d9c860ce4ce42ded7f914fdb0683ff.html">LAPACK: dgetri</a></p>
 <blockquote>
@@ -904,8 +918,22 @@ The factorization has the form</p>
 </section>
 </section>
 <section id="id4">
-<h2>参考<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
-<p>幸谷智紀. (2016). LAPACK/BLAS 入門: Linear Algebra PACKage Basic Linear Algebra Subprograms.</p>
+<h2>LAPACKはどうやって計算量を下げているのか<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
+<p>LUが早い？</p>
+</section>
+<section id="id5">
+<h2>逆行列の計算量<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.st.nanzan-u.ac.jp/info/sugiurah/NumericalAnalysis/files/Notes/NANoteA12.pdf">数値解析第12回逆行列と計算量</a></p></li>
+<li><p><a class="reference external" href="https://opqrstuvcut.github.io/blog/posts/%E5%AE%89%E6%98%93%E3%81%AB%E9%80%86%E8%A1%8C%E5%88%97%E3%82%92%E6%95%B0%E5%80%A4%E8%A8%88%E7%AE%97%E3%81%99%E3%82%8B%E3%81%AE%E3%81%AF%E3%82%84%E3%82%81%E3%82%88%E3%81%86/">安易に逆行列を数値計算するのはやめよう</a></p></li>
+</ul>
+</section>
+<section id="id6">
+<h2>参考<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>幸谷智紀. (2016). LAPACK/BLAS 入門: Linear Algebra PACKage Basic Linear Algebra Subprograms.</p></li>
+<li><p><a class="reference external" href="https://ri2t.kyushu-u.ac.jp/~watanabe/RESERCH/MANUSCRIPT/KOHO/WSMP/main.pdf">渡部 善隆「連立1次方程式の直接解法とソフトウェア」</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -975,7 +1003,7 @@ The factorization has the form</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">逆行列は連立一次方程式の問題に帰着できる</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lapack">LAPACKで連立一次方程式を解く</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実装を覗く</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">逆行列計算の実装を覗く</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scipy-linalg-inv">scipy.linalg.inv</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#numpy-linalg-inv">numpy.linalg.inv</a></li>
 </ul>
@@ -986,7 +1014,9 @@ The factorization has the form</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xgetri">xGETRI</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">LAPACKはどうやって計算量を下げているのか</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">逆行列の計算量</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
 </ul>
   </nav></div>
 
