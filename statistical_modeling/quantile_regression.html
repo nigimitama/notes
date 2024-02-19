@@ -696,8 +696,13 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">二乗誤差の場合</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">絶対誤差の場合</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">分位点回帰モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lightgbmquantile-regression">LightGBMでのquantile regression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">メモ：誤差と最適解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">二乗誤差の場合</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">絶対誤差の場合</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -842,7 +847,7 @@ E\big[ \rho_{\tau}(y_i - q(X_i)) \big]
 <span class="k">def</span> <span class="nf">pinball_loss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">tau</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="n">x</span>
 
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pinball_loss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\rho_</span><span class="si">{0.5}</span><span class="s2">(x)$&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;|x|&quot;</span><span class="p">)</span>
@@ -853,10 +858,19 @@ E\big[ \rho_{\tau}(y_i - q(X_i)) \big]
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/256312aa83e4a233199c36b2e9fa5e4d7cd66c31055c2abef150c7a29bbe5881.png" src="../_images/256312aa83e4a233199c36b2e9fa5e4d7cd66c31055c2abef150c7a29bbe5881.png" />
+<img alt="../_images/58045124dbcf3c36e5edcc68b0c8ce162c4486265e31ae4430798250ebe9810d.png" src="../_images/58045124dbcf3c36e5edcc68b0c8ce162c4486265e31ae4430798250ebe9810d.png" />
 </div>
 </div>
-<div class="cell docutils container">
+<section id="id2">
+<h2>分位点回帰モデル<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<p>statsmodelsでは <code class="docutils literal notranslate"><span class="pre">quantreg()</span></code> で実行できる</p>
+<p><a class="reference external" href="https://www.statsmodels.org/devel/examples/notebooks/generated/quantile_regression.html">Quantile regression - statsmodels 0.15.0 (+213)</a></p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -865,12 +879,25 @@ E\big[ \rho_{\tau}(y_i - q(X_i)) \big]
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">engel</span><span class="o">.</span><span class="n">load_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">data</span>
-<span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;income&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;foodexp&quot;</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;income&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;foodexp&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Quantile Linear Regression&quot;</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;income&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;income&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">quantreg</span><span class="p">(</span><span class="s2">&quot;foodexp ~ income&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]:</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">y_hat</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;income&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">}))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">fr</span><span class="s2">&quot;$\tau = </span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_5755/1218367699.py:2: DeprecationWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_5754/2518785238.py:2: DeprecationWarning: 
 Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0),
 (to allow more performant data types, such as the Arrow string type, and better interoperability with other libraries)
 but was not found to be installed on your system.
@@ -880,102 +907,60 @@ please provide us feedback at https://github.com/pandas-dev/pandas/issues/54466
   import pandas as pd
 </pre></div>
 </div>
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>income</th>
-      <th>foodexp</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>420.157651</td>
-      <td>255.839425</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>541.411707</td>
-      <td>310.958667</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>901.157457</td>
-      <td>485.680014</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>639.080229</td>
-      <td>402.997356</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>750.875606</td>
-      <td>495.560775</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
+<img alt="../_images/b3cd59867ee419ca350fff2a82998a0d186ce009c1f70ef1d4ceee3a569c2f4e.png" src="../_images/b3cd59867ee419ca350fff2a82998a0d186ce009c1f70ef1d4ceee3a569c2f4e.png" />
 </div>
-<div class="cell docutils container">
+</div>
+</section>
+<section id="lightgbmquantile-regression">
+<h2>LightGBMでのquantile regression<a class="headerlink" href="#lightgbmquantile-regression" title="Permalink to this heading">#</a></h2>
+<p>目的関数をbinball lossにすればいいだけなので他のアルゴリズムでも実行できる</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">quantreg</span><span class="p">(</span><span class="s2">&quot;foodexp ~ income&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-<span class="n">res</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">res</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># create data</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+<span class="c1"># regression</span>
+<span class="n">x_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">x_plot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">lightgbm</span> <span class="k">as</span> <span class="nn">lgb</span>
+<span class="n">taus</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;tomato&quot;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">lgb</span><span class="o">.</span><span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">objective</span><span class="o">=</span><span class="s2">&quot;quantile&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">taus</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="sa">fr</span><span class="s2">&quot;$\tau = </span><span class="si">{</span><span class="n">taus</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Quantile Regression with LightGBM&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<div class="output text_html"><table class="simpletable">
-<caption>QuantReg Regression Results</caption>
-<tr>
-  <th>Dep. Variable:</th>      <td>foodexp</td>     <th>  Pseudo R-squared:  </th> <td>  0.6206</td>
-</tr>
-<tr>
-  <th>Model:</th>             <td>QuantReg</td>     <th>  Bandwidth:         </th> <td>   64.51</td>
-</tr>
-<tr>
-  <th>Method:</th>          <td>Least Squares</td>  <th>  Sparsity:          </th> <td>   209.3</td>
-</tr>
-<tr>
-  <th>Date:</th>          <td>Mon, 19 Feb 2024</td> <th>  No. Observations:  </th>  <td>   235</td> 
-</tr>
-<tr>
-  <th>Time:</th>              <td>14:37:47</td>     <th>  Df Residuals:      </th>  <td>   233</td> 
-</tr>
-<tr>
-  <th> </th>                      <td> </td>        <th>  Df Model:          </th>  <td>     1</td> 
-</tr>
-</table>
-<table class="simpletable">
-<tr>
-      <td></td>         <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
-</tr>
-<tr>
-  <th>Intercept</th> <td>   81.4823</td> <td>   14.634</td> <td>    5.568</td> <td> 0.000</td> <td>   52.649</td> <td>  110.315</td>
-</tr>
-<tr>
-  <th>income</th>    <td>    0.5602</td> <td>    0.013</td> <td>   42.516</td> <td> 0.000</td> <td>    0.534</td> <td>    0.586</td>
-</tr>
-</table><br/><br/>The condition number is large, 2.38e+03. This might indicate that there are<br/>strong multicollinearity or other numerical problems.</div></div>
+<img alt="../_images/9a0f708968851b1036f3cf760613f005101a28b995bcdf8ef4b672cdfc0962fc.png" src="../_images/9a0f708968851b1036f3cf760613f005101a28b995bcdf8ef4b672cdfc0962fc.png" />
 </div>
-<section id="id2">
-<h2>二乗誤差の場合<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+</div>
+</section>
+<section id="id3">
+<h2>メモ：誤差と最適解<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<section id="id4">
+<h3>二乗誤差の場合<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
 <p>二乗誤差</p>
 <div class="math notranslate nohighlight">
 \[
@@ -993,14 +978,15 @@ L(x) = (y_i - f(x))^2
 \end{split}\]</div>
 <p>と変形すると、<span class="math notranslate nohighlight">\(E(y|x) = f(x)\)</span>のときに最小化され、予測値<span class="math notranslate nohighlight">\(f(x)\)</span>を含まない第1項のみが残ることがわかる</p>
 </section>
-<section id="id3">
-<h2>絶対誤差の場合<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<section id="id5">
+<h3>絶対誤差の場合<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
 <p>絶対誤差</p>
 <div class="math notranslate nohighlight">
 \[
 L(x) = |y_i - f(x)|
 \]</div>
 <p><a class="reference external" href="https://scikit-learn.org/stable/modules/model_evaluation.html#pinball-loss">3.3. Metrics and scoring: quantifying the quality of predictions — scikit-learn 1.4.1 documentation</a></p>
+</section>
 </section>
 </section>
 
@@ -1068,8 +1054,13 @@ L(x) = |y_i - f(x)|
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">二乗誤差の場合</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">絶対誤差の場合</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">分位点回帰モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lightgbmquantile-regression">LightGBMでのquantile regression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">メモ：誤差と最適解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">二乗誤差の場合</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">絶対誤差の場合</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
