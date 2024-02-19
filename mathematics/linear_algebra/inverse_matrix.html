@@ -76,7 +76,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="線形写像" href="linear_mapping.html" />
-    <link rel="prev" title="\(n\)次正方行列に対する行列式" href="determinant/determinant.html" />
+    <link rel="prev" title="n次正方行列に対する行列式" href="determinant/determinant.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -202,7 +202,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l3"><a class="reference internal" href="determinant/introduction.html">行列式</a></li>
 <li class="toctree-l3"><a class="reference internal" href="determinant/minor_determinant.html">余因子</a></li>
 <li class="toctree-l3"><a class="reference internal" href="determinant/permutation.html">置換</a></li>
-<li class="toctree-l3"><a class="reference internal" href="determinant/determinant.html"><span class="math notranslate nohighlight">\(n\)</span>次正方行列に対する行列式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="determinant/determinant.html">n次正方行列に対する行列式</a></li>
 </ul>
 </li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">逆行列</a></li>
@@ -696,12 +696,14 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">正則行列の条件</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">余因子行列と逆行列</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">逆行列の効率的な計算</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">行列分解で計算する方法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">共役勾配法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">逆行列の計算規則</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">逆行列の効率的な計算</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列式を使う場合</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">掃き出し法による計算</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">行列分解で計算する方法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">共役勾配法</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">逆行列の計算規則</a></li>
 </ul>
             </nav>
         </div>
@@ -722,16 +724,16 @@ A^{-1}A = AA^{-1} = I
 \]</div>
 <p>を満たす正方行列<span class="math notranslate nohighlight">\(A^{-1}\)</span>が存在するとき、<span class="math notranslate nohighlight">\(A\)</span>は <strong>正則行列（regular matrix）</strong> や <strong>可逆行列（invertible matrix）</strong> とよばれる。</p>
 <p>また、<span class="math notranslate nohighlight">\(A^{-1}\)</span>を<span class="math notranslate nohighlight">\(A\)</span>の<strong>逆行列</strong>という。（<span class="math notranslate nohighlight">\(I\)</span>は<span class="math notranslate nohighlight">\(A\)</span>と同じサイズの単位行列）</p>
-<p>正則でない行列は**特異行列（singular matrix）**という。</p>
+<p>正則でない行列は <strong>特異行列（singular matrix）</strong> という。</p>
 <section id="id2">
 <h2>正則行列の条件<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
 <p>正方行列<span class="math notranslate nohighlight">\(A\)</span>が正則行列であるための必要十分条件は<span class="math notranslate nohighlight">\(\det(A) \neq 0\)</span>である。</p>
-<p>このとき、<span class="math notranslate nohighlight">\(A\)</span>の逆行列<span class="math notranslate nohighlight">\(A^{-1}\)</span>は</p>
+<p><span class="math notranslate nohighlight">\(A\)</span>の逆行列<span class="math notranslate nohighlight">\(A^{-1}\)</span>の計算方法の一つに</p>
 <div class="math notranslate nohighlight">
 \[
 A^{-1} = \frac{1}{ \det(A) } \tilde{A}
 \]</div>
-<p>で与えられる。ここで<span class="math notranslate nohighlight">\(\tilde{A}\)</span>は<span class="math notranslate nohighlight">\(A\)</span>の余因子行列である。</p>
+<p>があり、分母が<span class="math notranslate nohighlight">\(\det(A) \neq 0\)</span>である必要がある。ここで<span class="math notranslate nohighlight">\(\tilde{A}\)</span>は<span class="math notranslate nohighlight">\(A\)</span>の余因子行列である。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -836,20 +838,7 @@ A_adj @ A:
 </div>
 </section>
 <section id="id4">
-<h2>逆行列の効率的な計算<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
-<section id="id5">
-<h3>行列分解で計算する方法<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
-<ul class="simple">
-<li><p><a class="reference external" href="https://speakerdeck.com/nagiss/hiyurisuteitukukontesutodeji-jie-xue-xi-siyou?slide=26">https://speakerdeck.com/nagiss/hiyurisuteitukukontesutodeji-jie-xue-xi-siyou?slide=26</a></p></li>
-</ul>
-</section>
-<section id="id6">
-<h3>共役勾配法<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
-<p><strong>共役勾配（conjugate gradient: CG）法</strong>は逆行列の計算を二次最適化に落とし込む方法としても使われる</p>
-</section>
-</section>
-<section id="id7">
-<h2>逆行列の計算規則<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
+<h2>逆行列の計算規則<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
 <div class="math notranslate nohighlight">
 \[
 (A^{-1})^{-1} = A
@@ -884,6 +873,63 @@ A_adj @ A:
 </div>
 </div>
 </div>
+</section>
+<section id="id5">
+<h2>逆行列の効率的な計算<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
+<section id="id6">
+<h3>行列式を使う場合<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[
+A^{-1} = \frac{1}{|A|} \tilde{A}
+\]</div>
+<p>から計算する場合、おそらく<span class="math notranslate nohighlight">\(O((n-1)^3 \times n^2)\)</span>かかる</p>
+<p><strong>行列式の計算量</strong></p>
+<div class="math notranslate nohighlight">
+\[
+|A| = \sum_{\sigma \in S_n} \operatorname{sgn}(\sigma) a_{1 \sigma(1)} a_{2 \sigma(2)} \cdots a_{n \sigma(n)}
+\]</div>
+<p>という行列式の定義から、置換の集合<span class="math notranslate nohighlight">\(S_n\)</span>の要素数が<span class="math notranslate nohighlight">\(n!\)</span>個あり、各項で<span class="math notranslate nohighlight">\(n\)</span>回<span class="math notranslate nohighlight">\(a_{n \sigma(n)}\)</span>を掛けるので<span class="math notranslate nohighlight">\(O(n\times n!)\)</span></p>
+<p>「行列Aのi行から、j行の定数倍を引いても、行列式の値は変わらない。」という性質を使って上三角行列に変形してから行列式を計算する。三角行列への変換は<span class="math notranslate nohighlight">\(O(n^3)\)</span>、上三角行列の行列式は対角成分の積なので<span class="math notranslate nohighlight">\(O(n)\)</span>なので、全体で<span class="math notranslate nohighlight">\(O(n^3)\)</span>になる</p>
+<p>（参考：<a class="reference external" href="https://techtipshoge.blogspot.com/2011/08/blog-post_23.html">Tech Tips: 行列式の計算</a>）</p>
+<p><strong>余因子行列の計算量</strong></p>
+<p><span class="math notranslate nohighlight">\((i, j)\)</span>余因子は「『<span class="math notranslate nohighlight">\(i\)</span>行目と<span class="math notranslate nohighlight">\(j\)</span>列目を除いた行列』の行列式に<span class="math notranslate nohighlight">\((-1)^{i+j}\)</span>をかけたもの」なので、<span class="math notranslate nohighlight">\(n-1\)</span>次行列の行列式を求める計算になり、<span class="math notranslate nohighlight">\(O((n-1)^3)\)</span></p>
+<p>余因子行列は「<span class="math notranslate nohighlight">\((i, j)\)</span>余因子を<span class="math notranslate nohighlight">\(i,j\)</span>成分に持つ行列を転置したもの」なので、<span class="math notranslate nohighlight">\((i, j)\)</span>余因子を<span class="math notranslate nohighlight">\(n\times n\)</span>個計算する必要がある→<span class="math notranslate nohighlight">\(O((n-1)^3 \times n^2)\)</span>か？</p>
+</section>
+<section id="id7">
+<h3>掃き出し法による計算<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
+<p>教科書的な方法でありながら、行列分解による方法と計算量が大差ない（=結構効率的）</p>
+</section>
+<section id="id8">
+<h3>行列分解で計算する方法<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://speakerdeck.com/nagiss/hiyurisuteitukukontesutodeji-jie-xue-xi-siyou?slide=26">https://speakerdeck.com/nagiss/hiyurisuteitukukontesutodeji-jie-xue-xi-siyou?slide=26</a></p></li>
+</ul>
+</section>
+<section id="id9">
+<h3>共役勾配法<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h3>
+<p>連立一次方程式</p>
+<div class="math notranslate nohighlight">
+\[
+Ax = b
+\]</div>
+<p>の<span class="math notranslate nohighlight">\(x\)</span>を求めることは、二次形式</p>
+<div class="math notranslate nohighlight">
+\[
+f(x) = \frac{1}{2} x^T Ax - b^T x
+\]</div>
+<p>の最小化と一致するので、<span class="math notranslate nohighlight">\(f(x)\)</span>の最小値を探索する方法で解を求める方法を <strong>共役勾配（conjugate gradient: CG）法</strong> という</p>
+<p><a class="reference external" href="https://www.slis.tsukuba.ac.jp/~fujisawa.makoto.fu/cgi-bin/wiki/index.php?%CF%A2%CE%A91%BC%A1%CA%FD%C4%F8%BC%B0%A1%A7%B6%A6%CC%F2%B8%FB%C7%DB%CB%A1">連立1次方程式：共役勾配法 - PukiWiki for PBCG Lab</a></p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p><strong>逆行列計算と連立一次方程式の関連性</strong></p>
+<p>行列での連立一次方程式</p>
+<div class="math notranslate nohighlight">
+\[
+AX = I
+\]</div>
+<p>を考えると、この解は<span class="math notranslate nohighlight">\(X=A^{-1}\)</span>になる</p>
+</aside>
+</section>
 </section>
 </section>
 
@@ -923,7 +969,7 @@ A_adj @ A:
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="math notranslate nohighlight">\(n\)</span>次正方行列に対する行列式</p>
+        <p class="prev-next-title">n次正方行列に対する行列式</p>
       </div>
     </a>
     <a class="right-next"
@@ -953,12 +999,14 @@ A_adj @ A:
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">正則行列の条件</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">余因子行列と逆行列</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">逆行列の効率的な計算</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">行列分解で計算する方法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">共役勾配法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">逆行列の計算規則</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">逆行列の効率的な計算</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列式を使う場合</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">掃き出し法による計算</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">行列分解で計算する方法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">共役勾配法</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">逆行列の計算規則</a></li>
 </ul>
   </nav></div>
 
