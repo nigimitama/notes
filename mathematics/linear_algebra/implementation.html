@@ -702,8 +702,11 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">LAPACKはどうやって計算量を下げているのか</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">逆行列の計算量</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">逆行列の計算量</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列式を使う場合</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -925,13 +928,67 @@ The factorization has the form</p>
 </section>
 <section id="id5">
 <h2>逆行列の計算量<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
+<section id="id6">
+<h3>行列式を使う場合<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(A\)</span>を<span class="math notranslate nohighlight">\(n\)</span>次の正方行列とする。逆行列</p>
+<div class="math notranslate nohighlight">
+\[
+A^{-1} = \frac{1}{|A|} \tilde{A}
+\]</div>
+<p>は、行列式の計算で<span class="math notranslate nohighlight">\(O(n^3)\)</span>、</p>
+<p><strong>行列式の計算量</strong></p>
+<p>行列式は</p>
+<div class="math notranslate nohighlight">
+\[
+|A| = \sum_{\sigma \in S_n} \operatorname{sgn}(\sigma) a_{1 \sigma(1)} a_{2 \sigma(2)} \cdots a_{n \sigma(n)}
+\]</div>
+<p>で、<span class="math notranslate nohighlight">\(S_n\)</span>が<span class="math notranslate nohighlight">\(n!\)</span>あり、各項で<span class="math notranslate nohighlight">\(n\)</span>回<span class="math notranslate nohighlight">\(a_{n \sigma(n)}\)</span>を掛けるので<span class="math notranslate nohighlight">\(O(n\times n!)\)</span></p>
+<p>「行列Aのi行から、j行の定数倍を引いても、行列式の値は変わらない。」という性質を使って上三角行列に変形してから行列式を計算する。三角行列への変換は<span class="math notranslate nohighlight">\(O(n^3)\)</span>、上三角行列の行列式は対角成分の積なので<span class="math notranslate nohighlight">\(O(n)\)</span>なので、全体で<span class="math notranslate nohighlight">\(O(n^3)\)</span>になる</p>
+<p>（参考：<a class="reference external" href="https://techtipshoge.blogspot.com/2011/08/blog-post_23.html">Tech Tips: 行列式の計算</a>）</p>
+<p><strong>余因子行列の計算量</strong></p>
+<p><span class="math notranslate nohighlight">\((i, j)\)</span>余因子は「『<span class="math notranslate nohighlight">\(i\)</span>行目と<span class="math notranslate nohighlight">\(j\)</span>列目を除いた行列』の行列式に<span class="math notranslate nohighlight">\((-1)^{i+j}\)</span>をかけたもの」なので、<span class="math notranslate nohighlight">\(n-1\)</span>次行列の行列式を求める計算になり、<span class="math notranslate nohighlight">\(O([n-1]^3)\)</span></p>
+<p>余因子行列は「<span class="math notranslate nohighlight">\((i, j)\)</span>余因子を<span class="math notranslate nohighlight">\(i,j\)</span>成分に持つ行列を転置したもの」なので、<span class="math notranslate nohighlight">\((i, j)\)</span>余因子を<span class="math notranslate nohighlight">\(n\times n\)</span>個計算する必要がある→<span class="math notranslate nohighlight">\(O(n^2 \times [n-1]^3)\)</span>か？</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="p">])</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-2.0000000000000004
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> 
+<span class="n">A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 1,  2],
+       [ 0, -2]])
+</pre></div>
+</div>
+</div>
+</div>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.st.nanzan-u.ac.jp/info/sugiurah/NumericalAnalysis/files/Notes/NANoteA12.pdf">数値解析第12回逆行列と計算量</a></p></li>
 <li><p><a class="reference external" href="https://opqrstuvcut.github.io/blog/posts/%E5%AE%89%E6%98%93%E3%81%AB%E9%80%86%E8%A1%8C%E5%88%97%E3%82%92%E6%95%B0%E5%80%A4%E8%A8%88%E7%AE%97%E3%81%99%E3%82%8B%E3%81%AE%E3%81%AF%E3%82%84%E3%82%81%E3%82%88%E3%81%86/">安易に逆行列を数値計算するのはやめよう</a></p></li>
 </ul>
 </section>
-<section id="id6">
-<h2>参考<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
+</section>
+<section id="id7">
+<h2>参考<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>幸谷智紀. (2016). LAPACK/BLAS 入門: Linear Algebra PACKage Basic Linear Algebra Subprograms.</p></li>
 <li><p><a class="reference external" href="https://ri2t.kyushu-u.ac.jp/~watanabe/RESERCH/MANUSCRIPT/KOHO/WSMP/main.pdf">渡部 善隆「連立1次方程式の直接解法とソフトウェア」</a></p></li>
@@ -1017,8 +1074,11 @@ The factorization has the form</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">LAPACKはどうやって計算量を下げているのか</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">逆行列の計算量</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">逆行列の計算量</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列式を使う場合</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a></li>
 </ul>
   </nav></div>
 
