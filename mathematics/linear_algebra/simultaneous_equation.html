@@ -275,6 +275,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/factor_analysis.html">因子分析</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/gaussian_process.html">ガウス過程回帰</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/quantile_regression.html">分位点回帰</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../statistical_modeling/sem/index.html">構造方程式モデリング</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/introduction.html">Structural Equation Modeling（SEM）</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/statistic.html">統計量</a></li>
@@ -416,6 +417,7 @@ const thebe_selector_output = ".output, .cell_output"
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">画像処理</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../image_processing/introduction.html">画像認識</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image_processing/rotation.html">回転</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">推薦システム</span></p>
 <ul class="nav bd-sidenav">
@@ -704,7 +706,12 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6"><span class="math notranslate nohighlight">\(A\)</span>が正則でない（特異な）場合</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">連立一次方程式の計算の高速化</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">幅広い行列に使える方法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">特定のタイプの行列に使える方法</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -970,6 +977,38 @@ I &amp; z
 </ol>
 <p>といった操作を行うもので、</p>
 <p>まず<span class="math notranslate nohighlight">\(A\)</span>の対角線より下の要素たちを0にしていき、その後対角線より上の要素たちを0にしていって<span class="math notranslate nohighlight">\(I\)</span>に到達する、という流れで計算していく</p>
+<p><span class="math notranslate nohighlight">\(A\)</span>の対角線より下の要素たちを0にする操作を <strong>前進消去</strong> （Forward elimination)、という</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># 拡大係数行列</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span>
+<span class="n">A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 1,  1,  5],
+       [ 0,  2, 12]])
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="id4">
@@ -1014,7 +1053,38 @@ AX = I
 </ul>
 </section>
 <section id="id7">
-<h2>参考文献<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
+<h2>連立一次方程式の計算の高速化<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
+<section id="id8">
+<h3>幅広い行列に使える方法<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>掃き出し法</p></li>
+<li><p>直接解法（LU分解して解く）</p></li>
+</ul>
+</section>
+<section id="id9">
+<h3>特定のタイプの行列に使える方法<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>対称正定値行列（例えば回帰モデルの<span class="math notranslate nohighlight">\(X^T X\)</span>）だと、</p>
+<ul>
+<li><p>コレスキー分解（LU分解の代わりに<span class="math notranslate nohighlight">\(A=LL^T\)</span>に分解する）</p></li>
+<li><p>共役勾配法（<span class="math notranslate nohighlight">\(f(x)=\frac{1}{2} x^T Ax - b^T x\)</span>を最小化する<span class="math notranslate nohighlight">\(x\)</span>を求める形で反復計算して解く）</p></li>
+</ul>
+</li>
+</ul>
+<p>参考：</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.cms-initiative.jp/ja/events/0620-yamamoto.pdf">山本有作（2013）行列計算における高速アルゴリズム</a></p></li>
+<li><p><a class="reference external" href="https://speakerdeck.com/nagiss/hiyurisuteitukukontesutodeji-jie-xue-xi-siyou?slide=29">ヒューリスティックコンテストで機械学習しよう - Speaker Deck</a></p></li>
+</ul>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p><span class="math notranslate nohighlight">\(X^T X\)</span>について</p>
+<p>竹村（2020）『現代数理統計学』のp.242では、説明変数の行列<span class="math notranslate nohighlight">\(X\)</span>の各列が1次独立であるときは<span class="math notranslate nohighlight">\(X^T X\)</span>は正定値行列だと述べている</p>
+</aside>
+</section>
+</section>
+<section id="id10">
+<h2>参考文献<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.krrk0.com/rank/">行列のランク(階数)の求め方・意味を分かりやすく解説！ – 「なんとなくわかる」大学の数学・物理・情報</a></p></li>
 <li><p><a class="reference external" href="https://dora.bk.tsukuba.ac.jp/~takeuchi/?%E7%B7%9A%E5%BD%A2%E4%BB%A3%E6%95%B0%EF%BC%A9%2F%E9%80%A3%E7%AB%8B%E4%B8%80%E6%AC%A1%E6%96%B9%E7%A8%8B%E5%BC%8F">線形代数Ｉ/連立一次方程式 - 武内＠筑波大</a></p></li>
@@ -1098,7 +1168,12 @@ AX = I
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6"><span class="math notranslate nohighlight">\(A\)</span>が正則でない（特異な）場合</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">連立一次方程式の計算の高速化</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">幅広い行列に使える方法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">特定のタイプの行列に使える方法</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考文献</a></li>
 </ul>
   </nav></div>
 

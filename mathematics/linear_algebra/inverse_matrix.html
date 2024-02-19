@@ -275,6 +275,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/factor_analysis.html">因子分析</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/gaussian_process.html">ガウス過程回帰</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/quantile_regression.html">分位点回帰</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../statistical_modeling/sem/index.html">構造方程式モデリング</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/introduction.html">Structural Equation Modeling（SEM）</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/statistic.html">統計量</a></li>
@@ -416,6 +417,7 @@ const thebe_selector_output = ".output, .cell_output"
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">画像処理</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../image_processing/introduction.html">画像認識</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image_processing/rotation.html">回転</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">推薦システム</span></p>
 <ul class="nav bd-sidenav">
@@ -701,7 +703,10 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列式を使う場合</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">掃き出し法による計算</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">行列分解で計算する方法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">共役勾配法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">反復解法</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">共役勾配法</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -901,12 +906,24 @@ A^{-1} = \frac{1}{|A|} \tilde{A}
 </section>
 <section id="id8">
 <h3>行列分解で計算する方法<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h3>
+<p>直接解法（LU分解して解く）</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://speakerdeck.com/nagiss/hiyurisuteitukukontesutodeji-jie-xue-xi-siyou?slide=26">https://speakerdeck.com/nagiss/hiyurisuteitukukontesutodeji-jie-xue-xi-siyou?slide=26</a></p></li>
+<li><p><span class="math notranslate nohighlight">\(A=LU\)</span>に分解し、<span class="math notranslate nohighlight">\(Ly=b\)</span>、<span class="math notranslate nohighlight">\(Ux=y\)</span>を順に解く</p></li>
+</ul>
+<p><span class="math notranslate nohighlight">\(A\)</span>が対称正定値行列の場合、コレスキー分解<span class="math notranslate nohighlight">\(A=LL^T\)</span>を用いることで計算量を半減できる</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://speakerdeck.com/nagiss/hiyurisuteitukukontesutodeji-jie-xue-xi-siyou?slide=26">ヒューリスティックコンテストで機械学習しよう - Speaker Deck</a></p></li>
+<li><p><a class="reference external" href="https://www.cms-initiative.jp/ja/events/0620-yamamoto.pdf">行列計算における高速アルゴリズム</a></p></li>
 </ul>
 </section>
 <section id="id9">
-<h3>共役勾配法<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h3>
+<h3>反復解法<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>解がうまく収束する場合、計算量が直接解法より大幅に削減できる</p></li>
+<li><p>収束しない場合もある</p></li>
+</ul>
+<section id="id10">
+<h4>共役勾配法<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h4>
 <p>連立一次方程式</p>
 <div class="math notranslate nohighlight">
 \[
@@ -919,6 +936,7 @@ f(x) = \frac{1}{2} x^T Ax - b^T x
 \]</div>
 <p>の最小化と一致するので、<span class="math notranslate nohighlight">\(f(x)\)</span>の最小値を探索する方法で解を求める方法を <strong>共役勾配（conjugate gradient: CG）法</strong> という</p>
 <p><a class="reference external" href="https://www.slis.tsukuba.ac.jp/~fujisawa.makoto.fu/cgi-bin/wiki/index.php?%CF%A2%CE%A91%BC%A1%CA%FD%C4%F8%BC%B0%A1%A7%B6%A6%CC%F2%B8%FB%C7%DB%CB%A1">連立1次方程式：共役勾配法 - PukiWiki for PBCG Lab</a></p>
+<p>ただし、対称正定値行列でないと共役勾配法は使えない？（<a class="reference external" href="https://www.cms-initiative.jp/ja/events/0620-yamamoto.pdf">行列計算における高速アルゴリズム</a>）</p>
 <aside class="margin sidebar">
 <p class="sidebar-title"></p>
 <p><strong>逆行列計算と連立一次方程式の関連性</strong></p>
@@ -929,6 +947,7 @@ AX = I
 \]</div>
 <p>を考えると、この解は<span class="math notranslate nohighlight">\(X=A^{-1}\)</span>になる</p>
 </aside>
+</section>
 </section>
 </section>
 </section>
@@ -1004,7 +1023,10 @@ AX = I
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列式を使う場合</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">掃き出し法による計算</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">行列分解で計算する方法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">共役勾配法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">反復解法</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">共役勾配法</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

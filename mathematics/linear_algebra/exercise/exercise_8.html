@@ -275,6 +275,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../statistical_modeling/factor_analysis.html">因子分析</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../statistical_modeling/gaussian_process.html">ガウス過程回帰</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../statistical_modeling/quantile_regression.html">分位点回帰</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../statistical_modeling/sem/index.html">構造方程式モデリング</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../statistical_modeling/sem/introduction.html">Structural Equation Modeling（SEM）</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../statistical_modeling/sem/statistic.html">統計量</a></li>
@@ -416,6 +417,7 @@ const thebe_selector_output = ".output, .cell_output"
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">画像処理</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../image_processing/introduction.html">画像認識</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image_processing/rotation.html">回転</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">推薦システム</span></p>
 <ul class="nav bd-sidenav">
@@ -860,11 +862,12 @@ a &amp; 1 &amp; 1 &amp; 1 \\
 <p class="sd-card-text">次の問いに答えよ。</p>
 <ol class="arabic simple">
 <li><p class="sd-card-text">正方行列が正則であることの定義を書け。</p></li>
-<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(A\)</span> を <span class="math notranslate nohighlight">\(n\)</span> 次の正方行列、 <span class="math notranslate nohighlight">\(P\)</span> を <span class="math notranslate nohighlight">\(n\)</span> 次の正則行列とすると、等式
-$<span class="math notranslate nohighlight">\(
-\left|P^{-1} A P\right|=|A|
-\)</span>$</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(A\)</span> を <span class="math notranslate nohighlight">\(n\)</span> 次の正方行列、 <span class="math notranslate nohighlight">\(P\)</span> を <span class="math notranslate nohighlight">\(n\)</span> 次の正則行列とすると、等式</p></li>
 </ol>
+<div class="math notranslate nohighlight">
+\[
+\left|P^{-1} A P\right|=|A|
+\]</div>
 <p class="sd-card-text">が成り立つことを示せ。</p>
 </div>
 </div>
@@ -881,14 +884,10 @@ AA^{-1} = A^{-1} A = E
 <p>を満たす正方行列<span class="math notranslate nohighlight">\(A^{-1}\)</span>が存在するとき、<span class="math notranslate nohighlight">\(A\)</span>は正則である</p>
 <blockquote>
 <div><ol class="arabic simple" start="2">
-<li><p><span class="math notranslate nohighlight">\(A\)</span> を <span class="math notranslate nohighlight">\(n\)</span> 次の正方行列、 <span class="math notranslate nohighlight">\(P\)</span> を <span class="math notranslate nohighlight">\(n\)</span> 次の正則行列とすると、等式
-$<span class="math notranslate nohighlight">\(
-\left|P^{-1} A P\right|=|A|
-\)</span>$
-が成り立つことを示せ。</p></li>
+<li><p><span class="math notranslate nohighlight">\(A\)</span> を <span class="math notranslate nohighlight">\(n\)</span> 次の正方行列、 <span class="math notranslate nohighlight">\(P\)</span> を <span class="math notranslate nohighlight">\(n\)</span> 次の正則行列とすると、等式<span class="math notranslate nohighlight">\(\left|P^{-1} A P\right|=|A|\)</span>が成り立つことを示せ。</p></li>
 </ol>
 </div></blockquote>
-<p>行列式の積は分解できるので</p>
+<p>行列式の積は分解できる（<span class="math notranslate nohighlight">\(|AB| = |A| |B|\)</span>）ので</p>
 <div class="math notranslate nohighlight">
 \[
 \left|P^{-1} A P\right|
@@ -906,6 +905,38 @@ $<span class="math notranslate nohighlight">\(
 = 1 \times |A|
 = |A|
 \]</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="p">])</span>
+
+<span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="p">])</span>
+
+<span class="n">P_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+<span class="n">det</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">P_inv</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">det</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">P_inv</span> <span class="o">@</span> <span class="n">A</span> <span class="o">@</span> <span class="n">P</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 <section id="id6">
 <h2>8.5<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
