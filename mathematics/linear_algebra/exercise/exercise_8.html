@@ -747,7 +747,10 @@ document.write(`
 \[
 a^3 + 2 - 3a
 \]</div>
-<p>わからｎ</p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>（このような未知の変数があるときの扱い：<span class="math notranslate nohighlight">\(a\)</span>で割るときとかは<span class="math notranslate nohighlight">\(a=0\)</span>で演算が定義できなくなってくる可能性があるので場合分けなどが必要だが、今回は掛け算なのでOK）</p>
+</aside>
 <blockquote>
 <div><ol class="arabic simple" start="3">
 <li><p><span class="math notranslate nohighlight">\(\left|\begin{array}{llll}1 &amp; a &amp; b &amp; c \\ 0 &amp; 2 &amp; d &amp; e \\ 0 &amp; 0 &amp; 3 &amp; f \\ 0 &amp; 0 &amp; 0 &amp; 4\end{array}\right|\)</span></p></li>
@@ -776,7 +779,107 @@ a &amp; 1 &amp; 1 &amp; 1 \\
 <p class="sd-card-text">の値が 0 となるような <span class="math notranslate nohighlight">\(a\)</span> の値を求めよ。</p>
 </div>
 </div>
-<p>2つの行（列）が等しい行列の行列式はゼロになるため、<span class="math notranslate nohighlight">\(a=1\)</span>にすると<span class="math notranslate nohighlight">\(|A|=0\)</span>になる</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left|\begin{array}{ll}
+A &amp; B\\
+B &amp; A
+\end{array}\right|
+= | A + B | |A - B|
+\end{split}\]</div>
+<p>という性質があるため（<a class="reference external" href="https://batapara.com/archives/detabba-detab-deta-b.html/">行列式 |A B // B A| = |A-B||A+B| の証明 | ばたぱら</a>）、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left|\begin{array}{llll}
+a &amp; 1 &amp; 1 &amp; 1 \\
+1 &amp; a &amp; 1 &amp; 1 \\
+1 &amp; 1 &amp; a &amp; 1 \\
+1 &amp; 1 &amp; 1 &amp; a
+\end{array}\right|
+= 
+\left|
+    \begin{pmatrix}
+    a &amp; 1 \\
+    1 &amp; a 
+    \end{pmatrix}
+    +
+    \begin{pmatrix}
+    1 &amp; 1 \\
+    1 &amp; 1 
+    \end{pmatrix}
+\right|
+\left|
+    \begin{pmatrix}
+    a &amp; 1 \\
+    1 &amp; a 
+    \end{pmatrix}
+    -
+    \begin{pmatrix}
+    1 &amp; 1 \\
+    1 &amp; 1 
+    \end{pmatrix}
+\right|
+\\
+= 
+\left|
+    \begin{array}{cc}
+    a+1 &amp; 2 \\
+    2 &amp; a+1 
+    \end{array}
+\right|
+\left|
+    \begin{array}{cc}
+    a - 1 &amp; 0 \\
+    0 &amp; a - 1 
+    \end{array}
+\right|
+\\
+= \{ (a+1)^2 - 4 \} (a-1)^2
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\{ (a+1)^2 - 4 \} (a-1)^2
+&amp;= (a+1)^2 (a-1)^2 - 4 (a-1)^2\\
+&amp;= (a^2 + 2a + 1)(a^2 - 2a + 1) - 4 (a^2 - 2a + 1)\\
+&amp;= 
+a^2 (a^2 - 2a + 1) 
++ 2a (a^2 - 2a + 1)
++ (a^2 - 2a + 1)
+- 4 (a^2 - 2a + 1)\\
+&amp;= 
+a^4 - 2a^3 + a^2
++ 2a^3 - 4a^2 + 2a
++ a^2 - 2a + 1
+- 4a^2 + 8a - 4\\
+&amp;=
+a^4 - 6 a^2 + 8a - 3\\
+&amp;= (a - 1)^3 (a + 3)
+\end{align}
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">symbols</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">expand</span>
+
+<span class="c1"># 4次方程式の因数分解はわからないのでsympyを使う</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">a</span> <span class="o">**</span> <span class="mi">4</span> <span class="o">-</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">a</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">a</span> <span class="o">-</span> <span class="mi">3</span>
+<span class="n">factor</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \left(a - 1\right)^{3} \left(a + 3\right)\]</div>
+</div>
+</div>
+<p>これがゼロとなる<span class="math notranslate nohighlight">\(a\)</span>を求めたいので</p>
+<div class="math notranslate nohighlight">
+\[
+(a - 1)^3 (a + 3) = 0
+\]</div>
+<p>これを満たすのは<span class="math notranslate nohighlight">\(a = 1\)</span>と<span class="math notranslate nohighlight">\(a = - 3\)</span>のとき</p>
+<p>よって<span class="math notranslate nohighlight">\(a = 1, -3\)</span></p>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
@@ -785,7 +888,7 @@ a &amp; 1 &amp; 1 &amp; 1 \\
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">a</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
     <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
     <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
@@ -843,7 +946,8 @@ a &amp; 1 &amp; 1 &amp; 1 \\
 \[
 |A| = |A^T| = |-A| = (-1)^n |A|
 \]</div>
-<p>よって奇数次の交代行列は</p>
+<p>奇数次の交代行列、すなわち<span class="math notranslate nohighlight">\(A\)</span>が<span class="math notranslate nohighlight">\(2n-1\)</span>次の交代行列である場合、<span class="math notranslate nohighlight">\((-1)^{2n-1} = -1\)</span></p>
+<p>よって</p>
 <div class="math notranslate nohighlight">
 \[
 |A| = -|A|
@@ -893,16 +997,23 @@ AA^{-1} = A^{-1} A = E
 \left|P^{-1} A P\right|
 =|P^{-1}| |A| |P|
 \]</div>
+<p>となる</p>
 <div class="math notranslate nohighlight">
 \[
 |P^{-1}| |P| = |P^{-1} P| = |E| = 1
 \]</div>
-<p>なので</p>
+<p>より、</p>
 <div class="math notranslate nohighlight">
 \[
-\left|P^{-1} A P\right|
-=|P^{-1}| |A| |P|
-= 1 \times |A|
+|P^{-1}| |P| = 1
+\to
+|P^{-1}| = \frac{1}{|P|}
+\]</div>
+<p>なので、</p>
+<div class="math notranslate nohighlight">
+\[
+|P^{-1}| |A| |P|
+= \frac{1}{|P|} |P| |A|
 = |A|
 \]</div>
 <div class="cell tag_hide-input docutils container">
@@ -949,16 +1060,29 @@ $<span class="math notranslate nohighlight">\(
 <p class="sd-card-text">が成り立つことを示せ。</p>
 </div>
 </div>
-<p>正則である場合、逆行列</p>
+<p>正則であれば逆行列が存在するため</p>
 <div class="math notranslate nohighlight">
 \[
-A^{-1} = \frac{1}{|A|} \tilde{A}
+A A^{-1} = I
 \]</div>
-<p>が定義できるので、<span class="math notranslate nohighlight">\(|A|\)</span>はゼロではない</p>
+<p>が成り立つ。</p>
+<p>両辺の行列式をとると</p>
 <div class="math notranslate nohighlight">
 \[
-|A| |A^{-1}|=|A A^{-1}|=|I|=1
+|A A^{-1}| = |I|
 \]</div>
+<p>であり、<span class="math notranslate nohighlight">\(|I| = 1\)</span>のため</p>
+<div class="math notranslate nohighlight">
+\[
+|A A^{-1}| = 1
+\]</div>
+<p>となる。</p>
+<p>行列式の性質より、</p>
+<div class="math notranslate nohighlight">
+\[
+|A A^{-1}| = |A| |A^{-1}|
+\]</div>
+<p>のため</p>
 <div class="math notranslate nohighlight">
 \[
 |A| |A^{-1}| = 1
@@ -989,7 +1113,7 @@ A^k = O
 \[
 |O| = |A^k| = |A|^k = 0
 \]</div>
-<p>となる</p>
+<p>となるので、<span class="math notranslate nohighlight">\(|A|=0\)</span></p>
 </section>
 <section id="id8">
 <h2>8.7<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
