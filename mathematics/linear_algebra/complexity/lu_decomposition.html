@@ -225,6 +225,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_6.html">練習問題メモ 6（正則行列）</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_7.html">練習問題メモ 7（置換）</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_8.html">練習問題メモ 8（行列式）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_9.html">練習問題メモ 9（余因子展開）</a></li>
 </ul>
 </li>
 </ul>
@@ -1103,6 +1104,30 @@ Ux=y
 Ly = b
 \]</div>
 <p>になることから変数<span class="math notranslate nohighlight">\(y\)</span>を求める。</p>
+<p><span class="math notranslate nohighlight">\(Ly = b\)</span>（前進代入）は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; y_1:=b_1 \\
+&amp; y_2:=b_2-l_{21} y_1 \\
+&amp; \vdots \\
+&amp; y_{n-1}:=b_{n-1}-\sum_{j=1}^{n-2} l_{n-1, j} y_j \\
+&amp; y_n:=b_n-\sum_{j=1}^{n-1} l_{n j} y_j
+\end{aligned}
+\end{split}\]</div>
+<p><span class="math notranslate nohighlight">\(Ux = y\)</span>（後退代入）は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; x_n:=\frac{y_n}{u_{n n}} \\
+&amp; x_{n-1}:=\frac{y_{n-1}-u_{n-1, n} x_n}{u_{n-1, n-1}}\\
+&amp; \vdots\\
+&amp; x_2:=\frac{y_2-\sum_{j=3}^n u_{2 j} x_j}{u_{22}} \\
+&amp; x_1:=\frac{y_1-\sum_{j=2}^n u_{1 j} x_j}{u_{11}}
+\end{aligned}
+\end{split}\]</div>
+<p>という計算</p>
+<p>前進代入・後退代入を行うのがxGETRS関数</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
@@ -1112,7 +1137,27 @@ Ly = b
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.linalg.lapack</span> <span class="kn">import</span> <span class="n">dgetrf</span><span class="p">,</span> <span class="n">dgetrs</span>
+<span class="n">LU</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">dgetrf</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">dgetrs</span><span class="p">(</span><span class="n">LU</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(array([0. , 0.5]), 0)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="o">@</span> <span class="n">b</span>
+<span class="n">y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 1., -1.])
 </pre></div>
 </div>
 </div>
@@ -1120,6 +1165,12 @@ Ly = b
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">U</span><span class="p">)</span> <span class="o">@</span> <span class="n">y</span>
+<span class="n">x</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0. , 0.5])
 </pre></div>
 </div>
 </div>
@@ -1144,6 +1195,7 @@ Ly = b
 \[
 A^{-1} = U^{-1} L^{-1}
 \]</div>
+<p>あるいは<span class="math notranslate nohighlight">\(Ax=b\)</span>の<span class="math notranslate nohighlight">\(x\)</span>を求める操作を<span class="math notranslate nohighlight">\(n\)</span>回繰り返す</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
@@ -1166,6 +1218,15 @@ A^{-1} = U^{-1} L^{-1}
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-2. ,  1. ],
        [ 1.5, -0.5]])
+</pre></div>
+</div>
+</div>
+</div>
+<p><span class="math notranslate nohighlight">\(Ax=b\)</span>の<span class="math notranslate nohighlight">\(x\)</span>を求める操作を<span class="math notranslate nohighlight">\(n\)</span>回繰り返す</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">L</span> <span class="o">@</span> <span class="n">b</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
