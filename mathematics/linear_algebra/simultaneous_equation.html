@@ -725,12 +725,13 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6"><span class="math notranslate nohighlight">\(A\)</span>が正則でない（特異な）場合</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">連立一次方程式の計算の高速化</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">幅広い行列に使える方法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">特定のタイプの行列に使える方法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">クラーメルの公式</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">連立一次方程式の計算の高速化</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">幅広い行列に使える方法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">特定のタイプの行列に使える方法</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1091,16 +1092,148 @@ AX = I
 </ul>
 </section>
 <section id="id7">
-<h2>連立一次方程式の計算の高速化<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<h2>クラーメルの公式<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<div class="admonition- admonition">
+<p class="admonition-title">クラーメルの公式</p>
+<p><span class="math notranslate nohighlight">\(A\)</span>が<span class="math notranslate nohighlight">\(n\)</span>次の正則行列であるとき、連立1次方程式</p>
+<div class="math notranslate nohighlight">
+\[
+Ax =b
+\]</div>
+<p>はただ1組の解をもち、その解は次のように与えられる</p>
+<div class="math notranslate nohighlight">
+\[
+x_j = \frac{\Delta_j}{|A|}
+\quad (j=1,2,\cdots, n)
+\]</div>
+<p>ここで<span class="math notranslate nohighlight">\(\Delta_j\)</span>は行列<span class="math notranslate nohighlight">\(A\)</span>の第<span class="math notranslate nohighlight">\(j\)</span>列をベクトル<span class="math notranslate nohighlight">\(b\)</span>で置き換えた行列式</p>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+証明<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">仮定より<span class="math notranslate nohighlight">\(|A|\neq 0\)</span>であるから、<span class="math notranslate nohighlight">\(\boldsymbol{x} = A^{-1} \boldsymbol{b}\)</span>という解がただひとつ存在する。</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(A\)</span>の列ベクトルを<span class="math notranslate nohighlight">\(\boldsymbol{a}_1, \cdots, \boldsymbol{a}_n\)</span>とすると</p>
+<div class="math notranslate nohighlight">
+\[
+\def\b#1{ \boldsymbol{#1} }
+\b{b} = A \b{x} = (\b{a}_1, \cdots, \b{a}_n) \b{x} = x_1 \b{a}_1 + \cdots + x_n \b{a}_n
+\]</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(A\)</span>の第<span class="math notranslate nohighlight">\(j\)</span>列を<span class="math notranslate nohighlight">\(\boldsymbol{b}\)</span>で置き換えた行列の行列式を考える。</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{array}{ccccc}
+|\boldsymbol{a}_1 &amp; \cdots &amp; \underbrace{ \boldsymbol{b} }_{第j列} &amp;\cdots &amp; \boldsymbol{a}_n|
+\end{array}
+\]</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(\b{b} = x_1 \b{a}_1 + \cdots + x_n \b{a}_n\)</span>なので</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{array}{ccccc}
+|\boldsymbol{a}_1 &amp; \cdots &amp; \underbrace{ x_1 \b{a}_1 + \cdots + x_n \b{a}_n }_{第j列} &amp;\cdots &amp; \boldsymbol{a}_n|
+\end{array}
+\]</div>
+<p class="sd-card-text">「1つの列を<span class="math notranslate nohighlight">\(c\)</span>倍すると行列式は<span class="math notranslate nohighlight">\(c\)</span>倍になる」という定理より</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+x_1 
+\begin{array}{ccccc}
+|\boldsymbol{a}_1 &amp; \cdots &amp; \boldsymbol{a}_1 &amp;\cdots &amp; \boldsymbol{a}_n|
+\end{array}
++
+x_2
+\begin{array}{ccccc}
+|\boldsymbol{a}_1 &amp; \cdots &amp; \boldsymbol{a}_2 &amp;\cdots &amp; \boldsymbol{a}_n|
+\end{array}
+\\
++ \cdots +
+x_j
+\begin{array}{ccccc}
+|\boldsymbol{a}_1 &amp; \cdots &amp; \boldsymbol{a}_j &amp;\cdots &amp; \boldsymbol{a}_n|
+\end{array}
++ \cdots +
+x_n
+\begin{array}{ccccc}
+|\boldsymbol{a}_1 &amp; \cdots &amp; \boldsymbol{a}_n &amp;\cdots &amp; \boldsymbol{a}_n|
+\end{array}
+\end{split}\]</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(j\)</span>番目以外は2つの列が等しいため、「2つの列が等しい行列の行列式は0になる」という定理により0になり、<span class="math notranslate nohighlight">\(j\)</span>番目の項のみ残る</p>
+<div class="math notranslate nohighlight">
+\[
+x_j
+\begin{array}{ccccc}
+|\boldsymbol{a}_1 &amp; \cdots &amp; \boldsymbol{a}_j &amp;\cdots &amp; \boldsymbol{a}_n|
+\end{array}
+=
+x_j |A|
+\]</div>
+<p class="sd-card-text">したがって、行列<span class="math notranslate nohighlight">\(A\)</span>の第<span class="math notranslate nohighlight">\(j\)</span>列を<span class="math notranslate nohighlight">\(b\)</span>に入れ替えた行列の行列式は<span class="math notranslate nohighlight">\(x_j |A|\)</span>と等しくなる</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{array}{ccccc}
+|\boldsymbol{a}_1 &amp; \cdots &amp; \boldsymbol{b} &amp;\cdots &amp; \boldsymbol{a}_n|
+\end{array}
+=
+x_j |A|
+\]</div>
+<p class="sd-card-text">この両辺を<span class="math notranslate nohighlight">\(|A|\)</span>で割るとクラーメルの公式になる</p>
+</div>
+</details><p>例：</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{cases}
+x_1 + 2 x_2 = 10\\
+4 x_1 + x_2 = 12
+\end{cases}
+\end{split}\]</div>
+<p>を解け。</p>
+<p>係数行列を<span class="math notranslate nohighlight">\(A\)</span>とすると、その行列式は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+|A|=\left|\begin{array}{cc}
+1 &amp; 2\\
+4 &amp; 1
+\end{array}\right|
+= 1^2 - 8 = -7
+\end{split}\]</div>
+<p>それぞれの列を<span class="math notranslate nohighlight">\(b=(10, 12)^T\)</span>に置き換えた行列式は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Delta_1 =
+\left|\begin{array}{cc}
+10 &amp; 2\\
+12 &amp; 1
+\end{array}\right|
+= 10 - 24 = -14
+\\
+\Delta_2 =
+\left|\begin{array}{cc}
+1 &amp; 10\\
+4 &amp; 12
+\end{array}\right|
+= 12 - 40 = -28
+\end{split}\]</div>
+<p>よって解は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+x_1 = \frac{\Delta_1}{|A|} = \frac{-14}{-7} = 2\\
+x_2 = \frac{\Delta_2}{|A|} = \frac{-28}{-7} = 4
+\end{split}\]</div>
+</section>
 <section id="id8">
-<h3>幅広い行列に使える方法<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<h2>連立一次方程式の計算の高速化<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id9">
+<h3>幅広い行列に使える方法<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>掃き出し法</p></li>
 <li><p>直接解法（LU分解して解く）</p></li>
 </ul>
 </section>
-<section id="id9">
-<h3>特定のタイプの行列に使える方法<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>特定のタイプの行列に使える方法<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>対称正定値行列（例えば回帰モデルの<span class="math notranslate nohighlight">\(X^T X\)</span>）だと、</p>
 <ul>
@@ -1121,8 +1254,8 @@ AX = I
 </aside>
 </section>
 </section>
-<section id="id10">
-<h2>参考文献<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<section id="id11">
+<h2>参考文献<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.krrk0.com/rank/">行列のランク(階数)の求め方・意味を分かりやすく解説！ – 「なんとなくわかる」大学の数学・物理・情報</a></p></li>
 <li><p><a class="reference external" href="https://dora.bk.tsukuba.ac.jp/~takeuchi/?%E7%B7%9A%E5%BD%A2%E4%BB%A3%E6%95%B0%EF%BC%A9%2F%E9%80%A3%E7%AB%8B%E4%B8%80%E6%AC%A1%E6%96%B9%E7%A8%8B%E5%BC%8F">線形代数Ｉ/連立一次方程式 - 武内＠筑波大</a></p></li>
@@ -1206,12 +1339,13 @@ AX = I
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6"><span class="math notranslate nohighlight">\(A\)</span>が正則でない（特異な）場合</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">連立一次方程式の計算の高速化</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">幅広い行列に使える方法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">特定のタイプの行列に使える方法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">クラーメルの公式</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">連立一次方程式の計算の高速化</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">幅広い行列に使える方法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">特定のタイプの行列に使える方法</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考文献</a></li>
 </ul>
   </nav></div>
 

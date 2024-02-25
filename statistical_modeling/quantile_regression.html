@@ -715,11 +715,16 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">分位点回帰モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モデルの評価</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d2-pinball-score">D2 pinball score</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interval-score">interval score</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">分位点回帰モデルの実践</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lightgbmquantile-regression">LightGBMでのquantile regression</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">メモ：誤差と最適解</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">二乗誤差の場合</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">絶対誤差の場合</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">メモ：誤差と最適解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">二乗誤差の場合</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">絶対誤差の場合</a></li>
 </ul>
 </li>
 </ul>
@@ -881,7 +886,31 @@ E\big[ \rho_{\tau}(y_i - q(X_i)) \big]
 </div>
 </div>
 <section id="id2">
-<h2>分位点回帰モデル<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>モデルの評価<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="d2-pinball-score">
+<h3>D2 pinball score<a class="headerlink" href="#d2-pinball-score" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(D^2\)</span>は<span class="math notranslate nohighlight">\(R^2\)</span>の一般化</p>
+<div class="math notranslate nohighlight">
+\[
+D^2(y, \hat{y}) = 1 - \frac{\text{dev}(y, \hat{y})}{\text{dev}(y, y_{\text{null}})}
+\]</div>
+<p>ここで<span class="math notranslate nohighlight">\(y_{\text{null}}\)</span>は切片のみのモデルの最適解（例：二乗誤差なら<span class="math notranslate nohighlight">\(y\)</span>の平均値、絶対誤差なら<span class="math notranslate nohighlight">\(y\)</span>の中央値、pinball lossなら<span class="math notranslate nohighlight">\(y\)</span>の指定されたquantile）</p>
+<p>この<span class="math notranslate nohighlight">\(D^2\)</span>に</p>
+<div class="math notranslate nohighlight">
+\[
+\text{dev}(y, \hat{y}) = \text{pinball}(y, \hat{y})
+\]</div>
+<p>を代入したものが<span class="math notranslate nohighlight">\(D^2\)</span> pinball score</p>
+</section>
+<section id="interval-score">
+<h3>interval score<a class="headerlink" href="#interval-score" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://arxiv.org/abs/2011.09588">[2011.09588] Beyond Pinball Loss: Quantile Methods for Calibrated Uncertainty Quantification</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id3">
+<h2>分位点回帰モデルの実践<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>statsmodelsでは <code class="docutils literal notranslate"><span class="pre">quantreg()</span></code> で実行できる</p>
 <p><a class="reference external" href="https://www.statsmodels.org/devel/examples/notebooks/generated/quantile_regression.html">Quantile regression - statsmodels 0.15.0 (+213)</a></p>
 <div class="cell tag_hide-input docutils container">
@@ -916,16 +945,6 @@ E\big[ \rho_{\tau}(y_i - q(X_i)) \big]
 </div>
 </details>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_5916/2518785238.py:2: DeprecationWarning: 
-Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0),
-(to allow more performant data types, such as the Arrow string type, and better interoperability with other libraries)
-but was not found to be installed on your system.
-If this would cause problems for you,
-please provide us feedback at https://github.com/pandas-dev/pandas/issues/54466
-        
-  import pandas as pd
-</pre></div>
-</div>
 <img alt="../_images/b3cd59867ee419ca350fff2a82998a0d186ce009c1f70ef1d4ceee3a569c2f4e.png" src="../_images/b3cd59867ee419ca350fff2a82998a0d186ce009c1f70ef1d4ceee3a569c2f4e.png" />
 </div>
 </div>
@@ -975,11 +994,25 @@ please provide us feedback at https://github.com/pandas-dev/pandas/issues/54466
 <img alt="../_images/9a0f708968851b1036f3cf760613f005101a28b995bcdf8ef4b672cdfc0962fc.png" src="../_images/9a0f708968851b1036f3cf760613f005101a28b995bcdf8ef4b672cdfc0962fc.png" />
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">d2_pinball_score</span><span class="p">,</span> <span class="n">make_scorer</span>
+<span class="n">d2_pinball_score_09</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">d2_pinball_score</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">d2_pinball_score_09</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.48475107952573926
+</pre></div>
+</div>
+</div>
+</div>
 </section>
-<section id="id3">
-<h2>メモ：誤差と最適解<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <section id="id4">
-<h3>二乗誤差の場合<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<h2>メモ：誤差と最適解<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<section id="id5">
+<h3>二乗誤差の場合<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p>二乗誤差</p>
 <div class="math notranslate nohighlight">
 \[
@@ -997,8 +1030,8 @@ L(x) = (y_i - f(x))^2
 \end{split}\]</div>
 <p>と変形すると、<span class="math notranslate nohighlight">\(E(y|x) = f(x)\)</span>のときに最小化され、予測値<span class="math notranslate nohighlight">\(f(x)\)</span>を含まない第1項のみが残ることがわかる</p>
 </section>
-<section id="id5">
-<h3>絶対誤差の場合<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>絶対誤差の場合<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <p>絶対誤差</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1073,11 +1106,16 @@ L(x) = |y_i - f(x)|
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">分位点回帰モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モデルの評価</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d2-pinball-score">D2 pinball score</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interval-score">interval score</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">分位点回帰モデルの実践</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lightgbmquantile-regression">LightGBMでのquantile regression</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">メモ：誤差と最適解</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">二乗誤差の場合</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">絶対誤差の場合</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">メモ：誤差と最適解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">二乗誤差の場合</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">絶対誤差の場合</a></li>
 </ul>
 </li>
 </ul>
