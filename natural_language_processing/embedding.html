@@ -343,6 +343,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/fixed_effect_model.html">固定効果モデル</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/difference_in_differences.html">Difference In Differences</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/synthetic_control.html">Synthetic Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../econometrics/causalimpact.html">Causal Impact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/gmm.html">一般化モーメント法</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/dml.html">Double/Debiased Machine Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/causal_machine_learning.html">Causal ML</a></li>
@@ -417,6 +418,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../deep_learning/transformer/index.html">Transformer</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-23"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../deep_learning/transformer/algorithm.html">Transformerのアルゴリズム</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../deep_learning/transformer/analysis.html">Transformerの理論的解析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_learning/transformer/implementation.html">numpyでGPTを再現する</a></li>
 </ul>
 </li>
 </ul>
@@ -950,27 +952,19 @@ Prediction: programs
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 2.9415e-01, -1.0381e+00, -1.6956e-01,  1.5091e-01, -5.0900e-01,
-          3.4078e-02,  1.7317e+00,  1.3675e+00, -1.6782e+00, -1.2029e-01,
-          1.6138e+00, -1.4955e-01, -1.6173e+00, -2.2379e-01, -1.6727e+00,
-          1.6748e+00,  2.6483e-01, -9.3613e-01, -2.2755e-01, -5.5667e-01,
-          3.4266e-01,  7.6861e-01, -1.0696e-01, -9.1181e-01, -1.8099e-01,
-          1.4542e+00, -3.4437e-01,  2.7069e+00,  1.3887e-01,  1.4162e+00,
-          1.0768e+00,  6.2251e-01, -1.2793e+00, -5.9665e-01,  6.4408e-01,
-          6.6530e-01,  6.7055e-01,  1.1845e-01,  1.4580e+00,  8.6963e-01,
-         -9.3905e-01, -9.9611e-01, -1.9484e+00,  8.4307e-01,  1.8893e+00,
-          1.6536e+00,  1.3876e+00,  1.0226e+00,  1.0213e+00,  3.0048e-01,
-         -1.0878e-01, -3.4177e-01, -5.0393e-01, -1.6738e+00, -1.6444e+00,
-         -7.6600e-01, -1.0613e+00, -3.1974e-01,  1.8938e-01,  8.2960e-01,
-          5.0614e-01,  1.0014e-05, -4.3489e-01, -9.7701e-02,  9.4583e-01,
-          2.4189e-01,  1.0921e-01, -1.4755e+00, -1.9930e+00, -8.1821e-01,
-         -5.7961e-01, -1.9064e+00,  7.0537e-01,  1.0344e+00, -2.6812e-01,
-         -2.3142e-01,  2.1751e+00,  2.4953e-01,  1.5381e+00,  1.5969e+00,
-          4.0660e-01, -6.2289e-01,  1.3580e+00,  1.2075e+00, -9.0602e-02,
-         -7.8235e-01, -4.0277e-01,  1.5046e+00,  1.3638e+00, -7.8556e-03,
-          1.2072e+00, -1.3355e+00,  7.6631e-01, -4.3650e-01, -1.8496e+00,
-         -1.5789e+00, -8.1177e-01, -6.2668e-01,  5.0535e-01, -1.3540e+00]],
-       grad_fn=&lt;ViewBackward0&gt;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 0.2600,  1.0891,  0.2106, -0.1056,  0.2682, -0.0881, -0.5798, -0.6136,
+         -1.2642, -0.5814,  0.2109,  2.4231, -2.4741,  1.1892,  0.2727, -1.0075,
+          0.8590, -1.2429,  0.2523, -0.8179,  1.4782,  0.2262, -0.1397,  0.2227,
+         -0.0465,  0.0699, -0.3944,  0.8507,  1.3308,  0.1839, -0.2588,  0.4306,
+         -0.1884, -1.0436,  0.6298,  0.5094,  0.9186, -0.0511,  1.8820,  0.0748,
+          0.5302,  2.6935,  1.2998, -0.0820,  0.0524,  0.2820, -1.2143,  1.3755,
+          0.6297,  0.9456, -0.2875, -0.9793, -1.2119,  0.2570, -2.1050, -0.5894,
+          0.6453, -0.6835, -0.4941,  1.1156,  2.0431,  0.2752, -0.9463, -0.0363,
+         -0.5860,  0.3711,  0.9421,  0.4879, -0.2778,  0.0542, -1.6717, -0.2098,
+          0.7645,  0.6603,  0.8144, -0.1667, -0.0996,  1.7057,  1.1219, -1.6543,
+          0.3769,  1.2871, -1.5023, -0.8378,  0.5619,  0.1353,  0.5013,  0.2281,
+         -0.1901, -0.0912, -0.0687, -0.8203, -1.1432, -0.1965,  0.5660, -0.4270,
+          0.1600,  0.7224,  0.7556, -1.4118]], grad_fn=&lt;ViewBackward0&gt;)
 </pre></div>
 </div>
 </div>
@@ -1073,10 +1067,10 @@ p(w_O|w_I) = \frac{\exp( v_{w_O}^T v_{w_I} )}{\sum^W_{w=1} \exp( v_{w}^T v_{w_I}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>queen: 0.00656
-male: -0.0251
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ruler: -0.0263
 female: -0.0395
-ruler: -0.0263
+male: -0.0251
+queen: 0.00656
 </pre></div>
 </div>
 </div>
