@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>行列の分解 &#8212; データサイエンスの勉強ノート</title>
+    <title>LU分解 &#8212; データサイエンスの勉強ノート</title>
   
   
   
@@ -225,7 +225,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">計算量や数値計算について</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="inverse_matrix.html">逆行列の計算量</a></li>
 <li class="toctree-l3"><a class="reference internal" href="implementation.html">numpyやscipyの逆行列の実装について</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">行列の分解</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">LU分解</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../exercise/index.html">練習問題</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -709,7 +709,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>行列の分解</h1>
+    <h1>LU分解</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -719,20 +719,21 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lu">LU分解</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">分解すると何が嬉しいのか？</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">計算手順（ドゥーリトル法）</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">一般化</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#python">pythonの例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">分解すると何が嬉しいのか？</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">例：連立1次方程式・逆行列</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">例：行列式</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">計算手順（ドゥーリトル法）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">一般化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python">pythonの例</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">行列式をLU分解で求める</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">連立一次方程式をLU分解で解く</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">逆行列</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列式をLU分解で求める</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">連立一次方程式をLU分解で解く</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">逆行列</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scipy-linalg-lu">scipy.linalg.lu</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -744,20 +745,31 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>行列の分解<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<section id="lu">
-<h2>LU分解<a class="headerlink" href="#lu" title="Link to this heading">#</a></h2>
-<p>与えられた行列<span class="math notranslate nohighlight">\(A\)</span>を下三角行列<span class="math notranslate nohighlight">\(L\)</span>と上三角行列<span class="math notranslate nohighlight">\(U\)</span>との積で表すこと</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="lu">
+<h1>LU分解<a class="headerlink" href="#lu" title="Link to this heading">#</a></h1>
+<p>与えられた行列<span class="math notranslate nohighlight">\(A\)</span>を単位下三角行列<span class="math notranslate nohighlight">\(L\)</span>と上三角行列<span class="math notranslate nohighlight">\(U\)</span>との積で表すこと</p>
 <div class="math notranslate nohighlight">
-\[
+\[\begin{split}
 A = LU
-\]</div>
+= 
+\left[\begin{array}{cccc}
+1 &amp; &amp; &amp; \\
+l_{21} &amp; 1 &amp; &amp; \\
+\vdots &amp; \ddots &amp; \ddots &amp; \\
+l_{n 1} &amp; \cdots &amp; l_{n, n-1} &amp; 1
+\end{array}\right]\left[\begin{array}{cccc}
+u_{11} &amp; u_{12} &amp; \cdots &amp; u_{1 n} \\
+&amp; u_{22} &amp; \cdots &amp; u_{2 n} \\
+&amp; &amp; \ddots &amp; \vdots \\
+&amp; &amp; &amp; u_{n n}
+\end{array}\right]
+\end{split}\]</div>
 <p>を<strong>LU分解</strong>と呼ぶ。</p>
-<p>実際には<span class="math notranslate nohighlight">\(L\)</span>の対角成分を1に固定し、残りの部分を推定する</p>
-<section id="id2">
-<h3>分解すると何が嬉しいのか？<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<section id="id1">
+<h2>分解すると何が嬉しいのか？<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p>行列式や一次方程式を少ない計算量で求められる材料として<span class="math notranslate nohighlight">\(L,U\)</span>が手に入り、全体としての計算を効率化できる可能性がある。</p>
+<section id="id2">
+<h3>例：連立1次方程式・逆行列<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <p>例えば様々な<span class="math notranslate nohighlight">\(b\)</span>に対して<span class="math notranslate nohighlight">\(Ax=b\)</span>を解く場合は<span class="math notranslate nohighlight">\(A=LU\)</span>と一旦分解して、後で<span class="math notranslate nohighlight">\(L,U\)</span>を使い回せばよい</p>
 <p>様々な<span class="math notranslate nohighlight">\(b\)</span>というのは、たとえば<span class="math notranslate nohighlight">\(B=(b_1, b_2, \cdots, b_n)\)</span>として行列の連立一次方程式</p>
 <div class="math notranslate nohighlight">
@@ -768,7 +780,22 @@ AX = B
 <p>計算量はLU分解に<span class="math notranslate nohighlight">\(O(n^3/3)\)</span>かかる。そこから逆行列を計算する場合は<span class="math notranslate nohighlight">\(O(2n^3/3)\)</span>かかり、全体で<span class="math notranslate nohighlight">\(O(n^3/3 + 2n^3/3)=O(n^3)\)</span>となる。これは掃き出し法と同程度だが、もとの行列が疎行列だとLUも疎行列になるので、入力が疎行列の場合も含めた計算量でいうとLU分解のほうが効率的らしい。</p>
 </section>
 <section id="id3">
-<h3>計算手順（ドゥーリトル法）<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<h3>例：行列式<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+|A|
+&amp;= |LU|\\
+&amp;= |L| |U| \quad (\because \text{ 行列式の性質 } |AB|=|A||B| \text{ より })\\
+&amp;= 1\times |U| \quad (\because L \text{ は単位下三角行列のため })\\
+&amp;= |U|
+\end{align}
+\end{split}\]</div>
+<p>三角行列の行列式は対角行列の積になるため、<span class="math notranslate nohighlight">\(|L|=1\)</span>であり<span class="math notranslate nohighlight">\(|A|=|U|\)</span>になるし<span class="math notranslate nohighlight">\(|U|\)</span>も<span class="math notranslate nohighlight">\(U\)</span>の対角成分の積をとるだけでいい</p>
+</section>
+</section>
+<section id="id4">
+<h2>計算手順（ドゥーリトル法）<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <p><span class="math notranslate nohighlight">\(L\)</span>の対角成分は1に固定し、次のような分解を仮定する</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -801,8 +828,8 @@ l_{21} u_{11} &amp; l_{21} u_{12} + u_{22}
 \end{aligned}
 \end{split}\]</div>
 <p>これらを解いていく</p>
-<section id="id4">
-<h4>一般化<a class="headerlink" href="#id4" title="Link to this heading">#</a></h4>
+<section id="id5">
+<h3>一般化<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p>もっと一般化すると次のようになる</p>
 <p><span class="math notranslate nohighlight">\(m\times n\)</span>行列<span class="math notranslate nohighlight">\(A=(a_{ij})\)</span>に対して、<span class="math notranslate nohighlight">\(s=\min(m,n)\)</span>とおき、<span class="math notranslate nohighlight">\(m\times s\)</span>の<span class="math notranslate nohighlight">\(L\)</span>と<span class="math notranslate nohighlight">\(s\times n\)</span>の<span class="math notranslate nohighlight">\(U\)</span>で分解することを考える。</p>
 <div class="math notranslate nohighlight">
@@ -920,7 +947,7 @@ U = \left(\begin{array}{c}
 <p>のように行列<span class="math notranslate nohighlight">\(L,U\)</span>を作ればよい</p>
 </section>
 <section id="python">
-<h4>pythonの例<a class="headerlink" href="#python" title="Link to this heading">#</a></h4>
+<h3>pythonの例<a class="headerlink" href="#python" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -1073,41 +1100,29 @@ U = \left(\begin{array}{c}
 </div>
 </section>
 </section>
-</section>
-<section id="id5">
-<h2>行列式をLU分解で求める<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
-<p>積の行列式は行列式の積になる</p>
-<div class="math notranslate nohighlight">
-\[
-\det A = \det(LU) = (\det L)(\det U)
-\]</div>
-<p>下三角行列や上三角行列の行列式は対角成分の積になる</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\det L = 1\\
-\det A = Uの対角成分の積
-\end{split}\]</div>
+<section id="id6">
+<h2>行列式をLU分解で求める<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">det A = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span>
-<span class="s2">det L * det U = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">L</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">U</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span>
+<span class="s2">|A| = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span>
+<span class="s2">|L||U| = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">L</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">U</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span>
 <span class="s2">Uの対角成分の積 = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">U</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">U</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>det A = -2.0
-det L * det U = -2.0
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>|A| = -2.0
+|L||U| = -2.0
 Uの対角成分の積 = -2.0
 </pre></div>
 </div>
 </div>
 </div>
 </section>
-<section id="id6">
-<h2>連立一次方程式をLU分解で解く<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h2>連立一次方程式をLU分解で解く<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <p>連立一次方程式</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1214,8 +1229,8 @@ Ly = b
 </div>
 </div>
 </section>
-<section id="id7">
-<h2>逆行列<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<section id="id8">
+<h2>逆行列<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
 <div class="math notranslate nohighlight">
 \[
 A^{-1} = U^{-1} L^{-1}
@@ -1322,8 +1337,8 @@ A^{-1} = U^{-1} L^{-1}
 </div>
 </div>
 </section>
-<section id="id8">
-<h2>参考文献<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id9">
+<h2>参考文献<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>ドゥーリトル法：<a class="reference external" href="https://ja.wikipedia.org/wiki/LU%E5%88%86%E8%A7%A3">LU分解 - Wikipedia</a></p></li>
 <li><p>一般化した計算手順：『プログラミングのための線形代数』</p></li>
@@ -1395,20 +1410,21 @@ A^{-1} = U^{-1} L^{-1}
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lu">LU分解</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">分解すると何が嬉しいのか？</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">計算手順（ドゥーリトル法）</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">一般化</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#python">pythonの例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">分解すると何が嬉しいのか？</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">例：連立1次方程式・逆行列</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">例：行列式</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">計算手順（ドゥーリトル法）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">一般化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python">pythonの例</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">行列式をLU分解で求める</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">連立一次方程式をLU分解で解く</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">逆行列</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">行列式をLU分解で求める</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">連立一次方程式をLU分解で解く</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">逆行列</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scipy-linalg-lu">scipy.linalg.lu</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考文献</a></li>
 </ul>
   </nav></div>
 
