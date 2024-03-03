@@ -193,7 +193,6 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../mathematics/introduction.html">数学の初歩</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mathematics/set_theory.html">集合論</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mathematics/taylor_approximation.html">テイラー近似</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mathematics/calculus/index.html">微分積分学</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../mathematics/calculus/numerical_sequence.html">数列</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../mathematics/calculus/function/index.html">関数</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -205,6 +204,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../mathematics/calculus/differentiation.html">微分法</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mathematics/calculus/extreme_value.html">極値</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/calculus/basic_theorem.html">微分学の基礎的な定理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematics/calculus/taylor_approximation.html">テイラー近似</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mathematics/linear_algebra/index.html">線形代数学</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -974,27 +975,19 @@ Prediction: programs
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 1.7730e+00, -3.8969e-01, -2.3929e-01,  1.9780e+00,  1.1152e+00,
-          3.1558e-02,  2.0843e+00, -5.2982e-01,  5.3868e-01,  1.7294e-01,
-          6.3798e-01,  1.2822e+00, -3.0670e-01,  3.9512e-02,  2.5575e-01,
-          1.2154e+00, -3.9975e-01, -3.0752e-01,  6.4931e-01, -1.1630e+00,
-          2.0001e-01,  1.6926e+00,  3.5272e-01,  9.3905e-03,  2.8400e-01,
-         -2.2761e-01,  3.4600e-01,  6.0266e-01,  3.9934e-01, -7.3820e-01,
-          2.7357e-01,  9.7265e-01, -3.1702e-01, -7.8412e-01,  6.0463e-01,
-          1.1437e+00, -1.5843e-01, -3.7550e-01,  3.2037e-01,  5.0785e-02,
-         -1.4284e+00, -4.7486e-01, -1.1911e+00,  6.0081e-01, -2.2385e-01,
-         -9.4882e-02,  4.3446e-01, -2.8285e-03, -2.9952e-01,  2.9126e+00,
-          1.5252e+00,  3.6728e-01,  1.7006e+00,  3.1306e+00, -1.2911e-01,
-          9.5813e-02, -1.0322e+00,  7.1935e-01, -6.1249e-01,  1.3588e-02,
-         -5.5352e-02, -4.8195e-01, -1.0285e-01, -7.1998e-01, -3.5345e-01,
-         -8.4585e-01, -8.7632e-01, -7.0375e-01,  1.7574e+00, -4.0058e-01,
-          2.1926e-01,  2.8716e-01,  1.0519e+00, -2.1565e-01, -9.0566e-01,
-          1.5407e+00,  2.7535e-01,  8.2162e-01, -4.4625e-01,  1.0239e+00,
-         -3.3036e-01, -6.7349e-01, -6.7447e-01,  2.0131e+00,  2.7065e-01,
-          6.8201e-01, -4.3029e-01, -1.6838e+00,  1.5379e-01,  1.6475e+00,
-          1.0777e+00,  1.8357e-01,  9.8216e-01,  8.5889e-01, -5.5589e-01,
-          1.6436e+00, -5.5048e-01,  3.2897e-03,  6.9792e-01, -4.6265e-01]],
-       grad_fn=&lt;ViewBackward0&gt;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[-1.0690,  0.9684, -0.6575,  0.0823, -0.2966, -0.2579, -0.4424,  0.4568,
+         -0.7473, -1.4750, -0.2843,  2.1371,  0.9383,  0.4360,  0.0998, -0.5551,
+          0.8685, -1.0755, -0.1647,  0.3749, -0.1063,  1.0581,  1.3215, -0.9906,
+         -0.0847, -1.4907,  0.0064,  0.3155, -0.6990, -0.0912,  0.3099, -0.7855,
+         -1.4525,  1.2485, -0.4082,  0.0836, -0.1274,  1.0952,  0.8424, -0.1084,
+          0.8028,  1.4718, -0.5379, -0.0045, -1.0245,  0.3550, -1.7939, -0.6538,
+          0.4045, -0.4705, -0.7896,  0.4670,  0.7694, -1.5622, -1.9240,  0.7005,
+          1.8906, -0.6189, -0.0166, -0.7608,  0.2587,  0.4744, -0.2560,  0.8898,
+         -1.7214, -0.6160,  0.8337, -1.0642, -1.4424,  0.7120,  1.0922, -1.9449,
+          1.0380,  0.4116,  3.1862, -1.3738, -0.3375, -0.5489,  1.4148,  0.2494,
+          0.9492, -0.5204,  0.1597,  0.1779, -0.9337,  1.4553, -0.5746,  1.0873,
+          1.2977, -0.2062, -0.5270, -0.7961,  0.7350,  1.4334, -0.3323,  0.6568,
+          0.8022, -0.3210,  1.1305, -0.0267]], grad_fn=&lt;ViewBackward0&gt;)
 </pre></div>
 </div>
 </div>
@@ -1097,10 +1090,10 @@ p(w_O|w_I) = \frac{\exp( v_{w_O}^T v_{w_I} )}{\sum^W_{w=1} \exp( v_{w}^T v_{w_I}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>queen: 0.00656
-ruler: -0.0263
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>male: -0.0251
+queen: 0.00656
 female: -0.0395
-male: -0.0251
+ruler: -0.0263
 </pre></div>
 </div>
 </div>
