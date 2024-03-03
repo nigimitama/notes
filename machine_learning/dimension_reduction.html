@@ -741,6 +741,8 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">主成分分析</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">計算例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">固有値分解</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">寄与率</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#t-sne">t-SNE</a></li>
@@ -872,6 +874,9 @@ Var[\bar{\boldsymbol{X}}] \boldsymbol{a}_j = \lambda \boldsymbol{a}_j
 </div>
 </div>
 </div>
+</section>
+<section id="id4">
+<h3>固有値分解<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <p>分散最大化問題の解は</p>
 <div class="math notranslate nohighlight">
 \[
@@ -897,6 +902,29 @@ a2=[-0.464  0.886]
 </div>
 </div>
 </div>
+<p>主成分を表す固有ベクトルの傾きに直線をプロットすると以下の通り。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axline</span><span class="p">(</span><span class="n">xy1</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">xy2</span><span class="o">=</span><span class="p">(</span><span class="n">vectors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;coral&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;PC1&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axline</span><span class="p">(</span><span class="n">xy1</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">xy2</span><span class="o">=</span><span class="p">(</span><span class="n">vectors</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;PC2&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;x2&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../_images/2f164c3b08969e020fc9ab9a925dbddb3c898149cafb9987d90c3d9d8ff06534.png" src="../_images/2f164c3b08969e020fc9ab9a925dbddb3c898149cafb9987d90c3d9d8ff06534.png" />
+</div>
+</div>
 <p>推定できた<span class="math notranslate nohighlight">\(\boldsymbol{a}\)</span>の任意の次元数を使って線形変換<span class="math notranslate nohighlight">\(\boldsymbol{s} = \boldsymbol{\bar{X}} \boldsymbol{a}\)</span>を作る</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -913,7 +941,81 @@ a2=[-0.464  0.886]
 <img alt="../_images/b69db7f453f1bf3074c1703a5bf56009e2fb718d539308f64b83925d877eadaa.png" src="../_images/b69db7f453f1bf3074c1703a5bf56009e2fb718d539308f64b83925d877eadaa.png" />
 </div>
 </div>
-<p>次元削減を行う際は、元の分散を多く説明している（<span class="math notranslate nohighlight">\(\lambda_j\)</span>が大きい）次元を残すようにすればよい</p>
+</section>
+<section id="id5">
+<h3>寄与率<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>次元削減を行う際は、元の分散を多く説明している（=固有値<span class="math notranslate nohighlight">\(\lambda_j\)</span>が大きい）次元を残すようにすればよい</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 固有値：第j主成分の分散</span>
+<span class="n">lambdas</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([1.17427995, 0.37150396])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 寄与率：主成分の分散（固有値）の割合</span>
+<span class="n">lambdas</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">lambdas</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.7596663, 0.2403337])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
+<span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">pca</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="c1"># 寄与率：主成分の分散（固有値）の割合</span>
+<span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.7596663, 0.2403337])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-2.28345887, -0.61668615],
+       [-0.15906083,  0.49935839],
+       [-0.77927075,  0.56227195]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">S</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 2.28345887,  0.61668615],
+       [ 0.15906083, -0.49935839],
+       [ 0.77927075, -0.56227195]])
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="t-sne">
@@ -988,6 +1090,8 @@ a2=[-0.464  0.886]
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">主成分分析</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">計算例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">固有値分解</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">寄与率</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#t-sne">t-SNE</a></li>
