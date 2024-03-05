@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>自然言語処理 &#8212; データサイエンスの勉強ノート</title>
+    <title>言語モデル &#8212; データサイエンスの勉強ノート</title>
   
   
   
@@ -72,11 +72,11 @@
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'natural_language_processing/introduction';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'natural_language_processing/language_model';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="単語の埋め込み" href="embedding.html" />
-    <link rel="prev" title="Diffusion Models" href="../generative_models/diffusion_models.html" />
+    <link rel="prev" title="トークン化" href="tokenization.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -185,11 +185,7 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">データの前処理と管理</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../data_management/preprocessing.html">データの前処理</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">数学</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">数学</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../mathematics/introduction.html">数学の初歩</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mathematics/set_theory.html">集合論</a></li>
@@ -455,7 +451,10 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">自然言語処理</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">自然言語処理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="normalization.html">テキストデータの前処理：表記揺れ、正規化</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="tokenization.html">トークン化</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">言語モデル</a></li>
 <li class="toctree-l1"><a class="reference internal" href="embedding.html">単語の埋め込み</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rnn.html">言語モデルとRNN</a></li>
 <li class="toctree-l1"><a class="reference internal" href="document_understanding.html">Document Understanding</a></li>
@@ -492,6 +491,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../business/business_administration/causal_process_tracing.html">因果過程追跡</a></li>
 </ul>
 </li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">データマネジメント</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../data_management/introduction.html">データマネジメント</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ソフトウェア工学</span></p>
 <ul class="nav bd-sidenav">
@@ -617,7 +620,7 @@
       
       
       
-      <li><a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Fnatural_language_processing/introduction.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/nigimitama/notes/issues/new?title=Issue%20on%20page%20%2Fnatural_language_processing/language_model.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -647,7 +650,7 @@
       
       
       
-      <li><a href="../_sources/natural_language_processing/introduction.ipynb" target="_blank"
+      <li><a href="../_sources/natural_language_processing/language_model.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -731,7 +734,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>自然言語処理</h1>
+    <h1>言語モデル</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -741,12 +744,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">トークン化</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">単語分割</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">サブワード分割</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">言語モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">言語モデルの位置づけと活用</a></li>
 </ul>
             </nav>
         </div>
@@ -759,41 +757,9 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>自然言語処理<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<section id="id2">
-<h2>トークン化<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p><strong>トークン化</strong>（tokenize）とは、文を適当な単位に分割すること。分割された文の構成要素のことを<strong>トークン</strong>（token）と呼ぶ。</p>
-<p>自然言語処理においては、文章を計算可能な形状にするためにトークンへと分割し、対応するidを割り振っていく。</p>
-<p>ニューラルネットワークなどのアルゴリズムで作られるモデルにとって訓練時に見かけなかったトークンは<strong>未知語</strong>と呼ばれ、予測時には無視するか未知語を表す特定のidにマッピングされ、元の文字列の情報を損失してしまう。そのため、トークン化に際しては未知語を可能な限り少なくすることが望ましい。</p>
-<p>トークン化の方法は主に</p>
-<ol class="arabic simple">
-<li><p>単語分割（単語単位に分割する）</p></li>
-<li><p>サブワード分割（単語をさらにサブワード単位に分割する）</p></li>
-<li><p>文字分割（文字単位に分割する）</p></li>
-</ol>
-<p>の3種類の分割方法がある。</p>
-<section id="id3">
-<h3>単語分割<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
-<p>英語ならスペースで区切ればよい</p>
-<p>日本語の場合、形態素という単位に分割する形態素解析という技術を使う。</p>
-</section>
-<section id="id4">
-<h3>サブワード分割<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
-<p>例えば</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;東京タワー&quot;</span><span class="p">,</span> <span class="s2">&quot;大阪大学&quot;</span><span class="p">,</span> <span class="s2">&quot;東京大学&quot;</span><span class="p">]</span>
-</pre></div>
-</div>
-<p>といった語彙があるとき、サブワードの語彙は次のようなものが考えられる。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;東京&quot;</span><span class="p">,</span> <span class="s2">&quot;大阪&quot;</span><span class="p">,</span> <span class="s2">&quot;##タワー&quot;</span><span class="p">,</span> <span class="s2">&quot;##大学&quot;</span><span class="p">]</span>
-</pre></div>
-</div>
-<p>地名と「##タワー」「##大学」を組み合わせれば元の語彙を表現できる。</p>
-<p>OpenAIの<a class="reference external" href="https://platform.openai.com/tokenizer">Tokenizer</a>を使うとTokenが可視化されてイメージが付きやすい（ただし英語のみ）</p>
-</section>
-</section>
-<section id="id5">
-<h2>言語モデル<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
-<p>文章が生成される確率を推定したい。もっともらしい（確率的にありえる）文章を生成したい</p>
+<h1>言語モデル<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>文章が生成される確率を推定したい。
+もっともらしい（確率的にありえる）文章を生成したい。</p>
 <div class="math notranslate nohighlight">
 \[
 P(昨日は雨が降りました) &gt; P(昨日は飴が降りました)
@@ -818,6 +784,13 @@ P(w_1, w_2, \cdots, w_n)
 \end{align}
 \end{split}\]</div>
 <p>ここで<span class="math notranslate nohighlight">\(\boldsymbol{c}_i\)</span>は<span class="math notranslate nohighlight">\(w_i\)</span>より前のトークン列<span class="math notranslate nohighlight">\(\boldsymbol{c}_i=(w_1,w_2,\cdots,w_n)\)</span>で、<strong>文脈</strong>（context）と呼ばれる</p>
+<section id="id2">
+<h2>言語モデルの位置づけと活用<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>この言語モデルの考え方がNLPではベースとなっている。</p>
+<p>この派生で、DNNを使うword2vecがあったり（word2vecはcontextが<span class="math notranslate nohighlight">\(w_i\)</span>の前後n個という感じでやや違うが）、</p>
+<p>「contextは時系列的な関係がある」ということで系列性を扱えるRNNやLSTMを使う流れが生まれたり、</p>
+<p>「RNNやLSTMは勾配消失の問題がある」ということでTransformerを使ってBERTやGPTを使ったり</p>
+<p>「もっと大規模な表現力の高いモデルに」となりLLMに派生していった</p>
 </section>
 </section>
 
@@ -852,12 +825,12 @@ P(w_1, w_2, \cdots, w_n)
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../generative_models/diffusion_models.html"
+       href="tokenization.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Diffusion Models</p>
+        <p class="prev-next-title">トークン化</p>
       </div>
     </a>
     <a class="right-next"
@@ -885,12 +858,7 @@ P(w_1, w_2, \cdots, w_n)
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">トークン化</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">単語分割</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">サブワード分割</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">言語モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">言語モデルの位置づけと活用</a></li>
 </ul>
   </nav></div>
 
