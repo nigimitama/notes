@@ -1,0 +1,62 @@
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 1314, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/usr/local/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+  File "/usr/local/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# 無理やり２回微分させる
+def derivative(x, f, epsilon=np.sqrt(np.finfo(float).eps)):
+    """1階微分の勾配を計算する関数"""
+    return approx_fprime(x, f, epsilon)
+
+def second_order(x0, f):
+    """2階微分を直接行う関数はないので2階approx_fprimeを行う"""
+    def first_order(x):
+        return derivative(x, f)
+    return derivative(x0, first_order)
+
+grad = derivative(
+    alpha_hat, # 勾配を計算する点
+    f=lambda a: log_likelihood(a, scale, x), # 対象の関数
+)[0]
+hess = second_order(
+    alpha_hat,
+    f=lambda a: log_likelihood(a, scale, x)
+)[0]
+print(f"{grad=}, {hess=}")
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[3], line 12[0m
+[1;32m      9[0m         [38;5;28;01mreturn[39;00m derivative(x, f)
+[1;32m     10[0m     [38;5;28;01mreturn[39;00m derivative(x0, first_order)
+[0;32m---> 12[0m grad [38;5;241m=[39m [43mderivative[49m[43m([49m
+[1;32m     13[0m [43m    [49m[43malpha_hat[49m[43m,[49m[43m [49m[38;5;66;43;03m# 勾配を計算する点[39;49;00m
+[1;32m     14[0m [43m    [49m[43mf[49m[38;5;241;43m=[39;49m[38;5;28;43;01mlambda[39;49;00m[43m [49m[43ma[49m[43m:[49m[43m [49m[43mlog_likelihood[49m[43m([49m[43ma[49m[43m,[49m[43m [49m[43mscale[49m[43m,[49m[43m [49m[43mx[49m[43m)[49m[43m,[49m[43m [49m[38;5;66;43;03m# 対象の関数[39;49;00m
+[1;32m     15[0m [43m)[49m[[38;5;241m0[39m]
+[1;32m     16[0m hess [38;5;241m=[39m second_order(
+[1;32m     17[0m     alpha_hat,
+[1;32m     18[0m     f[38;5;241m=[39m[38;5;28;01mlambda[39;00m a: log_likelihood(a, scale, x)
+[1;32m     19[0m )[[38;5;241m0[39m]
+[1;32m     20[0m [38;5;28mprint[39m([38;5;124mf[39m[38;5;124m"[39m[38;5;132;01m{[39;00mgrad[38;5;132;01m=}[39;00m[38;5;124m, [39m[38;5;132;01m{[39;00mhess[38;5;132;01m=}[39;00m[38;5;124m"[39m)
+
+Cell [0;32mIn[3], line 4[0m, in [0;36mderivative[0;34m(x, f, epsilon)[0m
+[1;32m      2[0m [38;5;28;01mdef[39;00m [38;5;21mderivative[39m(x, f, epsilon[38;5;241m=[39mnp[38;5;241m.[39msqrt(np[38;5;241m.[39mfinfo([38;5;28mfloat[39m)[38;5;241m.[39meps)):
+[1;32m      3[0m [38;5;250m    [39m[38;5;124;03m"""1階微分の勾配を計算する関数"""[39;00m
+[0;32m----> 4[0m     [38;5;28;01mreturn[39;00m [43mapprox_fprime[49m(x, f, epsilon)
+
+[0;31mNameError[0m: name 'approx_fprime' is not defined
+
