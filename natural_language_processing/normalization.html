@@ -466,6 +466,7 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">テキストデータの前処理：表記揺れ、正規化</a></li>
 
+
 <li class="toctree-l1"><a class="reference internal" href="tokenization.html">トークン化</a></li>
 <li class="toctree-l1"><a class="reference internal" href="language_model.html">言語モデル</a></li>
 <li class="toctree-l1"><a class="reference internal" href="embedding.html">単語の埋め込み</a></li>
@@ -763,6 +764,10 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neologdn"><code class="docutils literal notranslate"><span class="pre">neologdn</span></code> パッケージ</a></li>
 </ul>
 </li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">文字列の距離</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">レーベンシュタイン距離</a></li>
+</ul>
+</li>
 </ul>
 
             </nav>
@@ -812,6 +817,70 @@ document.write(`
 <span class="n">neologdn</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s2">&quot;　　　ＰＲＭＬ　　副　読　本　　　&quot;</span><span class="p">)</span>
 <span class="c1"># =&gt; &#39;PRML副読本&#39;</span>
 </pre></div>
+</div>
+</section>
+</section>
+<section id="id3">
+<h1>文字列の距離<a class="headerlink" href="#id3" title="Link to this heading">#</a></h1>
+<p>似てる表現の文字列については同じものを指していると考えて統合させて正規化する方法も考えられる。そのために、同じものを指している表記揺れ表現たちは「距離」が近くなるような尺度が欲しくなる。</p>
+<p>文字列同士の距離を測りたいとき、大別して以下の方法がある</p>
+<ol class="arabic simple">
+<li><p>文字たちの類似度を測る</p></li>
+<li><p>文字列をベクトルに埋め込んで、ベクトル間の類似度を測る</p></li>
+</ol>
+<p>「1. 文字たちの類似度を測る」はレーベンシュタイン距離が最も有名。</p>
+<p>「2. 文字列をベクトルに埋め込んで、ベクトル間の類似度を測る」の代表例にはTF-IDFやWord2Vecなどがある。</p>
+<section id="id4">
+<h2>レーベンシュタイン距離<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>レーベンシュタイン距離（編集距離）は2つの文字列についての距離であり、1文字の挿入・削除・置換によって、一方の文字列をもう一方の文字列に変形するのに必要な手順の最小回数を意味する。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rapidfuzz.distance</span> <span class="kn">import</span> <span class="n">DamerauLevenshtein</span>
+<span class="n">DamerauLevenshtein</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="s2">&quot;CA&quot;</span><span class="p">,</span> <span class="s2">&quot;ABC&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DamerauLevenshtein</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="s2">&quot;トヨタ自動車株式会社&quot;</span><span class="p">,</span> <span class="s2">&quot;トヨタ自動車&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DamerauLevenshtein</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">(</span><span class="s2">&quot;トヨタ自動車株式会社&quot;</span><span class="p">,</span> <span class="s2">&quot;トヨタ自動車&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DamerauLevenshtein</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">(</span><span class="s2">&quot;トヨタ自動車株式会社&quot;</span><span class="p">,</span> <span class="s2">&quot;日産自動車&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.30000000000000004
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 </section>
@@ -884,6 +953,10 @@ document.write(`
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">表記ゆれと正規化</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unicodedata"><code class="docutils literal notranslate"><span class="pre">unicodedata</span></code> パッケージ</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neologdn"><code class="docutils literal notranslate"><span class="pre">neologdn</span></code> パッケージ</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">文字列の距離</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">レーベンシュタイン距離</a></li>
 </ul>
 </li>
 </ul>
