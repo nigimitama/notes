@@ -773,12 +773,6 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">分位点回帰モデルの実践</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lightgbmquantile-regression">LightGBMでのquantile regression</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">メモ：誤差と最適解</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">二乗誤差の場合</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">絶対誤差の場合</a></li>
-</ul>
-</li>
 </ul>
             </nav>
         </div>
@@ -1001,97 +995,6 @@ D^2(y, \hat{y}) = 1 - \frac{\text{dev}(y, \hat{y})}{\text{dev}(y, y_{\text{null}
 </div>
 </div>
 </section>
-<section id="lightgbmquantile-regression">
-<h2>LightGBMでのquantile regression<a class="headerlink" href="#lightgbmquantile-regression" title="Link to this heading">#</a></h2>
-<p>目的関数をbinball lossにすればいいだけなので他のアルゴリズムでも実行できる</p>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
-<span class="c1"># create data</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
-
-<span class="c1"># regression</span>
-<span class="n">x_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
-<span class="n">X_test</span> <span class="o">=</span> <span class="n">x_plot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">lightgbm</span> <span class="k">as</span> <span class="nn">lgb</span>
-<span class="n">taus</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
-<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;tomato&quot;</span><span class="p">]</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">lgb</span><span class="o">.</span><span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">objective</span><span class="o">=</span><span class="s2">&quot;quantile&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">taus</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="sa">fr</span><span class="s2">&quot;$\tau = </span><span class="si">{</span><span class="n">taus</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Quantile Regression with LightGBM&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../_images/9a0f708968851b1036f3cf760613f005101a28b995bcdf8ef4b672cdfc0962fc.png" src="../_images/9a0f708968851b1036f3cf760613f005101a28b995bcdf8ef4b672cdfc0962fc.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">d2_pinball_score</span><span class="p">,</span> <span class="n">make_scorer</span>
-<span class="n">d2_pinball_score_09</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">d2_pinball_score</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
-<span class="n">d2_pinball_score_09</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.48475107952573926
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="id4">
-<h2>メモ：誤差と最適解<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
-<section id="id5">
-<h3>二乗誤差の場合<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
-<p>二乗誤差</p>
-<div class="math notranslate nohighlight">
-\[
-L(x) = (y_i - f(x))^2
-\]</div>
-<p>の場合、</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-\big(y_i - f(x)\big)^2
-&amp;= \big\{ \big(y_i - E(y|x) \big) + \big(E(y|x) - f(x) \big) \big\}^2\\
-&amp;= \big(y_i - E(y|x) \big)^2 + \big(E(y|x) - f(x) \big)^2
-+ 2 \big(y_i - E(y|x) \big) \big(E(y|x) - f(x) \big)\\
-\end{align}
-\end{split}\]</div>
-<p>と変形すると、<span class="math notranslate nohighlight">\(E(y|x) = f(x)\)</span>のときに最小化され、予測値<span class="math notranslate nohighlight">\(f(x)\)</span>を含まない第1項のみが残ることがわかる</p>
-</section>
-<section id="id6">
-<h3>絶対誤差の場合<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
-<p>絶対誤差</p>
-<div class="math notranslate nohighlight">
-\[
-L(x) = |y_i - f(x)|
-\]</div>
-<p><a class="reference external" href="https://scikit-learn.org/stable/modules/model_evaluation.html#pinball-loss">3.3. Metrics and scoring: quantifying the quality of predictions — scikit-learn 1.4.1 documentation</a></p>
-</section>
-</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1164,12 +1067,6 @@ L(x) = |y_i - f(x)|
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">分位点回帰モデルの実践</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lightgbmquantile-regression">LightGBMでのquantile regression</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">メモ：誤差と最適解</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">二乗誤差の場合</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">絶対誤差の場合</a></li>
-</ul>
-</li>
 </ul>
   </nav></div>
 
