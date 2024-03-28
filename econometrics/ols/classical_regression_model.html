@@ -780,7 +780,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">古典的正規回帰モデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">一般化古典的回帰モデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">新古典的回帰モデル</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">まとめ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -851,8 +852,19 @@ Y = \b{X} \b{\beta} + \b{u}
 <p>なので</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\b{\hat{\beta}}_{ML} = \argmin_{\b{\beta}} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2\\
-\b{\hat{\beta}}_{ML} = \argmin_{\b{\beta}} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2\\
+\begin{align}
+\b{\hat{\beta}}_{ML}
+&amp;= \argmin_{\b{\beta}} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2\\
+&amp;= (\b{X}^\top \b{X})^{-1} \b{X}^\top \b{y}\\
+\\
+\hat{\sigma}_{ML}
+&amp;= \argmin_{\sigma} \
+\left(
+  - \frac{N}{2} \ln \sigma^2
+  - \frac{1}{2\sigma^2} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2
+\right)\\
+&amp;= \sqrt{ \frac{1}{N} \sum^N_{i=1} (y_i - \b{x}_i^\top \hat{\b{\beta}}_{ML})^2 }
+\end{align}
 \end{split}\]</div>
 </section>
 <section id="id6">
@@ -864,11 +876,21 @@ Y = \b{X} \b{\beta} + \b{u}
 <section id="id7">
 <h2>新古典的回帰モデル<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <p>古典的回帰モデルから1.の「説明変数は非確率的である」という条件を緩和したモデルを**新古典的回帰モデル（Neo-Classical Regression Model: NCRM）**と呼ぶ。</p>
+<p>説明変数<span class="math notranslate nohighlight">\(X\)</span>が確率変数でも、<span class="math notranslate nohighlight">\(Y\)</span>の条件付き分布について次の条件が満たされるなら、ガウス・マルコフの定理は成立し、OLS推定量はBLUEになる</p>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\(X\)</span>は確率的</p></li>
+<li><p><span class="math notranslate nohighlight">\(E(Y|X)=X\beta, \quad E(\varepsilon|X)=0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(Var(\varepsilon|X)=\sigma^2 I\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\b{X}\)</span>の階数は<span class="math notranslate nohighlight">\(k\)</span>：<span class="math notranslate nohighlight">\(rank(\b{X}) = k\)</span>（<span class="math notranslate nohighlight">\(\b{X^TX}\)</span>に逆行列が存在することの仮定）</p></li>
+</ol>
+</section>
+<section id="id8">
+<h2>まとめ<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
 <table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>モデル</p></th>
 <th class="head"><p>仮定</p></th>
-<th class="head"><p>推定量の性質</p></th>
+<th class="head"><p>OLS推定量の性質</p></th>
 </tr>
 </thead>
 <tbody>
@@ -882,17 +904,17 @@ Y = \b{X} \b{\beta} + \b{u}
 </tr>
 <tr class="row-even"><td><p>一般化古典的回帰モデル（Generalized Classical Regression Model: GCRM）</p></td>
 <td><p>1. 非確率的な説明変数<br />2. 誤差項の期待値がゼロ<br />4. <span class="math notranslate nohighlight">\(X^T X\)</span>が正則</p></td>
-<td><p></p></td>
+<td><p>不偏</p></td>
 </tr>
 <tr class="row-odd"><td><p>新古典的回帰モデル（Neo-Classical Regression Model: NCRM）</p></td>
-<td><p>2. 誤差項の期待値がゼロ<br />3. 均一分散・独立<br />4. <span class="math notranslate nohighlight">\(X^T X\)</span>が正則</p></td>
-<td><p></p></td>
+<td><p>2’. 外生性$E(\varepsilon</p></td>
+<td><p>X)=0<span class="math notranslate nohighlight">\(&lt;br /&gt;3. 均一分散・独立&lt;br /&gt;4. \)</span>X^T X$が正則</p></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="id8">
-<h2>参考文献<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id9">
+<h2>参考文献<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
 <p>浅野晳, &amp; 中村二朗. (2009). 計量経済学.</p>
 </section>
 </section>
@@ -972,7 +994,8 @@ Y = \b{X} \b{\beta} + \b{u}
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">古典的正規回帰モデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">一般化古典的回帰モデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">新古典的回帰モデル</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">まとめ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考文献</a></li>
 </ul>
   </nav></div>
 

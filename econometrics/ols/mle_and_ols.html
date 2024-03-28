@@ -784,8 +784,21 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>最尤推定法に基づく正規方程式の導出<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<p>誤差項が正規分布など何らかの分布に従うことを仮定することで最尤推定が可能になる。</p>
-<p>誤差項<span class="math notranslate nohighlight">\(\varepsilon_i = y_i - \boldsymbol{x}_i^\top \boldsymbol{\beta}\)</span>が平均0の正規分布に従い、分散<span class="math notranslate nohighlight">\(\sigma^2\)</span>は一定（均一分散）とする。</p>
+<p>被説明変数<span class="math notranslate nohighlight">\(\boldsymbol{y}\)</span>を、説明変数<span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span>と回帰係数<span class="math notranslate nohighlight">\(\boldsymbol{\beta}\)</span>の線形結合と誤差項<span class="math notranslate nohighlight">\(\boldsymbol{\varepsilon}\)</span>によって表現する線形回帰モデル</p>
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\b}[1]{\boldsymbol{#1}}
+\b{y} = \b{X} \b{\beta} + \b{\varepsilon}
+\]</div>
+<p>を考える。また、以下を仮定する（<strong>古典的正規回帰モデル（Classical Normal Regression Model: CNRM）</strong> の仮定）</p>
+<ol class="arabic simple">
+<li><p>説明変数<span class="math notranslate nohighlight">\(\b{X}\)</span>は非確率的である</p></li>
+<li><p><span class="math notranslate nohighlight">\(E[Y] = \b{X \beta}\)</span>であり、したがって誤差項の期待値はゼロ：<span class="math notranslate nohighlight">\(E(\b{\varepsilon}) = 0\)</span></p></li>
+<li><p>誤差項の分散<span class="math notranslate nohighlight">\(\sigma^2\)</span>は一定（均一分散）であり、共分散はゼロ（独立性）：<span class="math notranslate nohighlight">\(Var(\b{\varepsilon}) = \sigma^2 \b{I}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\b{X}\)</span>の階数は<span class="math notranslate nohighlight">\(k\)</span>：<span class="math notranslate nohighlight">\(rank(\b{X}) = k\)</span>（<span class="math notranslate nohighlight">\(\b{X^\top X}\)</span>に逆行列が存在することの仮定）</p></li>
+<li><p><span class="math notranslate nohighlight">\(Y\)</span>は正規分布に従う（正規性）：<span class="math notranslate nohighlight">\(Y \sim \mathcal{N}(\b{X\beta}, \sigma^2\b{I}), \quad \b{\varepsilon} \sim \mathcal{N}(\b{X\beta}, \sigma^2\b{I})\)</span></p></li>
+</ol>
+<p>特に3（標本がi.i.d.）と5（正規性）は最尤推定のために必要で、誤差項<span class="math notranslate nohighlight">\(\varepsilon_i = y_i - \boldsymbol{x}_i^\top \boldsymbol{\beta}\)</span>が従う分布型を仮定することで最尤推定が可能になる。</p>
 <p>尤度としては、平均<span class="math notranslate nohighlight">\(\boldsymbol{x}_i^\top \boldsymbol{\beta}\)</span>の正規分布で観測値<span class="math notranslate nohighlight">\(y_i\)</span>が得られる確率<span class="math notranslate nohighlight">\(\mathcal{N}(y_i| \boldsymbol{x}_i^\top \boldsymbol{\beta}, \sigma^2)\)</span>を用いて</p>
 <div class="math notranslate nohighlight">
 \[
@@ -881,7 +894,7 @@ L(\mu, \sigma^2)
 &amp;= \frac{1}{\sigma^2} (\b{X}^\top \b{y})^\top
  - \b{\beta}^\top \frac{1}{\sigma^2} \b{X}^\top \b{X}\\
 &amp;= 0\\
-\to \b{\beta} &amp;= (\b{X}^\top \b{X})^{-1} \b{X}^\top \b{y}\\
+\to \hat{\b{\beta}} &amp;= (\b{X}^\top \b{X})^{-1} \b{X}^\top \b{y}\\
 \end{align}
 \end{split}\]</div>
 <p>となり、最尤推定量と最小二乗推定量が同じ方程式になることがわかる</p>
@@ -999,14 +1012,33 @@ A^\top B = \sum^n_{i=1} \boldsymbol{a}_i \boldsymbol{b}_i^\top
 \begin{align}
 \frac{\partial \ln L(\b{y}| \b{X}, \b{\beta}, \sigma) }{ \partial \sigma }
 &amp;= \frac{\partial}{ \partial \sigma }
-    (- \frac{N}{2} \ln (2\pi)
+    \left(- \frac{N}{2} \ln (2\pi)
     - \frac{N}{2} \ln \sigma^2
-    - \frac{1}{2\sigma^2} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2)\\
+    - \frac{1}{2\sigma^2} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2 \right)\\
 &amp;= - \frac{N}{2} \frac{1}{\sigma^2} 2\sigma
-- \frac{1}{2} \cdot 2\frac{1}{\sigma^3} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2\\
-&amp;= - \frac{N}{2} \frac{1}{\sigma^2} 2\sigma
-- \frac{1}{2} \cdot 2\frac{1}{\sigma^3} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2
-&amp;= 0\\
+   + \frac{4\sigma}{4\sigma^4} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2\\
+&amp;= - \frac{N}{\sigma}
+   + \frac{1}{\sigma^3} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2\\
+\end{align}
+\end{split}\]</div>
+<p>これをゼロにする<span class="math notranslate nohighlight">\(\sigma^2\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+&amp;- \frac{N}{\sigma} + \frac{1}{\sigma^3} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2 = 0\\
+&amp;\to \frac{N}{\sigma} = \frac{1}{\sigma^3} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2\\
+&amp;\to \frac{\sigma^3}{\sigma} = \frac{\sigma^3}{N \sigma^3} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2\\
+&amp;\to \sigma^2 = \frac{1}{N} \sum^N_{i=1} (y_i - \b{x}_i^\top \b{\beta})^2\\
+\end{align}
+\end{split}\]</div>
+<p>となる</p>
+<p><span class="math notranslate nohighlight">\(\b{\beta}\)</span>の最尤推定量 <span class="math notranslate nohighlight">\(\hat{\b{\beta}}_{ML} = (\b{X}^\top \b{X})^{-1} \b{X}^\top \b{y}\)</span>を代入すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\hat{\sigma}^2_{ML}
+&amp;= \frac{1}{N} \sum^N_{i=1} (y_i - \b{x}_i^\top \hat{\b{\beta}}_{ML})^2\\
+&amp;= \frac{ \b{\varepsilon}^\top \b{\varepsilon} }{N}\\
 \end{align}
 \end{split}\]</div>
 </section>
