@@ -49,7 +49,7 @@ h_i=\frac{\partial^2 l\left(\hat{y}_i^k, y_i\right)}{\left(\partial \hat{y}_i^k\
 $$
 となる。
 
-葉$s$について、葉に含まれるデータの番号の集合を$I_s$とする。葉$s$における$g_i$と$h_i$のサンプルについての合計を
+葉$s$について、葉に含まれるデータの番号（index）の集合を$I_s$とする。葉$s$における$g_i$と$h_i$のサンプルについての合計を
 $$
 G_s = \sum_{i\in I_s} g_i,
 \quad
