@@ -769,9 +769,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">モーメント条件</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">外生性</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLS</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概要</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">motivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fwl">FWL</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モーメント条件</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">モーメント条件と非線形モデル</a></li>
 </ul>
 </li>
@@ -814,6 +817,10 @@ document.write(`
 <li><p>Paper: <a class="reference external" href="https://academic.oup.com/ectj/article/21/1/C1/5056401?login=false">Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W., &amp; Robins, J. (2018). Double/debiased machine learning for treatment and structural parameters.</a></p></li>
 <li><p>Python Package: <a class="reference external" href="https://docs.doubleml.org/stable/index.html">DoubleML</a></p></li>
 </ul>
+<section id="id1">
+<h2>概要<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="motivation">
+<h3>motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h3>
 <p>世の中の多くの現象は非線形な関係性が想定される。回帰分析は線形モデルであるため、モデルの定式化の誤りに起因するバイアスが生じかねない。</p>
 <p>実際に関心のあるパラメータは少なく、交絡のコントロールのために入れている局外母数（nuisance parameters）は高次元になりがち。</p>
 <p>局外母数を非線形モデルで表し、関心のあるパラメータは線形モデルで表現する部分線形モデル</p>
@@ -821,54 +828,30 @@ document.write(`
 \[
 Y = \theta D + g(X) + e
 \]</div>
-<p>を作り、非線形モデル<span class="math notranslate nohighlight">\(g(X)\)</span>を機械学習で行いたい</p>
-<section id="id1">
-<h2>モーメント条件<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<section id="id2">
-<h3>外生性<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
-<p>単回帰モデル<span class="math notranslate nohighlight">\(Y = \alpha + \beta X + u\)</span>を例にとる。</p>
-<div class="admonition- admonition">
-<p class="admonition-title">外生性</p>
-<p>説明変数<span class="math notranslate nohighlight">\(X\)</span>と誤差項<span class="math notranslate nohighlight">\(u\)</span>が</p>
+<p>を作り、非線形モデル<span class="math notranslate nohighlight">\(g(X)\)</span>を機械学習で構築したい</p>
+</section>
+<section id="fwl">
+<h3>FWL<a class="headerlink" href="#fwl" title="Link to this heading">#</a></h3>
+<div class="admonition-fwl admonition">
+<p class="admonition-title">FWL定理</p>
+<p>目的変数のベクトル<span class="math notranslate nohighlight">\(Y \in \mathbb{R}^{n\times 1}\)</span>、説明変数の行列<span class="math notranslate nohighlight">\(X \in \mathbb{R}^{n\times d}\)</span>と誤差項<span class="math notranslate nohighlight">\(e \in \mathbb{R}^{n\times 1}\)</span>による線形回帰モデル</p>
 <div class="math notranslate nohighlight">
 \[
-E(u | X) = 0
+Y = X \beta + e
 \]</div>
-<p>を満たすとき、<span class="math notranslate nohighlight">\(X\)</span>は外生変数であるという。</p>
-</div>
-<p>また、外生性の条件は別の表現もできる</p>
-<div class="admonition-x-u admonition">
-<p class="admonition-title"><span class="math notranslate nohighlight">\(X\)</span>と<span class="math notranslate nohighlight">\(u\)</span>の直交</p>
-<p>説明変数<span class="math notranslate nohighlight">\(X\)</span>が外生変数ならば、</p>
+<p>があるとする。</p>
+<p>説明変数を<span class="math notranslate nohighlight">\(X = (X_1 | X_2)\)</span>と2つのグループに分割し、回帰係数ベクトル<span class="math notranslate nohighlight">\(\beta\)</span>も合わせて<span class="math notranslate nohighlight">\(\beta = (\beta_1 | \beta_2)^T\)</span>と2つに分割して</p>
 <div class="math notranslate nohighlight">
 \[
-E(u) = 0, E(X, u) = 0
+Y = X_1 \beta_1 + X_2 \beta_2 + e
 \]</div>
-</div>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-証明<div class="sd-summary-down docutils">
-<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
-<div class="sd-summary-up docutils">
-<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
-</summary><div class="sd-summary-content sd-card-body docutils">
-<div class="math notranslate nohighlight">
-\[
-E(X u) = E_{X}[ E(X u | X) ] = E_{X}[ X \underbrace{ E(u|X) }_{ =0 } ] = E_{X}(X\cdot 0) = 0
-\]</div>
-<ul class="simple">
-<li><p class="sd-card-text">TODO: E(u) = 0の証明</p></li>
-</ul>
-<p class="sd-card-text">上の式を直交条件と呼ぶ。</p>
-</div>
-</details><p>さらに、共分散との関係も導出できる</p>
-<div class="admonition-x-u admonition">
-<p class="admonition-title"><span class="math notranslate nohighlight">\(X\)</span>と<span class="math notranslate nohighlight">\(u\)</span>の無相関</p>
-<p>説明変数<span class="math notranslate nohighlight">\(X\)</span>が外生変数ならば、</p>
-<div class="math notranslate nohighlight">
-\[
-Cov(X, u) = 0
-\]</div>
+<p>と表す。</p>
+<p>この回帰モデルの<span class="math notranslate nohighlight">\(\beta_1\)</span>は、<strong>残差回帰</strong>（residual regression）と呼ばれる以下の手順に従うことでも得ることができる。</p>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\(X_1\)</span>を<span class="math notranslate nohighlight">\(X_2\)</span>に回帰して残差<span class="math notranslate nohighlight">\(\tilde{X}_1\)</span>を得る：<span class="math notranslate nohighlight">\(\tilde{X}_1 = X_1 - X_2 \hat{\delta}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(Y\)</span>を<span class="math notranslate nohighlight">\(X_2\)</span>に回帰して残差<span class="math notranslate nohighlight">\(\tilde{Y}\)</span>を得る：<span class="math notranslate nohighlight">\(\tilde{Y} = Y - X_2 \hat{\gamma}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\tilde{Y}\)</span>を<span class="math notranslate nohighlight">\(\tilde{X}_1\)</span>に回帰させる：<span class="math notranslate nohighlight">\(\tilde{Y} = \tilde{X}_1 \beta_1\)</span></p></li>
+</ol>
 </div>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
@@ -877,75 +860,107 @@ Cov(X, u) = 0
 <div class="sd-summary-up docutils">
 <svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">残差への回帰<span class="math notranslate nohighlight">\(\tilde{Y} = \tilde{X}_1 \beta_1\)</span>は</p>
 <div class="math notranslate nohighlight">
 \[
-Cov(X, u) = \underbrace{ E(X u) }_{ =0 }
-- E(X) \underbrace{ E(u) }_{ =0 }
-= 0
+Y - X_2 \hat{\gamma} = (X_1 - X_2\hat{\delta}) \beta_1
 \]</div>
-</div>
-</details></section>
-<section id="ols">
-<h3>OLS<a class="headerlink" href="#ols" title="Link to this heading">#</a></h3>
-<p>単回帰モデル<span class="math notranslate nohighlight">\(Y = \alpha + \beta X + u\)</span>のOLS推定量<span class="math notranslate nohighlight">\(\beta\)</span>の確率極限は</p>
-<div class="math notranslate nohighlight">
-\[
-\DeclareMathOperator{\cov}{\text{Cov}}
-\DeclareMathOperator{\var}{\text{Var}}
-\DeclareMathOperator{\plim}{\text{plim}}
-\plim \beta = \beta + \frac{\cov(X, u)}{\var(X)}
-\]</div>
-<p>となる。外生性が満たされるとき<span class="math notranslate nohighlight">\(\cov(X, u) = 0\)</span>であるため、<span class="math notranslate nohighlight">\(\plim \beta = \beta\)</span>となり、OLS推定量は母回帰係数の不偏推定量となる。</p>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-証明<div class="sd-summary-down docutils">
-<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
-<div class="sd-summary-up docutils">
-<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
-</summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">であり、</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\DeclareMathOperator{\cov}{\text{Cov}}
-\DeclareMathOperator{\var}{\text{Var}}
-\DeclareMathOperator{\plim}{\text{plim}}
+\hat{\gamma} = (X_2^T X_2)^{-1} X_2^T Y\\
+\hat{\delta} = (X_2^T X_2)^{-1} X_2^T X_1
+\end{split}\]</div>
+<p class="sd-card-text">を代入するとそれぞれ</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \begin{align}
-\plim \beta
-&amp;= \frac{\cov(X, Y)}{\var(X)}\\
-&amp;= \frac{\cov(X, \alpha + \beta X + u)}{\var(X)}\\
-&amp;= \frac{\cov(X, \alpha) + \cov(X, \beta X) + \cov(X, u) }{\var(X)}\\
-&amp;= \frac{\beta \var(X) + \cov(X, u) }{\var(X)}\\
-&amp;= \beta + \frac{\cov(X, u)}{\var(X)}
+Y - X_2 \hat{\gamma} &amp;= Y - X_2 (X_2^T X_2)^{-1} X_2^T Y\\
+&amp;= [I - X_2 (X_2^T X_2)^{-1} X_2^T] Y\\
+X_1 - X_2\hat{\delta} &amp;= X_1 - X_2 (X_2^T X_2)^{-1} X_2^T X_1\\
+&amp;= [I - X_2 (X_2^T X_2)^{-1} X_2^T] X_1
 \end{align}
 \end{split}\]</div>
-<div class="{admonition}（参考）和の共分散 docutils">
-<p class="sd-card-text">標本値、確率変数の和は、加える前の個々の共分散の和になる。すなわち、共分散においては分配法則が成り立つ。</p>
+<p class="sd-card-text">となる。</p>
+<p class="sd-card-text">これらをそれぞれ被説明変数、説明変数として最小二乗推定すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\hat{\beta}_1 &amp;= [(X_1 - X_2\hat{\delta})^T (X_1 - X_2\hat{\delta})]^{-1}
+(X_1 - X_2\hat{\delta})^T (Y - X_2)
+\\
+&amp;= \{ X_1^T [I - X_2 (X_2^T X_2)^{-1} X_2^T] X_1 \}^{-1}
+X_1 [I - X_2 (X_2^T X_2)^{-1} X_2^T] Y
+\\
+\end{align}
+\end{split}\]</div>
+<p class="sd-card-text">（<span class="math notranslate nohighlight">\(I - X_2 (X_2^T X_2)^{-1} X_2^T\)</span>は冪等で対称な行列のため2行目で計算が簡略化できている）</p>
+<p class="sd-card-text">次に、すべての説明変数<span class="math notranslate nohighlight">\(X\)</span>を<span class="math notranslate nohighlight">\(Y\)</span>に回帰したとき</p>
 <div class="math notranslate nohighlight">
 \[
-\cov(X + Z, Y) = \cov(X, Y) + \cov(Z, Y)
+Y = X_1 \beta_1 + X_2 \beta_2
 \]</div>
-<p class="sd-card-text">参考：<a class="reference external" href="http://taustation.com/statistics-variance-and-covariance/">確率統計 – 分散と共分散 – TauStation</a></p>
-</div>
-<div class="admonition- admonition">
-<p class="admonition-title">（参考）共分散と定数</p>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(\alpha, \beta\)</span>は定数と考えると、</p>
+<p class="sd-card-text">の<span class="math notranslate nohighlight">\(X_1\)</span>の係数<span class="math notranslate nohighlight">\(\beta_1\)</span>の推定量を求める。二乗誤差の最小化の解</p>
+<div class="math notranslate nohighlight">
+\[
+(\hat{\beta}_1, \hat{\beta}_2)
+= \operatorname*{\arg \min\ }_{\beta_1, \beta_2}
+(Y - X_1 \beta_1 + X_2 \beta_2)^T (Y - X_1 \beta_1 + X_2 \beta_2)
+\]</div>
+<p class="sd-card-text">の1階の条件は</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\cov(X, \alpha)
-= E(X \alpha) - E(X) E(\alpha)\\
-= \alpha E(X) - \alpha E(X)\\
-= 0
+X_1^T Y - X_1^T X_1 \hat{\beta}_1 - X_1^T X_2 \hat{\beta}_2 = 0\\
+X_2^T Y - X_2^T X_1 \hat{\beta}_1 - X_2^T X_2 \hat{\beta}_2 = 0
 \end{split}\]</div>
-<p class="sd-card-text">であり</p>
+<p class="sd-card-text">となる。<span class="math notranslate nohighlight">\(\hat{\beta}_2\)</span>を消すためには、2つ目の式に左から<span class="math notranslate nohighlight">\(-X_1^T X_2(X_2^T X_2)^{-1}\)</span>を掛けて</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\cov(X, \beta X)
-= E(X \beta X) - E(X) E(\beta X)\\
-= \beta E(X^2) - \beta E(X)^2\\
-= \beta \var(X)
+\begin{align}
+&amp;-X_1^T X_2(X_2^T X_2)^{-1}
+(X_2^T Y - X_2^T X_1 \hat{\beta}_1 - X_2^T X_2 \hat{\beta}_2)
+\\
+&amp;= - X_1^T X_2(X_2^T X_2)^{-1} X_2^T Y
++ X_1^T X_2(X_2^T X_2)^{-1} X_2^T X_1 \hat{\beta}_1 
++ X_1^T X_2(X_2^T X_2)^{-1} X_2^T X_2 \hat{\beta}_2
+\\
+&amp;= - X_1^T X_2(X_2^T X_2)^{-1} X_2^T Y
++ X_1^T X_2(X_2^T X_2)^{-1} X_2^T X_1 \hat{\beta}_1 
++ X_1^T X_2 \hat{\beta}_2
+\end{align}
 \end{split}\]</div>
-</div>
+<p class="sd-card-text">これを第1式に足すと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+X_1^T Y - X_1^T X_1 \hat{\beta}_1 - X_1^T X_2 \hat{\beta}_2
+- X_1^T X_2(X_2^T X_2)^{-1} X_2^T Y
++ X_1^T X_2(X_2^T X_2)^{-1} X_2^T X_1 \hat{\beta}_1 
++ X_1^T X_2 \hat{\beta}_2
+\\
+= X_1^T Y
+- X_1^T X_2(X_2^T X_2)^{-1} X_2^T Y
+- [X_1^T X_1 - X_1^T X_2(X_2^T X_2)^{-1} X_2^T X_1] \hat{\beta}_1 = 0
+\end{split}\]</div>
+<p class="sd-card-text">となる。</p>
+<p class="sd-card-text">これを変形すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\hat{\beta}_1 &amp;=
+[X_1^T X_1 - X_1^T X_2(X_2^T X_2)^{-1} X_2^T X_1]^{-1}
+X_1^T Y - X_1^T X_2(X_2^T X_2)^{-1} X_2^T Y
+\\
+&amp;=
+\{X_1^T [I - X_1^T X_2(X_2^T X_2)^{-1} X_2^T] X_1\}^{-1}
+X_1^T [I - X_2(X_2^T X_2)^{-1} X_2^T] Y
+\end{align}
+\end{split}\]</div>
+<p class="sd-card-text">となり、残差回帰の解と一致する。</p>
 </div>
 </details></section>
+</section>
+<section id="id2">
+<h2>モーメント条件<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <section id="id3">
 <h3>モーメント条件と非線形モデル<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <p>GMM推定量は非線形モデルに対しても用いることができる（末石2015, p.78）</p>
@@ -1005,7 +1020,7 @@ Y - E[Y|Z] = (X - E[X|Z])^T \beta + u
 <ul class="simple">
 <li><p>ML推定ゆえoverfitting biasが入る → Cross Fitting</p>
 <ul>
-<li><p>なんでMLだとbiasがはいる？</p></li>
+<li><p>なんでMLだとbiasがはいる？高次元や複雑なモデルはDonsker conditionを満たさないから？</p></li>
 </ul>
 </li>
 </ul>
@@ -1029,6 +1044,7 @@ Y - E[Y|Z] = (X - E[X|Z])^T \beta + u
 <ul class="simple">
 <li><p>解説記事: <a class="reference external" href="https://www.web-nippyo.jp/13331/">機械学習×計量経済学：Double/Debiased Machine Learning | Web日本評論</a></p></li>
 <li><p><a class="reference external" href="https://speakerdeck.com/masa_asa/debiased-ml?slide=32">[勉強会資料メモ] Double/Debiased ML - Speaker Deck</a></p></li>
+<li><p><a class="reference external" href="https://matheusfacure.github.io/python-causality-handbook/22-Debiased-Orthogonal-Machine-Learning.html">22 - Debiased/Orthogonal Machine Learning — Causal Inference for the Brave and True</a></p></li>
 </ul>
 <section id="dmldid">
 <h3>DMLによるDID<a class="headerlink" href="#dmldid" title="Link to this heading">#</a></h3>
@@ -1158,9 +1174,12 @@ Y = D \theta_0 + g_0(Z) + U
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">モーメント条件</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">外生性</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLS</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概要</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">motivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fwl">FWL</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モーメント条件</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">モーメント条件と非線形モデル</a></li>
 </ul>
 </li>
