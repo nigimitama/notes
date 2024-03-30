@@ -771,6 +771,7 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d2-pinball-score">D2 pinball score</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interval-score">interval score</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration">Calibration</a></li>
 </ul>
             </nav>
         </div>
@@ -807,6 +808,46 @@ D^2(y, \hat{y}) = 1 - \frac{\text{dev}(y, \hat{y})}{\text{dev}(y, y_{\text{null}
 </section>
 <section id="interval-score">
 <h2>interval score<a class="headerlink" href="#interval-score" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://sites.stat.washington.edu/people/raftery/Research/PDF/Gneiting2007jasa.pdf">Gneiting, T., &amp; Raftery, A. E. (2007). Strictly proper scoring rules, prediction, and estimation. Journal of the American statistical Association, 102(477), 359-378.</a></p>
+<p><span class="math notranslate nohighlight">\((1 - \alpha)\times 100\text{%}\)</span>予測区間を<span class="math notranslate nohighlight">\([l, u]=[\frac{\alpha}{2}, 1 - \frac{\alpha}{2}]\)</span> quantileで構築したとする。</p>
+<p>interval scoreは真の値を<span class="math notranslate nohighlight">\(x\)</span>として</p>
+<div class="math notranslate nohighlight">
+\[
+S_{\alpha}(l, u; x)
+= (u - l)
+    + \frac{2}{\alpha} (l - x) \mathbb{1}\{ x &lt; l \}
+    + \frac{2}{\alpha} (x - u) \mathbb{1}\{ x &gt; u \}
+\]</div>
+<p>となる。（スコアが小さいほうが良いモデルを意味する）</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">interval_score</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">l</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">l</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">u</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">u</span><span class="p">)</span>
+
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">true_values</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c1"># 予測1</span>
+<span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">s1</span> <span class="o">=</span> <span class="n">interval_score</span><span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">,</span> <span class="n">true_values</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+<span class="c1"># 予測2</span>
+<span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">s2</span> <span class="o">=</span> <span class="n">interval_score</span><span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">,</span> <span class="n">true_values</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s1</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">s2</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>s1=9.0, s2=2.0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="calibration">
+<h2>Calibration<a class="headerlink" href="#calibration" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://arxiv.org/abs/2011.09588">[2011.09588] Beyond Pinball Loss: Quantile Methods for Calibrated Uncertainty Quantification</a></p></li>
 </ul>
@@ -861,6 +902,7 @@ D^2(y, \hat{y}) = 1 - \frac{\text{dev}(y, \hat{y})}{\text{dev}(y, y_{\text{null}
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d2-pinball-score">D2 pinball score</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interval-score">interval score</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration">Calibration</a></li>
 </ul>
   </nav></div>
 
