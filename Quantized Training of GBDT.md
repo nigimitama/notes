@@ -43,13 +43,16 @@ BitBoostは訓練の高速化のために量子化勾配を利用（ただし決
 
 $k+1$回目の反復において、現状のサンプル$i$の予測値を$\hat{y}_i^k$とすると、誤差関数$l$のgradientとhessianは
 $$
-g_i=\frac{\partial l\left(\hat{y}_i^k, y_i\right)}{\partial \hat{y}_i^k}, h_i=\frac{\partial^2 l\left(\hat{y}_i^k, y_i\right)}{\left(\partial \hat{y}_i^k\right)^2}
+g_i=\frac{\partial l\left(\hat{y}_i^k, y_i\right)}{\partial \hat{y}_i^k},
+\quad
+h_i=\frac{\partial^2 l\left(\hat{y}_i^k, y_i\right)}{\left(\partial \hat{y}_i^k\right)^2}
 $$
 となる。
 
 葉$s$について、葉に含まれるデータの番号の集合を$I_s$とする。葉$s$における$g_i$と$h_i$のサンプルについての合計を
 $$
 G_s = \sum_{i\in I_s} g_i,
+\quad
 H_s = \sum_{i\in I_s} h_i
 $$
 とする。反復$k+1$回目において、木構造が固定されたものとすると、訓練誤差は二次のテイラー近似で
@@ -75,9 +78,9 @@ $$
 > Input: Bin data data $[N][J]$, Data indices in leaf $s$ denoted by $I_s$
 > Output: Histogram ${hist}_s$
 > for $i \in I_s, j \in\{1 \ldots J\}$ do
->   bin $\leftarrow \operatorname{data}[i][j]$
->   $hist_s[j][bin] . g \leftarrow$  $hist_s[j][$ bin $] . g+g_i$
->   $hist_s[j][b i n] . h \leftarrow$  $hist_s[j][b i n] . h+h_i$
+>     bin $\leftarrow \operatorname{data}[i][j]$
+>     $hist_s[j][bin] . g \leftarrow$  $hist_s[j][$ bin $] . g+g_i$
+>     $hist_s[j][b i n] . h \leftarrow$  $hist_s[j][b i n] . h+h_i$
 > end for
 
 伝統的には$g_i$と$h_i$には32-bit floating point numbersが使われ、histogramへの累計には32-bitか64-bitのFPが必要になる。
