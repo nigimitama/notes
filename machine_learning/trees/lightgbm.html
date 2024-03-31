@@ -859,6 +859,18 @@ w_s^*=-\frac{G_s}{H_s}, \quad \mathcal{L}_s^*=-\frac{1}{2} \cdot \frac{G_s^2}{H_
 \Delta \mathcal{L}_{s \rightarrow s_1, s_2}=\mathcal{L}_s^*-\mathcal{L}_{s_1}^*-\mathcal{L}_{s_2}^*=\frac{G_{s_1}^2}{2 H_{s_1}}+\frac{G_{s_2}^2}{2 H_{s_2}}-\frac{G_s^2}{2 H_s}
 \]</div>
 <p>葉<span class="math notranslate nohighlight">\(s\)</span>にとっての最適な分割条件の探索は、すべての特徴のすべての分割候補点を数え上げて、最も損失の減少が多いものが選ばれる。</p>
+<p>最適分割点の探索を高速化するために用いられるのはヒストグラムである。histogram based GBDTの基本的なアイデアは特徴量の値をbinsに分割する。histogramのbinsは、そのbinに含まれるデータのgradientsとhessiansの総和が記録されている。binsの境界値のみが分割候補点になる。</p>
+<blockquote>
+<div><p>Algorithm 1 Histogram Construction for Leaf <span class="math notranslate nohighlight">\(s\)</span></p>
+<p>Input: Gradients <span class="math notranslate nohighlight">\(\left\{g_1, \ldots, g_N\right\}\)</span>, Hessians <span class="math notranslate nohighlight">\(\left\{h_1, \ldots, h_N\right\}\)</span> <br>
+Input: Bin data data <span class="math notranslate nohighlight">\([N][J]\)</span>, Data indices in leaf <span class="math notranslate nohighlight">\(s\)</span> denoted by <span class="math notranslate nohighlight">\(I_s\)</span> <br>
+Output: Histogram <span class="math notranslate nohighlight">\({hist}_s\)</span> <br>
+for <span class="math notranslate nohighlight">\(i \in I_s, j \in\{1 \ldots J\}\)</span> do <br>
+bin <span class="math notranslate nohighlight">\(\leftarrow \operatorname{data}[i][j]\)</span> <br>
+<span class="math notranslate nohighlight">\(hist_s[j][bin] . g \leftarrow\)</span>  <span class="math notranslate nohighlight">\(hist_s[j][\)</span> bin <span class="math notranslate nohighlight">\(] . g+g_i\)</span> <br>
+<span class="math notranslate nohighlight">\(hist_s[j][b i n] . h \leftarrow\)</span>  <span class="math notranslate nohighlight">\(hist_s[j][b i n] . h+h_i\)</span> <br>
+end for</p>
+</div></blockquote>
 </section>
 <section id="id2">
 <h2>LightGBMが使う既存の技術<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
