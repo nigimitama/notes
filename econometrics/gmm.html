@@ -740,13 +740,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モーメント法</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">例：平均と分散</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">例：線形回帰モデル</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モーメント法</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gmm">一般化モーメント法（GMM）</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -763,15 +759,71 @@ document.write(`
 <section id="id2">
 <h2>モーメント法<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>モーメント法（method of moment）は統計的推定における方法の1つで、母集団におけるモーメント（母平均など）を標本におけるモーメント（標本平均など）で置き換えて推定を行う。</p>
-<p>一般に、スコア関数<span class="math notranslate nohighlight">\(\psi(x, \theta)\)</span>について</p>
+<p>確率変数<span class="math notranslate nohighlight">\(X\)</span>の分布が<span class="math notranslate nohighlight">\(k\)</span>次元の未知のパラメータ<span class="math notranslate nohighlight">\(\theta = (\theta_1, \cdots, \theta_n)\)</span>をもつとする。このとき、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+E[m(X, \theta)]
+= E
+\begin{bmatrix}
+m_1(X, \theta)\\
+\vdots\\
+m_k(X, \theta)\\
+\end{bmatrix}
+= 0
+\end{split}\]</div>
+<p>を満たすように<span class="math notranslate nohighlight">\(k\)</span>個の関数（スコア関数）<span class="math notranslate nohighlight">\(m_1(\cdot, \cdot), \cdots, m_k(\cdot, \cdot)\)</span>をうまく選べたとする。</p>
+<p>モーメント法ではこの条件を解いて<span class="math notranslate nohighlight">\(\theta\)</span>を求めることでパラメータを推定する。</p>
+<p>標本<span class="math notranslate nohighlight">\(X_1,\cdots,X_n\)</span>が得られたとき、<span class="math notranslate nohighlight">\(\theta_0\)</span>のモーメント推定量<span class="math notranslate nohighlight">\(\hat{\theta}\)</span>は</p>
 <div class="math notranslate nohighlight">
 \[
-E[\psi(x, \theta)] = 0
+\frac{1}{n} \sum_{i=1}^n m\left(X_i ; \hat{\theta}\right)=0
 \]</div>
-<p>の条件</p>
-<section id="id3">
-<h3>例：平均と分散<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
-<p>確率変数<span class="math notranslate nohighlight">\(X \sim N(\mu, \sigma^2)\)</span>について、1次と2次のモーメントは</p>
+<p>により定義される。</p>
+<p>大数の法則により</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{n} \sum_{i=1}^n m\left(X_i ; \hat{\theta}\right) 
+\xrightarrow{p} \mathrm{E}[m(X, \theta)]
+\]</div>
+<p>のため標本モーメントを用いる。</p>
+<div class="admonition- admonition">
+<p class="admonition-title">例：平均と分散</p>
+<p>正規分布<span class="math notranslate nohighlight">\(N(\mu, \sigma^2)\)</span>から無作為抽出された標本の平均と分散をもとめたいとする。</p>
+<p>モーメント条件を</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+E[m_1(X_i; \mu, \sigma^2)] &amp;= E[X_i - \mu] = 0\\
+E[m_2(X_i; \mu, \sigma^2)] &amp;= E[X_i - (\sigma^2 + \mu)]=0
+\end{align}
+\end{split}\]</div>
+<p>とおく。</p>
+<p>これを標本<span class="math notranslate nohighlight">\(X_1, X_2, \cdots, X_n\)</span>で推定することで、平均と分散の推定量を得られる。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; \frac{1}{n} \sum_{i=1}^n (X_i - \hat{\mu}) = 0\\
+&amp; \frac{1}{n} \sum_{i=1}^n [X_i^2 - (\hat{\sigma}^2 + \hat{\mu}^2)] = 0
+\end{aligned}
+\end{split}\]</div>
+<p>を解くと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; \frac{1}{n} \sum_{i=1}^n (X_i - \hat{\mu}) = 0\\
+&amp; \to \frac{1}{n} \sum_{i=1}^n \hat{\mu} = \frac{1}{n} \sum_{i=1}^n X_i\\
+&amp; \to \hat{\mu} = \frac{1}{n} \sum_{i=1}^n X_i\\
+\\
+&amp; \frac{1}{n} \sum_{i=1}^n [X_i^2 - (\hat{\sigma}^2 + \hat{\mu}^2)] = 0\\
+&amp; \to \frac{1}{n} \sum_{i=1}^n X_i^2 = \frac{1}{n} \sum_{i=1}^n \hat{\sigma}^2 + \frac{1}{n} \sum_{i=1}^n  \hat{\mu}^2\\
+&amp; \to \hat{\sigma}^2 
+= \frac{1}{n} \sum_{i=1}^n X_i^2 - \hat{\mu}^2\\
+\end{aligned}
+\end{split}\]</div>
+<p>となり、標本平均・標本分散と一致する</p>
+</div>
+<aside class="margin sidebar">
+<p class="sidebar-title">（参考）モーメント</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
@@ -779,29 +831,45 @@ E[X] &amp;= \mu\\
 E[X^2] &amp;= \sigma^2 + \mu^2
 \end{align}
 \end{split}\]</div>
-<p>これを標本で推定することで、平均と分散の推定量を得られる。</p>
-</section>
-<section id="id4">
-<h3>例：線形回帰モデル<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+</aside>
+<div class="admonition- admonition">
+<p class="admonition-title">例：線形回帰モデル</p>
+<p>線形回帰モデル</p>
 <div class="math notranslate nohighlight">
 \[
 Y_i = X_i^T \beta + u_i
 \]</div>
-<p>ここで<span class="math notranslate nohighlight">\(X\)</span>と<span class="math notranslate nohighlight">\(\beta\)</span>は<span class="math notranslate nohighlight">\((K\times 1)\)</span>ベクトルとする。<span class="math notranslate nohighlight">\(X\)</span>は誤差項と無相関<span class="math notranslate nohighlight">\(E[X_i u_i] = 0\)</span>であるとする。</p>
-<p>このモデルから<span class="math notranslate nohighlight">\(K\)</span>本のモーメント条件が得られる</p>
+<p>のパラメータ<span class="math notranslate nohighlight">\(\beta\)</span>の推定を考える。ここで<span class="math notranslate nohighlight">\(X\)</span>と<span class="math notranslate nohighlight">\(\beta\)</span>は<span class="math notranslate nohighlight">\((k \times 1)\)</span>ベクトルとする。<span class="math notranslate nohighlight">\(X\)</span>は誤差項と無相関<span class="math notranslate nohighlight">\(E[X_i u_i] = 0\)</span>であるとする。</p>
+<p>このモデルから<span class="math notranslate nohighlight">\(k\)</span>本のモーメント条件が得られる</p>
 <div class="math notranslate nohighlight">
 \[
-E[X_i (Y_i - X_i^T \beta)] = 0
+E[X_i u_i] = E[X_i (Y_i - X_i^T \beta)] = 0
 \]</div>
-</section>
+<p>行列表記では</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{n} e^T e
+= \frac{1}{n} X^T (Y - X\beta) = 0
+\]</div>
+<p>となる。これを解くと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\frac{1}{n} X^T Y = \frac{1}{n} X^T X\beta\\
+\to \beta = (X^T X)^{-1}X^T Y
+\end{split}\]</div>
+<p>と、最小二乗法の解と一致する
+::</p>
+</div>
+<p>標本モーメントは</p>
 </section>
 <section id="gmm">
 <h2>一般化モーメント法（GMM）<a class="headerlink" href="#gmm" title="Link to this heading">#</a></h2>
-<p>未知のパラメータの数<span class="math notranslate nohighlight">\(m\)</span>とモーメント条件の数<span class="math notranslate nohighlight">\(k\)</span>が、<span class="math notranslate nohighlight">\(m&gt;k\)</span>の場合（例えば複数の操作変数を用いる場合）、モーメント法ではパラメータをうまく推定できない。</p>
-<p>**一般化モーメント法（generalized method of moment: GMM）**はモーメント条件の数</p>
+<p>未知のパラメータの数<span class="math notranslate nohighlight">\(k\)</span>とモーメント条件の数<span class="math notranslate nohighlight">\(r\)</span>が等しい（<span class="math notranslate nohighlight">\(k = r\)</span>）場合、上記のようにモーメント法で推定が可能である。</p>
+<p>しかし、<span class="math notranslate nohighlight">\(k &gt; r\)</span>や<span class="math notranslate nohighlight">\(k &lt; r\)</span>の場合はモーメント法ではパラメータをうまく推定できない。</p>
+<p><strong>一般化モーメント法（generalized method of moment: GMM）</strong> は<span class="math notranslate nohighlight">\(k &lt; r\)</span>、すなわちモーメント条件のほうが多い場合でも推定できる方法である</p>
 </section>
-<section id="id5">
-<h2>参考文献<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id3">
+<h2>参考文献<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.nippyo.co.jp/blogkeisemi/wp-content/uploads/sites/5/2021/07/Draft_Keisemi_Demand2_Appendix1_GMM_v3.pdf">補足資料 1：一般化モーメント法 (GMM) に関するノート</a></p></li>
 </ul>
@@ -872,13 +940,9 @@ E[X_i (Y_i - X_i^T \beta)] = 0
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モーメント法</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">例：平均と分散</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">例：線形回帰モデル</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モーメント法</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gmm">一般化モーメント法（GMM）</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考文献</a></li>
 </ul>
   </nav></div>
 
