@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>IV推定量 &#8212; データサイエンス関連+αのメモ</title>
+    <title>一般化モーメント法と操作変数法 &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -72,9 +72,11 @@
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/iv/iv';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/iv/gmm_and_iv';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="操作変数法の歴史" href="history.html" />
+    <link rel="prev" title="操作変数法" href="instrumental_variables.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -135,8 +137,6 @@
     <div class="bd-container__inner bd-page-width">
       
       
-      
-        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -354,7 +354,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/symbolic_data_analysis.html">Symbolic Data Analysis</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">計量経済学・因果推論</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../rubin_causal_model.html">ルービンの因果モデル</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experimental_design.html">実験デザイン</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../causal_diagram.html">因果ダイアグラム</a></li>
@@ -373,8 +373,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../propensity_score.html">傾向スコア</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="index.html">操作変数法</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">操作変数法</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="instrumental_variables.html">操作変数法</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">一般化モーメント法と操作変数法</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html">操作変数法の歴史</a></li>
 <li class="toctree-l2"><a class="reference internal" href="simulatenous_equasion_model.html">同時方程式モデル</a></li>
 </ul>
@@ -646,7 +647,7 @@
       
       
       
-      <li><a href="../../_sources/econometrics/iv/iv.ipynb" target="_blank"
+      <li><a href="../../_sources/econometrics/iv/gmm_and_iv.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -730,7 +731,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>IV推定量</h1>
+    <h1>一般化モーメント法と操作変数法</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -741,7 +742,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">モーメント条件から導出するOLS</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">IV推定量（行列表記）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#iv">IV推定量（行列表記）</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slsiv">2SLS推定量とIV推定量の同値性</a></li>
 </ul>
             </nav>
@@ -754,8 +755,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="iv">
-<h1>IV推定量<a class="headerlink" href="#iv" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>一般化モーメント法と操作変数法<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <p>母集団モーメントを利用する母回帰係数の表記</p>
 <p>単回帰モデル<span class="math notranslate nohighlight">\(Y_i = \alpha + \beta X + \gamma Z_i + u_i\)</span>のとき、</p>
 <div class="math notranslate nohighlight">
@@ -767,8 +768,8 @@ document.write(`
 <section id="ols">
 <h2>モーメント条件から導出するOLS<a class="headerlink" href="#ols" title="Link to this heading">#</a></h2>
 </section>
-<section id="id1">
-<h2>IV推定量（行列表記）<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="iv">
+<h2>IV推定量（行列表記）<a class="headerlink" href="#iv" title="Link to this heading">#</a></h2>
 <p>同時方程式モデル</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -889,7 +890,7 @@ Y_2 = \beta_2 Y_1 + \gamma_2 Z_2 + \varepsilon_2
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.PairGrid at 0x7f933c0ab670&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.PairGrid at 0x7ff14406b640&gt;
 </pre></div>
 </div>
 <img alt="../../_images/30d8b7ebfdb3de48a797e79607a5fe5fb96083e6df0031af9281f8162d03a36b.png" src="../../_images/30d8b7ebfdb3de48a797e79607a5fe5fb96083e6df0031af9281f8162d03a36b.png" />
@@ -1078,6 +1079,24 @@ Y_2 = \beta_2 Y_1 + \gamma_2 Z_2 + \varepsilon_2
                 <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="instrumental_variables.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">操作変数法</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="history.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">操作変数法の歴史</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -1095,7 +1114,7 @@ Y_2 = \beta_2 Y_1 + \gamma_2 Z_2 + \varepsilon_2
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">モーメント条件から導出するOLS</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">IV推定量（行列表記）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#iv">IV推定量（行列表記）</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slsiv">2SLS推定量とIV推定量の同値性</a></li>
 </ul>
   </nav></div>

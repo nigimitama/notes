@@ -375,6 +375,7 @@
 <li class="toctree-l1"><a class="reference internal" href="propensity_score.html">傾向スコア</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="iv/index.html">操作変数法</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="iv/instrumental_variables.html">操作変数法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iv/gmm_and_iv.html">一般化モーメント法と操作変数法</a></li>
 <li class="toctree-l2"><a class="reference internal" href="iv/history.html">操作変数法の歴史</a></li>
 <li class="toctree-l2"><a class="reference internal" href="iv/simulatenous_equasion_model.html">同時方程式モデル</a></li>
 </ul>
@@ -742,7 +743,8 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モーメント法</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gmm">一般化モーメント法（GMM）</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">一般化モーメント法と最尤推定法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -860,17 +862,85 @@ E[X_i u_i] = E[X_i (Y_i - X_i^T \beta)] = 0
 <p>と、最小二乗法の解と一致する
 ::</p>
 </div>
-<p>標本モーメントは</p>
 </section>
 <section id="gmm">
 <h2>一般化モーメント法（GMM）<a class="headerlink" href="#gmm" title="Link to this heading">#</a></h2>
 <p>未知のパラメータの数<span class="math notranslate nohighlight">\(k\)</span>とモーメント条件の数<span class="math notranslate nohighlight">\(r\)</span>が等しい（<span class="math notranslate nohighlight">\(k = r\)</span>）場合、上記のようにモーメント法で推定が可能である。</p>
 <p>しかし、<span class="math notranslate nohighlight">\(k &gt; r\)</span>や<span class="math notranslate nohighlight">\(k &lt; r\)</span>の場合はモーメント法ではパラメータをうまく推定できない。</p>
-<p><strong>一般化モーメント法（generalized method of moment: GMM）</strong> は<span class="math notranslate nohighlight">\(k &lt; r\)</span>、すなわちモーメント条件のほうが多い場合でも推定できる方法である</p>
+<p><strong>一般化モーメント法（generalized method of moment: GMM）</strong> は<span class="math notranslate nohighlight">\(k &lt; r\)</span>、すなわちモーメント条件のほうが多い場合でも推定できるようにした方法である。</p>
+<p>モーメント条件のほうが多い場合、<span class="math notranslate nohighlight">\(r\)</span>本の条件式</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+E[m(X, \theta)]
+= E
+\begin{bmatrix}
+m_1(X, \theta)\\
+\vdots\\
+m_r(X, \theta)\\
+\end{bmatrix}
+\end{split}\]</div>
+<p>が全体的に0に近くなるように</p>
+<div class="math notranslate nohighlight">
+\[
+\min_\theta Q_n(\theta)
+=
+\left[\frac{1}{N} \sum_{i=1}^N m(X_i ; \theta)\right]^{T}
+W
+\left[\frac{1}{N} \sum_{i=1}^N m(X_i ; \theta)\right]
+\]</div>
+<p>となるように<span class="math notranslate nohighlight">\(\theta\)</span>を選ぶ。ここで<span class="math notranslate nohighlight">\(W\)</span>はウェイト行列（weight matrix）と呼ばれる。単に<span class="math notranslate nohighlight">\(W=I\)</span>とすることもできるが、うまくウェイトを用いることで推定精度を向上させることができる。</p>
+<p>この方法は <strong>最小距離推定</strong> （minimum distance estimation）と呼ばれる広いクラスの推定法の中の特別な場合だと解釈できるが、計量経済学ではこの方法を最初に導入したHansen (1982) に倣って <strong>一般化モーメント法</strong> （generalized method of moment: GMM）と呼ぶ。</p>
+<p>この最小化問題は</p>
+<div class="math notranslate nohighlight">
+\[
+\left[\frac{1}{N} \sum_{i=1}^N \frac{\partial m(X_i ; \tilde{\theta})}{\partial \theta^T} \right]^{T}
+W
+\left[\frac{1}{N} \sum_{i=1}^N m(X_i ; \tilde{\theta})\right]
+= 0
+\]</div>
+<p>を解いて求める。</p>
+<p>ただし、</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial m(X_i ; \tilde{\theta})}{\partial \theta^{\prime}}
+= \left.
+\frac{\partial m(X_i ; \theta)}{\partial \theta^{\prime}}
+\right|_{\theta=\tilde{\theta}}
+\]</div>
+<p>である。</p>
 </section>
 <section id="id3">
-<h2>参考文献<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h2>一般化モーメント法と最尤推定法<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>最尤推定量は</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}\left[
+    \frac{\partial \log f(Y|X; \theta)}{\partial \theta}
+\right]
+= 0
+\]</div>
+<p>という直交条件の下でのGMM推定量と考えることができる。</p>
+<p>GMM推定量では標本モーメント条件</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{n}\sum^n_{i=1}
+\frac{\partial \log f(Y_i|X_i; \theta)}{\partial \theta}
+= 0
+\]</div>
+<p>を解く。</p>
+<p>最尤推定法では対数尤度関数の最大化において</p>
+<div class="math notranslate nohighlight">
+\[
+\sum^n_{i=1} \frac{\partial \log f(Y_i|X_i; \theta)}{\partial \theta}
+= 0
+\]</div>
+<p>を解くため、GMM推定量と最尤推定量は一致する。</p>
+</section>
+<section id="id4">
+<h2>参考文献<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <ul class="simple">
+<li><p>西山慶彦, 新谷元嗣, 川口大司, &amp; 奥井亮. (2019). 計量計済学.</p></li>
+<li><p>難波明生. (2015). 計量経済学講義.</p></li>
 <li><p><a class="reference external" href="https://www.nippyo.co.jp/blogkeisemi/wp-content/uploads/sites/5/2021/07/Draft_Keisemi_Demand2_Appendix1_GMM_v3.pdf">補足資料 1：一般化モーメント法 (GMM) に関するノート</a></p></li>
 </ul>
 </section>
@@ -942,7 +1012,8 @@ E[X_i u_i] = E[X_i (Y_i - X_i^T \beta)] = 0
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モーメント法</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gmm">一般化モーメント法（GMM）</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">一般化モーメント法と最尤推定法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考文献</a></li>
 </ul>
   </nav></div>
 
