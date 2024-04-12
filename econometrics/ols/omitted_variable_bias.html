@@ -365,6 +365,7 @@
 <li class="toctree-l2"><a class="reference internal" href="assumptions.html">OLSの仮定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classical_regression_model.html">古典的回帰モデルと新古典的回帰モデル</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mle_and_ols.html">最尤推定法に基づく正規方程式の導出</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error_and_residual.html">誤差項と残差の違い</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cef.html">条件付き期待値関数（CEF）</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols_estimator.html">OLS推定量の性質</a></li>
 <li class="toctree-l2"><a class="reference internal" href="test_of_ols.html">OLSの検定・区間推定</a></li>
@@ -1032,16 +1033,33 @@ Y = \underbrace{\alpha^L + \gamma^L \alpha}_{\alpha^S}
 <p>次の単回帰モデルを考える。</p>
 <div class="math notranslate nohighlight">
 \[
-Y = \alpha + \beta X + \varepsilon
+Y_i = \alpha + \beta X_i + \varepsilon_i, \quad i=1,2,\dots,n
 \]</div>
-<p>説明変数<span class="math notranslate nohighlight">\(X\)</span>と誤差項<span class="math notranslate nohighlight">\(\varepsilon\)</span>が相関しないとき、説明変数<span class="math notranslate nohighlight">\(X\)</span>が<strong>外生性</strong>（exogeneity）をもつと言われる。またこのような変数は<strong>外生変数</strong>（exogenous variable）と呼ばれる。</p>
-<p>そうでないとき、説明変数<span class="math notranslate nohighlight">\(X\)</span>は<strong>内生性</strong>（endogeneity）をもつという。</p>
-<p>モデルの式の両辺の期待値をとって<span class="math notranslate nohighlight">\(\alpha\)</span>について解くと<span class="math notranslate nohighlight">\(\alpha = E[Y] - \beta E[X]\)</span>であり、これを代入すると</p>
+<p>説明変数<span class="math notranslate nohighlight">\(X_i\)</span>と誤差項<span class="math notranslate nohighlight">\(\varepsilon_i\)</span>が相関しないとき、説明変数<span class="math notranslate nohighlight">\(X_i\)</span>が<strong>外生性</strong>（exogeneity）をもつと言われる。またこのような変数は<strong>外生変数</strong>（exogenous variable）と呼ばれる。</p>
+<p>そうでないとき、説明変数<span class="math notranslate nohighlight">\(X_i\)</span>は<strong>内生性</strong>（endogeneity）をもつという。</p>
+<p>モデルの式の両辺の期待値をとって<span class="math notranslate nohighlight">\(\alpha\)</span>について解くと<span class="math notranslate nohighlight">\(\alpha = E[Y_i] - \beta E[X_i]\)</span>であり、これを代入すると</p>
 <div class="math notranslate nohighlight">
 \[
-Y - E[Y] = \beta (X - E[X]) + \varepsilon
+Y_i - E[Y_i] = \beta (X_i - E[X_i]) + \varepsilon_i
 \]</div>
-<p>と書き換えることができる。両辺に<span class="math notranslate nohighlight">\(X\)</span>を乗じて期待値を</p>
+<p>と書き換えることができる。両辺に<span class="math notranslate nohighlight">\(X\)</span>を乗じて期待値をとると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\underbrace{ E[X_i(Y_i - E[Y_i])] }_{ = E[X_i Y_i] - E[X_i] E[Y_i] \\ = Cov(X_i, Y_i) }
+    = \beta \underbrace{ E[X_i (X_i - E[X_i])] }_{ = E[X_i^2] - E[X_i]^2 \\ = Var(X_i) }
+    + \underbrace{ E[X_i \varepsilon_i] }_{ = Cov(X_i, \varepsilon_i) \\ = 0}
+\end{split}\]</div>
+<p>移項するとOLS推定量が得られる</p>
+<div class="math notranslate nohighlight">
+\[
+\beta = \frac{ Cov(X_i, Y_i) }{ Var(X_i) }
+\]</div>
+<p>もし<span class="math notranslate nohighlight">\(E[X_i \varepsilon_i] = Cov(X_i, \varepsilon_i) \neq 0\)</span>であれば、</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{ Cov(X_i, Y_i) }{ Var(X_i) } = \beta + \frac{ Cov(X_i, \varepsilon_i) }{ Var(X_i) }
+\]</div>
+<p>となり、<span class="math notranslate nohighlight">\(Cov(X_i, \varepsilon_i) \ / \ Var(X_i)\)</span>の分だけバイアスのある推定量になる</p>
 </section>
 <section id="id5">
 <h2>参考文献<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>

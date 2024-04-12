@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>チョコレートとノーベル賞 &#8212; データサイエンス関連+αのメモ</title>
+    <title>プロビットモデル &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -70,7 +70,7 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/memo_chocolate';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/probit_model';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -363,6 +363,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ols/assumptions.html">OLSの仮定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols/classical_regression_model.html">古典的回帰モデルと新古典的回帰モデル</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols/mle_and_ols.html">最尤推定法に基づく正規方程式の導出</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ols/error_and_residual.html">誤差項と残差の違い</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols/cef.html">条件付き期待値関数（CEF）</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols/ols_estimator.html">OLS推定量の性質</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ols/test_of_ols.html">OLSの検定・区間推定</a></li>
@@ -652,7 +653,7 @@
       
       
       
-      <li><a href="../_sources/econometrics/memo_chocolate.ipynb" target="_blank"
+      <li><a href="../_sources/econometrics/probit_model.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -736,7 +737,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>チョコレートとノーベル賞</h1>
+    <h1>プロビットモデル</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -746,8 +747,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">元の論文</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">データ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">概要</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">プロビットモデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">多項プロビットモデル</a></li>
 </ul>
             </nav>
         </div>
@@ -760,177 +762,17 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>チョコレートとノーベル賞<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<h1>プロビットモデル<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <section id="id2">
-<h2>元の論文<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="https://cbb.sjtu.edu.cn/~jingli/courses/2018fall/bi372/files/NEJM.pdf">Messerli, F. H. (2012). Chocolate consumption, cognitive function, and Nobel laureates. N Engl J Med, 367(16), 1562-1564. </a></p>
-<blockquote>
-<div><p>Chocolate consumption enhances cognitive function, which is a sine qua non for winning the Nobel Prize</p>
-<p>（チョコレートの消費はノーベル賞受賞に必要不可欠である認知能力を高める）</p>
-</div></blockquote>
-<p>という強めの主張をしている。</p>
-<p>追試してみる。</p>
+<h2>概要<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>「ある商品が購入される確率」のように、二値変数の確率を予測するモデル</p>
+<p>ロジットモデル（ロジスティック回帰）よりも複雑で計算量は多いが、「無関係な選択肢からの独立性」という性質を満たす、ロジットモデルより妥当なモデルが構築できるのが強み</p>
 </section>
 <section id="id3">
-<h2>データ<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p>同様のデータを<a class="reference external" href="https://www.kyoritsu-pub.co.jp/book/b10011781.html">統計的因果推論の理論と実装 - 共立出版</a>が<code class="docutils literal notranslate"><span class="pre">data06.csv</span></code>として配布している。</p>
-<p>論文をもとに同様の収集方法をとったらしいが、年度的にはもっと新しいデータになっているらしい</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># y1: 人口1000万人あたりのノーベル賞受賞者数</span>
-<span class="c1"># x1: 人口1人あたりの年間チョコレート消費量（kg）</span>
-<span class="c1"># x2: 一人あたりGDP</span>
-<span class="n">data06</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">country,y1,x1,x2</span>
-<span class="s2">australia,3.871325502,4.9,54.763</span>
-<span class="s2">austria,15.65853828,8.1,49.701</span>
-<span class="s2">belgium,8.643572769,5.6,46.198</span>
-<span class="s2">brazil,0,1.2,8.755</span>
-<span class="s2">canada,4.17386626,4,46.55</span>
-<span class="s2">china,0.021249789,0.1,10.004</span>
-<span class="s2">denmark,22.24752355,4.9,60.657</span>
-<span class="s2">finland,7.260276558,5.4,48.678</span>
-<span class="s2">france,9.046821006,4.3,40.319</span>
-<span class="s2">germany,9.98135639,7.9,46.232</span>
-<span class="s2">greece,1.865921418,2.5,19.604</span>
-<span class="s2">ireland,12.05448628,7.9,81.637</span>
-<span class="s2">italy,2.535105679,4,33.09</span>
-<span class="s2">japan,1.980565613,1.2,40.063</span>
-<span class="s2">netherlands,9.650766575,5.1,53.053</span>
-<span class="s2">norway,20.37488303,5.8,74.986</span>
-<span class="s2">poland,1.833324603,5.7,15.727</span>
-<span class="s2">portugal,1.94207716,2,23.35</span>
-<span class="s2">spain,1.265977079,4,29.816</span>
-<span class="s2">sweden,30.76310773,6.6,52.896</span>
-<span class="s2">switzerland,28.79889044,8.8,85.135</span>
-<span class="s2">unitedkingdom,18.7831965,7.6,41.855</span>
-<span class="s2">unitedstates,11.44517395,4.4,65.134</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
-
-<span class="n">data</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">data06</span><span class="p">)</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>country</th>
-      <th>y1</th>
-      <th>x1</th>
-      <th>x2</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>australia</td>
-      <td>3.871326</td>
-      <td>4.9</td>
-      <td>54.763</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>austria</td>
-      <td>15.658538</td>
-      <td>8.1</td>
-      <td>49.701</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>belgium</td>
-      <td>8.643573</td>
-      <td>5.6</td>
-      <td>46.198</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>brazil</td>
-      <td>0.000000</td>
-      <td>1.2</td>
-      <td>8.755</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>canada</td>
-      <td>4.173866</td>
-      <td>4.0</td>
-      <td>46.550</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;y1&quot;</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;x2&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;y1&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:xlabel=&#39;x2&#39;, ylabel=&#39;y1&#39;&gt;
-</pre></div>
-</div>
-<img alt="../_images/0939bd838ad1249bbec1f3fca1f9976a2fdbe96df3b3d44d671c331948e81a90.png" src="../_images/0939bd838ad1249bbec1f3fca1f9976a2fdbe96df3b3d44d671c331948e81a90.png" />
-<img alt="../_images/d4265d15a48b7b62d6447ff192d41d2d2eb206839a795b5f8251686629c3ddc2.png" src="../_images/d4265d15a48b7b62d6447ff192d41d2d2eb206839a795b5f8251686629c3ddc2.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
-<span class="kn">from</span> <span class="nn">stargazer.stargazer</span> <span class="kn">import</span> <span class="n">Stargazer</span>
-
-
-<span class="n">Stargazer</span><span class="p">([</span>
-    <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s2">&quot;y1 ~ x1&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
-    <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s2">&quot;y1 ~ x2&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
-    <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s2">&quot;y1 ~ x1 + x2&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
-<span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><table style="text-align:center"><tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr>
-<tr><td style="text-align:left"></td><td colspan="3"><em>Dependent variable: y1</em></td></tr><tr><td style="text-align:left"></td><tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td></tr>
-<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr>
-
-<tr><td style="text-align:left">Intercept</td><td>-3.422<sup></sup></td><td>-4.246<sup></sup></td><td>-6.320<sup>*</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(3.227)</td><td>(3.235)</td><td>(3.203)</td></tr>
-<tr><td style="text-align:left">x1</td><td>2.704<sup>***</sup></td><td></td><td>1.505<sup>*</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.598)</td><td></td><td>(0.756)</td></tr>
-<tr><td style="text-align:left">x2</td><td></td><td>0.313<sup>***</sup></td><td>0.196<sup>**</sup></td></tr>
-<tr><td style="text-align:left"></td><td></td><td>(0.066)</td><td>(0.085)</td></tr>
-
-<td colspan="4" style="border-bottom: 1px solid black"></td></tr>
-<tr><td style="text-align: left">Observations</td><td>23</td><td>23</td><td>23</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.493</td><td>0.519</td><td>0.598</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.469</td><td>0.496</td><td>0.558</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>6.650 (df=21)</td><td>6.478 (df=21)</td><td>6.064 (df=20)</td></tr><tr><td style="text-align: left">F Statistic</td><td>20.420<sup>***</sup> (df=1; 21)</td><td>22.656<sup>***</sup> (df=1; 21)</td><td>14.904<sup>***</sup> (df=2; 20)</td></tr>
-<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Note:</td><td colspan="3" style="text-align: right"><sup>*</sup>p&lt;0.1; <sup>**</sup>p&lt;0.05; <sup>***</sup>p&lt;0.01</td></tr></table></div></div>
-</div>
+<h2>プロビットモデル<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+</section>
+<section id="id4">
+<h2>多項プロビットモデル<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 </section>
 </section>
 
@@ -980,8 +822,9 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">元の論文</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">データ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">概要</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">プロビットモデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">多項プロビットモデル</a></li>
 </ul>
   </nav></div>
 
