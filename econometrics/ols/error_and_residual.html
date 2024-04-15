@@ -363,7 +363,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">回帰分析</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ols.html">概要</a></li>
 <li class="toctree-l2"><a class="reference internal" href="assumptions.html">OLSの仮定</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classical_regression_model.html">古典的回帰モデルと新古典的回帰モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="type_of_regression_model.html">線形回帰モデルの種類</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mle_and_ols.html">最尤推定法に基づく正規方程式の導出</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">誤差項と残差の違い</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cef.html">条件付き期待値関数（CEF）</a></li>
@@ -750,6 +750,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">誤差項は母集団レベル、残差は標本レベルの話</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">標本の残差は説明変数に直交する</a></li>
 </ul>
             </nav>
         </div>
@@ -770,10 +771,52 @@ document.write(`
 <li><p>残差は、標本から推定した線形回帰モデル<span class="math notranslate nohighlight">\(Y_i = \hat{\beta}_0 + \hat{\beta}_1 X_i + e_i\)</span>の残差<span class="math notranslate nohighlight">\(e_i\)</span></p></li>
 </ul>
 <blockquote>
-<div><p>「誤差」と、この章で出てきた「残差」は似ているように見えますが、異なる意味を持ちます。「誤差」は求めようとする真の回帰式から算出される値と実際のデータとの差を表します。真の回帰式はあくまでも理論的なものであるため、誤差を計算で求めることはできません。一方の「残差」は実際のデータを用いて推定された回帰式から算出される値と実際のデータとの差を表します。誤差とは異なり残差は計算で求められます。
-<img alt="image.png" src="econometrics/ols/attachment:50060c8a-c42f-4b03-bb60-657a9f6437f3.png" /></p>
+<div><p>「誤差」と、この章で出てきた「残差」は似ているように見えますが、異なる意味を持ちます。「誤差」は求めようとする真の回帰式から算出される値と実際のデータとの差を表します。真の回帰式はあくまでも理論的なものであるため、誤差を計算で求めることはできません。一方の「残差」は実際のデータを用いて推定された回帰式から算出される値と実際のデータとの差を表します。誤差とは異なり残差は計算で求められます。</p>
+<img src="https://bellcurve.jp/statistics/wp-body/wp-content/uploads/2017/01/795316b92fc766b0181f6fef074f03fa-2.png" style="max-width: 600px">
 <p><a class="reference external" href="https://bellcurve.jp/statistics/course/9704.html">27-4. 予測値と残差 | 統計学の時間 | 統計WEB</a></p>
 </div></blockquote>
+</section>
+<section id="id3">
+<h2>標本の残差は説明変数に直交する<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>線形回帰モデル</p>
+<div class="math notranslate nohighlight">
+\[
+Y = X \beta + u
+\]</div>
+<p>を想定する。</p>
+<p>OLS推定量<span class="math notranslate nohighlight">\(\hat{\beta}\)</span>を用いて得た残差<span class="math notranslate nohighlight">\(\hat{u} = y - X \hat{\beta}\)</span>には以下の関係がある。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\hat{u}
+&amp;= y - X \beta\\
+&amp;= y - X(X^TX)^{-1}X^Ty\\
+&amp;= [I - X(X^TX)^{-1}X^T] y\\
+&amp;= M y
+\end{align}
+\end{split}\]</div>
+<p>ここで</p>
+<div class="math notranslate nohighlight">
+\[
+M = I - X(X^TX)^{-1}X^Ty
+\]</div>
+<p>であり、<span class="math notranslate nohighlight">\(M\)</span>は</p>
+<ol class="arabic simple">
+<li><p>対称<span class="math notranslate nohighlight">\(M^T = M\)</span></p></li>
+<li><p>冪等<span class="math notranslate nohighlight">\(M^2 = M\)</span></p></li>
+</ol>
+<p>という性質をもつ（このように対称で冪等な行列を <strong>直交射影行列</strong> という。<a class="reference external" href="https://manabitimes.jp/math/2486">参考</a>）</p>
+<p><span class="math notranslate nohighlight">\(M\)</span>は<span class="math notranslate nohighlight">\(X\)</span>と直交しており、<span class="math notranslate nohighlight">\(MX = O= X^TM\)</span>である。そのため<span class="math notranslate nohighlight">\(\hat{u} = My\)</span>に<span class="math notranslate nohighlight">\(y=X\beta + u\)</span>を代入すると</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{u} = M(X\beta + u) = \underbrace{MX}_{=O} \beta + Mu = Mu
+\]</div>
+<p>であるため、</p>
+<div class="math notranslate nohighlight">
+\[
+X \hat{u} = XMu = O
+\]</div>
+<p>となり、推定量を用いた標本レベルでの残差では</p>
 </section>
 </section>
 
@@ -842,6 +885,7 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">誤差項は母集団レベル、残差は標本レベルの話</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">標本の残差は説明変数に直交する</a></li>
 </ul>
   </nav></div>
 

@@ -363,7 +363,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../ols/index.html">回帰分析</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../ols/ols.html">概要</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ols/assumptions.html">OLSの仮定</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../ols/classical_regression_model.html">古典的回帰モデルと新古典的回帰モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ols/type_of_regression_model.html">線形回帰モデルの種類</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ols/mle_and_ols.html">最尤推定法に基づく正規方程式の導出</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ols/error_and_residual.html">誤差項と残差の違い</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ols/cef.html">条件付き期待値関数（CEF）</a></li>
@@ -752,9 +752,10 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">因果推論的な説明</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ナイーブな推定量</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">無作為割当の場合</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">強く無視できる割り当て条件</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">数理統計学的な説明</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">数理統計学的な説明</a></li>
 </ul>
             </nav>
         </div>
@@ -812,8 +813,9 @@ E[Y(0)| D = 0] = E[Y(0)]\\
 E[Y(1)| D = 1] = E[Y(1)]
 \end{split}\]</div>
 <p>になるため、ナイーブな推定量が<span class="math notranslate nohighlight">\(ATE = E[Y(1)] - E[Y(0)]\)</span>の推定量となる。</p>
-<div class="admonition- admonition">
-<p class="admonition-title">強く無視できる割り当て条件</p>
+</section>
+<section id="id5">
+<h3>強く無視できる割り当て条件<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p>共変量<span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span>を条件付けた下での処置割当<span class="math notranslate nohighlight">\(D\)</span>と結果<span class="math notranslate nohighlight">\(Y(0), Y(1)\)</span>の独立（<strong>条件付き独立</strong> conditional independence）</p>
 <div class="math notranslate nohighlight">
 \[
@@ -833,43 +835,46 @@ E[Y|D=1, \boldsymbol{X}] = E[Y(1)|D, \boldsymbol{X}] = E[Y(1)|\boldsymbol{X}]
 \[
 E_{\boldsymbol{X}} [ E[Y(1) - Y(0)|\boldsymbol{X}] ] = E[Y(1) - Y(0)]
 \]</div>
-</div>
 </section>
 </section>
-<section id="id5">
-<h2>数理統計学的な説明<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h2>数理統計学的な説明<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <p>（回帰分析の場合）回帰係数の推定量が母回帰係数の一致推定量になるためには外生性を満たす必要があるため</p>
-<p>例えば、線形回帰モデルで、処置<span class="math notranslate nohighlight">\(D\)</span>、共変量<span class="math notranslate nohighlight">\(X\)</span>を使った</p>
+<p>例えば、結果<span class="math notranslate nohighlight">\(Y\)</span>を処置<span class="math notranslate nohighlight">\(D\)</span>に回帰した単回帰モデル</p>
 <div class="math notranslate nohighlight">
 \[
-Y = \gamma_0 + \gamma_1 D + \gamma_2 X + u
+Y = \beta_0 + \beta_1 D + v
 \]</div>
-<p>と、同じデータを処置のみの単回帰にした</p>
+<p>を考える。</p>
+<p><span class="math notranslate nohighlight">\(\beta_1\)</span>のOLS推定量は</p>
 <div class="math notranslate nohighlight">
 \[
-Y = \delta_0 + \delta_1 D + v
+\beta_1^{OLS} = \frac{ Cov(D, Y)}{ Var(D) }
 \]</div>
-<p>とで比べたとき、両辺の期待値をとって切片項について解いた</p>
+<p>となる。</p>
+<p>モデルの両辺の期待値をとって切片項について解いた</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-E[Y] = \delta_0 + \delta_1 E[D] + E[v]\\
-\to \delta_0 = E[Y] - \delta_1 E[D] - E[v]\\
+E[Y] = \beta_0 + \beta_1 E[D] + E[v]\\
+\to \beta_0 = E[Y] - \beta_1 E[D] - E[v]\\
 \end{split}\]</div>
-<p>を代入し</p>
+<p>を代入すると</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-Y = \delta_0 + \delta_1 D + v\\
-\to Y = E[Y] - \delta_1 E[D] - E[v] + \delta_1 D + v\\
-\to Y - E[Y] = \delta_1 (D - E[D])+ v - E[v]\\
+Y = \beta_0 + \beta_1 D + v\\
+\to Y = E[Y] - \beta_1 E[D] - E[v] + \beta_1 D + v\\
+\to Y - E[Y] = \beta_1 (D - E[D])+ v - E[v]\\
 \end{split}\]</div>
 <p>の両辺に<span class="math notranslate nohighlight">\(D\)</span>を乗じて期待値をとると</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \underbrace{ E[D( Y - E[Y])] }_{ =E[DY] - E[D]E[Y] \\ =Cov(D, Y)}
-= \delta_1 \underbrace{ E[D(D - E[D])] }_{ =E[D^2] - E[D]^2 \\ = Var(D) }
+= \beta_1 \underbrace{ E[D(D - E[D])] }_{ =E[D^2] - E[D]^2 \\ = Var(D) }
 + \underbrace{ E[D(v - E[v])] }_{ =E[Dv] - E[D]E[v] \\ = Cov(D, v) }\\
-\to \delta_1 = \frac{ Cov(D, Y)}{ Var(D) } - \frac{ Cov(D, v) }{ Var(D) }
+\to \underbrace{ \frac{ Cov(D, Y)}{ Var(D) } }_{\beta_1^{OLS}}
+= \beta_1 + \frac{ Cov(D, v) }{ Var(D) }\\
 \end{split}\]</div>
+<p>となり、<span class="math notranslate nohighlight">\(Cov(D, v)\)</span>がゼロでない場合（＝<span class="math notranslate nohighlight">\(D\)</span>が外生性を満たさない場合）にOLS推定量はバイアスを持つ。</p>
 </section>
 </section>
 
@@ -922,9 +927,10 @@ Y = \delta_0 + \delta_1 D + v\\
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">因果推論的な説明</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ナイーブな推定量</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">無作為割当の場合</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">強く無視できる割り当て条件</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">数理統計学的な説明</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">数理統計学的な説明</a></li>
 </ul>
   </nav></div>
 
