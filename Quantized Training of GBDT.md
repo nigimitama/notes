@@ -183,3 +183,72 @@ $$
 
 しかし、ランキングなど一部の損失関数では、木の成長が止まったあとに元の勾配でleaf valueをrefittingする方法が精度を向上させることがわかった。BitBoost [8] も同様の方法をとっているが、BitBoostと違い、本手法はsplit gainのヘシアンを木の成長中も考慮するがBitBoostではヘシアンを定数として扱い真のヘシアンをleaf valueのrefittingのときだけ使う。
 
+## 5 Theoretical Analysis
+
+十分な訓練データのもとでは勾配の量子化による分割の利得の変化は微量であることを証明した。
+
+誤差関数の2次の導関数が定数（$h$が定数）である誤差関数を考える（例えば二乗誤差）。2次が定数でない損失関数についてはAppendix Bに述べた。
+
+この理論解析はweak-learnability assumptionをより特定化したものに基づく。とくにdecision stumpsをweak learnerにしたものを仮定する。
+
+### 定義（Weak Learnability of Stumps）
+
+- 二値分類のデータセット$\mathcal{D}=\left\{\left(\mathbf{x}_i, c\left(\mathbf{x}_i\right)\right)\right\}_{i=1}^N$があるとし、$c\left(\mathrm{x}_i\right) \in\{-1,1\}$とする。
+- 重み$\left\{w_i\right\}_{i=1}^N$が $w_i \geq 0$と$\sum_i w_i>0$を満たすとし、$\gamma > 0$が存在するとする。
+- 葉の値が$\{-1, 1\}$の元となる2つの葉の決定木（decision stump）の重み付き分類の$\mathcal{D}$上の誤差率は$\frac{1}{2} - \gamma$である。
+- よってデータ$\mathcal{D}$は$\gamma$-empirically weakly learnable by stumps
+
+### 仮定
+
+- 葉$s$に含まれるデータの部分集合$\mathcal{D}_s \subset \mathcal{D}$について、stumpと$\gamma_s > 0$が存在し、$\mathcal{D}_s$は$\gamma_s$-empirically weakly learnable
+
+### 定理
+
+定数のヘシアン$h>0$をもつ損失関数について、上記仮定の下で、ある$\gamma_s>0$について葉$s$の部分集合$\mathcal{D}_s$について、確率的丸め込みとleaf-value refittingにより、任意の$\epsilon > 0, \delta > 0$について、以下の結論のうち少なくとも1つが成り立つ：
+
+1. 葉$s$とその子孫を分割した場合、$\mathcal{D}_s$ のデータに対する現在のブースティング反復におけるツリーによる予測値の絶対値の結果の平均は $\epsilon / h$を超えない
+
+2. 任意の分割$s\to s_1, s_2$について、すくなくとも$1-\delta$の確率で
+   $$
+   \frac{\left|\widetilde{\mathcal{G}}_{s \rightarrow s_1, s_2}-\mathcal{G}_{s \rightarrow s_1, s_2}\right|}{\mathcal{G}_s^*} \leq \frac{\max _{i \in[N]}\left|g_i\right| \sqrt{2 \ln \frac{4}{\delta}}}{\gamma_s^2 \epsilon \cdot 2^{B-1}}\left(\sqrt{\frac{1}{n_{s_1}}}+\sqrt{\frac{1}{n_{s_2}}}\right)+\frac{\left(\max _{i \in[N]}\left|g_i\right|\right)^2 \ln \frac{4}{\delta}}{\gamma_s^2 \epsilon^2 n_s \cdot 4^{B-2}}
+   $$
+   
+
+
+
+## 6 System Implementation
+
+現在のCPUとGPUのアーキテクチャでは低精度の計算へのサポートは限定的である。例えばこんにちの多くのCPUは8bitの整数が最低のデータ型であり、このような制限下では量子化の恩恵を十分に引き出せない。
+
+しかし、そのような条件下でも、かなりの高速化が得られた。
+
+### 6.1 Hierarchical Histogram Buffers
+
+Algorithm 1の演算の大部分は勾配の集計にある。そのため、もし高ビット幅の整数を集計に使用すると、低ビット幅の勾配は大きな高速化をもたらさない。
+
+オーバーフローを避けつつ、低ビット幅の計算資源を最大限活用するため、訓練データを行（サンプル）で分割し、分割したパーティションの1つを1つのスレッド（CPUの場合）やCUDA blocks（GPUの場合）に割り当てる。
+
+これにより多くの場合16bitで十分になる。
+
+### 6.2 Packed Gradient and Hessian
+
+1つのヒストグラムのbinにおける勾配とヘシアンの総和を1つの整数に詰め込む。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
