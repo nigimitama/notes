@@ -358,6 +358,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">計量経済学・因果推論</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../rubin_causal_model.html">ルービンの因果モデル</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selection_bias.html">Selection Bias</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experimental_design.html">実験デザイン</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../causal_diagram.html">因果ダイアグラム</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">回帰分析</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
@@ -786,6 +787,10 @@ document.write(`
 <li><p>誤差項は正規分布に従うと仮定する（正規線形回帰モデル）かどうか</p></li>
 </ul>
 <p>など、モデルが置いている仮定についてバリエーションがある</p>
+<aside class="margin sidebar">
+<p class="sidebar-title">目的変数<span class="math notranslate nohighlight">\(Y\)</span>は確率変数か？</p>
+<p>→古典的線形回帰モデルであっても誤差項が確率変数なので<span class="math notranslate nohighlight">\(Y\)</span>も確率変数</p>
+</aside>
 <section id="id2">
 <h2>古典的線形回帰モデル<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>確率変数<strong>ではない</strong>説明変数<span class="math notranslate nohighlight">\(X\)</span>のもとでの重回帰モデル。</p>
@@ -834,12 +839,12 @@ Y = X \beta + u
 <li><p><span class="math notranslate nohighlight">\(E[Y] = X \beta\)</span>であり、したがって誤差項の期待値はゼロ：<span class="math notranslate nohighlight">\(E(u) = 0\)</span></p></li>
 <li><p>誤差項の分散は一定であり、共分散はゼロ：<span class="math notranslate nohighlight">\(Var(u) = \sigma^2 I\)</span>（<span class="math notranslate nohighlight">\(I\)</span>は単位行列）</p></li>
 <li><p><span class="math notranslate nohighlight">\(X\)</span>の階数は<span class="math notranslate nohighlight">\(k\)</span>：<span class="math notranslate nohighlight">\(rank(X) = k\)</span>（<span class="math notranslate nohighlight">\(X^TX\)</span>に逆行列が存在することの仮定）</p></li>
-<li><p><span class="math notranslate nohighlight">\(Y\)</span>は正規分布に従う（正規性）：<span class="math notranslate nohighlight">\(Y \sim N(X\beta, \sigma^2 I), u \sim N(X\beta, \sigma^2 I)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(Y\)</span>は正規分布に従う（正規性）：<span class="math notranslate nohighlight">\(Y \sim N(X\beta, \sigma^2 I), u \sim N(0, \sigma^2 I)\)</span></p></li>
 </ol>
 </section>
 <section id="id7">
 <h3>パラメータの推定<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
-<p>古典的正規線形回帰モデルは分布型を仮定しているため、尤度 <span class="math notranslate nohighlight">\(\sum \mathcal{N}(y|\X, \beta, \sigma)\)</span> を用いて最尤推定量を導出できる
+<p>古典的正規線形回帰モデルは分布型を仮定しているため、尤度 <span class="math notranslate nohighlight">\(\sum \mathcal{N}(y|X, \beta, \sigma)\)</span> を用いて最尤推定量を導出できる
 （最尤推定量も正規方程式に帰結し、OLS推定量と同じものになる）</p>
 <p><span class="math notranslate nohighlight">\(n\)</span>個のサンプルの対数尤度は</p>
 <div class="math notranslate nohighlight">
@@ -856,14 +861,14 @@ Y = X \beta + u
 <p>なので</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\DeclareMathOperator*{\argmin}{arg min}
+\DeclareMathOperator*{\argmax}{arg max}
 \begin{align}
 \hat{\beta}_{ML}
-&amp;= \argmin_{\beta} \sum^N_{i=1} (y_i - x_i^\top \beta)^2\\
+&amp;= \argmax_{\beta} \sum^N_{i=1} (y_i - x_i^\top \beta)^2\\
 &amp;= (X^\top X)^{-1} X^\top y\\
 \\
 \hat{\sigma}_{ML}
-&amp;= \argmin_{\sigma} \
+&amp;= \argmax_{\sigma} \
 \left(
   - \frac{N}{2} \ln \sigma^2
   - \frac{1}{2\sigma^2} \sum^N_{i=1} (y_i - x_i^\top \beta)^2
