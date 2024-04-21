@@ -753,8 +753,12 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モーメント法</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gmm">一般化モーメント法（GMM）</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">一般化モーメント法と操作変数法</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">一般化モーメント法と最尤推定法</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">一般化モーメント法と最尤推定法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">確率密度によるモーメント条件</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">モーメント推定量と最尤推定量</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -944,44 +948,51 @@ Y = X \beta + u, \quad \text{Var}[u] = \sigma^2 I_n
 \[
 E[Z_i u_i] = E[Z_i (Y_i - X_i^T \beta)] = 0
 \]</div>
-<p>を直交条件にすると、標本対応は
-$<span class="math notranslate nohighlight">\(
+<p>を直交条件にすると、標本対応は</p>
+<div class="math notranslate nohighlight">
+\[
 \frac{1}{n} Z^T(Y-X\beta)
-\)</span><span class="math notranslate nohighlight">\(
-となる。したがって\)</span>\beta<span class="math notranslate nohighlight">\(のGMM推定量は
-\)</span><span class="math notranslate nohighlight">\(
+\]</div>
+<p>となる。したがって<span class="math notranslate nohighlight">\(\beta\)</span>のGMM推定量は</p>
+<div class="math notranslate nohighlight">
+\[
 \hat{\beta}_{GMM}
 = \mathop{\text{arg min}}_\beta
 \left[ \frac{Z^T(Y-X\beta)}{n} \right]^T
 W_n
 \left[ \frac{Z^T(Y-X\beta)}{n} \right]
-\)</span>$
-である。</p>
-<p>ここで
-$<span class="math notranslate nohighlight">\(
+\]</div>
+<p>である。</p>
+<p>ここで</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 E[u] = 0\\
 E[uu^T] = \sigma^2 I\\
 \mathop{\text{plim}}_{n\to\infty} \frac{Z^T Z}{n} = M_{ZZ}
-\)</span><span class="math notranslate nohighlight">\(
-および特定の条件下で
-\)</span><span class="math notranslate nohighlight">\(
+\end{split}\]</div>
+<p>および特定の条件下で</p>
+<div class="math notranslate nohighlight">
+\[
 \frac{Z^T(Y-X\beta)}{\sqrt n}
 \xrightarrow{D}
 \mathcal{N}(0, \sigma^2 M_{zz})
-\)</span><span class="math notranslate nohighlight">\(
-であるので
-\)</span><span class="math notranslate nohighlight">\(
+\]</div>
+<p>であるので</p>
+<div class="math notranslate nohighlight">
+\[
 W_n \xrightarrow{p}
 (\sigma^2 M_{ZZ})^{-1}
-\)</span><span class="math notranslate nohighlight">\(
-となる\)</span>W_n<span class="math notranslate nohighlight">\(をウェイト行列として用いるのが望ましい。
-\)</span><span class="math notranslate nohighlight">\(
+\]</div>
+<p>となる<span class="math notranslate nohighlight">\(W_n\)</span>をウェイト行列として用いるのが望ましい。</p>
+<div class="math notranslate nohighlight">
+\[
 W_n = \left(
 \frac{\sigma^2 Z^T Z}{n}
 \right)^{-1}
-\)</span><span class="math notranslate nohighlight">\(
-を用いると
-\)</span><span class="math notranslate nohighlight">\(
+\]</div>
+<p>を用いると</p>
+<div class="math notranslate nohighlight">
+\[
 \hat{\beta}_{GMM}
 = \mathop{\text{arg min}}_\beta
 \left[ \frac{Z^T(Y-X\beta)}{n} \right]^T
@@ -989,32 +1000,49 @@ W_n = \left(
     \frac{\sigma^2 Z^T Z}{n}
 \right)^{-1}
 \left[ \frac{Z^T(Y-X\beta)}{n} \right]
-\)</span>$</p>
-<p>であるので、この目的関数を<span class="math notranslate nohighlight">\(\beta\)</span>で微分してゼロとおいて解くか、公式
-$<span class="math notranslate nohighlight">\(
+\]</div>
+<p>であるので、この目的関数を<span class="math notranslate nohighlight">\(\beta\)</span>で微分してゼロとおいて解くか、公式</p>
+<div class="math notranslate nohighlight">
+\[
 \left[\frac{1}{N} \sum_{i=1}^N \frac{\partial m(X_i ; \tilde{\theta})}{\partial \theta^T} \right]^{T}
 W
 \left[\frac{1}{N} \sum_{i=1}^N m(X_i ; \tilde{\theta})\right]
 = 0
-\)</span><span class="math notranslate nohighlight">\(
-にあてはめ（左側のスコア関数だけ微分）した
-\)</span><span class="math notranslate nohighlight">\(
+\]</div>
+<p>にあてはめ（左側のスコア関数だけ微分）した</p>
+<div class="math notranslate nohighlight">
+\[
 \left[ \frac{Z^TX}{n} \right]^T
 \left(
     \frac{\sigma^2 Z^T Z}{n}
 \right)^{-1}
 \left[ \frac{Z^T(Y-X\hat{\beta})}{n} \right]
 =0
-\)</span><span class="math notranslate nohighlight">\(
-を解くことによって推定量が得られる。
-\)</span><span class="math notranslate nohighlight">\(
+\]</div>
+<p>を解くことによって推定量が得られる。</p>
+<div class="math notranslate nohighlight">
+\[
 \hat{\beta}_{GMM}=
 (X^T Z (Z^T Z)^{-1} Z^T X)^{-1}
 X^T Z (Z^T Z)^{-1}Z^T y
-\)</span>$
-となり、操作変数推定量（2段階最小二乗法推定量）に一致する。</p>
-<p>操作変数の数<span class="math notranslate nohighlight">\(l\)</span>と説明変数の数<span class="math notranslate nohighlight">\(k\)</span>が等しい場合は<span class="math notranslate nohighlight">\(Z^T X\)</span>が正方行列となり<span class="math notranslate nohighlight">\((Z^T X)^{-1}\)</span>が存在するため
-$<span class="math notranslate nohighlight">\(
+\]</div>
+<p>となり、操作変数推定量（2段階最小二乗法推定量）に一致する。</p>
+<p>操作変数の数<span class="math notranslate nohighlight">\(l\)</span>と説明変数の数<span class="math notranslate nohighlight">\(k\)</span>が等しい場合は<span class="math notranslate nohighlight">\(Z^T X\)</span>が正方行列となり<span class="math notranslate nohighlight">\((Z^T X)^{-1}\)</span>が存在するため</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\beta}_{GMM}= (Z^T X)^{-1}Z^T y
+\]</div>
+<p>と単純化できる</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+展開<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><span class="math notranslate nohighlight">\((AB)^{-1} = B^{-1} A^{-1}\)</span>を使った</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \begin{align}
 \hat{\beta}_{GMM}
 &amp;= (X^T Z (Z^T Z)^{-1} Z^T X)^{-1}
@@ -1025,21 +1053,73 @@ X^T Z (Z^T Z)^{-1}Z^T y\\
 X^T Z (Z^T Z)^{-1}Z^T y\\
 &amp;= (Z^T X)^{-1}Z^T y
 \end{align}
-\)</span><span class="math notranslate nohighlight">\(
-と単純化できる（\)</span>(AB)^{-1} = B^{-1} A^{-1}$を使った）</p>
-</section>
+\end{split}\]</div>
+</div>
+</details></section>
 <section id="id4">
 <h2>一般化モーメント法と最尤推定法<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <p>最尤推定量は対数尤度の導関数をスコア関数とした</p>
 <div class="math notranslate nohighlight">
 \[
-\mathbb{E}\left[
+E\left[
     \frac{\partial \log f(Y|X; \theta)}{\partial \theta}
 \right]
 = 0
 \]</div>
 <p>という直交条件の下でのGMM推定量と考えることができる。</p>
-<p>GMM推定量では標本モーメント条件</p>
+<section id="id5">
+<h3>確率密度によるモーメント条件<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(Y_i\)</span>の条件付き確率密度関数を<span class="math notranslate nohighlight">\(f(Y_i | X_i; \theta)\)</span>とする。確率密度関数の性質から、積分すると1になるので</p>
+<div class="math notranslate nohighlight">
+\[
+\int f(Y_i|X_i; \theta) dy_i = 1
+\]</div>
+<p>となる。両辺を<span class="math notranslate nohighlight">\(\theta\)</span>について微分すると</p>
+<div class="math notranslate nohighlight">
+\[
+\int \frac{\partial f(Y_i|X_i; \theta)}{\partial \theta} dy_i = 0
+\]</div>
+<p>となる。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\frac{\partial f(Y_i|X_i; \theta)}{\partial \theta}
+&amp;= \frac{\partial f(Y_i|X_i; \theta)}{\partial \theta} \frac{1}{f(Y_i|X_i; \theta)} f(Y_i|X_i; \theta)\\
+&amp;= \frac{\partial \log f(Y_i|X_i; \theta)}{\partial \theta} f(Y_i|X_i; \theta)
+\end{align}
+\end{split}\]</div>
+<p>という関係を用いて</p>
+<div class="math notranslate nohighlight">
+\[
+\int \frac{\partial \log f(Y_i|X_i; \theta)}{\partial \theta}
+f(Y_i|X_i; \theta) dy_i = 0
+\]</div>
+<p>とすることができる。</p>
+<p>スコア関数を</p>
+<div class="math notranslate nohighlight">
+\[
+m(X_i, \theta) = \frac{\partial \log f(Y_i|X_i; \theta)}{\partial \theta}
+\]</div>
+<p>とおけば、</p>
+<div class="math notranslate nohighlight">
+\[
+\int m(X_i, \theta) f(Y_i|X_i; \theta) dy_i = 0
+\]</div>
+<p>となり、これは条件付き確率<span class="math notranslate nohighlight">\(f(Y_i|X_i; \theta)\)</span>による条件付き期待値</p>
+<div class="math notranslate nohighlight">
+\[
+E[m(X_i, \theta)\mid X_i] = 0
+\]</div>
+<p>となっている。繰り返し期待値の法則により</p>
+<div class="math notranslate nohighlight">
+\[
+E[m(X_i, \theta)] = 0
+\]</div>
+<p>であるから、この式を直交条件として用いることができる。</p>
+</section>
+<section id="id6">
+<h3>モーメント推定量と最尤推定量<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>モーメント法では標本モーメント条件</p>
 <div class="math notranslate nohighlight">
 \[
 \frac{1}{n}\sum^n_{i=1}
@@ -1092,8 +1172,9 @@ L(\boldsymbol{\beta} ; \boldsymbol{y})=\prod_{i=1}^n f\left(y_i \mid \boldsymbol
 </div>
 </div>
 </section>
-<section id="id5">
-<h2>参考文献<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+</section>
+<section id="id7">
+<h2>参考文献<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>西山慶彦, 新谷元嗣, 川口大司, &amp; 奥井亮. (2019). 計量計済学.</p></li>
 <li><p>難波明生. (2015). 計量経済学講義.</p></li>
@@ -1170,8 +1251,12 @@ L(\boldsymbol{\beta} ; \boldsymbol{y})=\prod_{i=1}^n f\left(y_i \mid \boldsymbol
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モーメント法</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gmm">一般化モーメント法（GMM）</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">一般化モーメント法と操作変数法</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">一般化モーメント法と最尤推定法</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">一般化モーメント法と最尤推定法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">確率密度によるモーメント条件</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">モーメント推定量と最尤推定量</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
 </ul>
   </nav></div>
 
