@@ -234,13 +234,21 @@ Algorithm 1の演算の大部分は勾配の集計にある。そのため、も
 
 1つのヒストグラムのbinにおける勾配とヘシアンの総和を1つの整数に詰め込む。
 
+もし2つの16-bit整数を集計値の保持に使う場合、詰め込まれた集計値は1つの32-bit整数にいれることができる。
 
 
 
+## 7 Experiments
 
+### 7.1 Accuracy of Quantized Training
 
+Table 2がAccuracy
 
+### 7.2 Speedup on Standalone Machine
 
+Table3にサマリー、AppendixのTable6が全体
+
+CPUやCUDAの環境において最大3.8倍の高速化
 
 
 
