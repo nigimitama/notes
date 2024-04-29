@@ -750,14 +750,15 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概要</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gbdt">現代的なGBDTの学習の流れ</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#framework-for-quantized-training">Framework for Quantized Training</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rounding-strategies-and-leaf-value-refitting">Rounding Strategies and Leaf-Value Refitting</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">確率的な丸め込みによる</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">確率的な丸め込みによる</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実装</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実験：量子化の有無による差を比較</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実装</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">実験：量子化の有無による差を比較</a></li>
 </ul>
 </li>
 </ul>
@@ -773,6 +774,16 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="quantized-training-of-lightgbm">
 <h1>Quantized Training of LightGBM<a class="headerlink" href="#quantized-training-of-lightgbm" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>概要<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>LightGBMのような最近のGBDTで使われている決定木では、葉の出力<span class="math notranslate nohighlight">\(w\)</span>は誤差関数の2次のテイラー近似をもとに、以下のように計算される（このあたりは<a class="reference external" href="https://dl.acm.org/doi/pdf/10.1145/2939672.2939785">Chen &amp; Guestrin, 2016</a>が比較的わかりやすい）</p>
+<div class="math notranslate nohighlight">
+\[
+w^*_s = -\frac{\sum_{i\in I_s} g_i}{\sum_{i\in I_s} h_i}
+\]</div>
+<p>ここで<span class="math notranslate nohighlight">\(g_i\)</span>は誤差関数の勾配、<span class="math notranslate nohighlight">\(h_i\)</span>は誤差関数の二次の微分である。</p>
+<p>この<span class="math notranslate nohighlight">\(g_i, h_i\)</span>を32bitや64bitのfloatではなく、4bitなどの低ビット幅の整数で保持しよう、というのが量子化である。</p>
+</section>
 <section id="gbdt">
 <h2>現代的なGBDTの学習の流れ<a class="headerlink" href="#gbdt" title="Link to this heading">#</a></h2>
 <p>（<a class="reference external" href="https://arxiv.org/pdf/2207.09682.pdf">Shi et al. (2022). Quantized training of gradient boosting decision trees.</a>より）</p>
@@ -919,19 +930,75 @@ end for</p>
 \]</div>
 <p>となり、多くのケースで<span class="math notranslate nohighlight">\(\widetilde{w}_s^*\)</span>は良い結果をもたらすのに十分である。</p>
 <p>しかし、ランキングなど一部の損失関数では、木の成長が止まったあとに元の勾配でleaf valueをrefittingする方法が精度を向上させることがわかった。BitBoost [8] も同様の方法をとっているが、BitBoostと違い、本手法はsplit gainのヘシアンを木の成長中も考慮するがBitBoostではヘシアンを定数として扱い真のヘシアンをleaf valueのrefittingのときだけ使う。</p>
-<section id="id1">
-<h3>確率的な丸め込みによる<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<div class="cell tag_hdie-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+
+<span class="k">def</span> <span class="nf">stochastic_round</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="n">f</span><span class="p">,</span> <span class="n">c</span><span class="p">],</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="n">c</span> <span class="o">-</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span> <span class="o">-</span> <span class="n">f</span><span class="p">])</span>
+    
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">e</span> <span class="o">=</span> <span class="mf">0.001</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">e</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">stochastic_round</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="k">for</span> <span class="n">xi</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+
+
+<span class="n">x_c</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">mid_value</span><span class="p">(</span><span class="n">cat</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">cat</span><span class="o">.</span><span class="n">left</span> <span class="o">+</span> <span class="p">((</span><span class="n">cat</span><span class="o">.</span><span class="n">right</span> <span class="o">-</span> <span class="n">cat</span><span class="o">.</span><span class="n">left</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">cat_to_mid</span> <span class="o">=</span> <span class="p">{</span><span class="n">cat</span><span class="p">:</span> <span class="n">mid_value</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span> <span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">x_c</span><span class="o">.</span><span class="n">categories</span><span class="p">}</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
+    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span>
+    <span class="s2">&quot;x_c&quot;</span><span class="p">:</span> <span class="n">x_c</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">cat_to_mid</span><span class="p">,</span> <span class="n">na_action</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="p">})</span>
+<span class="n">agg</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;x_c&quot;</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;std&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;StochasticRound(x)&quot;</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">agg</span><span class="p">[</span><span class="s2">&quot;x_c&quot;</span><span class="p">],</span> <span class="n">agg</span><span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">],</span> <span class="n">yerr</span><span class="o">=</span><span class="n">agg</span><span class="p">[</span><span class="s2">&quot;std&quot;</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+            <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;mean &amp; std of StochasticRound(x)&quot;</span><span class="p">)</span>
+            <span class="c1"># xerr=(x.max() - x.min()) / 10 / 2,</span>
+
+<span class="c1"># for cat in x_c.categories:</span>
+<span class="c1">#     ax.axvline(cat.left, alpha=0.5, linestyle=&quot;--&quot;, color=&quot;gray&quot;)</span>
+<span class="c1"># ax.axvline(cat.right, alpha=0.5, linestyle=&quot;--&quot;, color=&quot;gray&quot;)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+    <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;StochasticRound(x)&quot;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../../_images/4404c05741c523f1490651092f414c6904f08dc6e6b0b37ceee3130575799483.png"><img alt="../../_images/4404c05741c523f1490651092f414c6904f08dc6e6b0b37ceee3130575799483.png" src="../../_images/4404c05741c523f1490651092f414c6904f08dc6e6b0b37ceee3130575799483.png" style="width: 640px; height: 480px;" /></a>
+</div>
+</div>
+<section id="id2">
+<h3>確率的な丸め込みによる<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <p>確率的な丸め込みにより、「split gain推定の誤差は高い確率で小さい値に制限される」というsection 5の定理が提供できる。</p>
 </section>
 </section>
-<section id="id2">
-<h2>実装<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="id3">
+<h2>実装<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>注意点</p>
 <ul class="simple">
 <li><p>精度を上げるため、量子化前の勾配でleaf valueを再計算する場合、計算時間もモデルのサイズも悪化する</p></li>
 </ul>
-<section id="id3">
-<h3>実験：量子化の有無による差を比較<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>実験：量子化の有無による差を比較<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <div class="cell tag_hdie-input tag_hide-output docutils container">
 <div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">lightgbm</span> <span class="k">as</span> <span class="nn">lgb</span>
@@ -982,6 +1049,7 @@ end for</p>
         <span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
     
     <span class="n">size_mb</span> <span class="o">=</span> <span class="n">model_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span> <span class="o">/</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">model_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">size_mb</span>
 
 
@@ -1074,13 +1142,13 @@ os.cpu_count()=4
 [1781]	training&#39;s rmse: 0.115047	valid_1&#39;s rmse: 41.0182
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 10%|█         | 1/10 [00:01&lt;00:12,  1.41s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 10%|█         | 1/10 [00:01&lt;00:14,  1.56s/it]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 20%|██        | 2/10 [00:02&lt;00:10,  1.33s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 20%|██        | 2/10 [00:02&lt;00:11,  1.40s/it]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
@@ -1094,13 +1162,13 @@ os.cpu_count()=4
 [3078]	training&#39;s rmse: 0.00376388	valid_1&#39;s rmse: 46.6675
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 30%|███       | 3/10 [00:04&lt;00:12,  1.73s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 30%|███       | 3/10 [00:05&lt;00:12,  1.80s/it]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 40%|████      | 4/10 [00:06&lt;00:09,  1.55s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 40%|████      | 4/10 [00:06&lt;00:09,  1.60s/it]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
@@ -1114,41 +1182,41 @@ os.cpu_count()=4
 [3313]	training&#39;s rmse: 0.00137981	valid_1&#39;s rmse: 25.5328
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 50%|█████     | 5/10 [00:08&lt;00:09,  1.85s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 50%|█████     | 5/10 [00:08&lt;00:09,  1.90s/it]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 60%|██████    | 6/10 [00:09&lt;00:06,  1.65s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 60%|██████    | 6/10 [00:10&lt;00:06,  1.69s/it]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
 [1616]	training&#39;s rmse: 0.130356	valid_1&#39;s rmse: 36.1539
-Training until validation scores don&#39;t improve for 100 rounds
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
 [3704]	training&#39;s rmse: 0.000824281	valid_1&#39;s rmse: 39.8657
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 70%|███████   | 7/10 [00:12&lt;00:05,  1.97s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 70%|███████   | 7/10 [00:12&lt;00:06,  2.02s/it]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 80%|████████  | 8/10 [00:13&lt;00:03,  1.67s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 80%|████████  | 8/10 [00:13&lt;00:03,  1.71s/it]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
 [1251]	training&#39;s rmse: 0.252942	valid_1&#39;s rmse: 17.2222
+Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training until validation scores don&#39;t improve for 100 rounds
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 90%|█████████ | 9/10 [00:14&lt;00:01,  1.51s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 90%|█████████ | 9/10 [00:15&lt;00:01,  1.54s/it]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
@@ -1160,10 +1228,10 @@ Training until validation scores don&#39;t improve for 100 rounds
 [2294]	training&#39;s rmse: 0.020392	valid_1&#39;s rmse: 23.7294
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [00:16&lt;00:00,  1.57s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [00:16&lt;00:00,  1.60s/it]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [00:16&lt;00:00,  1.63s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [00:16&lt;00:00,  1.68s/it]
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
@@ -1175,15 +1243,17 @@ Training until validation scores don&#39;t improve for 100 rounds
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 10%|█         | 1/10 [00:01&lt;00:09,  1.02s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 10%|█         | 1/10 [00:01&lt;00:09,  1.05s/it]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
 [1093]	training&#39;s rmse: 0.508697	valid_1&#39;s rmse: 36.2037
-Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 20%|██        | 2/10 [00:01&lt;00:05,  1.45it/s]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training until validation scores don&#39;t improve for 100 rounds
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 20%|██        | 2/10 [00:01&lt;00:05,  1.35it/s]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
@@ -1191,7 +1261,7 @@ Training until validation scores don&#39;t improve for 100 rounds
 Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 30%|███       | 3/10 [00:02&lt;00:05,  1.27it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 30%|███       | 3/10 [00:02&lt;00:05,  1.20it/s]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
@@ -1199,7 +1269,7 @@ Training until validation scores don&#39;t improve for 100 rounds
 Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 40%|████      | 4/10 [00:03&lt;00:04,  1.36it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 40%|████      | 4/10 [00:03&lt;00:04,  1.30it/s]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
@@ -1207,7 +1277,7 @@ Training until validation scores don&#39;t improve for 100 rounds
 Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 50%|█████     | 5/10 [00:03&lt;00:03,  1.44it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 50%|█████     | 5/10 [00:03&lt;00:03,  1.42it/s]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
@@ -1215,17 +1285,15 @@ Training until validation scores don&#39;t improve for 100 rounds
 Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 60%|██████    | 6/10 [00:04&lt;00:03,  1.20it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 60%|██████    | 6/10 [00:04&lt;00:03,  1.18it/s]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
 [1201]	training&#39;s rmse: 0.331789	valid_1&#39;s rmse: 33.0541
+Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training until validation scores don&#39;t improve for 100 rounds
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 70%|███████   | 7/10 [00:05&lt;00:02,  1.06it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 70%|███████   | 7/10 [00:05&lt;00:02,  1.08it/s]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
@@ -1233,7 +1301,7 @@ Training until validation scores don&#39;t improve for 100 rounds
 Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 80%|████████  | 8/10 [00:06&lt;00:01,  1.33it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 80%|████████  | 8/10 [00:06&lt;00:01,  1.35it/s]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
@@ -1241,18 +1309,20 @@ Training until validation scores don&#39;t improve for 100 rounds
 Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 90%|█████████ | 9/10 [00:07&lt;00:00,  1.27it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 90%|█████████ | 9/10 [00:07&lt;00:00,  1.23it/s]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
 [991]	training&#39;s rmse: 0.710558	valid_1&#39;s rmse: 36.1448
-Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [00:07&lt;00:00,  1.37it/s]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [00:07&lt;00:00,  1.29it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [00:07&lt;00:00,  1.25it/s]
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
@@ -1272,13 +1342,13 @@ Training until validation scores don&#39;t improve for 100 rounds
 [2524]	training&#39;s rmse: 0.237055	valid_1&#39;s rmse: 33.2555
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 10%|█         | 1/10 [00:02&lt;00:18,  2.01s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 10%|█         | 1/10 [00:02&lt;00:18,  2.05s/it]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 20%|██        | 2/10 [00:03&lt;00:13,  1.63s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 20%|██        | 2/10 [00:03&lt;00:14,  1.75s/it]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Early stopping, best iteration is:
@@ -1288,7 +1358,7 @@ Training until validation scores don&#39;t improve for 100 rounds
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 20%|██        | 2/10 [00:05&lt;00:21,  2.64s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 20%|██        | 2/10 [00:04&lt;00:19,  2.42s/it]
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
@@ -1296,20 +1366,20 @@ Training until validation scores don&#39;t improve for 100 rounds
 </div>
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">116</span>
-<span class="g g-Whitespace">    </span><span class="mi">113</span> <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">115</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;quant_train_renew_leaf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="ne">--&gt; </span><span class="mi">116</span> <span class="n">result</span> <span class="o">=</span> <span class="n">trials</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;量子化あり・Renewあり&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="n">n_trials</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">117</span> <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">line</span> <span class="mi">117</span>
+<span class="g g-Whitespace">    </span><span class="mi">114</span> <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">116</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;quant_train_renew_leaf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="ne">--&gt; </span><span class="mi">117</span> <span class="n">result</span> <span class="o">=</span> <span class="n">trials</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;量子化あり・Renewあり&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="n">n_trials</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">118</span> <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
-<span class="nn">Cell In[2], line 61,</span> in <span class="ni">trials</span><span class="nt">(name, params, n_trials)</span>
-<span class="g g-Whitespace">     </span><span class="mi">58</span> <span class="n">lgb_train</span><span class="p">,</span> <span class="n">lgb_val</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">gen_dataset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">60</span> <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
-<span class="ne">---&gt; </span><span class="mi">61</span> <span class="n">model</span><span class="p">,</span> <span class="n">_logs</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">lgb_train</span><span class="p">,</span> <span class="n">lgb_val</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">62</span> <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">63</span> <span class="n">train_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span>
+<span class="nn">Cell In[3], line 62,</span> in <span class="ni">trials</span><span class="nt">(name, params, n_trials)</span>
+<span class="g g-Whitespace">     </span><span class="mi">59</span> <span class="n">lgb_train</span><span class="p">,</span> <span class="n">lgb_val</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">gen_dataset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">61</span> <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="ne">---&gt; </span><span class="mi">62</span> <span class="n">model</span><span class="p">,</span> <span class="n">_logs</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">lgb_train</span><span class="p">,</span> <span class="n">lgb_val</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">63</span> <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">64</span> <span class="n">train_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span>
 
-<span class="nn">Cell In[2], line 21,</span> in <span class="ni">train</span><span class="nt">(params, lgb_train, lgb_val)</span>
+<span class="nn">Cell In[3], line 21,</span> in <span class="ni">train</span><span class="nt">(params, lgb_train, lgb_val)</span>
 <span class="g g-Whitespace">     </span><span class="mi">19</span> <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">lgb_train</span><span class="p">,</span> <span class="n">lgb_val</span><span class="p">):</span>
 <span class="g g-Whitespace">     </span><span class="mi">20</span>     <span class="n">logs</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="ne">---&gt; </span><span class="mi">21</span>     <span class="n">model</span> <span class="o">=</span> <span class="n">lgb</span><span class="o">.</span><span class="n">train</span><span class="p">(</span>
@@ -1386,6 +1456,9 @@ Training until validation scores don&#39;t improve for 100 rounds
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../../_images/3e5feea74431f09a18f3abaedf4feff1bdb744aae280e91d87e8aeafc8053636.png"><img alt="../../_images/3e5feea74431f09a18f3abaedf4feff1bdb744aae280e91d87e8aeafc8053636.png" src="../../_images/3e5feea74431f09a18f3abaedf4feff1bdb744aae280e91d87e8aeafc8053636.png" style="width: 640px; height: 480px;" /></a>
+</div>
 </div>
 </section>
 </section>
@@ -1455,14 +1528,15 @@ Training until validation scores don&#39;t improve for 100 rounds
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概要</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gbdt">現代的なGBDTの学習の流れ</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#framework-for-quantized-training">Framework for Quantized Training</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rounding-strategies-and-leaf-value-refitting">Rounding Strategies and Leaf-Value Refitting</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">確率的な丸め込みによる</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">確率的な丸め込みによる</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実装</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実験：量子化の有無による差を比較</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実装</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">実験：量子化の有無による差を比較</a></li>
 </ul>
 </li>
 </ul>
