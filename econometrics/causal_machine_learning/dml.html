@@ -203,6 +203,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/differential/extreme_value.html">極値</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/differential/basic_theorem.html">微分学の基礎的な定理</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/differential/taylor_approximation.html">テイラー近似</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/differential/partial_derivative.html">偏微分</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/differential/directional_derivative.html">方向微分</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/calculus/integral/index.html">積分法</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -753,48 +755,58 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">motivation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">先行研究</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">課題</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">残差回帰</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">残差回帰</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">部分線形モデルへの拡張</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">前提知識</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">（参考）残差回帰</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">残差回帰</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">部分線形モデルへの拡張</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">ナイーブな推定量と正則化バイアス</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">直交化による正則化バイアスの打破</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">（参考）モーメント法</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">ナイーブな推定量と正則化バイアス</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">直交化による正則化バイアスの打破</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#check-theta-0"><span class="math notranslate nohighlight">\(\check{\theta}_0\)</span>の性質</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-fitting">Cross Fittingによる過学習のバイアスの除去</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">モーメント条件</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">モーメント条件と非線形モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">モーメント条件</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">モーメント条件と非線形モデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">部分線形モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">部分線形モデル</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robinson-1983">Robinson (1983)の推定量</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">参考</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">参考</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robinsondml">（疑問）Robinsonの推定量とDMLの違い、そうなった原因は？</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Robinsonの推定量とDMLの違い</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">新規性は</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">Robinsonの推定量とDMLの違い</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">新規性は</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#donsker">Donsker条件</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">考察</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">機械学習を使うと常にバイアスが入る？？</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">考察</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">機械学習を使うと常にバイアスが入る？？</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neyman-orthogonality">Neyman Orthogonality</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">参考</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">参考</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dmldid">DMLによるDID</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#youtube">講義動画（Youtube）</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">応用研究</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">関連研究</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">応用研究</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">関連研究</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">部分線形モデルに対するモーメント条件</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dml-score-function">DML score function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robinson-style-partialling-out-score-function">Robinson-style “partialling-out” score function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">cross fitting</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -845,11 +857,15 @@ Y = \theta D + g(X) + e
 </ol>
 <p>を行う</p>
 </section>
+</section>
 <section id="id4">
-<h3>残差回帰<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
-<p>DMLでは、FWL定理を利用した残差回帰を一般化する。</p>
+<h2>前提知識<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>知ってると理解を深めやすくなる前提知識まとめ</p>
 <section id="id5">
-<h4>残差回帰<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<h3>（参考）残差回帰<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>DMLでは、FWL定理を利用した残差回帰を一般化する。</p>
+<section id="id6">
+<h4>残差回帰<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
 <p>通常の残差回帰は線形回帰モデル</p>
 <div class="math notranslate nohighlight">
 \[
@@ -868,9 +884,8 @@ Y - E[Y|X_2] = (X_1 - E[X_1|X_2]) \beta_1
 \]</div>
 <p>と表すことができる。</p>
 </section>
-</section>
-<section id="id6">
-<h3>部分線形モデルへの拡張<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h4>部分線形モデルへの拡張<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
 <p>部分線形モデル</p>
 <div class="math notranslate nohighlight">
 \[
@@ -905,8 +920,23 @@ Y = X_1 \beta_1 + X_2 \beta_2 + e
 </div>
 </section>
 </section>
-<section id="id7">
-<h2>ナイーブな推定量と正則化バイアス<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<section id="id8">
+<h3>（参考）モーメント法<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>確率変数<span class="math notranslate nohighlight">\(X\)</span>が<span class="math notranslate nohighlight">\(\theta\)</span>というパラメータをもつ分布に従うとする。</p>
+<div class="math notranslate nohighlight">
+\[
+E[\psi(X; \theta)] = 0
+\]</div>
+<p>という条件（直交条件）を満たすスコア関数<span class="math notranslate nohighlight">\(\psi(X; \theta)\)</span>があるとき、標本<span class="math notranslate nohighlight">\(X_1, \dots, X_n\)</span>を使った直交条件</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{n} \sum^n_{i=1} \psi(X_i; \theta) = 0
+\]</div>
+<p>を解いて<span class="math notranslate nohighlight">\(\theta\)</span>を推定する方法を <strong>モーメント法</strong> （method of moments） という。</p>
+</section>
+</section>
+<section id="id9">
+<h2>ナイーブな推定量と正則化バイアス<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
 <p>話を簡潔にするために、サンプルを2つにランダム分割するとしよう：メインパートは<span class="math notranslate nohighlight">\(n\)</span>サンプルで<span class="math notranslate nohighlight">\(i\in I\)</span>のインデックスで表し、補助パートは<span class="math notranslate nohighlight">\(N-n\)</span>として<span class="math notranslate nohighlight">\(i \in I^c\)</span>とする。単純のため<span class="math notranslate nohighlight">\(n=N/2\)</span>とする。補助パートのサンプルで<span class="math notranslate nohighlight">\(\hat{g}_0\)</span>を獲得し、<span class="math notranslate nohighlight">\(\theta_0\)</span>の推定にメインパートのサンプルを使うことにする</p>
 <div class="math notranslate nohighlight">
 \[
@@ -945,8 +975,8 @@ m_0(X_i)(g_0(X_i) - \hat{g}_0(X_i)) + o_P(1)
 \]</div>
 <p>ヒューリスティックには、<span class="math notranslate nohighlight">\(b\)</span>は平均がゼロにならない<span class="math notranslate nohighlight">\(m_0(X_i)(g_0(X_i) - \hat{g}_0(X_i))\)</span>の<span class="math notranslate nohighlight">\(n\)</span>個の総和で、<span class="math notranslate nohighlight">\(\sqrt{n}\)</span>で割られる。これらの項は非ゼロの平均になる。なぜなら高次元あるいは複雑な問題設定のために我々はlasso, ridge, boostingあるいはpenalized neural netsなどの正則化推定量を採用するためである。</p>
 <p>それらの推定量において正則化は推定量の分散が爆発しないようにするものの相当なバイアスを引き起こす。とりわけ、<span class="math notranslate nohighlight">\(g_0\)</span>への<span class="math notranslate nohighlight">\(\hat{g}_0\)</span>のバイアスの収束レートは、RMSEにおいて<span class="math notranslate nohighlight">\(n^{-\phi_g}\)</span>（<span class="math notranslate nohighlight">\(\phi_g &lt; 1/2\)</span>）である。ゆえに<span class="math notranslate nohighlight">\(b\)</span>は<span class="math notranslate nohighlight">\(D_i\)</span>が<span class="math notranslate nohighlight">\(m_0(X_i)\neq 0\)</span>で中心化されるとき<span class="math notranslate nohighlight">\(\sqrt{n} n^{-\phi_g} \to \infty\)</span>の確率的オーダーになることが期待され、よって<span class="math notranslate nohighlight">\(|\sqrt{n} (\hat{\theta}_0 - \theta_0)| \overset{p}{\to} \infty\)</span>となる</p>
-<section id="id8">
-<h3>直交化による正則化バイアスの打破<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>直交化による正則化バイアスの打破<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p>直交化されたregressor <span class="math notranslate nohighlight">\(V=D-m_0(X)\)</span>を得るためにDからXの効果をpartialling outすることにより得られる直交化された式（orthogonalized formulation）を使う。具体的には
 $<span class="math notranslate nohighlight">\(
 \hat{V} = D - \hat{m}_0(X)
@@ -1008,15 +1038,15 @@ $<span class="math notranslate nohighlight">\(
 <p>sample splittingの欠点は推定に使用するサンプル数が減ることによる効率性の低下である。しかし、mainとauxiliaryの2つでそれぞれ推定を行い、両者の平均を取ればfull efficiencyを取り戻す。この手続き（mainとauxiliaryの役割を取り替えて複数の推定値を取得しそれらの平均をとる）を「<strong>cross-fitting</strong>」と呼ぶことにする。一般にk-foldにすることもできる。Section 3で詳細を述べる。</p>
 </section>
 </section>
-<section id="id9">
-<h2>モーメント条件<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
-<section id="id10">
-<h3>モーメント条件と非線形モデル<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h2>モーメント条件<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<section id="id12">
+<h3>モーメント条件と非線形モデル<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <p>GMM推定量は非線形モデルに対しても用いることができる（末石2015, p.78）</p>
 </section>
 </section>
-<section id="id11">
-<h2>部分線形モデル<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<section id="id13">
+<h2>部分線形モデル<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
 <p>結果変数<span class="math notranslate nohighlight">\(Y\)</span>、説明変数<span class="math notranslate nohighlight">\(X, Z\)</span>についての次のようなモデルを**部分線形モデル（Partially Linear Model）**という。</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1047,8 +1077,8 @@ Y - E[Y|Z] = (X - E[X|Z])^T \beta + u
 \]</div>
 <p>が<span class="math notranslate nohighlight">\(E[Y|Z], E[X|Z]\)</span>が未知のため実行不可能である。<span class="math notranslate nohighlight">\(E[Y|Z], E[X|Z]\)</span>をそれぞれのノンパラメトリック推定量で置換して推定を行うことは可能であり、その推定量はroot-N consistentで漸近正規性を持つ</p>
 </section>
-<section id="id12">
-<h3>参考<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>参考<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://sites.google.com/site/naoyasueishij/teaching/nonpara">末石直也 - セミ・ノンパラメトリック計量分析 (京都大学)</a> 第5回 <a class="reference external" href="https://drive.google.com/file/d/0B6W_J4QoAI6wcWdwYkNwUU5DWTA/view?resourcekey=0--WtAUb3PgzgBpsw1XtvhzQ">部分線形モデルとセミパラメトリック推定量の性質</a></p></li>
 <li><p>西山・人見（2023）『ノン・セミパラメトリック統計解析』、共立出版</p></li>
@@ -1056,16 +1086,16 @@ Y - E[Y|Z] = (X - E[X|Z])^T \beta + u
 </section>
 <section id="robinsondml">
 <h3>（疑問）Robinsonの推定量とDMLの違い、そうなった原因は？<a class="headerlink" href="#robinsondml" title="Link to this heading">#</a></h3>
-<section id="id13">
-<h4>Robinsonの推定量とDMLの違い<a class="headerlink" href="#id13" title="Link to this heading">#</a></h4>
+<section id="id15">
+<h4>Robinsonの推定量とDMLの違い<a class="headerlink" href="#id15" title="Link to this heading">#</a></h4>
 <ul class="simple">
 <li><p>期待値を差し引くというFWL-style or Neiman-orthogonalityを使うのは一緒</p></li>
 <li><p>モーメント条件が議論の根幹なのでOLS推定量の形には限らない？？</p></li>
 <li><p>差し引く期待値の推定をMLにしたのがDML</p></li>
 </ul>
 </section>
-<section id="id14">
-<h4>新規性は<a class="headerlink" href="#id14" title="Link to this heading">#</a></h4>
+<section id="id16">
+<h4>新規性は<a class="headerlink" href="#id16" title="Link to this heading">#</a></h4>
 <ul class="simple">
 <li><p>ML推定ゆえoverfitting biasが入る → Cross Fitting</p>
 <ul>
@@ -1073,6 +1103,28 @@ Y - E[Y|Z] = (X - E[X|Z])^T \beta + u
 </ul>
 </li>
 </ul>
+<p><a class="reference external" href="https://academic.oup.com/ectj/article/21/1/C1/5056401#130274171">4. Inference in Partially Linear Models</a></p>
+<p>PLR model</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+Y&amp;=D \theta_0+g_0(X)+U, &amp; E_P[U \mid X, D]=0 \\
+D&amp;=m_0(X)+V, &amp; E_P[V \mid X]=0
+\end{aligned}
+\end{split}\]</div>
+<p>の<span class="math notranslate nohighlight">\(\theta_0\)</span>の推定方法は2つある</p>
+<p>1つめは</p>
+<div class="math notranslate nohighlight">
+\[
+\psi(W ; \theta, \eta):=\{Y-D \theta-g(X)\}(D-m(X)), \quad \eta=(g, m)
+\]</div>
+<p>というスコア関数のもとでのDML</p>
+<p>2つ目はRobinsonの”partialling-out”のスコア関数</p>
+<div class="math notranslate nohighlight">
+\[
+\psi(W ; \theta, \eta):=\{Y-\ell(X)-\theta(D-m(X))\}(D-m(X)), \quad \eta=(\ell, m)
+\]</div>
+<p>を使うもの</p>
 </section>
 </section>
 </section>
@@ -1081,10 +1133,10 @@ Y - E[Y|Z] = (X - E[X|Z])^T \beta + u
 <p>機械学習モデルの収束レートが遅い（Donsker条件）→Cross Fitting</p>
 <p><a class="reference external" href="https://twitter.com/masakat0/status/1314897112316870657">XユーザーのMasahiro Katoさん: 「Double/debiased machine learningはどういう手法かというと，機械学習はDonsker条件を満たさないので，サンプルを分割することによって，異なる部分集合間で独立だと思えるような局外母数の推定量を構築することで，収束率だけで漸近正規性を出す手法です．」 / X</a></p>
 </section>
-<section id="id15">
-<h2>考察<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
-<section id="id16">
-<h3>機械学習を使うと常にバイアスが入る？？<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h2>考察<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
+<section id="id18">
+<h3>機械学習を使うと常にバイアスが入る？？<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
 <p>X-learnerとかどうなる？</p>
 </section>
 </section>
@@ -1095,8 +1147,8 @@ Y - E[Y|Z] = (X - E[X|Z])^T \beta + u
 <p><a class="reference external" href="https://arxiv.org/pdf/1901.09036.pdf">Foster, D. J., &amp; Syrgkanis, V. (2023). Orthogonal statistical learning. The Annals of Statistics, 51(3), 879-908.</a></p>
 </div></blockquote>
 </section>
-<section id="id17">
-<h2>参考<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
+<section id="id19">
+<h2>参考<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>解説記事: <a class="reference external" href="https://www.web-nippyo.jp/13331/">機械学習×計量経済学：Double/Debiased Machine Learning | Web日本評論</a></p></li>
 <li><p><a class="reference external" href="https://speakerdeck.com/masa_asa/debiased-ml?slide=32">[勉強会資料メモ] Double/Debiased ML - Speaker Deck</a></p></li>
@@ -1147,15 +1199,15 @@ Y = D \theta_0 + g_0(Z) + U
 </ul>
 </section>
 </section>
-<section id="id18">
-<h2>応用研究<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
+<section id="id20">
+<h2>応用研究<a class="headerlink" href="#id20" title="Link to this heading">#</a></h2>
 <p><a class="reference external" href="https://arxiv.org/abs/2002.08536">[2002.08536] Debiased Off-Policy Evaluation for Recommendation Systems</a></p>
 <ul class="simple">
 <li><p>PR: <a class="reference external" href="https://www.cyberagent.co.jp/news/detail/id=26585">AI Lab、推薦システム分野におけるトップカンファレンス「RecSys2021」にて共著論文採択 ー高次元なデータを使った意思決定評価の信頼性を改善ー | 株式会社サイバーエージェント</a></p></li>
 </ul>
 </section>
-<section id="id19">
-<h2>関連研究<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
+<section id="id21">
+<h2>関連研究<a class="headerlink" href="#id21" title="Link to this heading">#</a></h2>
 <p><a class="reference external" href="https://arxiv.org/abs/2305.04174">[2305.04174] Root-n consistent semiparametric learning with high-dimensional nuisance functions under minimal sparsity</a></p>
 <ul class="simple">
 <li><p>先行研究まとめがある</p></li>
@@ -1164,6 +1216,154 @@ Y = D \theta_0 + g_0(Z) + U
 <ul class="simple">
 <li><p>派生モデルの使い分けについて</p></li>
 </ul>
+</section>
+<section id="id22">
+<h2>部分線形モデルに対するモーメント条件<a class="headerlink" href="#id22" title="Link to this heading">#</a></h2>
+<p>異なる推定量でどれだけバイアスが入るか確認したい</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="n">d</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>ナイーブな推定量</p>
+<div class="math notranslate nohighlight">
+\[
+E[(Y  - D\theta - g(X)) D] = 0
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\hat{\theta}_0=\left(\frac{1}{n} \sum_{i \in I} D_i^2\right)^{-1} \frac{1}{n} \sum_{i \in I} D_i\left(Y_i-\hat{g}_0\left(X_i\right)\right)
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lightgbm</span> <span class="kn">import</span> <span class="n">LGBMRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_val_predict</span>
+
+<span class="n">debias_m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;d_res&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">debias_m</span><span class="p">,</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">]],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">],</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">denoise_m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;y_res&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">denoise_m</span><span class="p">,</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">]],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
+<span class="n">final_model</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s1">&#39;y_res ~ d_res&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">final_model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">KeyError</span><span class="g g-Whitespace">                                  </span>Traceback (most recent call last)
+<span class="nn">File /usr/local/lib/python3.10/site-packages/pandas/core/indexes/base.py:3805,</span> in <span class="ni">Index.get_loc</span><span class="nt">(self, key)</span>
+<span class="g g-Whitespace">   </span><span class="mi">3804</span> <span class="k">try</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">3805</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">casted_key</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">3806</span> <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+
+<span class="nn">File index.pyx:167,</span> in <span class="ni">pandas._libs.index.IndexEngine.get_loc</span><span class="nt">()</span>
+
+<span class="nn">File index.pyx:196,</span> in <span class="ni">pandas._libs.index.IndexEngine.get_loc</span><span class="nt">()</span>
+
+<span class="nn">File pandas/_libs/hashtable_class_helper.pxi:7081,</span> in <span class="ni">pandas._libs.hashtable.PyObjectHashTable.get_item</span><span class="nt">()</span>
+
+<span class="nn">File pandas/_libs/hashtable_class_helper.pxi:7089,</span> in <span class="ni">pandas._libs.hashtable.PyObjectHashTable.get_item</span><span class="nt">()</span>
+
+<span class="ne">KeyError</span>: &#39;&#39;
+
+<span class="n">The</span> <span class="n">above</span> <span class="n">exception</span> <span class="n">was</span> <span class="n">the</span> <span class="n">direct</span> <span class="n">cause</span> <span class="n">of</span> <span class="n">the</span> <span class="n">following</span> <span class="n">exception</span><span class="p">:</span>
+
+<span class="ne">KeyError</span><span class="g g-Whitespace">                                  </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">5</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_val_predict</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">debias_m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="ne">----&gt; </span><span class="mi">5</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d_res&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">debias_m</span><span class="p">,</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">]],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">],</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="n">denoise_m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y_res&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">denoise_m</span><span class="p">,</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">]],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/pandas/core/frame.py:4102,</span> in <span class="ni">DataFrame.__getitem__</span><span class="nt">(self, key)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4100</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">nlevels</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">4101</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getitem_multilevel</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">4102</span> <span class="n">indexer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4103</span> <span class="k">if</span> <span class="n">is_integer</span><span class="p">(</span><span class="n">indexer</span><span class="p">):</span>
+<span class="g g-Whitespace">   </span><span class="mi">4104</span>     <span class="n">indexer</span> <span class="o">=</span> <span class="p">[</span><span class="n">indexer</span><span class="p">]</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/pandas/core/indexes/base.py:3812,</span> in <span class="ni">Index.get_loc</span><span class="nt">(self, key)</span>
+<span class="g g-Whitespace">   </span><span class="mi">3807</span>     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">casted_key</span><span class="p">,</span> <span class="nb">slice</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">3808</span>         <span class="nb">isinstance</span><span class="p">(</span><span class="n">casted_key</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">3809</span>         <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">slice</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">casted_key</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">3810</span>     <span class="p">):</span>
+<span class="g g-Whitespace">   </span><span class="mi">3811</span>         <span class="k">raise</span> <span class="n">InvalidIndexError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">3812</span>     <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+<span class="g g-Whitespace">   </span><span class="mi">3813</span> <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">3814</span>     <span class="c1"># If we have a listlike key, _check_indexing_error will raise</span>
+<span class="g g-Whitespace">   </span><span class="mi">3815</span>     <span class="c1">#  InvalidIndexError. Otherwise we fall through and re-raise</span>
+<span class="g g-Whitespace">   </span><span class="mi">3816</span>     <span class="c1">#  the TypeError.</span>
+<span class="g g-Whitespace">   </span><span class="mi">3817</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_check_indexing_error</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+<span class="ne">KeyError</span>: &#39;&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<section id="dml-score-function">
+<h3>DML score function<a class="headerlink" href="#dml-score-function" title="Link to this heading">#</a></h3>
+<p>ネイマン直交性を満たす</p>
+<div class="math notranslate nohighlight">
+\[
+E[ \{Y-D \theta-g(X)\}(D-m(X)) ]=0
+\]</div>
+<p><span class="math notranslate nohighlight">\(\hat{V}= D-\hat{m}_0(X)\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+\check{\theta}_0=\left(\frac{1}{n} \sum_{i \in I} \widehat{V}_i D_i\right)^{-1} \frac{1}{n} \sum_{i \in I} \widehat{V}_i\left(Y_i-\hat{g}_0\left(X_i\right)\right)
+\]</div>
+</section>
+<section id="robinson-style-partialling-out-score-function">
+<h3>Robinson-style “partialling-out” score function<a class="headerlink" href="#robinson-style-partialling-out-score-function" title="Link to this heading">#</a></h3>
+<p>ネイマン直交性を満たす</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{E}\left[\left((Y-E[Y \mid X])-(D-E[D \mid X]) \theta_0\right)(D-E[D \mid X])\right]=0
+\]</div>
+<p><span class="math notranslate nohighlight">\(V=D - E[D|X] = D-m_0(X)\)</span>として、<span class="math notranslate nohighlight">\(\ell_0(X) := E[Y|X]\)</span>とすると</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{E}\left[\left((Y-\ell_0(X))-V \theta_0\right)V\right]=0
+\]</div>
+</section>
+<section id="id23">
+<h3>cross fitting<a class="headerlink" href="#id23" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># cross-fittingあり</span>
+<span class="kn">from</span> <span class="nn">lightgbm</span> <span class="kn">import</span> <span class="n">LGBMRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_val_predict</span>
+
+<span class="n">debias_m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;d_res&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">debias_m</span><span class="p">,</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">]],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">],</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">denoise_m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;y_res&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">denoise_m</span><span class="p">,</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">]],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
+<span class="n">final_model</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s1">&#39;y_res ~ d_res&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">final_model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 
@@ -1235,48 +1435,58 @@ Y = D \theta_0 + g_0(Z) + U
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">motivation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">先行研究</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">課題</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">残差回帰</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">残差回帰</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">部分線形モデルへの拡張</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">前提知識</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">（参考）残差回帰</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">残差回帰</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">部分線形モデルへの拡張</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">ナイーブな推定量と正則化バイアス</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">直交化による正則化バイアスの打破</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">（参考）モーメント法</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">ナイーブな推定量と正則化バイアス</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">直交化による正則化バイアスの打破</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#check-theta-0"><span class="math notranslate nohighlight">\(\check{\theta}_0\)</span>の性質</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-fitting">Cross Fittingによる過学習のバイアスの除去</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">モーメント条件</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">モーメント条件と非線形モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">モーメント条件</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">モーメント条件と非線形モデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">部分線形モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">部分線形モデル</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robinson-1983">Robinson (1983)の推定量</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">参考</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">参考</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robinsondml">（疑問）Robinsonの推定量とDMLの違い、そうなった原因は？</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Robinsonの推定量とDMLの違い</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">新規性は</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">Robinsonの推定量とDMLの違い</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">新規性は</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#donsker">Donsker条件</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">考察</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">機械学習を使うと常にバイアスが入る？？</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">考察</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">機械学習を使うと常にバイアスが入る？？</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neyman-orthogonality">Neyman Orthogonality</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">参考</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">参考</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dmldid">DMLによるDID</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#youtube">講義動画（Youtube）</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">応用研究</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">関連研究</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">応用研究</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">関連研究</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">部分線形モデルに対するモーメント条件</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dml-score-function">DML score function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robinson-style-partialling-out-score-function">Robinson-style “partialling-out” score function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">cross fitting</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
