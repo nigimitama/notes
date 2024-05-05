@@ -1240,15 +1240,21 @@ Y = D \theta_0 + g_0(Z) + U
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+<span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="c1"># linear</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">X</span>
+
 <span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
 <span class="n">theta</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">d</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">X</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">D</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">+</span> <span class="n">g</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="n">d</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">})</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="n">Y</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span> <span class="n">D</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="n">X</span><span class="p">})</span>
+<span class="n">X_mat</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">D_mat</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1266,19 +1272,22 @@ E[UD] = E[(Y  - D\theta - g(X)) D] = 0
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lightgbm</span> <span class="kn">import</span> <span class="n">LGBMRegressor</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_val_predict</span>
 
 <span class="c1"># Y ~ X</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">g</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">]],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_mat</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
 
-<span class="c1"># y_res := Y - g(X)</span>
-<span class="c1"># y_res ~ D のOLS</span>
+<span class="c1"># Y_res := Y - g(X)</span>
+<span class="n">Y_res</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_mat</span><span class="p">)</span>
+<span class="n">theta_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">D</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">D</span> <span class="o">*</span> <span class="n">Y_res</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;θ=</span><span class="si">{</span><span class="n">theta_hat</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Y_res ~ D のOLS</span>
 <span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
 <span class="n">final_model</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span>
-    <span class="n">formula</span><span class="o">=</span><span class="s1">&#39;y_res ~ d&#39;</span><span class="p">,</span>
+    <span class="n">formula</span><span class="o">=</span><span class="s1">&#39;Y_res ~ -1 + D&#39;</span><span class="p">,</span>
     <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
-        <span class="n">y_res</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">]])</span>
+        <span class="n">Y_res</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_mat</span><span class="p">)</span>
     <span class="p">)</span>
 <span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
 <span class="n">final_model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -1286,37 +1295,158 @@ E[UD] = E[(Y  - D\theta - g(X)) D] = 0
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>θ=1.981
+</pre></div>
+</div>
 <div class="output text_html"><table class="simpletable">
 <tr>
-      <td></td>         <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+  <td></td>     <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
 </tr>
 <tr>
-  <th>Intercept</th> <td>   -1.3519</td> <td>    0.045</td> <td>  -29.781</td> <td> 0.000</td> <td>   -1.441</td> <td>   -1.263</td>
-</tr>
-<tr>
-  <th>d</th>         <td>    2.5753</td> <td>    0.040</td> <td>   64.109</td> <td> 0.000</td> <td>    2.496</td> <td>    2.654</td>
+  <th>D</th> <td>    1.9811</td> <td>    0.049</td> <td>   40.446</td> <td> 0.000</td> <td>    1.885</td> <td>    2.077</td>
 </tr>
 </table></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
+
+<span class="c1"># gをDonsker条件を満たしそうな線形モデルにしたらどうなるか</span>
+<span class="c1"># これは普通に残渣回帰でもないしだめか</span>
+<span class="c1"># Y ~ X</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_mat</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+
+<span class="c1"># Y_res := Y - g(X)</span>
+<span class="n">Y_res</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_mat</span><span class="p">)</span>
+<span class="n">theta_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">D</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">D</span> <span class="o">*</span> <span class="n">Y_res</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;θ=</span><span class="si">{</span><span class="n">theta_hat</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>θ=2.177
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">g</span><span class="o">.</span><span class="n">coef_</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([4.65807719])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO: モーメント条件の方向微分をplotできないものか？</span>
+<span class="c1"># 横軸はthetaとr</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+疑問：<span class="math notranslate nohighlight">\(\hat{g}(X)\)</span>はどう得る？</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(Y = g(X)\)</span>で学習させる？でもそうなると<span class="math notranslate nohighlight">\(E[Y|X] = \ell(X)\)</span>を使うRobinsonとの違いは…？</p>
+</div>
 </div>
 <section id="dml-score-function">
 <h3>DML score function<a class="headerlink" href="#dml-score-function" title="Link to this heading">#</a></h3>
 <p>ネイマン直交性を満たす</p>
 <div class="math notranslate nohighlight">
 \[
-E[ \{Y-D \theta-g(X)\}(D-m(X)) ]=0
+E[UV] = E[ \{Y-D \theta-g(X)\}(D-m(X)) ]=0
 \]</div>
 <p><span class="math notranslate nohighlight">\(\hat{V}= D-\hat{m}_0(X)\)</span></p>
 <div class="math notranslate nohighlight">
 \[
 \check{\theta}_0=\left(\frac{1}{n} \sum_{i \in I} \widehat{V}_i D_i\right)^{-1} \frac{1}{n} \sum_{i \in I} \widehat{V}_i\left(Y_i-\hat{g}_0\left(X_i\right)\right)
 \]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lightgbm</span> <span class="kn">import</span> <span class="n">LGBMRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_val_predict</span>
+
+<span class="c1"># Y ~ X</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_mat</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+
+<span class="c1"># D ~ X</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_mat</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+
+<span class="c1"># y_res := Y - g(X)</span>
+<span class="c1"># V_hat := D - m(X)</span>
+<span class="n">V_hat</span> <span class="o">=</span> <span class="n">D</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_mat</span><span class="p">)</span>
+<span class="n">Y_res</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_mat</span><span class="p">)</span>
+
+<span class="n">theta_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">V_hat</span> <span class="o">*</span> <span class="n">D</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">V_hat</span> <span class="o">*</span> <span class="n">Y_res</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;θ=</span><span class="si">{</span><span class="n">theta_hat</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
+<span class="n">final_model</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span>
+    <span class="n">formula</span><span class="o">=</span><span class="s1">&#39;Y_res ~ -1 + V_hat&#39;</span><span class="p">,</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+        <span class="n">Y_res</span> <span class="o">=</span> <span class="n">Y_res</span><span class="p">,</span>
+        <span class="n">V_hat</span> <span class="o">=</span> <span class="n">V_hat</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">final_model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>θ=2.872
+</pre></div>
+</div>
+<div class="output text_html"><table class="simpletable">
+<tr>
+    <td></td>       <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>V_hat</th> <td>    2.9672</td> <td>    0.032</td> <td>   93.561</td> <td> 0.000</td> <td>    2.905</td> <td>    3.029</td>
+</tr>
+</table></div></div>
+</div>
 </section>
 <section id="robinson-style-partialling-out-score-function">
 <h3>Robinson-style “partialling-out” score function<a class="headerlink" href="#robinson-style-partialling-out-score-function" title="Link to this heading">#</a></h3>
-<p>ネイマン直交性を満たす</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+Robinson (1988)の推定量</div>
+<p class="sd-card-text">部分線形モデル</p>
 <div class="math notranslate nohighlight">
 \[
-\mathrm{E}\left[\left((Y-E[Y \mid X])-(D-E[D \mid X]) \theta_0\right)(D-E[D \mid X])\right]=0
+Y = D \theta_0 + g(X) + U
+, \quad E[U|D,X]=0
+\]</div>
+<p class="sd-card-text">の両辺を<span class="math notranslate nohighlight">\(X\)</span>で条件づけて期待値をとると</p>
+<div class="math notranslate nohighlight">
+\[
+E[Y|X] = E[D|X] \theta_0 + g(X)
+\]</div>
+<p class="sd-card-text">これをモデルから差し引くと</p>
+<div class="math notranslate nohighlight">
+\[
+Y - E[Y|X]
+= \theta_0 (D - E[D|X]) + U
+\]</div>
+<p class="sd-card-text">という線形回帰の形になる。</p>
+<p class="sd-card-text">ただし、<span class="math notranslate nohighlight">\(E[Y|X], E[D|X]\)</span>は未知なのでそれぞれノンパラメトリック推定量<span class="math notranslate nohighlight">\(\hat{\ell}(X), \hat{m}(X)\)</span>で置き換える。</p>
+</div>
+</div>
+<p>こちらもネイマン直交性を満たす。</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{E}\left[\left\{(Y-E[Y \mid X])-(D-E[D \mid X]) \theta_0\right\}(D-E[D \mid X])\right]=0
 \]</div>
 <p><span class="math notranslate nohighlight">\(V=D - E[D|X] = D-m_0(X)\)</span>として、<span class="math notranslate nohighlight">\(\ell_0(X) := E[Y|X]\)</span>とすると</p>
 <div class="math notranslate nohighlight">
@@ -1332,14 +1462,14 @@ E[ \{Y-D \theta-g(X)\}(D-m(X)) ]=0
 <span class="kn">from</span> <span class="nn">lightgbm</span> <span class="kn">import</span> <span class="n">LGBMRegressor</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_val_predict</span>
 
-<span class="n">debias_m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;d_res&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">debias_m</span><span class="p">,</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">]],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">],</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;V_hat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;D&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;X&quot;</span><span class="p">]],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;D&quot;</span><span class="p">],</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 
-<span class="n">denoise_m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;y_res&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">denoise_m</span><span class="p">,</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">]],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;Y_res&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;X&quot;</span><span class="p">]],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">],</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
-<span class="n">final_model</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s1">&#39;y_res ~ d_res&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">final_model</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s1">&#39;Y_res ~ -1 + V_hat&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
 <span class="n">final_model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -1347,13 +1477,10 @@ E[ \{Y-D \theta-g(X)\}(D-m(X)) ]=0
 <div class="cell_output docutils container">
 <div class="output text_html"><table class="simpletable">
 <tr>
-      <td></td>         <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+    <td></td>       <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
 </tr>
 <tr>
-  <th>Intercept</th> <td>    0.0023</td> <td>    0.031</td> <td>    0.075</td> <td> 0.940</td> <td>   -0.058</td> <td>    0.063</td>
-</tr>
-<tr>
-  <th>d_res</th>     <td>    2.9610</td> <td>    0.032</td> <td>   93.604</td> <td> 0.000</td> <td>    2.899</td> <td>    3.023</td>
+  <th>V_hat</th> <td>    2.9471</td> <td>    0.032</td> <td>   92.429</td> <td> 0.000</td> <td>    2.885</td> <td>    3.010</td>
 </tr>
 </table></div></div>
 </div>
