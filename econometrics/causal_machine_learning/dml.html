@@ -976,6 +976,188 @@ m_0(X_i)(g_0(X_i) - \hat{g}_0(X_i)) + o_P(1)
 \]</div>
 <p>ヒューリスティックには、<span class="math notranslate nohighlight">\(b\)</span>は平均がゼロにならない<span class="math notranslate nohighlight">\(m_0(X_i)(g_0(X_i) - \hat{g}_0(X_i))\)</span>の<span class="math notranslate nohighlight">\(n\)</span>個の総和で、<span class="math notranslate nohighlight">\(\sqrt{n}\)</span>で割られる。これらの項は非ゼロの平均になる。なぜなら高次元あるいは複雑な問題設定のために我々はlasso, ridge, boostingあるいはpenalized neural netsなどの正則化推定量を採用するためである。</p>
 <p>それらの推定量において正則化は推定量の分散が爆発しないようにするものの相当なバイアスを引き起こす。とりわけ、<span class="math notranslate nohighlight">\(g_0\)</span>への<span class="math notranslate nohighlight">\(\hat{g}_0\)</span>のバイアスの収束レートは、RMSEにおいて<span class="math notranslate nohighlight">\(n^{-\phi_g}\)</span>（<span class="math notranslate nohighlight">\(\phi_g &lt; 1/2\)</span>）である。ゆえに<span class="math notranslate nohighlight">\(b\)</span>は<span class="math notranslate nohighlight">\(D_i\)</span>が<span class="math notranslate nohighlight">\(m_0(X_i)\neq 0\)</span>で中心化されるとき<span class="math notranslate nohighlight">\(\sqrt{n} n^{-\phi_g} \to \infty\)</span>の確率的オーダーになることが期待され、よって<span class="math notranslate nohighlight">\(|\sqrt{n} (\hat{\theta}_0 - \theta_0)| \overset{p}{\to} \infty\)</span>となる</p>
+<p><a class="reference external" href="https://docs.doubleml.org/stable/guide/basics.html">1. The basics of double/debiased machine learning — DoubleML documentation</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>doubleml
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting doubleml
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Downloading DoubleML-0.7.1-py3-none-any.whl (256 kB)
+?25l     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/256.4 kB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">256.4/256.4 kB</span> <span class=" -Color -Color-Red">12.1 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25hRequirement already satisfied: scipy in /usr/local/lib/python3.10/site-packages (from doubleml) (1.11.4)
+Requirement already satisfied: pandas in /usr/local/lib/python3.10/site-packages (from doubleml) (2.2.2)
+Requirement already satisfied: statsmodels in /usr/local/lib/python3.10/site-packages (from doubleml) (0.14.2)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting plotly
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Downloading plotly-5.22.0-py3-none-any.whl (16.4 MB)
+?25l     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/16.4 MB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
+     ━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">5.3/16.4 MB</span> <span class=" -Color -Color-Red">157.9 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">10.4/16.4 MB</span> <span class=" -Color -Color-Red">151.4 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸━━━ <span class=" -Color -Color-Green">15.0/16.4 MB</span> <span class=" -Color -Color-Red">139.2 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸ <span class=" -Color -Color-Green">16.4/16.4 MB</span> <span class=" -Color -Color-Red">137.6 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">16.4/16.4 MB</span> <span class=" -Color -Color-Red">80.1 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25h
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: numpy in /usr/local/lib/python3.10/site-packages (from doubleml) (1.26.4)
+Requirement already satisfied: scikit-learn in /usr/local/lib/python3.10/site-packages (from doubleml) (1.4.2)
+Requirement already satisfied: joblib in /usr/local/lib/python3.10/site-packages (from doubleml) (1.4.2)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: python-dateutil&gt;=2.8.2 in /usr/local/lib/python3.10/site-packages (from pandas-&gt;doubleml) (2.9.0.post0)
+Requirement already satisfied: tzdata&gt;=2022.7 in /usr/local/lib/python3.10/site-packages (from pandas-&gt;doubleml) (2024.1)
+Requirement already satisfied: pytz&gt;=2020.1 in /usr/local/lib/python3.10/site-packages (from pandas-&gt;doubleml) (2024.1)
+Collecting tenacity&gt;=6.2.0
+  Downloading tenacity-8.3.0-py3-none-any.whl (25 kB)
+Requirement already satisfied: packaging in /usr/local/lib/python3.10/site-packages (from plotly-&gt;doubleml) (24.0)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: threadpoolctl&gt;=2.0.0 in /usr/local/lib/python3.10/site-packages (from scikit-learn-&gt;doubleml) (3.5.0)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: patsy&gt;=0.5.6 in /usr/local/lib/python3.10/site-packages (from statsmodels-&gt;doubleml) (0.5.6)
+Requirement already satisfied: six in /usr/local/lib/python3.10/site-packages (from patsy&gt;=0.5.6-&gt;statsmodels-&gt;doubleml) (1.16.0)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Installing collected packages: tenacity, plotly, doubleml
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Successfully installed doubleml-0.7.1 plotly-5.22.0 tenacity-8.3.0
+<span class=" -Color -Color-Yellow">WARNING: Running pip as the &#39;root&#39; user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv</span>
+
+<span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> A new release of pip is available: <span class=" -Color -Color-Red">23.0.1</span> -&gt; <span class=" -Color -Color-Green">24.0</span>
+<span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> To update, run: <span class=" -Color -Color-Green">pip install --upgrade pip</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">doubleml.datasets</span> <span class="kn">import</span> <span class="n">make_plr_CCDDHNR2018</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+<span class="n">n_rep</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">n_obs</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">n_vars</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i_rep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
+    <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">make_plr_CCDDHNR2018</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">n_obs</span><span class="o">=</span><span class="n">n_obs</span><span class="p">,</span> <span class="n">dim_x</span><span class="o">=</span><span class="n">n_vars</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">non_orth_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">l_hat</span><span class="p">,</span> <span class="n">m_hat</span><span class="p">,</span> <span class="n">g_hat</span><span class="p">,</span> <span class="n">smpls</span><span class="p">):</span>
+    <span class="n">u_hat</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">g_hat</span>
+    <span class="n">psi_a</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">psi_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">u_hat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">psi_a</span><span class="p">,</span> <span class="n">psi_b</span>
+
+<span class="kn">from</span> <span class="nn">doubleml</span> <span class="kn">import</span> <span class="n">DoubleMLData</span>
+<span class="kn">from</span> <span class="nn">doubleml</span> <span class="kn">import</span> <span class="n">DoubleMLPLR</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">clone</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="n">face_colors</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">&#39;pastel&#39;</span><span class="p">)</span>
+<span class="n">edge_colors</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">&#39;dark&#39;</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1111</span><span class="p">)</span>
+<span class="n">ml_l</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">132</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">min_samples_leaf</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ml_m</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">378</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_samples_leaf</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">ml_g</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">ml_l</span><span class="p">)</span>
+
+<span class="n">theta_nonorth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
+<span class="n">se_nonorth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i_rep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
+    <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span>
+    <span class="n">obj_dml_data</span> <span class="o">=</span> <span class="n">DoubleMLData</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">obj_dml_plr_nonorth</span> <span class="o">=</span> <span class="n">DoubleMLPLR</span><span class="p">(</span><span class="n">obj_dml_data</span><span class="p">,</span>
+                                      <span class="n">ml_l</span><span class="p">,</span> <span class="n">ml_m</span><span class="p">,</span> <span class="n">ml_g</span><span class="p">,</span>
+                                      <span class="n">n_folds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                      <span class="n">apply_cross_fitting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                      <span class="n">score</span><span class="o">=</span><span class="n">non_orth_score</span><span class="p">)</span>
+    <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+    <span class="n">this_theta</span> <span class="o">=</span> <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">coef</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">this_se</span> <span class="o">=</span> <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">se</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">theta_nonorth</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_theta</span>
+    <span class="n">se_nonorth</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_se</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">((</span><span class="n">theta_nonorth</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span><span class="o">/</span><span class="n">se_nonorth</span><span class="p">,</span>
+                  <span class="n">color</span><span class="o">=</span><span class="n">face_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">edge_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                  <span class="n">stat</span><span class="o">=</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Non-orthogonal ML&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">xx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">+</span><span class="mi">5</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+<span class="n">yy</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">xx</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathcal</span><span class="si">{N}</span><span class="s1">(0, 1)$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">6.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$(\hat{</span><span class="se">\\</span><span class="s1">theta}_0 - </span><span class="se">\\</span><span class="s1">theta_0)/\hat{\sigma}$&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/local/lib/python3.10/site-packages/doubleml/double_ml.py:643: UserWarning: Sensitivity analysis not implemented for callable scores.
+  warnings.warn(&#39;Sensitivity analysis not implemented for callable scores.&#39;)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/local/lib/python3.10/site-packages/doubleml/double_ml.py:643: UserWarning: Sensitivity analysis not implemented for callable scores.
+  warnings.warn(&#39;Sensitivity analysis not implemented for callable scores.&#39;)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/local/lib/python3.10/site-packages/doubleml/double_ml.py:643: UserWarning: Sensitivity analysis not implemented for callable scores.
+  warnings.warn(&#39;Sensitivity analysis not implemented for callable scores.&#39;)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/local/lib/python3.10/site-packages/doubleml/double_ml.py:643: UserWarning: Sensitivity analysis not implemented for callable scores.
+  warnings.warn(&#39;Sensitivity analysis not implemented for callable scores.&#39;)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/local/lib/python3.10/site-packages/doubleml/double_ml.py:643: UserWarning: Sensitivity analysis not implemented for callable scores.
+  warnings.warn(&#39;Sensitivity analysis not implemented for callable scores.&#39;)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/local/lib/python3.10/site-packages/doubleml/double_ml.py:643: UserWarning: Sensitivity analysis not implemented for callable scores.
+  warnings.warn(&#39;Sensitivity analysis not implemented for callable scores.&#39;)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/local/lib/python3.10/site-packages/doubleml/double_ml.py:643: UserWarning: Sensitivity analysis not implemented for callable scores.
+  warnings.warn(&#39;Sensitivity analysis not implemented for callable scores.&#39;)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/local/lib/python3.10/site-packages/doubleml/double_ml.py:643: UserWarning: Sensitivity analysis not implemented for callable scores.
+  warnings.warn(&#39;Sensitivity analysis not implemented for callable scores.&#39;)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/local/lib/python3.10/site-packages/doubleml/double_ml.py:643: UserWarning: Sensitivity analysis not implemented for callable scores.
+  warnings.warn(&#39;Sensitivity analysis not implemented for callable scores.&#39;)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/local/lib/python3.10/site-packages/doubleml/double_ml.py:643: UserWarning: Sensitivity analysis not implemented for callable scores.
+  warnings.warn(&#39;Sensitivity analysis not implemented for callable scores.&#39;)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0, &#39;$(\\hat{\\theta}_0 - \\theta_0)/\\hat{\\sigma}$&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/bc271289710b641597bc4b4c3e18c74903b43b94f6c3caca54301c455d547ea8.png" src="../../_images/bc271289710b641597bc4b4c3e18c74903b43b94f6c3caca54301c455d547ea8.png" />
+</div>
+</div>
 <section id="id10">
 <h3>直交化による正則化バイアスの打破<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p>直交化されたregressor <span class="math notranslate nohighlight">\(V=D-m_0(X)\)</span>を得るためにDからXの効果をpartialling outすることにより得られる直交化された式（orthogonalized formulation）を使う。具体的には
