@@ -1,12 +1,13 @@
 
+
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>言語モデルとRNN &#8212; データサイエンス関連+αのメモ</title>
   
@@ -28,31 +29,33 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
-    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
   <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js"></script>
     <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-KCTWFQM00B"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
@@ -60,16 +63,12 @@
                 gtag('js', new Date());
                 gtag('config', 'G-KCTWFQM00B');
             </script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){ dataLayer.push(arguments); }
-                gtag('js', new Date());
-                gtag('config', 'G-KCTWFQM00B');
-            </script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'natural_language_processing/rnn';</script>
@@ -164,18 +163,7 @@
     <p class="title logo__title">データサイエンス関連+αのメモ</p>
   
 </a></div>
-        <div class="sidebar-primary-item">
-
- <script>
- document.write(`
-   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
-        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -506,7 +494,8 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">画像処理</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../image_processing/introduction.html">画像認識</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../image_processing/rotation.html">画像の傾きを補正する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image_processing/rotation_correction.html">傾き補正</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image_processing/distortion_correction.html">歪み補正・台形補正</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">推薦システム</span></p>
 <ul class="nav bd-sidenav">
@@ -781,9 +770,9 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="rnn">
-<h1>言語モデルとRNN<a class="headerlink" href="#rnn" title="Link to this heading">#</a></h1>
+<h1>言語モデルとRNN<a class="headerlink" href="#rnn" title="Permalink to this heading">#</a></h1>
 <section id="id1">
-<h2>言語モデル<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<h2>言語モデル<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <p>embeddingを直接推定するのではなく、単語予測モデル（言語モデル）を構築して副次的にembeddingを取得することになる。</p>
 <p>言語モデルとは、尤もらしい文章を生成できるような確率分布を習得するために、文章の確率を推定するモデルのこと。</p>
 <p>ある文章<span class="math notranslate nohighlight">\(S\)</span>をトークン化したのを<span class="math notranslate nohighlight">\((w_1, w_2, \cdots, w_n)\)</span>と表記するならば、</p>
@@ -828,7 +817,7 @@ P(\underbrace{w_1, \dots, w_{m-2}}_{C_{m-1}}, w_{m-1})
 <p>となる。これを繰り返すことで上記のようになる</p>
 </div>
 <section id="id2">
-<h3>例<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<h3>例<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
 <p>言語モデルは文脈をもとに次の単語を予測する。例えば</p>
 <blockquote>
 <div><p>Alice is reading a book in the room. Bob comes into the room and says hi to <code class="docutils literal notranslate"><span class="pre">?</span></code></p>
@@ -836,16 +825,16 @@ P(\underbrace{w_1, \dots, w_{m-2}}_{C_{m-1}}, w_{m-1})
 <p>の?に入る語を予測する</p>
 </section>
 <section id="id3">
-<h3>語順の問題<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<h3>語順の問題<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
 <p>Word2Vecに使われたcontinuous bag-of words (CBOW) のようなFeed-Forward Networkによる言語モデルでは、コンテキストの語順が考慮されない</p>
 </section>
 </section>
 <section id="rnn-mikolov-2010">
-<h2>RNN型ニューラル言語モデル（Mikolov + 2010）<a class="headerlink" href="#rnn-mikolov-2010" title="Link to this heading">#</a></h2>
+<h2>RNN型ニューラル言語モデル（Mikolov + 2010）<a class="headerlink" href="#rnn-mikolov-2010" title="Permalink to this heading">#</a></h2>
 <p>Mikolov et al. (2010). <a class="reference external" href="https://wtf-deeplearning.github.io/machine-translation/rnnlm_mikolov.pdf">Recurrent neural network based language model</a>.</p>
 </section>
 <section id="id4">
-<h2>RNN<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<h2>RNN<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
 <p>RNNは前のトークンまでの情報を次のトークンの出力に渡すパスが存在する。
 トークンの系列を時系列モデルになぞらえて時刻と表現すると、時刻<span class="math notranslate nohighlight">\(t\)</span>の出力<span class="math notranslate nohighlight">\(\boldsymbol{h}_t\)</span>は</p>
 <div class="math notranslate nohighlight">
@@ -873,21 +862,21 @@ P(\underbrace{w_1, \dots, w_{m-2}}_{C_{m-1}}, w_{m-1})
 \]</div>
 <p>を用いることが多い。tanhはシグモイド関数と形状が似ているが、値域は<span class="math notranslate nohighlight">\([-1, 1]\)</span>と負の値を許しており、また二次微分の減衰がゆっくりとゼロになるため勾配消失が起きにくいという特性がある。</p>
 <figure class="align-default" id="id5" style="width: 80%">
-<a class="reference internal image-reference" href="../_images/493c0c1521ee2e52cd33d5a8d613ff1e2c53e5b3d3abec673616ebe9ab7e00e5.png"><img alt="../_images/493c0c1521ee2e52cd33d5a8d613ff1e2c53e5b3d3abec673616ebe9ab7e00e5.png" src="../_images/493c0c1521ee2e52cd33d5a8d613ff1e2c53e5b3d3abec673616ebe9ab7e00e5.png" style="width: 640px; height: 480px;" /></a>
+<img alt="../_images/493c0c1521ee2e52cd33d5a8d613ff1e2c53e5b3d3abec673616ebe9ab7e00e5.png" src="../_images/493c0c1521ee2e52cd33d5a8d613ff1e2c53e5b3d3abec673616ebe9ab7e00e5.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 1 </span><span class="caption-text">tanh</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">tanh</span><a class="headerlink" href="#id5" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
 </div>
 <section id="truncated-bptt">
-<h3>Truncated BPTT<a class="headerlink" href="#truncated-bptt" title="Link to this heading">#</a></h3>
+<h3>Truncated BPTT<a class="headerlink" href="#truncated-bptt" title="Permalink to this heading">#</a></h3>
 <p>RNNの誤差逆伝播法は、時間方向への逆伝播法ということで**Backproagation Through Time（BPTT）**と呼ばれる。</p>
 <p>しかし長い文章を扱う場合、すべてのトークンを使うと学習の際にメモリに乗り切らない問題や勾配が不安定になる問題がある。
 そこで、逆伝播のときはトークン系列を分割して学習する（順伝播は全部つながるようにする）方法があり、これを<strong>Truncated BPTT</strong>という。</p>
 </section>
 </section>
 <section id="pytorch">
-<h2>実装（PyTorch）<a class="headerlink" href="#pytorch" title="Link to this heading">#</a></h2>
+<h2>実装（PyTorch）<a class="headerlink" href="#pytorch" title="Permalink to this heading">#</a></h2>
 <div class="math notranslate nohighlight">
 \[
 h_t = \tanh(x_t W_{ih}^T + b_{ih} + h_{t-1}W_{hh}^T + b_{hh})
@@ -910,32 +899,32 @@ h_t = \tanh(x_t W_{ih}^T + b_{ih} + h_{t-1}W_{hh}^T + b_{hh})
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[ 0.9643,  0.8384,  0.6634],
-         [ 0.6464,  0.5779,  0.4138],
-         [ 0.2895,  0.3890, -0.1437]],
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[ 0.1198, -0.7486, -0.2003],
+         [-0.3176, -0.6664, -0.2261],
+         [-0.6409, -0.9784, -0.9386]],
 
-        [[ 0.8029,  0.7516,  0.5264],
-         [ 0.6999,  0.8489,  0.2741],
-         [ 0.4761,  0.5889, -0.1965]],
+        [[-0.2424, -0.9005, -0.6614],
+         [-0.0760, -0.8803, -0.5843],
+         [-0.0067, -0.9168, -0.6695]],
 
-        [[ 0.7655,  0.8766,  0.3705],
-         [ 0.7077,  0.8054,  0.2586],
-         [ 0.5471,  0.7754, -0.0247]],
+        [[-0.1163, -0.9221, -0.7079],
+         [-0.1018, -0.9412, -0.7741],
+         [-0.0506, -0.9548, -0.8166]],
 
-        [[ 0.7792,  0.9035,  0.2150],
-         [ 0.7313,  0.8311,  0.1422],
-         [ 0.6045,  0.7176,  0.1223]],
+        [[-0.1522, -0.9341, -0.7516],
+         [-0.0311, -0.9576, -0.8253],
+         [-0.2001, -0.9413, -0.7803]],
 
-        [[ 0.7270,  0.8496,  0.1876],
-         [ 0.7286,  0.8831,  0.1008],
-         [ 0.6718,  0.7595,  0.0776]]], grad_fn=&lt;StackBackward0&gt;)
+        [[-0.0567, -0.9482, -0.7916],
+         [-0.1131, -0.9569, -0.8292],
+         [-0.1422, -0.9298, -0.7340]]], grad_fn=&lt;StackBackward0&gt;)
 </pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="python">
-<h2>実装（Python）<a class="headerlink" href="#python" title="Link to this heading">#</a></h2>
+<h2>実装（Python）<a class="headerlink" href="#python" title="Permalink to this heading">#</a></h2>
 <p>参考：ゼロから作るDeep Learning 2</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -985,7 +974,7 @@ h_t = \tanh(x_t W_{ih}^T + b_{ih} + h_{t-1}W_{hh}^T + b_{hh})
 </div>
 </section>
 <section id="rwkv">
-<h2>RWKV<a class="headerlink" href="#rwkv" title="Link to this heading">#</a></h2>
+<h2>RWKV<a class="headerlink" href="#rwkv" title="Permalink to this heading">#</a></h2>
 <p>RNNを利用しつつも並列計算を可能とした</p>
 <p><a class="reference external" href="https://zenn.dev/jow/articles/f66d6403b9a509">RWKVを論文と実装から読み解く</a></p>
 <p><a class="reference external" href="https://gigazine.net/news/20230709-rwkv-language-model/">従来の大規模言語モデルの制約だった「入力量の限界」を取り払った「RWKV」は一体どんな言語モデルなのか？ - GIGAZINE</a></p>
@@ -1093,7 +1082,7 @@ By mitama
 
   <p class="copyright">
     
-      © Copyright 2023.
+      © Copyright 2022.
       <br/>
     
   </p>
