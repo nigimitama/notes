@@ -1274,17 +1274,52 @@ m_0(X_i)(g_0(X_i) - \hat{g}_0(X_i)) + o_P(1)
 <span class="g g-Whitespace">    </span><span class="mi">205</span>         <span class="n">missing_values_in_feature_mask</span><span class="o">=</span><span class="n">missing_values_in_feature_mask</span><span class="p">,</span>
 <span class="g g-Whitespace">    </span><span class="mi">206</span>     <span class="p">)</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/tree/_classes.py:472,</span> in <span class="ni">BaseDecisionTree._fit</span><span class="nt">(self, X, y, sample_weight, check_input, missing_values_in_feature_mask)</span>
-<span class="g g-Whitespace">    </span><span class="mi">461</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">462</span>     <span class="n">builder</span> <span class="o">=</span> <span class="n">BestFirstTreeBuilder</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">463</span>         <span class="n">splitter</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">464</span>         <span class="n">min_samples_split</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">469</span>         <span class="bp">self</span><span class="o">.</span><span class="n">min_impurity_decrease</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">470</span>     <span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">472</span> <span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tree_</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">,</span> <span class="n">missing_values_in_feature_mask</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">474</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_outputs_</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">is_classifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">475</span>     <span class="bp">self</span><span class="o">.</span><span class="n">n_classes_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/tree/_classes.py:361,</span> in <span class="ni">BaseDecisionTree._fit</span><span class="nt">(self, X, y, sample_weight, check_input, missing_values_in_feature_mask)</span>
+<span class="g g-Whitespace">    </span><span class="mi">355</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">356</span>         <span class="s2">&quot;Number of labels=</span><span class="si">%d</span><span class="s2"> does not match number of samples=</span><span class="si">%d</span><span class="s2">&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">357</span>         <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">n_samples</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">358</span>     <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">360</span> <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">361</span>     <span class="n">sample_weight</span> <span class="o">=</span> <span class="n">_check_sample_weight</span><span class="p">(</span><span class="n">sample_weight</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">DOUBLE</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">363</span> <span class="k">if</span> <span class="n">expanded_class_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">364</span>     <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/utils/validation.py:2014,</span> in <span class="ni">_check_sample_weight</span><span class="nt">(sample_weight, X, dtype, copy, only_non_negative)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2012</span> <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">2013</span>     <span class="n">dtype</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]</span>
+<span class="ne">-&gt; </span><span class="mi">2014</span> <span class="n">sample_weight</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">2015</span>     <span class="n">sample_weight</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2016</span>     <span class="n">accept_sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2017</span>     <span class="n">ensure_2d</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2018</span>     <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2019</span>     <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2020</span>     <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2021</span>     <span class="n">input_name</span><span class="o">=</span><span class="s2">&quot;sample_weight&quot;</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2022</span> <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2023</span> <span class="k">if</span> <span class="n">sample_weight</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">2024</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sample weights must be 1D array or scalar&quot;</span><span class="p">)</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/utils/validation.py:1007,</span> in <span class="ni">check_array</span><span class="nt">(array, accept_sparse, accept_large_sparse, dtype, order, copy, force_all_finite, ensure_2d, allow_nd, ensure_min_samples, ensure_min_features, estimator, input_name)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1005</span>         <span class="n">array</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1006</span>     <span class="k">else</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">1007</span>         <span class="n">array</span> <span class="o">=</span> <span class="n">_asarray_with_order</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">xp</span><span class="o">=</span><span class="n">xp</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1008</span> <span class="k">except</span> <span class="n">ComplexWarning</span> <span class="k">as</span> <span class="n">complex_warning</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1009</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1010</span>         <span class="s2">&quot;Complex data not supported</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1011</span>     <span class="p">)</span> <span class="kn">from</span> <span class="nn">complex_warning</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/utils/_array_api.py:741,</span> in <span class="ni">_asarray_with_order</span><span class="nt">(array, dtype, order, copy, xp, device)</span>
+<span class="g g-Whitespace">    </span><span class="mi">728</span><span class="w"> </span><span class="sd">&quot;&quot;&quot;Helper to support the order kwarg only for NumPy-backed arrays</span>
+<span class="g g-Whitespace">    </span><span class="mi">729</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">730</span><span class="sd"> Memory layout parameter `order` is not exposed in the Array API standard,</span>
+<span class="sd">   (...)</span>
+<span class="g g-Whitespace">    </span><span class="mi">738</span><span class="sd"> is NumPy based, otherwise `order` is just silently ignored.</span>
+<span class="g g-Whitespace">    </span><span class="mi">739</span><span class="sd"> &quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">740</span> <span class="n">xp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_namespace</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">xp</span><span class="o">=</span><span class="n">xp</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">741</span> <span class="k">if</span> <span class="n">_is_numpy_namespace</span><span class="p">(</span><span class="n">xp</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">742</span>     <span class="c1"># Use NumPy API to support order</span>
+<span class="g g-Whitespace">    </span><span class="mi">743</span>     <span class="k">if</span> <span class="n">copy</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">744</span>         <span class="n">array</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>

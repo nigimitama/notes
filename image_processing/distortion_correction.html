@@ -753,10 +753,11 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#harris">Harrisによるコーナー検出</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fast">FASTによるコーナー検出</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">検出したコーナーたちを4点にまとめる</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#perspective-transform">Perspective Transform</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -904,7 +905,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7fc3899e2a40&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7fdce550ff40&gt;
 </pre></div>
 </div>
 <img alt="../_images/60f9ca6323ab77c8eb9f926aeb7643914b43acbd06a50e381f165f9cd36f5f05.png" src="../_images/60f9ca6323ab77c8eb9f926aeb7643914b43acbd06a50e381f165f9cd36f5f05.png" />
@@ -933,9 +934,8 @@ document.write(`
 </div>
 </div>
 </section>
-</section>
-<section id="perspective-transform">
-<h2>Perspective Transform<a class="headerlink" href="#perspective-transform" title="Permalink to this heading">#</a></h2>
+<section id="id6">
+<h3>検出したコーナーたちを4点にまとめる<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># コーナーの座標を取得</span>
@@ -959,19 +959,64 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 透視変換のための4つのコーナーを選択（例として最初の4つを使用）</span>
-<span class="c1"># 適切な順序でコーナーを選ぶ必要がある（左上、右上、左下、右下）</span>
-<span class="c1"># 実際には適切な順序でコーナーを選択するロジックが必要（k-meansの中心点みたいにやったりなど）</span>
-<span class="n">pts_src</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">corners</span><span class="p">[:</span><span class="mi">4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-<span class="n">pts_src</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+<span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">kmeans</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">corners</span><span class="p">)</span>
+<span class="n">centroids</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">cluster_centers_</span>
+<span class="n">centroids</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[101.,  99.],
-       [403.,  99.],
-       [104., 102.],
-       [400., 102.]], dtype=float32)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[401.5, 100.5],
+       [451. , 499.5],
+       [ 53. , 499.5],
+       [102.5, 100.5]], dtype=float32)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">values</span> <span class="o">=</span> <span class="n">centroids</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">centroids</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+<span class="n">centroids</span> <span class="o">=</span> <span class="n">centroids</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+<span class="n">centroids</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[102.5, 100.5],
+       [401.5, 100.5],
+       [ 53. , 499.5],
+       [451. , 499.5]], dtype=float32)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">img_centroids</span> <span class="o">=</span> <span class="n">image_with_keypoints</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">centroid</span> <span class="ow">in</span> <span class="n">centroids</span><span class="p">:</span>
+    <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">img_centroids</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">centroid</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint32&quot;</span><span class="p">)),</span> <span class="n">radius</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_centroids</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Corners Detected by FAST&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/125467c272324681d542c1894ebabbc1ea6c44f179e8570a40c6a01030a7cd07.png" src="../_images/125467c272324681d542c1894ebabbc1ea6c44f179e8570a40c6a01030a7cd07.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="perspective-transform">
+<h2>Perspective Transform<a class="headerlink" href="#perspective-transform" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pts_src</span> <span class="o">=</span> <span class="n">centroids</span>
 </pre></div>
 </div>
 </div>
@@ -980,36 +1025,24 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 変換後の座標（出力画像のサイズを決定）</span>
 <span class="c1"># width, height = 300, 400  # 出力画像の幅と高さを指定</span>
+<span class="n">margin</span> <span class="o">=</span> <span class="mi">50</span>  <span class="c1"># 余白</span>
 <span class="n">pts_dst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-    <span class="p">[</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="p">[</span><span class="n">margin</span><span class="p">,</span> <span class="n">margin</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">width</span> <span class="o">-</span> <span class="n">margin</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">margin</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">margin</span><span class="p">,</span> <span class="n">height</span> <span class="o">-</span> <span class="n">margin</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">width</span> <span class="o">-</span> <span class="n">margin</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">height</span> <span class="o">-</span> <span class="n">margin</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
 <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
 <span class="n">pts_dst</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[  0.,   0.],
-       [479.,   0.],
-       [  0., 639.],
-       [479., 639.]], dtype=float32)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 50.,  50.],
+       [429.,  50.],
+       [ 50., 589.],
+       [429., 589.]], dtype=float32)
 </pre></div>
 </div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7fc389971fc0&gt;
-</pre></div>
-</div>
-<img alt="../_images/8554ecc0bdc2843182a6b9390f70ee395543f1cecf6cefcbb1cec3f549663095.png" src="../_images/8554ecc0bdc2843182a6b9390f70ee395543f1cecf6cefcbb1cec3f549663095.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1024,15 +1057,15 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7fc38bacac50&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7fdcc9dd3ca0&gt;
 </pre></div>
 </div>
-<img alt="../_images/08480c56e93f6d5069160ff7a4ed1cc01da077b648644e37f1622c957847ba02.png" src="../_images/08480c56e93f6d5069160ff7a4ed1cc01da077b648644e37f1622c957847ba02.png" />
+<img alt="../_images/541c5202007103776039de2d0e8847414a23a3c97650ce51f76531ddfbbdf5c2.png" src="../_images/541c5202007103776039de2d0e8847414a23a3c97650ce51f76531ddfbbdf5c2.png" />
 </div>
 </div>
 </section>
-<section id="id6">
-<h2>参考<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
+<section id="id7">
+<h2>参考<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://qiita.com/ydclab_0003/items/1fc3d1468a39623bae60">射影変換により画像から距離を推定する #Python - Qiita</a></p></li>
 <li><p><a class="reference external" href="https://www.freedomvc.com/index.php/2021/05/23/skews-and-perspectives/">Skews and Perspectives with OpenCV - FreedomVC</a></p></li>
@@ -1115,10 +1148,11 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#harris">Harrisによるコーナー検出</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fast">FASTによるコーナー検出</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">検出したコーナーたちを4点にまとめる</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#perspective-transform">Perspective Transform</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a></li>
 </ul>
   </nav></div>
 
