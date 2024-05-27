@@ -802,22 +802,27 @@ document.write(`
 <h3>シミュレーション<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
 <p>モンテカルロシミュレーションで標準誤差を確かめてみる</p>
 <p>標準誤差が推定量<span class="math notranslate nohighlight">\(\sigma / \sqrt{n}\)</span>と近い値になっていることがわかる</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="c1"># generate data</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">loc</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">scale</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">n_iter</span> <span class="o">=</span> <span class="mi">10000</span>
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]:</span>
     <span class="n">means</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i_iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iter</span><span class="p">):</span>
-        <span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
         <span class="c1"># 標本平均 \bar{X}</span>
         <span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
         <span class="c1"># 標準化した推定誤差</span>
@@ -835,39 +840,31 @@ document.write(`
 <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span>
     <span class="n">means</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;means&quot;</span><span class="p">]</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">means</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">=}</span><span class="s2"> mean=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">means</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> s.e.=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">means</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> | &quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;estimate $\sigma/\sqrt</span><span class="si">{n}</span><span class="s2">$&quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;=</span><span class="si">{</span><span class="n">scale</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">means</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">=}</span><span class="s2"> mean=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">means</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> s.e.=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">means</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> | &quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;estimate $\sigma/\sqrt</span><span class="si">{n}</span><span class="s2">$&quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;=</span><span class="si">{</span><span class="n">sigma</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\bar</span><span class="si">{X}</span><span class="s2">$&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">fr</span><span class="s2">&quot;distribution of sample mean $\bar X$ ($X \sim N$(</span><span class="si">{</span><span class="n">loc</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">scale</span><span class="o">**</span><span class="mi">2</span><span class="si">}</span><span class="s2">))&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\bar</span><span class="si">{X}</span><span class="s2">$&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">fr</span><span class="s2">&quot;distribution of sample mean $\bar X$ ($X \sim N$(</span><span class="si">{</span><span class="n">mu</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="si">}</span><span class="s2">))&quot;</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">19</span>
-<span class="g g-Whitespace">     </span><span class="mi">17</span>     <span class="c1"># 標準化した推定誤差</span>
-<span class="g g-Whitespace">     </span><span class="mi">18</span>     <span class="n">mu_hat</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="ne">---&gt; </span><span class="mi">19</span>     <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">mu_hat</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">20</span>     <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">21</span> <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-<span class="g g-Whitespace">     </span><span class="mi">22</span>     <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">23</span>     <span class="s2">&quot;means&quot;</span><span class="p">:</span> <span class="n">means</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">24</span>     <span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="n">errors</span>
-<span class="g g-Whitespace">     </span><span class="mi">25</span> <span class="p">})</span>
-
-<span class="ne">NameError</span>: name &#39;mu&#39; is not defined
-</pre></div>
-</div>
+<img alt="../../_images/18eec9ee876cd9184b38f27d359d9f05371a9cdb4f7617ddaaf90dab607768d3.png" src="../../_images/18eec9ee876cd9184b38f27d359d9f05371a9cdb4f7617ddaaf90dab607768d3.png" />
 </div>
 </div>
 <p>標準化した推定誤差<span class="math notranslate nohighlight">\(\sqrt{n}\left(\bar{X}-\mu_X\right)\)</span>のシミュレーション結果も出してみる。</p>
+<p>こちらは<span class="math notranslate nohighlight">\(n\)</span>についてスケールが整えられており、<span class="math notranslate nohighlight">\(n\)</span>が増えても分散が一定に、つまり</p>
 <div class="math notranslate nohighlight">
 \[
 \sqrt{n}\left(\bar{X}-\mu_X\right) \xrightarrow{d} N\left(0, \sigma_X^2\right)
 \]</div>
-<p>になっていることがわかる</p>
-<div class="cell docutils container">
+<p>となっていることがわかる。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -882,6 +879,7 @@ document.write(`
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="../../_images/ca610dcb83020ba43e1d04bd8f5499175af94e0ad7835db699fa263f699de8be.png" src="../../_images/ca610dcb83020ba43e1d04bd8f5499175af94e0ad7835db699fa263f699de8be.png" />
 </div>
