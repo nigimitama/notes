@@ -755,13 +755,15 @@ document.write(`
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#harris">Harrisによるコーナー検出</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">局所対応点を検出する方法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#harris">Harrisによるコーナー検出</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fast">FASTによるコーナー検出</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">検出したコーナーたちを4点にまとめる</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">検出したコーナーたちを4点にまとめる</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#perspective-transform">Perspective Transform</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">直線を検出する場合</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -784,7 +786,20 @@ document.write(`
 <section id="id2">
 <h2>方法<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
 <p>例えば画像内に長方形になるべきものが写っている場合、4点を検出して、まっすぐな歪みのない長方形にアフィン変換してやればよい。</p>
-<p>点はコーナー検出（corner detection）によって検出できる</p>
+<p>点はkeypoints検出や直線検出の結果をもとに推定する</p>
+<ul class="simple">
+<li><p>局所対応点（keypoints）を検出して、4点にまとめる</p>
+<ul>
+<li><p>例えばコーナー検出（corner detection）によって「角っぽい点」を全部検知してから適切にフィルタリング・統合する</p></li>
+</ul>
+</li>
+<li><p>線が直交する点が角なので、線を検出して直交点を推測する</p>
+<ul>
+<li><p>例えばハフ変換。ただし、太い線だと並行に検出するとは限らない。候補の線を全部出してしまう。Cannyなどで細線化する方法があるが、細線化が失敗すると後の工程が全部失敗するリスクもある</p></li>
+<li><p>例えばLSD（Line Segment Detection）</p></li>
+</ul>
+</li>
+</ul>
 <section id="id3">
 <h3>画像の例<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
 <div class="cell tag_hide-input docutils container">
@@ -892,8 +907,10 @@ document.write(`
 </section>
 </section>
 </section>
+<section id="id6">
+<h2>局所対応点を検出する方法<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
 <section id="harris">
-<h2>Harrisによるコーナー検出<a class="headerlink" href="#harris" title="Permalink to this heading">#</a></h2>
+<h3>Harrisによるコーナー検出<a class="headerlink" href="#harris" title="Permalink to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Harris corner detection</span>
@@ -909,12 +926,13 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7f8438a0bb20&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7f5dc8ac6230&gt;
 </pre></div>
 </div>
 <img alt="../_images/60f9ca6323ab77c8eb9f926aeb7643914b43acbd06a50e381f165f9cd36f5f05.png" src="../_images/60f9ca6323ab77c8eb9f926aeb7643914b43acbd06a50e381f165f9cd36f5f05.png" />
 </div>
 </div>
+</section>
 <section id="fast">
 <h3>FASTによるコーナー検出<a class="headerlink" href="#fast" title="Permalink to this heading">#</a></h3>
 <p>FASTは16x16ピクセルの範囲ごとにグレースケール画像の濃淡の領域を分割するように決定木を構築してコーナーを検出する手法</p>
@@ -938,8 +956,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id6">
-<h3>検出したコーナーたちを4点にまとめる<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<section id="id7">
+<h3>検出したコーナーたちを4点にまとめる<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># コーナーの座標を取得</span>
@@ -972,10 +990,10 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 53. , 499.5],
-       [401.5, 100.5],
-       [451. , 499.5],
-       [102.5, 100.5]], dtype=float32)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[451. , 499.5],
+       [102.5, 100.5],
+       [ 53. , 499.5],
+       [401.5, 100.5]], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -1061,15 +1079,78 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7f841c273d30&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7f5daa11e7a0&gt;
 </pre></div>
 </div>
 <img alt="../_images/541c5202007103776039de2d0e8847414a23a3c97650ce51f76531ddfbbdf5c2.png" src="../_images/541c5202007103776039de2d0e8847414a23a3c97650ce51f76531ddfbbdf5c2.png" />
 </div>
 </div>
 </section>
-<section id="id7">
-<h2>参考<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
+<section id="id8">
+<h2>直線を検出する場合<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
+<p>LSDはライセンスの問題でOpenCVからは削除されたようで、使いたい場合は <a class="reference external" href="https://github.com/primetang/pylsd">pylsd</a> をインストールする必要がある。</p>
+<p>代わりに <a class="reference external" href="https://docs.opencv.org/4.x/df/d4c/classcv_1_1ximgproc_1_1FastLineDetector.html">FastLineDetector</a> というものがある。（Python使用例：<a class="reference external" href="https://nsr-9.hatenablog.jp/entry/2021/08/12/200000">Python+OpenCVによる線分検出 - 社会人研究者が色々頑張るブログ</a>）</p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p><code class="docutils literal notranslate"><span class="pre">FastLineDetector</span></code> は cv2.ximgprocパッケージに入っており、opencvとは別に</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>opencv-contrib-python
+</pre></div>
+</div>
+<p>でインストールする必要がある。</p>
+</aside>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">length_threshold</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">distance_threshold</span> <span class="o">=</span> <span class="mf">1.41421356</span>
+<span class="n">canny_th1</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">canny_th2</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">canny_aperture_size</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">do_merge</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">fld</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">ximgproc</span><span class="o">.</span><span class="n">createFastLineDetector</span><span class="p">(</span>
+    <span class="n">length_threshold</span><span class="p">,</span>
+    <span class="n">distance_threshold</span><span class="p">,</span>
+    <span class="n">canny_th1</span><span class="p">,</span>
+    <span class="n">canny_th2</span><span class="p">,</span>
+    <span class="n">canny_aperture_size</span><span class="p">,</span>
+    <span class="n">do_merge</span>
+<span class="p">)</span>
+
+<span class="n">lines</span> <span class="o">=</span> <span class="n">fld</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">contour_img</span><span class="p">)</span>
+<span class="n">img_lines</span> <span class="o">=</span> <span class="n">fld</span><span class="o">.</span><span class="n">drawSegments</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">lines</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_lines</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7f5daa18dae0&gt;
+</pre></div>
+</div>
+<img alt="../_images/4448b0068dcffe0a06e73cac24991d583c2a3e8de412cbbc0b2858a292f98dde.png" src="../_images/4448b0068dcffe0a06e73cac24991d583c2a3e8de412cbbc0b2858a292f98dde.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">break</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7f5daa008970&gt;
+</pre></div>
+</div>
+<img alt="../_images/b8f5799bb192013ed1da94abdfe7a088761ae83b1732979a13c5b0bacb730485.png" src="../_images/b8f5799bb192013ed1da94abdfe7a088761ae83b1732979a13c5b0bacb730485.png" />
+</div>
+</div>
+</section>
+<section id="id9">
+<h2>参考<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://qiita.com/ydclab_0003/items/1fc3d1468a39623bae60">射影変換により画像から距離を推定する #Python - Qiita</a></p></li>
 <li><p><a class="reference external" href="https://www.freedomvc.com/index.php/2021/05/23/skews-and-perspectives/">Skews and Perspectives with OpenCV - FreedomVC</a></p></li>
@@ -1150,13 +1231,15 @@ document.write(`
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#harris">Harrisによるコーナー検出</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">局所対応点を検出する方法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#harris">Harrisによるコーナー検出</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fast">FASTによるコーナー検出</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">検出したコーナーたちを4点にまとめる</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">検出したコーナーたちを4点にまとめる</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#perspective-transform">Perspective Transform</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">直線を検出する場合</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考</a></li>
 </ul>
   </nav></div>
 
