@@ -1090,22 +1090,40 @@ m_0(X_i)(g_0(X_i) - \hat{g}_0(X_i)) + o_P(1)
 <span class="n">ml_m</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">378</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_samples_leaf</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 <span class="n">ml_g</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">ml_l</span><span class="p">)</span>
 
-<span class="n">theta_nonorth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
-<span class="n">se_nonorth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i_rep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
-    <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span>
-    <span class="n">obj_dml_data</span> <span class="o">=</span> <span class="n">DoubleMLData</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-    <span class="n">obj_dml_plr_nonorth</span> <span class="o">=</span> <span class="n">DoubleMLPLR</span><span class="p">(</span><span class="n">obj_dml_data</span><span class="p">,</span>
-                                      <span class="n">ml_l</span><span class="p">,</span> <span class="n">ml_m</span><span class="p">,</span> <span class="n">ml_g</span><span class="p">,</span>
-                                      <span class="n">n_folds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                                      <span class="n">apply_cross_fitting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                      <span class="n">score</span><span class="o">=</span><span class="n">non_orth_score</span><span class="p">)</span>
-    <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-    <span class="n">this_theta</span> <span class="o">=</span> <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">coef</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">this_se</span> <span class="o">=</span> <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">se</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">theta_nonorth</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_theta</span>
-    <span class="n">se_nonorth</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_se</span>
+<span class="c1"># シミュレーションに時間がかかるので結果を保存する</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="n">result_json_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;./dml_simulation_results.json&#39;</span><span class="p">)</span>
+<span class="n">use_cache</span> <span class="o">=</span> <span class="kc">True</span>
 
+<span class="c1"># 実験1: ネイマン直交条件を満たさない場合</span>
+<span class="k">if</span> <span class="n">use_cache</span> <span class="ow">and</span> <span class="n">result_json_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_json_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">simulation_results</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">simulation_results</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">simulation_results</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">theta_nonorth</span> <span class="o">=</span> <span class="n">simulation_results</span><span class="p">[</span><span class="s2">&quot;theta_nonorth&quot;</span><span class="p">]</span>
+    <span class="n">se_nonorth</span> <span class="o">=</span> <span class="n">simulation_results</span><span class="p">[</span><span class="s2">&quot;se_nonorth&quot;</span><span class="p">]</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">theta_nonorth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
+    <span class="n">se_nonorth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i_rep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span>
+        <span class="n">obj_dml_data</span> <span class="o">=</span> <span class="n">DoubleMLData</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="n">obj_dml_plr_nonorth</span> <span class="o">=</span> <span class="n">DoubleMLPLR</span><span class="p">(</span><span class="n">obj_dml_data</span><span class="p">,</span>
+                                          <span class="n">ml_l</span><span class="p">,</span> <span class="n">ml_m</span><span class="p">,</span> <span class="n">ml_g</span><span class="p">,</span>
+                                          <span class="n">n_folds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                          <span class="n">apply_cross_fitting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                          <span class="n">score</span><span class="o">=</span><span class="n">non_orth_score</span><span class="p">)</span>
+        <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+        <span class="n">this_theta</span> <span class="o">=</span> <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">coef</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">this_se</span> <span class="o">=</span> <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">se</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">theta_nonorth</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_theta</span>
+        <span class="n">se_nonorth</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_se</span>
+
+    <span class="n">simulation_results</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">simulation_results</span><span class="p">[</span><span class="s2">&quot;theta_nonorth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta_nonorth</span>
+    <span class="n">simulation_results</span><span class="p">[</span><span class="s2">&quot;se_nonorth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">se_nonorth</span>
+<span class="c1"># plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">((</span><span class="n">theta_nonorth</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span><span class="o">/</span><span class="n">se_nonorth</span><span class="p">,</span>
                   <span class="n">color</span><span class="o">=</span><span class="n">face_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">edge_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
@@ -1117,184 +1135,13 @@ m_0(X_i)(g_0(X_i) - \hat{g}_0(X_i)) + o_P(1)
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">6.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$(\hat{</span><span class="se">\\</span><span class="s1">theta}_0 - </span><span class="se">\\</span><span class="s1">theta_0)/\hat{\sigma}$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 </details>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">47</span>
-<span class="g g-Whitespace">     </span><span class="mi">41</span> <span class="n">obj_dml_data</span> <span class="o">=</span> <span class="n">DoubleMLData</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">42</span> <span class="n">obj_dml_plr_nonorth</span> <span class="o">=</span> <span class="n">DoubleMLPLR</span><span class="p">(</span><span class="n">obj_dml_data</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">43</span>                                   <span class="n">ml_l</span><span class="p">,</span> <span class="n">ml_m</span><span class="p">,</span> <span class="n">ml_g</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">44</span>                                   <span class="n">n_folds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">45</span>                                   <span class="n">apply_cross_fitting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">46</span>                                   <span class="n">score</span><span class="o">=</span><span class="n">non_orth_score</span><span class="p">)</span>
-<span class="ne">---&gt; </span><span class="mi">47</span> <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">48</span> <span class="n">this_theta</span> <span class="o">=</span> <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">coef</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="g g-Whitespace">     </span><span class="mi">49</span> <span class="n">this_se</span> <span class="o">=</span> <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">se</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/doubleml/double_ml.py:605,</span> in <span class="ni">DoubleML.fit</span><span class="nt">(self, n_jobs_cv, store_predictions, external_predictions, store_models)</span>
-<span class="g g-Whitespace">    </span><span class="mi">602</span>         <span class="n">ext_prediction_dict</span><span class="p">[</span><span class="n">learner</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="g g-Whitespace">    </span><span class="mi">604</span> <span class="c1"># ml estimation of nuisance models and computation of score elements</span>
-<span class="ne">--&gt; </span><span class="mi">605</span> <span class="n">score_elements</span><span class="p">,</span> <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nuisance_est</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__smpls</span><span class="p">,</span> <span class="n">n_jobs_cv</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">606</span>                                            <span class="n">external_predictions</span><span class="o">=</span><span class="n">ext_prediction_dict</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">607</span>                                            <span class="n">return_models</span><span class="o">=</span><span class="n">store_models</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">609</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_score_elements</span><span class="p">(</span><span class="n">score_elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_i_rep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_i_treat</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">611</span> <span class="c1"># calculate rmses and store predictions and targets of the nuisance models</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/doubleml/double_ml_plr.py:234,</span> in <span class="ni">DoubleMLPLR._nuisance_est</span><span class="nt">(self, smpls, n_jobs_cv, external_predictions, return_models)</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span>         <span class="n">psi_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="n">m_hat</span><span class="p">[</span><span class="s1">&#39;preds&#39;</span><span class="p">],</span> <span class="n">y</span> <span class="o">-</span> <span class="n">l_hat</span><span class="p">[</span><span class="s1">&#39;preds&#39;</span><span class="p">])</span>
-<span class="g g-Whitespace">    </span><span class="mi">233</span>         <span class="n">theta_initial</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">psi_b</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">psi_a</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">234</span>         <span class="n">g_hat</span> <span class="o">=</span> <span class="n">_dml_cv_predict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_learner</span><span class="p">[</span><span class="s1">&#39;ml_g&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">theta_initial</span><span class="o">*</span><span class="n">d</span><span class="p">,</span> <span class="n">smpls</span><span class="o">=</span><span class="n">smpls</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs_cv</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">235</span>                                 <span class="n">est_params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_params</span><span class="p">(</span><span class="s1">&#39;ml_g&#39;</span><span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_predict_method</span><span class="p">[</span><span class="s1">&#39;ml_g&#39;</span><span class="p">],</span>
-<span class="g g-Whitespace">    </span><span class="mi">236</span>                                 <span class="n">return_models</span><span class="o">=</span><span class="n">return_models</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">237</span>         <span class="n">_check_finite_predictions</span><span class="p">(</span><span class="n">g_hat</span><span class="p">[</span><span class="s1">&#39;preds&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_learner</span><span class="p">[</span><span class="s1">&#39;ml_g&#39;</span><span class="p">],</span> <span class="s1">&#39;ml_g&#39;</span><span class="p">,</span> <span class="n">smpls</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">239</span> <span class="n">psi_a</span><span class="p">,</span> <span class="n">psi_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_score_elements</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">l_hat</span><span class="p">[</span><span class="s1">&#39;preds&#39;</span><span class="p">],</span> <span class="n">m_hat</span><span class="p">[</span><span class="s1">&#39;preds&#39;</span><span class="p">],</span> <span class="n">g_hat</span><span class="p">[</span><span class="s1">&#39;preds&#39;</span><span class="p">],</span> <span class="n">smpls</span><span class="p">)</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/doubleml/_utils.py:99,</span> in <span class="ni">_dml_cv_predict</span><span class="nt">(estimator, x, y, smpls, n_jobs, est_params, method, return_train_preds, return_models)</span>
-<span class="g g-Whitespace">     </span><span class="mi">96</span>     <span class="n">y_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">smpls</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">98</span> <span class="k">if</span> <span class="n">est_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">99</span>     <span class="n">fitted_models</span> <span class="o">=</span> <span class="n">parallel</span><span class="p">(</span><span class="n">delayed</span><span class="p">(</span><span class="n">_fit</span><span class="p">)(</span>
-<span class="g g-Whitespace">    </span><span class="mi">100</span>         <span class="n">clone</span><span class="p">(</span><span class="n">estimator</span><span class="p">),</span> <span class="n">x</span><span class="p">,</span> <span class="n">y_list</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">train_index</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
-<span class="nn">    101                              for idx, (train_index, test_index)</span> in <span class="ni">enumerate</span><span class="nt">(smpls))</span>
-<span class="g g-Whitespace">    </span><span class="mi">102</span> <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">est_params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">103</span>     <span class="c1"># warnings.warn(&quot;Using the same (hyper-)parameters for all folds&quot;)</span>
-<span class="g g-Whitespace">    </span><span class="mi">104</span>     <span class="n">fitted_models</span> <span class="o">=</span> <span class="n">parallel</span><span class="p">(</span><span class="n">delayed</span><span class="p">(</span><span class="n">_fit</span><span class="p">)(</span>
-<span class="g g-Whitespace">    </span><span class="mi">105</span>         <span class="n">clone</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">est_params</span><span class="p">),</span> <span class="n">x</span><span class="p">,</span> <span class="n">y_list</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">train_index</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
-<span class="nn">    106                              for idx, (train_index, test_index)</span> in <span class="ni">enumerate</span><span class="nt">(smpls))</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/joblib/parallel.py:1918,</span> in <span class="ni">Parallel.__call__</span><span class="nt">(self, iterable)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1916</span>     <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sequential_output</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1917</span>     <span class="nb">next</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">1918</span>     <span class="k">return</span> <span class="n">output</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_generator</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1920</span> <span class="c1"># Let&#39;s create an ID that uniquely identifies the current call. If the</span>
-<span class="g g-Whitespace">   </span><span class="mi">1921</span> <span class="c1"># call is interrupted early and that the same instance is immediately</span>
-<span class="g g-Whitespace">   </span><span class="mi">1922</span> <span class="c1"># re-used, this id will be used to prevent workers that were</span>
-<span class="g g-Whitespace">   </span><span class="mi">1923</span> <span class="c1"># concurrently finalizing a task from the previous call to run the</span>
-<span class="g g-Whitespace">   </span><span class="mi">1924</span> <span class="c1"># callback.</span>
-<span class="g g-Whitespace">   </span><span class="mi">1925</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/joblib/parallel.py:1847,</span> in <span class="ni">Parallel._get_sequential_output</span><span class="nt">(self, iterable)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1845</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_dispatched_batches</span> <span class="o">+=</span> <span class="mi">1</span>
-<span class="g g-Whitespace">   </span><span class="mi">1846</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_dispatched_tasks</span> <span class="o">+=</span> <span class="mi">1</span>
-<span class="ne">-&gt; </span><span class="mi">1847</span> <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1848</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_completed_tasks</span> <span class="o">+=</span> <span class="mi">1</span>
-<span class="g g-Whitespace">   </span><span class="mi">1849</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_progress</span><span class="p">()</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/doubleml/_utils.py:45,</span> in <span class="ni">_fit</span><span class="nt">(estimator, x, y, train_index, idx)</span>
-<span class="g g-Whitespace">     </span><span class="mi">44</span> <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">train_index</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">45</span>     <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">train_index</span><span class="p">,</span> <span class="p">:],</span> <span class="n">y</span><span class="p">[</span><span class="n">train_index</span><span class="p">])</span>
-<span class="g g-Whitespace">     </span><span class="mi">46</span>     <span class="k">return</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">idx</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/base.py:1473,</span> in <span class="ni">_fit_context.&lt;locals&gt;.decorator.&lt;locals&gt;.wrapper</span><span class="nt">(estimator, *args, **kwargs)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1466</span>     <span class="n">estimator</span><span class="o">.</span><span class="n">_validate_params</span><span class="p">()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1468</span> <span class="k">with</span> <span class="n">config_context</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1469</span>     <span class="n">skip_parameter_validation</span><span class="o">=</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1470</span>         <span class="n">prefer_skip_nested_validation</span> <span class="ow">or</span> <span class="n">global_skip_validation</span>
-<span class="g g-Whitespace">   </span><span class="mi">1471</span>     <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1472</span> <span class="p">):</span>
-<span class="ne">-&gt; </span><span class="mi">1473</span>     <span class="k">return</span> <span class="n">fit_method</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/ensemble/_forest.py:489,</span> in <span class="ni">BaseForest.fit</span><span class="nt">(self, X, y, sample_weight)</span>
-<span class="g g-Whitespace">    </span><span class="mi">478</span> <span class="n">trees</span> <span class="o">=</span> <span class="p">[</span>
-<span class="g g-Whitespace">    </span><span class="mi">479</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_make_estimator</span><span class="p">(</span><span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
-<span class="nn">    480     for i</span> in <span class="ni">range</span><span class="nt">(n_more_estimators)</span>
-<span class="g g-Whitespace">    </span><span class="mi">481</span> <span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">483</span> <span class="c1"># Parallel loop: we prefer the threading backend as the Cython code</span>
-<span class="g g-Whitespace">    </span><span class="mi">484</span> <span class="c1"># for fitting the trees is internally releasing the Python GIL</span>
-<span class="g g-Whitespace">    </span><span class="mi">485</span> <span class="c1"># making threading more efficient than multiprocessing in</span>
-<span class="g g-Whitespace">    </span><span class="mi">486</span> <span class="c1"># that case. However, for joblib 0.12+ we respect any</span>
-<span class="g g-Whitespace">    </span><span class="mi">487</span> <span class="c1"># parallel_backend contexts set at a higher level,</span>
-<span class="g g-Whitespace">    </span><span class="mi">488</span> <span class="c1"># since correctness does not rely on using threads.</span>
-<span class="ne">--&gt; </span><span class="mi">489</span> <span class="n">trees</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">490</span>     <span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">491</span>     <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">492</span>     <span class="n">prefer</span><span class="o">=</span><span class="s2">&quot;threads&quot;</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">493</span> <span class="p">)(</span>
-<span class="g g-Whitespace">    </span><span class="mi">494</span>     <span class="n">delayed</span><span class="p">(</span><span class="n">_parallel_build_trees</span><span class="p">)(</span>
-<span class="g g-Whitespace">    </span><span class="mi">495</span>         <span class="n">t</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">496</span>         <span class="bp">self</span><span class="o">.</span><span class="n">bootstrap</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">497</span>         <span class="n">X</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">498</span>         <span class="n">y</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">499</span>         <span class="n">sample_weight</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">500</span>         <span class="n">i</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">501</span>         <span class="nb">len</span><span class="p">(</span><span class="n">trees</span><span class="p">),</span>
-<span class="g g-Whitespace">    </span><span class="mi">502</span>         <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">503</span>         <span class="n">class_weight</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_weight</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">504</span>         <span class="n">n_samples_bootstrap</span><span class="o">=</span><span class="n">n_samples_bootstrap</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">505</span>         <span class="n">missing_values_in_feature_mask</span><span class="o">=</span><span class="n">missing_values_in_feature_mask</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">506</span>     <span class="p">)</span>
-<span class="nn">    507     for i, t</span> in <span class="ni">enumerate</span><span class="nt">(trees)</span>
-<span class="g g-Whitespace">    </span><span class="mi">508</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">510</span> <span class="c1"># Collect newly grown trees</span>
-<span class="g g-Whitespace">    </span><span class="mi">511</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimators_</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">trees</span><span class="p">)</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/utils/parallel.py:67,</span> in <span class="ni">Parallel.__call__</span><span class="nt">(self, iterable)</span>
-<span class="g g-Whitespace">     </span><span class="mi">62</span> <span class="n">config</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">63</span> <span class="n">iterable_with_config</span> <span class="o">=</span> <span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">64</span>     <span class="p">(</span><span class="n">_with_config</span><span class="p">(</span><span class="n">delayed_func</span><span class="p">,</span> <span class="n">config</span><span class="p">),</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">65</span>     <span class="k">for</span> <span class="n">delayed_func</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="ow">in</span> <span class="n">iterable</span>
-<span class="g g-Whitespace">     </span><span class="mi">66</span> <span class="p">)</span>
-<span class="ne">---&gt; </span><span class="mi">67</span> <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">iterable_with_config</span><span class="p">)</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/joblib/parallel.py:1918,</span> in <span class="ni">Parallel.__call__</span><span class="nt">(self, iterable)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1916</span>     <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sequential_output</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1917</span>     <span class="nb">next</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">1918</span>     <span class="k">return</span> <span class="n">output</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_generator</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1920</span> <span class="c1"># Let&#39;s create an ID that uniquely identifies the current call. If the</span>
-<span class="g g-Whitespace">   </span><span class="mi">1921</span> <span class="c1"># call is interrupted early and that the same instance is immediately</span>
-<span class="g g-Whitespace">   </span><span class="mi">1922</span> <span class="c1"># re-used, this id will be used to prevent workers that were</span>
-<span class="g g-Whitespace">   </span><span class="mi">1923</span> <span class="c1"># concurrently finalizing a task from the previous call to run the</span>
-<span class="g g-Whitespace">   </span><span class="mi">1924</span> <span class="c1"># callback.</span>
-<span class="g g-Whitespace">   </span><span class="mi">1925</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/joblib/parallel.py:1847,</span> in <span class="ni">Parallel._get_sequential_output</span><span class="nt">(self, iterable)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1845</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_dispatched_batches</span> <span class="o">+=</span> <span class="mi">1</span>
-<span class="g g-Whitespace">   </span><span class="mi">1846</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_dispatched_tasks</span> <span class="o">+=</span> <span class="mi">1</span>
-<span class="ne">-&gt; </span><span class="mi">1847</span> <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1848</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_completed_tasks</span> <span class="o">+=</span> <span class="mi">1</span>
-<span class="g g-Whitespace">   </span><span class="mi">1849</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_progress</span><span class="p">()</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/utils/parallel.py:129,</span> in <span class="ni">_FuncWrapper.__call__</span><span class="nt">(self, *args, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">127</span>     <span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="g g-Whitespace">    </span><span class="mi">128</span> <span class="k">with</span> <span class="n">config_context</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">129</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/ensemble/_forest.py:192,</span> in <span class="ni">_parallel_build_trees</span><span class="nt">(tree, bootstrap, X, y, sample_weight, tree_idx, n_trees, verbose, class_weight, n_samples_bootstrap, missing_values_in_feature_mask)</span>
-<span class="g g-Whitespace">    </span><span class="mi">189</span>     <span class="k">elif</span> <span class="n">class_weight</span> <span class="o">==</span> <span class="s2">&quot;balanced_subsample&quot;</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">190</span>         <span class="n">curr_sample_weight</span> <span class="o">*=</span> <span class="n">compute_sample_weight</span><span class="p">(</span><span class="s2">&quot;balanced&quot;</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">indices</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">192</span>     <span class="n">tree</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">193</span>         <span class="n">X</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">194</span>         <span class="n">y</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">195</span>         <span class="n">sample_weight</span><span class="o">=</span><span class="n">curr_sample_weight</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">196</span>         <span class="n">check_input</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">197</span>         <span class="n">missing_values_in_feature_mask</span><span class="o">=</span><span class="n">missing_values_in_feature_mask</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">198</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">199</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">200</span>     <span class="n">tree</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">201</span>         <span class="n">X</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">202</span>         <span class="n">y</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">205</span>         <span class="n">missing_values_in_feature_mask</span><span class="o">=</span><span class="n">missing_values_in_feature_mask</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">206</span>     <span class="p">)</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/tree/_classes.py:472,</span> in <span class="ni">BaseDecisionTree._fit</span><span class="nt">(self, X, y, sample_weight, check_input, missing_values_in_feature_mask)</span>
-<span class="g g-Whitespace">    </span><span class="mi">461</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">462</span>     <span class="n">builder</span> <span class="o">=</span> <span class="n">BestFirstTreeBuilder</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">463</span>         <span class="n">splitter</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">464</span>         <span class="n">min_samples_split</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">469</span>         <span class="bp">self</span><span class="o">.</span><span class="n">min_impurity_decrease</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">470</span>     <span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">472</span> <span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tree_</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">,</span> <span class="n">missing_values_in_feature_mask</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">474</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_outputs_</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">is_classifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">475</span>     <span class="bp">self</span><span class="o">.</span><span class="n">n_classes_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-<span class="ne">KeyboardInterrupt</span>: 
-</pre></div>
-</div>
+<img alt="../../_images/f5317d42dfcc15a8a02f9c07c8e4f42a4de3e976f0e85f5da96c10f123593cbf.png" src="../../_images/f5317d42dfcc15a8a02f9c07c8e4f42a4de3e976f0e85f5da96c10f123593cbf.png" />
 </div>
 </div>
 <section id="id13">
@@ -1319,24 +1166,37 @@ m_0(X_i)(g_0(X_i) - \hat{g}_0(X_i)) + o_P(1)
 <span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta_orth_nosplit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
-<span class="n">se_orth_nosplit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 実験2: 直交化した場合</span>
+<span class="k">if</span> <span class="n">use_cache</span> <span class="ow">and</span> <span class="n">result_json_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_json_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">simulation_results</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">simulation_results</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">simulation_results</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">theta_orth_nosplit</span> <span class="o">=</span> <span class="n">simulation_results</span><span class="p">[</span><span class="s2">&quot;theta_orth_nosplit&quot;</span><span class="p">]</span>
+    <span class="n">se_orth_nosplit</span> <span class="o">=</span> <span class="n">simulation_results</span><span class="p">[</span><span class="s2">&quot;se_orth_nosplit&quot;</span><span class="p">]</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">theta_orth_nosplit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
+    <span class="n">se_orth_nosplit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
 
-<span class="k">for</span> <span class="n">i_rep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
-    <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span>
-    <span class="n">obj_dml_data</span> <span class="o">=</span> <span class="n">DoubleMLData</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-    <span class="n">obj_dml_plr_orth_nosplit</span> <span class="o">=</span> <span class="n">DoubleMLPLR</span><span class="p">(</span><span class="n">obj_dml_data</span><span class="p">,</span>
-                                      <span class="n">ml_l</span><span class="p">,</span> <span class="n">ml_m</span><span class="p">,</span> <span class="n">ml_g</span><span class="p">,</span>
-                                      <span class="n">n_folds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                                      <span class="n">apply_cross_fitting</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">obj_dml_plr_nonorth</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-    <span class="n">this_theta</span> <span class="o">=</span> <span class="n">obj_dml_plr_orth_nosplit</span><span class="o">.</span><span class="n">coef</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">this_se</span> <span class="o">=</span> <span class="n">obj_dml_plr_orth_nosplit</span><span class="o">.</span><span class="n">se</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">theta_orth_nosplit</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_theta</span>
-    <span class="n">se_orth_nosplit</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_se</span>
+    <span class="k">for</span> <span class="n">i_rep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span>
+        <span class="n">obj_dml_data</span> <span class="o">=</span> <span class="n">DoubleMLData</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="n">obj_dml_plr_orth_nosplit</span> <span class="o">=</span> <span class="n">DoubleMLPLR</span><span class="p">(</span><span class="n">obj_dml_data</span><span class="p">,</span>
+                                               <span class="n">ml_l</span><span class="p">,</span> <span class="n">ml_m</span><span class="p">,</span> <span class="n">ml_g</span><span class="p">,</span>
+                                               <span class="n">n_folds</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                               <span class="n">score</span><span class="o">=</span><span class="s1">&#39;partialling out&#39;</span><span class="p">,</span>
+                                               <span class="n">apply_cross_fitting</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">obj_dml_plr_orth_nosplit</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+        <span class="n">this_theta</span> <span class="o">=</span> <span class="n">obj_dml_plr_orth_nosplit</span><span class="o">.</span><span class="n">coef</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">this_se</span> <span class="o">=</span> <span class="n">obj_dml_plr_orth_nosplit</span><span class="o">.</span><span class="n">se</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">theta_orth_nosplit</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_theta</span>
+        <span class="n">se_orth_nosplit</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_se</span>
 
+    <span class="n">simulation_results</span><span class="p">[</span><span class="s2">&quot;theta_orth_nosplit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta_orth_nosplit</span>
+    <span class="n">simulation_results</span><span class="p">[</span><span class="s2">&quot;se_orth_nosplit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">se_orth_nosplit</span>
+
+<span class="c1"># plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">((</span><span class="n">theta_nonorth</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span><span class="o">/</span><span class="n">se_nonorth</span><span class="p">,</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">((</span><span class="n">theta_orth_nosplit</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span><span class="o">/</span><span class="n">se_orth_nosplit</span><span class="p">,</span>
                   <span class="n">color</span><span class="o">=</span><span class="n">face_colors</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">edge_colors</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                   <span class="n">stat</span><span class="o">=</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Double ML (no sample splitting)&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
@@ -1354,7 +1214,7 @@ m_0(X_i)(g_0(X_i) - \hat{g}_0(X_i)) + o_P(1)
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0, &#39;$(\\hat{\\theta}_0 - \\theta_0)/\\hat{\\sigma}$&#39;)
 </pre></div>
 </div>
-<img alt="../../_images/924d75fd0255d6e918347358df3978ff4eb09c2cbfcc7a9a41a5b20f6a61ed6d.png" src="../../_images/924d75fd0255d6e918347358df3978ff4eb09c2cbfcc7a9a41a5b20f6a61ed6d.png" />
+<img alt="../../_images/31b87226d444808ce8922958d58a590fe6f423d6c4452fc41e8b0c8efdce4c3a.png" src="../../_images/31b87226d444808ce8922958d58a590fe6f423d6c4452fc41e8b0c8efdce4c3a.png" />
 </div>
 </div>
 <section id="check-theta-0">
@@ -1412,22 +1272,37 @@ $<span class="math notranslate nohighlight">\(
 <span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta_dml</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
-<span class="n">se_dml</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 実験2: 直交化した場合</span>
+<span class="k">if</span> <span class="n">use_cache</span> <span class="ow">and</span> <span class="n">result_json_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_json_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">simulation_results</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">simulation_results</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">simulation_results</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">theta_dml</span> <span class="o">=</span> <span class="n">simulation_results</span><span class="p">[</span><span class="s2">&quot;theta_dml&quot;</span><span class="p">]</span>
+    <span class="n">se_dml</span> <span class="o">=</span> <span class="n">simulation_results</span><span class="p">[</span><span class="s2">&quot;se_dml&quot;</span><span class="p">]</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">theta_dml</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
+    <span class="n">se_dml</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_rep</span><span class="p">)</span>
 
-<span class="k">for</span> <span class="n">i_rep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
-    <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span>
-    <span class="n">obj_dml_data</span> <span class="o">=</span> <span class="n">DoubleMLData</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-    <span class="n">obj_dml_plr</span> <span class="o">=</span> <span class="n">DoubleMLPLR</span><span class="p">(</span><span class="n">obj_dml_data</span><span class="p">,</span>
-                              <span class="n">ml_l</span><span class="p">,</span> <span class="n">ml_m</span><span class="p">,</span> <span class="n">ml_g</span><span class="p">,</span>
-                              <span class="n">n_folds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                              <span class="n">score</span><span class="o">=</span><span class="s1">&#39;IV-type&#39;</span><span class="p">)</span>
-    <span class="n">obj_dml_plr</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-    <span class="n">this_theta</span> <span class="o">=</span> <span class="n">obj_dml_plr</span><span class="o">.</span><span class="n">coef</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">this_se</span> <span class="o">=</span> <span class="n">obj_dml_plr</span><span class="o">.</span><span class="n">se</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">theta_dml</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_theta</span>
-    <span class="n">se_dml</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_se</span>
-    
+    <span class="k">for</span> <span class="n">i_rep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span>
+        <span class="n">obj_dml_data</span> <span class="o">=</span> <span class="n">DoubleMLData</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="n">obj_dml_plr</span> <span class="o">=</span> <span class="n">DoubleMLPLR</span><span class="p">(</span><span class="n">obj_dml_data</span><span class="p">,</span>
+                                  <span class="n">ml_l</span><span class="p">,</span> <span class="n">ml_m</span><span class="p">,</span> <span class="n">ml_g</span><span class="p">,</span>
+                                  <span class="n">n_folds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                  <span class="n">score</span><span class="o">=</span><span class="s1">&#39;partialling out&#39;</span><span class="p">)</span>
+        <span class="n">obj_dml_plr</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+        <span class="n">this_theta</span> <span class="o">=</span> <span class="n">obj_dml_plr</span><span class="o">.</span><span class="n">coef</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">this_se</span> <span class="o">=</span> <span class="n">obj_dml_plr</span><span class="o">.</span><span class="n">se</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">theta_dml</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_theta</span>
+        <span class="n">se_dml</span><span class="p">[</span><span class="n">i_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_se</span>
+
+    <span class="n">simulation_results</span><span class="p">[</span><span class="s2">&quot;theta_dml&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta_dml</span>
+    <span class="n">simulation_results</span><span class="p">[</span><span class="s2">&quot;se_dml&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">se_dml</span>
+    <span class="n">simulation_results</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">simulation_results</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_json_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">simulation_results</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">((</span><span class="n">theta_dml</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span><span class="o">/</span><span class="n">se_dml</span><span class="p">,</span>
                   <span class="n">color</span><span class="o">=</span><span class="n">face_colors</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="n">edge_colors</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
@@ -1447,7 +1322,7 @@ $<span class="math notranslate nohighlight">\(
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0, &#39;$(\\hat{\\theta}_0 - \\theta_0)/\\hat{\\sigma}$&#39;)
 </pre></div>
 </div>
-<img alt="../../_images/ab695e1db5270ef4a0f943129c48d0d020c0a24a3d41215d781e130d162546fb.png" src="../../_images/ab695e1db5270ef4a0f943129c48d0d020c0a24a3d41215d781e130d162546fb.png" />
+<img alt="../../_images/25e0a6a7587b9df4d27c92413e5970d9f9ea6af84e2a0138caefb4409a8d1127.png" src="../../_images/25e0a6a7587b9df4d27c92413e5970d9f9ea6af84e2a0138caefb4409a8d1127.png" />
 </div>
 </div>
 </section>
