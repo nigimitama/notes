@@ -510,6 +510,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../recommender_system/collaborative_filtering.html">協調フィルタリング</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../recommender_system/matrix_factorization.html">行列分解に基づく推薦システム</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../recommender_system/factorization_machines.html">Factorization Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recommender_system/bayesian_personalized_ranking.html">Bayesian Personalized Ranking (BPR)</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ビジネス関連知識</span></p>
 <ul class="nav bd-sidenav">
@@ -812,6 +813,31 @@ document.write(`
 <li><p>リアルタイムで推論する必要がないとき</p></li>
 <li><p>推論に時間がかかるモデルのとき</p></li>
 </ul>
+<div class="admonition-note-com admonition">
+<p class="admonition-title">例：note.comのレコメンド</p>
+<p><a class="reference external" href="https://note.com/mussso/n/n25e01c798e84#h0-1">読者の行動データを用いたnote記事レコメンドのMLパイプラインツアー｜むっそ</a></p>
+<ul class="simple">
+<li><p>モデルロードパターン：機械学習モデルはS3に保存してあり、SageMakerのBatch Transformで起動するDockerコンテナにロードして推論する</p></li>
+<li><p>バッチ推論パターン：EventBridgeの定期実行により、対象のデータ群に対してバッチ推論を実行する。</p></li>
+</ul>
+<ol class="arabic simple">
+<li><p>モデル学習/作成プロセス</p>
+<ul class="simple">
+<li><p>EventBridgeにより定期的に起動 → Glueで情報抽出 → SageMaker training jobで学習</p></li>
+</ul>
+</li>
+<li><p>モデルのバッチ推論プロセス</p>
+<ul class="simple">
+<li><p>SageMaker BatchTransformでユーザーごとのレコメンド内容をまとめて推論</p></li>
+</ul>
+</li>
+<li><p>バッチ推論結果のDynamoDB登録プロセス</p>
+<ul class="simple">
+<li><p>推論結果はSQSに送信され、LambdaからDynamoDBに投入</p></li>
+</ul>
+</li>
+</ol>
+</div>
 </section>
 <section id="data-cache-pattern">
 <h3>Data cache pattern<a class="headerlink" href="#data-cache-pattern" title="Permalink to this heading">#</a></h3>

@@ -512,6 +512,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../../recommender_system/collaborative_filtering.html">協調フィルタリング</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../recommender_system/matrix_factorization.html">行列分解に基づく推薦システム</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../recommender_system/factorization_machines.html">Factorization Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recommender_system/bayesian_personalized_ranking.html">Bayesian Personalized Ranking (BPR)</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ビジネス関連知識</span></p>
 <ul class="nav bd-sidenav">
@@ -880,8 +881,8 @@ f_x = 3x^2 - 2xy + y^2\\
 f_y = 3y^2 + 2xy - x^2\\
 f_{xx} = 6x - 2y\\
 f_{yy} = 6y + 2x\\
-f_{xy} = 2y - 2x\\
-f_{yx} = 2y - 2x\\
+f_{xy} = - 2x + 2y\\
+f_{yx} = - 2x + 2y\\
 \end{split}\]</div>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
@@ -890,12 +891,12 @@ f_{yx} = 2y - 2x\\
 </div>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-f_x = y^2 \sin x + 2x \cos y\\
-f_y = x^2 \sin y - 2y \cos x\\
-f_{xx} = y^2 \cos x + 2 \cos y\\
-f_{yy} = x^2 \cos y - y \cos x\\
+f_x = 2x \cos y + y^2 \sin x\\
+f_y = - x^2 \sin y - 2y \cos x\\
+f_{xx} = 2 \cos y + y^2 \cos x\\
+f_{yy} = - x^2 \cos y - 2 \cos x\\
 f_{xy} = - 2x \sin y + 2y \sin x\\
-f_{yx} = 2x \sin y + 2y \sin x\\
+f_{yx} = - 2x \sin y + 2y \sin x\\
 \end{split}\]</div>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
@@ -911,22 +912,53 @@ f_y &amp;= \frac{1}{1+x^4 y^2} x^2\\
 f_{xx} &amp;= -\frac{(1+x^4 y^2)'}{(1+x^4 y^2)^2} 2xy + \frac{1}{1+x^4 y^2} (2xy)'  \quad (積の微分公式と商の微分公式）\\
         &amp;= -\frac{4x^3 y^2}{(1+x^4 y^2)^2} 2xy + \frac{1}{1+x^4 y^2} 2y \\
         &amp;= -\frac{8x^4 y^3}{(1+x^4 y^2)^2} + \frac{2y}{1+x^4 y^2} \\
+        &amp;= -\frac{8x^4 y^3}{(1+x^4 y^2)^2} + \frac{2y(1+x^4 y^2)}{(1+x^4 y^2)^2} \\
+        &amp;= \frac{2y+ 2x^4 y^2 - 8x^4 y^3}{(1+x^4 y^2)^2} \\
+        &amp;= \frac{2y - 6x^4 y^3}{(1+x^4 y^2)^2} \\
+        &amp;= \frac{2y(1 - 3x^4 y^2)}{(1+x^4 y^2)^2} \\
 f_{yy} &amp;=-\frac{(1+x^4 y^2)'}{(1+x^4 y^2)^2} x^2 + \frac{1}{1+x^4 y^2} (x^2)'  \quad (積の微分公式と商の微分公式）\\
         &amp;=-\frac{2 x^6 y}{(1+x^4 y^2)^2}\\
-f_{xy} &amp;= -\frac{2x^4 y}{(1+x^4 y^2)^2} 2xy + \frac{1}{1+x^4 y^2} 2x\\
-        &amp;= -\frac{4x^5 y^2}{(1+x^4 y^2)^2} + \frac{2x}{1+x^4 y^2}\\
-f_{yx} &amp;= -\frac{4x^3 y^2}{(1+x^4 y^2)^2} x^2\\
-       &amp;= -\frac{4x^5 y^2}{(1+x^4 y^2)^2}\\ 
+f_{xy} &amp;= \frac{(2xy)' (1 + x^4 y^2) - 2xy (1 + x^4 y^2)'}{(1 + x^4 y^2)^2}\\
+        &amp;= \frac{2x (1 + x^4 y^2) - 4x^5 y^2}{(1 + x^4 y^2)^2}\\
+        &amp;= \frac{2x + 2x^5 y^2 - 4x^5 y^2}{(1 + x^4 y^2)^2}\\
+        &amp;= \frac{2x - 2x^5 y^2}{(1 + x^4 y^2)^2}\\
+        &amp;= \frac{2x(1 - x^4 y^2)}{(1 + x^4 y^2)^2}\\
+\\
+f_{yx} &amp;= \frac{(x^2)' (1 + x^4 y^2) - x^2 (1 + x^4 y^2)'}{(1 + x^4 y^2)^2}\\
+        &amp;= \frac{2x (1 + x^4 y^2) - x^2 \times 4x^3 y^2}{(1 + x^4 y^2)^2}\\
+        &amp;= \frac{2x + 2x^5 y^2 - 4x^5 y^2}{(1 + x^4 y^2)^2}\\
+        &amp;= \frac{2x - 2x^5 y^2}{(1 + x^4 y^2)^2}\\
+        &amp;= \frac{2x(1 - x^4 y^2)}{(1 + x^4 y^2)^2}\\
 \end{align}
 \end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;x y&#39;</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle - \frac{8 x^{4} y^{3}}{\left(x^{4} y^{2} + 1\right)^{2}} + \frac{2 y}{x^{4} y^{2} + 1}\]</div>
+</div>
+</div>
 <aside class="margin sidebar">
 <p class="sidebar-title">商の微分</p>
 <div class="math notranslate nohighlight">
-\[
+\[\begin{split}
 \left\{ \frac{1}{f(x)} \right\}' 
 = -\frac{f'(x)}{[f(x)]^2}
 ,\ (f(x) \neq 0)
-\]</div>
+\\
+\left\{ \frac{f(x)}{g(x)} \right\}'
+= \frac{f'(x)g(x) - f(x) g'(x)}{[g(x)]^2}
+,\  (g(x) \neq 0)
+\end{split}\]</div>
 </aside>
 <aside class="margin sidebar">
 <p class="sidebar-title">積の微分</p>
@@ -988,24 +1020,11 @@ f_{yx} &amp;= -\frac{4x^3 y^2}{(1+x^4 y^2)^2} x^2\\
 &amp;= \frac{1}{y^2} (x') + y \frac{(x^2)'}{(x^2)^2} \quad (商の微分公式)\\
 &amp;= \frac{1}{y^2} + \frac{2y}{x^3}\\
 \frac{\partial z}{\partial y}
-&amp;= \frac{x 2}{y^3} + \frac{1}{x^2}
+&amp;= \left(\frac{1}{y^2}\right)' x - \frac{1}{x^2} (y)'\\
+&amp;= -\frac{2y}{y^4} x - \frac{1}{x^2}\\
+&amp;= -\frac{2x}{y^3} - \frac{1}{x^2}\\
 \end{align}
 \end{split}\]</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sp</span>
-<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;x y&#39;</span><span class="p">)</span>
-<span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{1}{y^{2}} + \frac{2 y}{x^{3}}\]</div>
-</div>
-</div>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <p class="sd-card-text">(3) <span class="math notranslate nohighlight">\(z=\sin (2 x+1) \cos \left(y^2+4\right)\)</span></p>
@@ -1049,19 +1068,16 @@ F(x,y,z) := 3x^2 + 4y^2 - 5z^2 - 20 = 0
 <p>とおく。</p>
 <div class="math notranslate nohighlight">
 \[
-\begin{align}
-\frac{\partial F}{\partial x} &amp;= 6x
-\frac{\partial F}{\partial y} &amp;= 8y
-\frac{\partial F}{\partial z} &amp;= 10z
-\end{align}
+\frac{\partial F}{\partial x} = 6x, \quad
+\frac{\partial F}{\partial y} = 8y, \quad
+\frac{\partial F}{\partial z} = 10z
 \]</div>
 <p>であり、<span class="math notranslate nohighlight">\(\frac{\partial F}{\partial z} \neq 0\)</span>のため、定理</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}
-\frac{\partial z}{\partial x} = -\frac{\partial F/\partial x}{\partial F / \partial z}
-\\
+\[
+\frac{\partial z}{\partial x} = -\frac{\partial F/\partial x}{\partial F / \partial z} , \quad
 \frac{\partial z}{\partial y} = -\frac{\partial F/\partial y}{\partial F / \partial z}
-\end{split}\]</div>
+\]</div>
 <p>より</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1069,10 +1085,12 @@ F(x,y,z) := 3x^2 + 4y^2 - 5z^2 - 20 = 0
 \frac{\partial z}{\partial x}
 &amp;= -\frac{\partial F/\partial x}{\partial F / \partial z}
 = -\frac{6x}{10z}
+= -\frac{3x}{5z}
 \\
 \frac{\partial z}{\partial y}
 &amp;= -\frac{\partial F/\partial y}{\partial F / \partial z}
 = -\frac{8y}{10z}
+= -\frac{4y}{5z}
 \end{align}
 \end{split}\]</div>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
