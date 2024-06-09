@@ -505,6 +505,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../image_processing/introduction.html">画像認識</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image_processing/rotation_correction.html">傾き補正</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image_processing/distortion_correction.html">歪み補正・台形補正</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image_processing/similarity_and_hashing.html">類似度・hash化</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">推薦システム</span></p>
 <ul class="nav bd-sidenav">
@@ -584,6 +585,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../financial_economics/asset_pricing.html">Asset Pricing</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../financial_economics/papers/index.html">論文メモ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../financial_economics/papers/abcd_forcast.html">ABCD Forcast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../financial_economics/papers/deep_portfolio.html">Deep Portfolio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../financial_economics/papers/llm.html">計量ファイナンスにおけるLLMの活用</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../financial_economics/financial_time_series/index.html">金融時系列解析</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -990,19 +993,27 @@ Prediction: programs
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 1.1105, -0.6425, -0.0193,  0.3737,  0.2823, -1.3952, -0.6488,  0.3554,
-          0.1139,  1.1583,  0.0178, -0.8539, -1.1469,  0.9708, -1.6777, -0.0480,
-          1.2175,  1.0396, -0.3706,  0.0931,  0.0237,  1.6375,  0.6791, -0.3148,
-          0.5979, -1.4812, -1.5330,  0.8721,  0.8121,  0.1604,  0.9904,  0.1881,
-         -0.5511,  1.1293,  0.2715, -1.2203,  0.6736, -0.9023, -2.2503, -0.2679,
-          1.2043,  1.2623,  1.4621,  0.9250, -0.4352, -0.9793, -2.0300, -0.6860,
-          1.2693,  0.7363, -0.6256,  0.3495, -0.8435,  0.5223,  0.0188, -1.3997,
-          0.8353, -0.3707, -0.5940,  0.6533, -0.8755, -0.2586, -0.3639, -1.0299,
-          0.1512, -0.4049, -0.2985, -0.4290,  0.6619,  1.8655, -1.2800,  0.6843,
-          0.9140, -0.8722,  0.3050, -0.7831,  1.4204, -1.2414,  0.7946, -1.3272,
-          0.5950, -0.4192, -0.1391, -0.0613,  1.1780,  0.1138, -0.4542, -0.2558,
-          1.2311, -0.6102, -0.1838,  0.1746,  1.9528,  2.7574,  1.0545, -0.8637,
-          1.7753, -0.6701,  0.3950, -0.5131]], grad_fn=&lt;ViewBackward0&gt;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[-1.0227e+00,  7.4843e-01,  8.9511e-01,  1.7676e+00,  6.2802e-01,
+         -9.7740e-02, -7.6400e-01, -8.9989e-01, -1.6742e-01, -1.3116e-01,
+          8.9403e-02, -3.9853e-01,  1.8954e+00, -4.2605e-01, -1.0120e+00,
+          1.6157e-01, -2.7762e-01, -1.4373e+00,  3.4075e+00, -6.5091e-01,
+          1.6744e-01, -3.1139e-01, -1.5110e-01,  1.2654e-01, -3.6852e-01,
+          9.6598e-01, -5.1254e-01,  6.1857e-01,  6.5657e-01,  1.5214e+00,
+         -6.0438e-01, -8.2861e-01,  4.3914e-01,  6.1423e-01, -3.8622e-02,
+         -1.7283e+00,  1.8930e-01,  7.6890e-02, -1.2247e+00, -5.0266e-02,
+          1.0007e+00, -1.8694e+00,  1.4057e-01,  1.4578e+00,  9.0276e-01,
+         -3.1032e-01, -1.2111e+00,  1.7822e+00,  2.9942e-01, -1.3231e+00,
+         -7.8788e-01,  1.2886e-01, -2.9543e-01,  1.6147e+00, -1.9481e+00,
+         -7.2893e-01, -1.9937e+00, -2.5597e-01,  1.7669e+00,  1.0237e+00,
+          2.2270e-03, -1.4242e-02, -1.1211e+00, -4.2551e-01, -7.9149e-01,
+          6.4186e-01, -1.0921e+00,  1.2545e+00, -1.0226e+00,  1.6345e+00,
+         -2.1891e+00,  3.5698e-01, -1.1611e+00,  8.7902e-01,  1.0705e+00,
+         -6.2397e-01, -6.5940e-01, -2.9546e-01,  2.3535e+00,  5.6768e-02,
+          2.2341e+00,  1.4022e-01,  8.3259e-01,  1.8896e+00,  5.0123e-01,
+         -2.0254e+00, -5.3823e-01, -5.6930e-01,  9.1640e-01,  4.2538e-01,
+          7.2531e-01,  2.6254e-01, -5.9577e-01, -1.1553e+00,  3.5249e-01,
+          1.2873e+00,  1.7449e+00, -3.8507e-01, -1.0587e+00, -9.2203e-01]],
+       grad_fn=&lt;ViewBackward0&gt;)
 </pre></div>
 </div>
 </div>
