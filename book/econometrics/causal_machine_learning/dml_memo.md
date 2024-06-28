@@ -225,5 +225,51 @@ $$
 
 
 
+# 3. Dml: Post‐Regularized Inference Based on Neyman‐Orthogonal Estimating Equations
+
+## 3.1. Definition of Dml and Its Basic Properties
+
+
+
+### Definition 3.1.DML1
+
+(1) サンプル$(W_i)^N_{i=1}$のインデックス$[N]=\{1,\dots,N\}$のK-foldのランダムな分割$\left(I_k\right)_{k=1}^K$ を作る。
+
+$I_k$のサイズは$n=N/K$である。
+
+それぞれの$k\in[K]=\{1,\dots,K\}$について、$I_k^c := \{1,\dots,N\} \backslash I_k$を定義する。
+
+(2) 各$k\in[K]$について、局外母数$\eta_0$のML推定量
+$$
+\hat{\eta}_{0, k}=\hat{\eta}_0\left(\left(W_i\right)_{i \in I_k^c}\right)
+$$
+を構築する。
+
+(3) 各$k\in[K]$について、推定量$\check{\theta}_{0, k}$を
+$$
+\mathbb{E}_{n, k}\left[
+\psi \left(W ; \check{\theta}_{0, k}, \hat{\eta}_{0, k} \right)
+\right]=0
+$$
+の解として構築する。$\psi$はネイマン直交スコアで、$\mathbb{E}_{n, k}$​は経験期待値
+$$
+\mathbb{E}_{n, k}[\psi(W)] = \frac{1}{n} \sum_{i \in I_k} \psi\left(W_i\right)
+$$
+である。
+
+(4) 推定量を集計する
+$$
+\widetilde{\theta}_0=\frac{1}{K} \sum_{k=1}^K \check{\theta}_{0, k}
+$$
+
+
+
+
+
+
+
+
+
+
 
 
