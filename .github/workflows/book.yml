@@ -4,12 +4,15 @@ name: deploy-book
 on:
   push:
     branches:
-    - master
-    - develop
+      - master
+      - develop
 
 jobs:
   deploy-book:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        job: [1, 2]
 
     container:
       image: python:3.10
@@ -17,21 +20,21 @@ jobs:
         - .:/workdir
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: |
-        apt update && \
-        apt install -y graphviz libopencv-dev
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          apt update && \
+          apt install -y graphviz libopencv-dev
+          pip install -r requirements.txt
 
-    - name: Build the book
-      run: |
-        jupyter-book build book/
+      - name: Build the book
+        run: |
+          jupyter-book build book/
 
-    - name: Push the book's HTML to github-pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./book/_build/html
+      - name: Push the book's HTML to github-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./book/_build/html
