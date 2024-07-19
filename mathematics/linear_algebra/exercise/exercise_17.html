@@ -586,6 +586,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/networking.html">ネットワーク・通信</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/domain_driven_design.html">ドメイン駆動設計</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/serverless.html">Serverless / FaaS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/aws_sam.html">AWS SAM メモ</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../software_engineering/security/index.html">サイバーセキュリティ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -874,15 +875,123 @@ A=\left(\begin{array}{llll}
 <p class="sd-card-text">により定める。 <span class="math notranslate nohighlight">\(\operatorname{Im} f_A\)</span> および <span class="math notranslate nohighlight">\(\operatorname{Ker} f_A\)</span> の基底を 1 組求めよ。さらに、 <span class="math notranslate nohighlight">\(f_A\)</span> の階数および退化次数を求め、 <span class="math notranslate nohighlight">\(f_A\)</span> に対して次元定理が成り立つことを確かめよ。</p>
 </div>
 </div>
-<p>定義より、</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+（参考）定義</div>
 <div class="math notranslate nohighlight">
-\[
-\operatorname{Im} f_A = \{ y \in \mathbb{R}^4 \mid y = f_A(x) \ (x \in \mathbb{R}^4) \}
-\]</div>
+\[\begin{split}
+\operatorname{Im} f_A = \{ y \in \mathbb{R}^4 \mid y = f_A(x) \ (x \in \mathbb{R}^4) \}\\
+\operatorname{Ker} f_A = \{ x \in \mathbb{R}^4 \mid f_A(x) = 0 \ (x \in \mathbb{R}^4) \}
+\end{split}\]</div>
+</div>
+</div>
+<p><strong><span class="math notranslate nohighlight">\(f_A\)</span>の階数</strong></p>
+<p><span class="math notranslate nohighlight">\(A\)</span>を行基本変形して階段行列を作ると</p>
 <div class="math notranslate nohighlight">
-\[
-\operatorname{Im} f_A = \{ y \in \mathbb{R}^4 \mid y = f_A(x) \ (x \in \mathbb{R}^4) \}
-\]</div>
+\[\begin{split}
+\left(\begin{array}{llll}
+1 &amp; 0 &amp; 0 &amp; 0\\
+0 &amp; 1 &amp; 2 &amp; 0\\
+0 &amp; 0 &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; 0 &amp; 0\\
+\end{array}\right)
+\end{split}\]</div>
+<p>と変形できるため<span class="math notranslate nohighlight">\(\operatorname{rank} f_A = 2\)</span>である。</p>
+<p><strong>(1) Imの基底</strong></p>
+<p><span class="math notranslate nohighlight">\(x = (1, 1, 1, 1)^T\)</span>にすると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+Ax = 
+\left(\begin{array}{llll}
+1 &amp; 0 &amp; 0 &amp; 0 \\
+1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 2 &amp; 0 \\
+0 &amp; 1 &amp; 2 &amp; 0
+\end{array}\right)
+\left(\begin{array}{c}
+1 \\1 \\1 \\1 \\
+\end{array}\right)
+=
+\left(\begin{array}{c}
+1 \\1 \\3 \\3 \\
+\end{array}\right)
+\end{split}\]</div>
+<p><strong>2. 1組の基本解</strong></p>
+<p>解空間の基底を基本解という。</p>
+<p>前進消去した係数行列を使った連立方程式は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left\{\begin{array}{l}
+x_1+x_3+x_4=0 \\
+x_2+x_3-x_4=0
+\end{array}\right.
+\end{split}\]</div>
+<p>となる。</p>
+<p>これを解くと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+x_1=-x_3-x_4\\
+x_2=-x_3+x_4
+\end{split}\]</div>
+<p>一般解は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left(\begin{array}{l}
+x_1 \\
+x_2 \\
+x_3 \\
+x_4
+\end{array}\right)=\left(\begin{array}{r}
+-x_3-x_4 \\
+-x_3+x_4 \\
+x_3 \\
+x_4
+\end{array}\right)
+\end{split}\]</div>
+<p>未知変数<span class="math notranslate nohighlight">\(x_3, x_4\)</span>と係数の線形結合の形にして、解空間の基底（基本解）を求める</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{pmatrix}
+x_1 \\
+x_2 \\
+x_3 \\
+x_4
+\end{pmatrix}
+=
+x_3
+\begin{pmatrix}
+-1\\
+-1\\
+1\\
+0
+\end{pmatrix}
++
+x_4
+\begin{pmatrix}
+-1\\
+1\\
+0\\
+1
+\end{pmatrix}
+\end{split}\]</div>
+<p>基底（基本解）は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left\{\left(\begin{array}{r}
+-1 \\
+-1 \\
+1 \\
+0
+\end{array}\right),\left(\begin{array}{r}
+-1 \\
+1 \\
+0 \\
+1
+\end{array}\right)\right\}
+\end{split}\]</div>
+<p><strong>(2) Kerの基底</strong></p>
+<p><span class="math notranslate nohighlight">\(x\)</span>を零ベクトルとすれば<span class="math notranslate nohighlight">\(f_A(x)=0\)</span>になるので<span class="math notranslate nohighlight">\(0 \in \operatorname{Ker} f_A\)</span></p>
 </section>
 <section id="id4">
 <h2>問3<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>

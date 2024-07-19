@@ -586,6 +586,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/networking.html">ネットワーク・通信</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/domain_driven_design.html">ドメイン駆動設計</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/serverless.html">Serverless / FaaS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/aws_sam.html">AWS SAM メモ</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/security/index.html">サイバーセキュリティ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -819,8 +820,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ver">次元定理（線形写像ver.）</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">ランク</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">ランク</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">ランクの求め方</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1286,9 +1290,78 @@ A: \mathbb{R}^n \to \mathbb{R}^m
 \rank A \leq m\\
 \rank A \leq n
 \end{split}\]</div>
-</section>
 <section id="id11">
-<h2>参考文献<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h2>
+<h3>ランクの求め方<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h3>
+<p>線形写像を構築する行列に行基本変形を行って階段行列を作ったとき、零ベクトルでない行の数がランクに相当する。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+例（ランクの求め方）</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(f: \mathbb{R}^3 \to \mathbb{R}^3\)</span>が線形写像であり<span class="math notranslate nohighlight">\(f(x) = Ax, x\in \mathbb{R}^3\)</span>とする。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A = \begin{pmatrix}
+1 &amp; 2 &amp; 3\\
+2 &amp; 3 &amp; 4\\
+3 &amp; 4 &amp; 5\\
+\end{pmatrix}
+\end{split}\]</div>
+<p class="sd-card-text">とする。この線形写像<span class="math notranslate nohighlight">\(f\)</span>のランク（行列<span class="math notranslate nohighlight">\(A\)</span>のランク）を求めたいとする。</p>
+<p class="sd-card-text">1行目を2倍して2行目から引く</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{pmatrix}
+1 &amp; 2 &amp; 3\\
+0 &amp; -1 &amp; -2\\
+3 &amp; 4 &amp; 5\\
+\end{pmatrix}
+\end{split}\]</div>
+<p class="sd-card-text">1行目を3倍して3行目から引く</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{pmatrix}
+1 &amp; 2 &amp; 3\\
+0 &amp; -1 &amp; -2\\
+0 &amp; -2 &amp; -4\\
+\end{pmatrix}
+\end{split}\]</div>
+<p class="sd-card-text">2行目を2倍して3行目から引く</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{pmatrix}
+1 &amp; 2 &amp; 3\\
+0 &amp; -1 &amp; -2\\
+0 &amp; 0 &amp; 0\\
+\end{pmatrix}
+\end{split}\]</div>
+<p class="sd-card-text">階段行列になった。</p>
+<p class="sd-card-text">零ベクトルでない行の数は2であるので、<span class="math notranslate nohighlight">\(\operatorname{rank} f = \operatorname{rank} A = 2\)</span></p>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+<span class="p">])</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="id12">
+<h2>参考文献<a class="headerlink" href="#id12" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://dora.bk.tsukuba.ac.jp/~takeuchi/?%E7%B7%9A%E5%BD%A2%E4%BB%A3%E6%95%B0%EF%BC%A9%2F%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E7%A9%BA%E9%96%93%E3%81%A8%E7%B7%9A%E5%BD%A2%E5%86%99%E5%83%8F#va8ffb2b">線形代数Ｉ/ベクトル空間と線形写像 - 武内＠筑波大</a></p></li>
 <li><p>川久保勝夫（2010）『線形代数学 （新装版）』</p></li>
@@ -1377,8 +1450,11 @@ A: \mathbb{R}^n \to \mathbb{R}^m
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ver">次元定理（線形写像ver.）</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">ランク</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">ランク</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">ランクの求め方</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">参考文献</a></li>
 </ul>
   </nav></div>
 
