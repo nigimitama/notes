@@ -233,6 +233,11 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../mathematics/linear_algebra/inverse_matrix.html">逆行列</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../mathematics/linear_algebra/vector_space/index.html">ベクトル空間</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../mathematics/linear_algebra/vector_space/vector_space.html">ベクトル空間</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mathematics/linear_algebra/vector_space/basis.html">基底</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mathematics/linear_algebra/vector_space/linear_mapping.html">線形写像</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mathematics/linear_algebra/vector_space/rank_nullity_theorem.html">像、核、次元定理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mathematics/linear_algebra/vector_space/rank.html">行列の階数（rank）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mathematics/linear_algebra/vector_space/dual_space.html">双対空間</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../mathematics/linear_algebra/simultaneous_linear_equations/index.html">連立1次方程式</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1039,19 +1044,27 @@ Prediction: programs
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 1.0706, -0.4390,  0.6706,  0.1360,  0.5367, -1.5812,  0.2453,  0.9441,
-          0.8560,  0.8130, -1.6467,  0.5177, -0.5838,  1.6816, -0.6483, -1.0049,
-          1.4773,  1.8011, -1.6319,  0.6719, -1.7035,  0.9098, -0.1321, -0.0392,
-          1.1195, -0.5301, -2.1463, -0.4817, -0.0051, -0.4270,  0.1782,  0.9339,
-         -0.5070, -0.2182, -0.6852,  1.5063,  0.8204,  0.7703, -0.4035, -0.0221,
-          0.0566,  0.8611,  1.0832,  0.5705, -0.5773,  1.4335,  0.1947, -0.2851,
-         -1.0594,  0.8816, -0.4138,  0.7252, -0.3805,  1.1829,  0.0521, -0.4448,
-          0.9881,  0.1646,  1.2075,  0.4675, -0.3273, -0.5592,  0.7101,  1.2733,
-          0.7565,  0.7752, -0.9246, -0.0080, -0.3974, -0.7408,  0.2479, -0.1135,
-          0.3170, -0.2097,  0.6045, -1.0052,  3.2842,  0.8380, -1.3147,  0.2361,
-          0.8952, -0.6087, -0.0555, -0.2174,  0.2434, -1.6682, -0.6863, -1.5768,
-          0.1123, -1.6524, -1.5782,  1.7712,  1.5898, -0.9744, -0.2317, -0.5789,
-         -1.7368,  0.1404, -1.8664,  0.3394]], grad_fn=&lt;ViewBackward0&gt;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[-1.2900e+00, -6.3479e-01, -1.2591e+00, -6.3166e-01,  1.0190e-01,
+         -1.0639e+00,  1.0737e+00,  5.2803e-01, -5.5701e-01, -5.0281e-01,
+          5.1946e-01,  1.6270e-01,  1.5204e-01,  2.7648e-01,  1.0188e+00,
+          1.2294e+00, -2.2291e-01,  2.9160e-01, -1.1536e+00, -1.7971e+00,
+         -6.0903e-01, -1.3738e+00,  1.3156e+00,  1.1300e+00, -1.9176e-02,
+         -1.0167e+00, -1.3290e+00,  2.6061e-01, -6.1581e-01,  2.0020e+00,
+         -6.7492e-01,  9.6374e-01, -1.5732e-01,  1.3470e+00, -1.1264e+00,
+          1.0923e+00, -1.3383e+00, -2.0391e+00,  1.2213e-01, -9.9528e-01,
+          2.2868e-01,  1.4853e+00, -4.0451e-01,  7.0193e-01, -5.1333e-01,
+         -6.5480e-01,  1.1001e+00,  6.1094e-01,  3.7207e-01, -1.6418e+00,
+         -1.8483e+00, -2.4729e-01,  1.8961e+00,  5.7463e-01, -4.6115e-01,
+          1.3332e+00, -2.2118e-01,  8.0678e-02,  3.0578e+00,  4.8260e-01,
+         -4.0050e-01, -2.8066e-01, -5.4128e-01,  6.1484e-02, -8.9947e-01,
+          3.4546e-01, -1.5019e-03,  1.2843e+00,  6.3397e-01, -2.5841e-01,
+         -1.5979e+00,  1.5105e+00, -2.2684e-01, -1.5472e+00,  1.0042e+00,
+          9.3889e-01,  2.2483e-01, -4.7670e-01,  9.0520e-01,  2.3027e-01,
+         -1.9432e+00, -1.0692e+00, -3.4782e-01, -9.1484e-01, -1.5731e-01,
+         -4.0808e-01, -8.0673e-01,  9.0477e-01, -1.2080e-01, -1.6161e+00,
+         -1.4350e-01,  5.7813e-02,  4.0258e-01,  1.1452e+00,  5.6678e-01,
+          9.9919e-01, -1.3185e+00, -1.1034e+00,  1.5027e+00,  8.9694e-01]],
+       grad_fn=&lt;ViewBackward0&gt;)
 </pre></div>
 </div>
 </div>
@@ -1154,9 +1167,9 @@ p(w_O|w_I) = \frac{\exp( v_{w_O}^T v_{w_I} )}{\sum^W_{w=1} \exp( v_{w}^T v_{w_I}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>male: -0.0251
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>queen: 0.00656
 ruler: -0.0263
-queen: 0.00656
+male: -0.0251
 female: -0.0395
 </pre></div>
 </div>
