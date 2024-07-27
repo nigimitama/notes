@@ -830,6 +830,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Direct Approach</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ra-learner">RA-learner</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pw-learner">PW-learner</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dr-learner">DR-learner</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#x-learners">X-learners</a></li>
 </ul>
 </li>
@@ -912,6 +913,13 @@ document.write(`
 <h2>Indirect Approach<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <section id="t-learner">
 <h3>T-learner<a class="headerlink" href="#t-learner" title="Permalink to this heading">#</a></h3>
+<div class="admonition-t-learner admonition">
+<p class="admonition-title">T-learner</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\tau}(x)=\hat{\mu}_1(x)-\hat{\mu}_0(x)
+\]</div>
+</div>
 <p>回帰問題が解ける任意のアルゴリズムを2つ使い（two learners）、以下の3つのステップでCATEを推定する。</p>
 <ol class="arabic simple">
 <li><p>対照群の観測データをもとに、control response function <span class="math notranslate nohighlight">\(\mu_0(x)\)</span> を推定する</p></li>
@@ -932,20 +940,27 @@ document.write(`
 </ol>
 <div class="math notranslate nohighlight">
 \[
-\hat{\tau}_T(x)=\hat{\mu}_1(x)-\hat{\mu}_0(x)
+\hat{\tau}(x)=\hat{\mu}_1(x)-\hat{\mu}_0(x)
 \]</div>
 </section>
 <section id="s-learner">
 <h3>S-learner<a class="headerlink" href="#s-learner" title="Permalink to this heading">#</a></h3>
+<div class="admonition-s-learner admonition">
+<p class="admonition-title">S-learner</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\tau}(x)=\hat{\mu}(x, 1)-\hat{\mu}(x, 0)
+\]</div>
+</div>
 <p>処置の有無を表す変数<span class="math notranslate nohighlight">\(Z\)</span>を1つの回帰モデルの特徴量に含める（single learner）</p>
 <div class="math notranslate nohighlight">
 \[
 \mu(x, z):=\mathbb{E}\left[Y^{o b s} \mid X=x, Z=z\right]
 \]</div>
-<p>そして</p>
+<p>を作り、予測値の差分</p>
 <div class="math notranslate nohighlight">
 \[
-\hat{\tau}_S(x)=\hat{\mu}(x, 1)-\hat{\mu}(x, 0)
+\hat{\tau}(x)=\hat{\mu}(x, 1)-\hat{\mu}(x, 0)
 \]</div>
 <p>によってCATEを推定する</p>
 </section>
@@ -971,12 +986,15 @@ document.write(`
 </section>
 <section id="ra-learner">
 <h2>RA-learner<a class="headerlink" href="#ra-learner" title="Permalink to this heading">#</a></h2>
+<div class="admonition-ra-learner admonition">
+<p class="admonition-title">RA-learner</p>
 <div class="math notranslate nohighlight">
 \[
 \tilde{Y}_{RA, \hat{\eta}}
 = D \underbrace{(Y - \hat{\mu}_0(X))}_{\text{TE Proxy}}
 + (1 - D) \underbrace{(\hat{\mu}_1(X) - Y)}_{\text{TE Proxy}}
 \]</div>
+</div>
 <p>条件付き期待値をとると、</p>
 <div class="math notranslate nohighlight">
 \[
@@ -998,10 +1016,13 @@ document.write(`
 <section id="pw-learner">
 <h3>PW-learner<a class="headerlink" href="#pw-learner" title="Permalink to this heading">#</a></h3>
 <p>逆確率重み付け（IPW）推定量</p>
+<div class="admonition-pw-learner admonition">
+<p class="admonition-title">PW-learner</p>
 <div class="math notranslate nohighlight">
 \[
 \tilde{Y}_{PW, \hat{\eta}}=\left(\frac{D}{\hat{\pi}(X)} -\frac{1-D}{1-\hat{\pi}(X)}\right) Y
 \]</div>
+</div>
 <p>↑Horvitz-Thompson transformation</p>
 <p>条件付き期待値をとると、</p>
 <div class="math notranslate nohighlight">
@@ -1013,6 +1034,36 @@ document.write(`
 <div class="math notranslate nohighlight">
 \[
 = \mu_1(x)-\mu_0(x)=\tau(x)
+\]</div>
+</section>
+<section id="dr-learner">
+<h3>DR-learner<a class="headerlink" href="#dr-learner" title="Permalink to this heading">#</a></h3>
+<p>Doubly Robust推定量、あるいは Augmented Inverse Propensity-weighted (AIPW) 推定量と呼ばれるもの</p>
+<div class="admonition-dr-learner admonition">
+<p class="admonition-title">DR-learner</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{Y}_{D R, \hat{\eta}}
+=\left(\frac{D}{\hat{\pi}(X)}-\frac{(1-W)}{1-\hat{\pi}(X)}\right) Y
++ \left[\left(1-\frac{D}{\hat{\pi}(X)}\right) \hat{\mu}_1(x)-\left(1-\frac{1-D}{1-\hat{\pi}(X)}\right) \hat{\mu}_0(X)\right]
+\]</div>
+</div>
+<p>条件付き期待値をとると</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}\left[\tilde{Y}_{D R, \hat{\eta}} \mid X=x\right]=\frac{\pi(x)}{\hat{\pi}(x)} \mu_1(x)-\frac{1-\pi(x)}{1-\hat{\pi}(x)} \mu_0(x)+\left[\left(1-\frac{\pi(x)}{\hat{\pi}(x)}\right) \hat{\mu}_1(x)-\left(1-\frac{1-\pi(x)}{1-\hat{\pi}(x)}\right) \hat{\mu}_0(x)\right]
+\]</div>
+<p>もし <span class="math notranslate nohighlight">\(\hat{\pi}(x)=\pi(x)\)</span> なら</p>
+<div class="math notranslate nohighlight">
+\[
+\quad=\mu_1(x)-\mu_0(x)+0 \times \hat{\mu}_1(x)-0 \times \hat{\mu}_0(x)=\tau(x)
+\]</div>
+<p>もし <span class="math notranslate nohighlight">\(\hat{\mu}_d(x) = \mu_d(x)\)</span> なら</p>
+<div class="math notranslate nohighlight">
+\[
+\quad=\left(1-\frac{\pi(x)}{\hat{\pi}(x)}
++ \frac{\pi(x)}{\hat{\pi}(x)}\right) \mu_1(x)
+- \left(1-\frac{1-\pi(x)}{1-\hat{\pi}(x)}+\frac{1-\pi(x)}{1-\hat{\pi}(x)}\right) \mu_0(x)=\tau(x)
 \]</div>
 </section>
 <section id="x-learners">
@@ -1191,6 +1242,7 @@ Y_i(D)
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Direct Approach</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ra-learner">RA-learner</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pw-learner">PW-learner</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dr-learner">DR-learner</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#x-learners">X-learners</a></li>
 </ul>
 </li>
