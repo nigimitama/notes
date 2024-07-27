@@ -519,6 +519,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/language_model.html">言語モデル</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/embedding.html">単語の埋め込み</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/rnn.html">言語モデルとRNN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/latent_dirichlet_allocation.html">トピックモデル（LDA）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/document_understanding.html">Document Understanding</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../natural_language_processing/large_language_models/index.html">Large Language Models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/introduction.html">Large Language Models</a></li>
@@ -853,7 +854,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.PairGrid at 0x7fa950d8d7e0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.PairGrid at 0x7faa80c96fe0&gt;
 </pre></div>
 </div>
 <img alt="../../_images/745d0468ce10287de042aee0d34b4078b0b0beda0aec8541f846f2b6ba8f12b7.png" src="../../_images/745d0468ce10287de042aee0d34b4078b0b0beda0aec8541f846f2b6ba8f12b7.png" />
@@ -929,77 +930,78 @@ document.write(`
 <span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
 <span class="n">File</span> <span class="o">&lt;</span><span class="n">timed</span> <span class="n">exec</span><span class="o">&gt;</span><span class="p">:</span><span class="mi">6</span>
 
-<span class="nn">Cell In[2], line 11,</span> in <span class="ni">dml1</span><span class="nt">(Y, D, X)</span>
+<span class="nn">Cell In[2], line 10,</span> in <span class="ni">dml1</span><span class="nt">(Y, D, X)</span>
+<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="n">thetas</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">)):</span>
 <span class="g g-Whitespace">      </span><span class="mi">9</span>     <span class="c1"># 局外関数の推定</span>
-<span class="g g-Whitespace">     </span><span class="mi">10</span>     <span class="n">m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">D</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
-<span class="ne">---&gt; </span><span class="mi">11</span>     <span class="n">l</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
+<span class="ne">---&gt; </span><span class="mi">10</span>     <span class="n">m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">D</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
+<span class="g g-Whitespace">     </span><span class="mi">11</span>     <span class="n">l</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
 <span class="g g-Whitespace">     </span><span class="mi">12</span>     <span class="c1"># 残差の計算</span>
-<span class="g g-Whitespace">     </span><span class="mi">13</span>     <span class="n">V_hat</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/sklearn.py:1173,</span> in <span class="ni">LGBMRegressor.fit</span><span class="nt">(self, X, y, sample_weight, init_score, eval_set, eval_names, eval_sample_weight, eval_init_score, eval_metric, feature_name, categorical_feature, callbacks, init_model)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1156</span> <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>  <span class="c1"># type: ignore[override]</span>
-<span class="g g-Whitespace">   </span><span class="mi">1157</span>     <span class="bp">self</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1158</span>     <span class="n">X</span><span class="p">:</span> <span class="n">_LGBM_ScikitMatrixLike</span><span class="p">,</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/sklearn.py:1189,</span> in <span class="ni">LGBMRegressor.fit</span><span class="nt">(self, X, y, sample_weight, init_score, eval_set, eval_names, eval_sample_weight, eval_init_score, eval_metric, feature_name, categorical_feature, callbacks, init_model)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1172</span> <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>  <span class="c1"># type: ignore[override]</span>
+<span class="g g-Whitespace">   </span><span class="mi">1173</span>     <span class="bp">self</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1174</span>     <span class="n">X</span><span class="p">:</span> <span class="n">_LGBM_ScikitMatrixLike</span><span class="p">,</span>
    <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1170</span>     <span class="n">init_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">Booster</span><span class="p">,</span> <span class="n">LGBMModel</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1171</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;LGBMRegressor&quot;</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1172</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;Docstring is inherited from the LGBMModel.&quot;&quot;&quot;</span>
-<span class="ne">-&gt; </span><span class="mi">1173</span>     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1174</span>         <span class="n">X</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1175</span>         <span class="n">y</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1176</span>         <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1177</span>         <span class="n">init_score</span><span class="o">=</span><span class="n">init_score</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1178</span>         <span class="n">eval_set</span><span class="o">=</span><span class="n">eval_set</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1179</span>         <span class="n">eval_names</span><span class="o">=</span><span class="n">eval_names</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1180</span>         <span class="n">eval_sample_weight</span><span class="o">=</span><span class="n">eval_sample_weight</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1181</span>         <span class="n">eval_init_score</span><span class="o">=</span><span class="n">eval_init_score</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1182</span>         <span class="n">eval_metric</span><span class="o">=</span><span class="n">eval_metric</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1183</span>         <span class="n">feature_name</span><span class="o">=</span><span class="n">feature_name</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1184</span>         <span class="n">categorical_feature</span><span class="o">=</span><span class="n">categorical_feature</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1185</span>         <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1186</span>         <span class="n">init_model</span><span class="o">=</span><span class="n">init_model</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1187</span>     <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1188</span>     <span class="k">return</span> <span class="bp">self</span>
+<span class="g g-Whitespace">   </span><span class="mi">1186</span>     <span class="n">init_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">Booster</span><span class="p">,</span> <span class="n">LGBMModel</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1187</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;LGBMRegressor&quot;</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1188</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;Docstring is inherited from the LGBMModel.&quot;&quot;&quot;</span>
+<span class="ne">-&gt; </span><span class="mi">1189</span>     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1190</span>         <span class="n">X</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1191</span>         <span class="n">y</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1192</span>         <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1193</span>         <span class="n">init_score</span><span class="o">=</span><span class="n">init_score</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1194</span>         <span class="n">eval_set</span><span class="o">=</span><span class="n">eval_set</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1195</span>         <span class="n">eval_names</span><span class="o">=</span><span class="n">eval_names</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1196</span>         <span class="n">eval_sample_weight</span><span class="o">=</span><span class="n">eval_sample_weight</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1197</span>         <span class="n">eval_init_score</span><span class="o">=</span><span class="n">eval_init_score</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1198</span>         <span class="n">eval_metric</span><span class="o">=</span><span class="n">eval_metric</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1199</span>         <span class="n">feature_name</span><span class="o">=</span><span class="n">feature_name</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1200</span>         <span class="n">categorical_feature</span><span class="o">=</span><span class="n">categorical_feature</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1201</span>         <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1202</span>         <span class="n">init_model</span><span class="o">=</span><span class="n">init_model</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1203</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1204</span>     <span class="k">return</span> <span class="bp">self</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/sklearn.py:954,</span> in <span class="ni">LGBMModel.fit</span><span class="nt">(self, X, y, sample_weight, init_score, group, eval_set, eval_names, eval_sample_weight, eval_class_weight, eval_init_score, eval_group, eval_metric, feature_name, categorical_feature, callbacks, init_model)</span>
-<span class="g g-Whitespace">    </span><span class="mi">951</span> <span class="n">evals_result</span><span class="p">:</span> <span class="n">_EvalResultDict</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="g g-Whitespace">    </span><span class="mi">952</span> <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record_evaluation</span><span class="p">(</span><span class="n">evals_result</span><span class="p">))</span>
-<span class="ne">--&gt; </span><span class="mi">954</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Booster</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">955</span>     <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">956</span>     <span class="n">train_set</span><span class="o">=</span><span class="n">train_set</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">957</span>     <span class="n">num_boost_round</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_estimators</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">958</span>     <span class="n">valid_sets</span><span class="o">=</span><span class="n">valid_sets</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">959</span>     <span class="n">valid_names</span><span class="o">=</span><span class="n">eval_names</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">960</span>     <span class="n">feval</span><span class="o">=</span><span class="n">eval_metrics_callable</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
-<span class="g g-Whitespace">    </span><span class="mi">961</span>     <span class="n">init_model</span><span class="o">=</span><span class="n">init_model</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">962</span>     <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">963</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">965</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evals_result</span> <span class="o">=</span> <span class="n">evals_result</span>
-<span class="g g-Whitespace">    </span><span class="mi">966</span> <span class="bp">self</span><span class="o">.</span><span class="n">_best_iteration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Booster</span><span class="o">.</span><span class="n">best_iteration</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/sklearn.py:955,</span> in <span class="ni">LGBMModel.fit</span><span class="nt">(self, X, y, sample_weight, init_score, group, eval_set, eval_names, eval_sample_weight, eval_class_weight, eval_init_score, eval_group, eval_metric, feature_name, categorical_feature, callbacks, init_model)</span>
+<span class="g g-Whitespace">    </span><span class="mi">952</span> <span class="n">evals_result</span><span class="p">:</span> <span class="n">_EvalResultDict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="g g-Whitespace">    </span><span class="mi">953</span> <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record_evaluation</span><span class="p">(</span><span class="n">evals_result</span><span class="p">))</span>
+<span class="ne">--&gt; </span><span class="mi">955</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Booster</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">956</span>     <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">957</span>     <span class="n">train_set</span><span class="o">=</span><span class="n">train_set</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">958</span>     <span class="n">num_boost_round</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_estimators</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">959</span>     <span class="n">valid_sets</span><span class="o">=</span><span class="n">valid_sets</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">960</span>     <span class="n">valid_names</span><span class="o">=</span><span class="n">eval_names</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">961</span>     <span class="n">feval</span><span class="o">=</span><span class="n">eval_metrics_callable</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+<span class="g g-Whitespace">    </span><span class="mi">962</span>     <span class="n">init_model</span><span class="o">=</span><span class="n">init_model</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">963</span>     <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">964</span> <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">966</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evals_result</span> <span class="o">=</span> <span class="n">evals_result</span>
+<span class="g g-Whitespace">    </span><span class="mi">967</span> <span class="bp">self</span><span class="o">.</span><span class="n">_best_iteration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Booster</span><span class="o">.</span><span class="n">best_iteration</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/engine.py:335,</span> in <span class="ni">train</span><span class="nt">(params, train_set, num_boost_round, valid_sets, valid_names, feval, init_model, feature_name, categorical_feature, keep_training_booster, callbacks)</span>
-<span class="g g-Whitespace">    </span><span class="mi">333</span>     <span class="n">booster</span><span class="o">.</span><span class="n">best_score</span><span class="p">[</span><span class="n">dataset_name</span><span class="p">][</span><span class="n">eval_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span>
-<span class="g g-Whitespace">    </span><span class="mi">334</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_training_booster</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">335</span>     <span class="n">booster</span><span class="o">.</span><span class="n">model_from_string</span><span class="p">(</span><span class="n">booster</span><span class="o">.</span><span class="n">model_to_string</span><span class="p">())</span><span class="o">.</span><span class="n">free_dataset</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">336</span> <span class="k">return</span> <span class="n">booster</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/engine.py:307,</span> in <span class="ni">train</span><span class="nt">(params, train_set, num_boost_round, valid_sets, valid_names, feval, init_model, feature_name, categorical_feature, keep_training_booster, callbacks)</span>
+<span class="g g-Whitespace">    </span><span class="mi">295</span> <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks_before_iter</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">296</span>     <span class="n">cb</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">297</span>         <span class="n">callback</span><span class="o">.</span><span class="n">CallbackEnv</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">298</span>             <span class="n">model</span><span class="o">=</span><span class="n">booster</span><span class="p">,</span>
+   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">304</span>         <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">305</span>     <span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">307</span> <span class="n">booster</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fobj</span><span class="o">=</span><span class="n">fobj</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">309</span> <span class="n">evaluation_result_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_LGBM_BoosterEvalMethodResultType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="g g-Whitespace">    </span><span class="mi">310</span> <span class="c1"># check evaluation result.</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/basic.py:4563,</span> in <span class="ni">Booster.model_to_string</span><span class="nt">(self, num_iteration, start_iteration, importance_type)</span>
-<span class="g g-Whitespace">   </span><span class="mi">4560</span> <span class="n">string_buffer</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">create_string_buffer</span><span class="p">(</span><span class="n">buffer_len</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">4561</span> <span class="n">ptr_string_buffer</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_char_p</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">addressof</span><span class="p">(</span><span class="n">string_buffer</span><span class="p">))</span>
-<span class="g g-Whitespace">   </span><span class="mi">4562</span> <span class="n">_safe_call</span><span class="p">(</span>
-<span class="ne">-&gt; </span><span class="mi">4563</span>     <span class="n">_LIB</span><span class="o">.</span><span class="n">LGBM_BoosterSaveModelToString</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">4564</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">4565</span>         <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="n">start_iteration</span><span class="p">),</span>
-<span class="g g-Whitespace">   </span><span class="mi">4566</span>         <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="n">num_iteration</span><span class="p">),</span>
-<span class="g g-Whitespace">   </span><span class="mi">4567</span>         <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="n">importance_type_int</span><span class="p">),</span>
-<span class="g g-Whitespace">   </span><span class="mi">4568</span>         <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int64</span><span class="p">(</span><span class="n">buffer_len</span><span class="p">),</span>
-<span class="g g-Whitespace">   </span><span class="mi">4569</span>         <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">tmp_out_len</span><span class="p">),</span>
-<span class="g g-Whitespace">   </span><span class="mi">4570</span>         <span class="n">ptr_string_buffer</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">4571</span>     <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">4572</span> <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">4573</span> <span class="n">actual_len</span> <span class="o">=</span> <span class="n">tmp_out_len</span><span class="o">.</span><span class="n">value</span>
-<span class="g g-Whitespace">   </span><span class="mi">4574</span> <span class="c1"># if buffer length is not long enough, re-allocate a buffer</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/basic.py:4136,</span> in <span class="ni">Booster.update</span><span class="nt">(self, train_set, fobj)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4133</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__set_objective_to_none</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">4134</span>     <span class="k">raise</span> <span class="n">LightGBMError</span><span class="p">(</span><span class="s2">&quot;Cannot update due to null objective function.&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4135</span> <span class="n">_safe_call</span><span class="p">(</span>
+<span class="ne">-&gt; </span><span class="mi">4136</span>     <span class="n">_LIB</span><span class="o">.</span><span class="n">LGBM_BoosterUpdateOneIter</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">4137</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">4138</span>         <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">is_finished</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">4139</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4140</span> <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4141</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_predicted_cur_iter</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__num_dataset</span><span class="p">)]</span>
+<span class="g g-Whitespace">   </span><span class="mi">4142</span> <span class="k">return</span> <span class="n">is_finished</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">1</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
