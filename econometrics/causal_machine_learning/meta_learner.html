@@ -519,7 +519,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/language_model.html">言語モデル</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/embedding.html">単語の埋め込み</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/rnn.html">言語モデルとRNN</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/latent_dirichlet_allocation.html">トピックモデル（LDA）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/latent_dirichlet_allocation.html">Latent Dirichlet Allocation (LDA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/document_understanding.html">Document Understanding</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../natural_language_processing/large_language_models/index.html">Large Language Models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/introduction.html">Large Language Models</a></li>
@@ -810,14 +810,34 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#t-learner">T-Learner</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#s-learner">S-Learner</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#x-learners">X-Learners</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cate">CATEの識別可能性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cate2">CATEの推定の2つのアプローチ</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#indirect-approach">Indirect approach</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#direct-approach">Direct approach</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Indirect Approach</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#t-learner">T-learner</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#s-learner">S-learner</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Indirect Approachの欠点</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">1. T-learner が構造をうまく表現できない場合がある</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#s-learner-d-i">2. S-learner が<span class="math notranslate nohighlight">\(D_i\)</span>の変動を捉えないことがある</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#t-learner-s-learnercate">3. T-learner, S-learnerどちらも複雑なCATEをコントロールできない</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Direct Approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ra-learner">RA-learner</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pw-learner">PW-learner</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#x-learners">X-learners</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-forests">Causal Forestsとのつながり</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doubly-robust-learner-dr-learner">Doubly Robust Learner (DR-Learner)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#da-learner">DA-Learner</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#r-leaner">R-Leaner</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -834,26 +854,78 @@ document.write(`
 <p>Conditional Average Treatment Effect (heterogeneous treatment effects)</p>
 <div class="math notranslate nohighlight">
 \[
-\tau(x):=\mathbb{E}[Y(1)-Y(0) \mid X=x]
+\text{CATE} = \tau(x)
+:= \mathbb{E}[Y^{(1)}-Y^{(0)} \mid X=x]
 \]</div>
 <p>の推定のため、複数の予測モデルを構築する手法</p>
 <p>論文： <a class="reference external" href="https://www.pnas.org/doi/full/10.1073/pnas.1804597116">Künzel, et al. (2019). Metalearners for estimating heterogeneous treatment effects using machine learning.</a></p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+記法について</div>
+<ul class="simple">
+<li><p class="sd-card-text">個体<span class="math notranslate nohighlight">\(i\)</span></p></li>
+<li><p class="sd-card-text">共変量（covariates）または特徴量（features）：<span class="math notranslate nohighlight">\(X_i \in \mathcal{X} \subset \mathbb{R}^{m}\)</span></p></li>
+<li><p class="sd-card-text">潜在的結果（potential outcomes） <span class="math notranslate nohighlight">\(Y_i^{(0)}, Y_i^{(1)} \in \mathbb{R}\)</span></p></li>
+<li><p class="sd-card-text">処置割当（assignment） <span class="math notranslate nohighlight">\(D_i \in \{0, 1\}\)</span></p></li>
+<li><p class="sd-card-text">個体<span class="math notranslate nohighlight">\(i\)</span>のデータ：<span class="math notranslate nohighlight">\((X_i, D_i, Y_i^{(0)}, Y_i^{(1)})\)</span></p></li>
+<li><p class="sd-card-text">個体<span class="math notranslate nohighlight">\(i\)</span>の観測データ：<span class="math notranslate nohighlight">\((X_i, D_i, Y_i)\)</span></p></li>
+<li><p class="sd-card-text">観測された結果：<span class="math notranslate nohighlight">\(Y_i = D_i Y_i^{(1)} + (1 - D_i) Y_i^{(0)}\)</span></p></li>
+<li><p class="sd-card-text">処置の割当確率（propensity）: <span class="math notranslate nohighlight">\(\pi(x) = \mathbb{P}(D_i = 1\mid X_i = x)\)</span></p></li>
+</ul>
+</div>
+</div>
+<section id="cate">
+<h2>CATEの識別可能性<a class="headerlink" href="#cate" title="Permalink to this heading">#</a></h2>
+<p>もしoverlap条件とunconfoundednessの仮定が満たされる場合、Potential Outcome Regressions</p>
+<div class="math notranslate nohighlight">
+\[
+\mu_d(x)
+= \mathbb{E}[Y^{(d)} \mid X = x]
+= \mathbb{E}[Y \mid X = x, D = d]
+\]</div>
+<p>によりCATEが識別可能</p>
+</section>
+<section id="cate2">
+<h2>CATEの推定の2つのアプローチ<a class="headerlink" href="#cate2" title="Permalink to this heading">#</a></h2>
+<p>2つに大別される</p>
+<section id="indirect-approach">
+<h3>Indirect approach<a class="headerlink" href="#indirect-approach" title="Permalink to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[
+\hat{\tau}(x)=\hat{\mathbb{E}}[Y \mid X=x, D=1]-\hat{\mathbb{E}}[Y \mid X=x, D=0]
+\]</div>
+</section>
+<section id="direct-approach">
+<h3>Direct approach<a class="headerlink" href="#direct-approach" title="Permalink to this heading">#</a></h3>
+<p>CATEを直接推定する。</p>
+<p>観測不可能な<span class="math notranslate nohighlight">\(Y^{(1)}-Y^{(0)}\)</span>の代わりに <strong>pseudo-outcomes</strong> <span class="math notranslate nohighlight">\(Y_{\eta}\)</span>を構築して<span class="math notranslate nohighlight">\(X\)</span>に回帰する。</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\tau}(x)=\hat{\mathbb{E}}\left[Y_{\hat{\eta}} \mid X=x\right]\left(\text { with } \mathbb{E}\left[Y_\eta \mid X=x\right]
+=\mathbb{E}\left[Y^{(1)}-Y^{(0)} \mid X=x\right]\right)
+\]</div>
+<p><span class="math notranslate nohighlight">\(\eta\)</span> は 局外母数（nuisance parameters） で、傾向スコア（propensity score） <span class="math notranslate nohighlight">\(\pi(x) = \mathbb{P}(D_i = 1\mid X_i = x)\)</span>か 回帰面（regression surface） <span class="math notranslate nohighlight">\(\mu_d(x) = \mathbb{E}[Y^{(d)} \mid X=x]\)</span>が用いられる。</p>
+</section>
+</section>
+<section id="id1">
+<h2>Indirect Approach<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <section id="t-learner">
-<h2>T-Learner<a class="headerlink" href="#t-learner" title="Permalink to this heading">#</a></h2>
-<p>回帰問題が解ける任意のアルゴリズムを使い、3つのステップでCATEを推定する。</p>
+<h3>T-learner<a class="headerlink" href="#t-learner" title="Permalink to this heading">#</a></h3>
+<p>回帰問題が解ける任意のアルゴリズムを2つ使い（two learners）、以下の3つのステップでCATEを推定する。</p>
 <ol class="arabic simple">
 <li><p>対照群の観測データをもとに、control response function <span class="math notranslate nohighlight">\(\mu_0(x)\)</span> を推定する</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[
-\mu_0(x)=\mathbb{E}[Y(0) \mid X=x]
+\mu_0(x)=\mathbb{E}[Y^{(0)} \mid X=x]
 \]</div>
 <ol class="arabic simple" start="2">
 <li><p>同様に処置群でも treatment response functionを推定する。</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[
-\mu_1(x)=\mathbb{E}[Y(1) \mid X=x]
+\mu_1(x)=\mathbb{E}[Y^{(1)} \mid X=x]
 \]</div>
 <ol class="arabic simple" start="3">
 <li><p>両者の差分をとり、T-learnerの完成</p></li>
@@ -864,8 +936,8 @@ document.write(`
 \]</div>
 </section>
 <section id="s-learner">
-<h2>S-Learner<a class="headerlink" href="#s-learner" title="Permalink to this heading">#</a></h2>
-<p>処置の有無を表す変数<span class="math notranslate nohighlight">\(Z\)</span>を回帰モデルの特徴量に含める</p>
+<h3>S-learner<a class="headerlink" href="#s-learner" title="Permalink to this heading">#</a></h3>
+<p>処置の有無を表す変数<span class="math notranslate nohighlight">\(Z\)</span>を1つの回帰モデルの特徴量に含める（single learner）</p>
 <div class="math notranslate nohighlight">
 \[
 \mu(x, z):=\mathbb{E}\left[Y^{o b s} \mid X=x, Z=z\right]
@@ -877,8 +949,74 @@ document.write(`
 \]</div>
 <p>によってCATEを推定する</p>
 </section>
+<section id="id2">
+<h3>Indirect Approachの欠点<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<section id="id3">
+<h4>1. T-learner が構造をうまく表現できない場合がある<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h4>
+<p><span class="math notranslate nohighlight">\(\tau(x)\)</span>は<span class="math notranslate nohighlight">\(\mu_d(x)\)</span>よりずっと単純な関数の可能性があり、その場合にうまく推定できないことがある。</p>
+<p>Kennedy (2020)は、処置効果が同質（どの<span class="math notranslate nohighlight">\(x\)</span>の値のもとでもATEが一定）のデータセットに対してT-learnerが高い異質性を推定（異なる<span class="math notranslate nohighlight">\(x\)</span>に対して異なるATEを予測）したことを報告した。</p>
+</section>
+<section id="s-learner-d-i">
+<h4>2. S-learner が<span class="math notranslate nohighlight">\(D_i\)</span>の変動を捉えないことがある<a class="headerlink" href="#s-learner-d-i" title="Permalink to this heading">#</a></h4>
+<p>処置効果より大きな影響をもつ共変量があったとき、モデルは処置効果の変化を重視しないかもしれない（例：決定木で<span class="math notranslate nohighlight">\(D\)</span>が分岐に使われない）</p>
+</section>
+<section id="t-learner-s-learnercate">
+<h4>3. T-learner, S-learnerどちらも複雑なCATEをコントロールできない<a class="headerlink" href="#t-learner-s-learnercate" title="Permalink to this heading">#</a></h4>
+<p><span class="math notranslate nohighlight">\(\hat{\tau}(x)\)</span>は明示的にモデリングされないため、その複雑さを制御できない</p>
+</section>
+</section>
+</section>
+<section id="id4">
+<h2>Direct Approach<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
+</section>
+<section id="ra-learner">
+<h2>RA-learner<a class="headerlink" href="#ra-learner" title="Permalink to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+\tilde{Y}_{RA, \hat{\eta}}
+= D \underbrace{(Y - \hat{\mu}_0(X))}_{\text{TE Proxy}}
++ (1 - D) \underbrace{(\hat{\mu}_1(X) - Y)}_{\text{TE Proxy}}
+\]</div>
+<p>条件付き期待値をとると、</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}[\tilde{Y}_{RA, \hat{\eta}} \mid X=x]
+= \pi(x)\left[\mu_1(x)-\hat{\mu}_0(x)\right]
++ \left[ 1-\pi(x) \right]\left[\hat{\mu}_1(x)-\mu_0(x)\right]
+\]</div>
+<p>もし<span class="math notranslate nohighlight">\(\hat{\mu}_d(x) = {\mu}_d(x)\)</span>なら</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp;= \pi(x)\left[\mu_1(x)-{\mu}_0(x)\right]
++ \left[ 1-\pi(x) \right]\left[{\mu}_1(x)-\mu_0(x)\right]
+\\
+&amp;= \mu_1(x)-{\mu}_0(x)\\
+&amp;= \tau(x)
+\end{aligned}
+\end{split}\]</div>
+<section id="pw-learner">
+<h3>PW-learner<a class="headerlink" href="#pw-learner" title="Permalink to this heading">#</a></h3>
+<p>逆確率重み付け（IPW）推定量</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{Y}_{PW, \hat{\eta}}=\left(\frac{D}{\hat{\pi}(X)} -\frac{1-D}{1-\hat{\pi}(X)}\right) Y
+\]</div>
+<p>↑Horvitz-Thompson transformation</p>
+<p>条件付き期待値をとると、</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}\left[\tilde{Y}_{P W, \hat{\eta}} \mid X=x\right]
+= \frac{\pi(x)}{\hat{\pi}(x)} \mu_1(x)-\frac{1-\pi(x)}{1-\hat{\pi}(x)} \mu_0(x)
+\]</div>
+<p>もし<span class="math notranslate nohighlight">\(\hat{\pi}(x) = \pi(x)\)</span>なら、</p>
+<div class="math notranslate nohighlight">
+\[
+= \mu_1(x)-\mu_0(x)=\tau(x)
+\]</div>
+</section>
 <section id="x-learners">
-<h2>X-Learners<a class="headerlink" href="#x-learners" title="Permalink to this heading">#</a></h2>
+<h3>X-learners<a class="headerlink" href="#x-learners" title="Permalink to this heading">#</a></h3>
 <ol class="arabic simple">
 <li><p>response functions <span class="math notranslate nohighlight">\(\mu_0(x), \mu_1(x)\)</span> を推定する</p></li>
 </ol>
@@ -920,6 +1058,7 @@ document.write(`
 \]</div>
 <p><span class="math notranslate nohighlight">\(g\)</span>はpropensity scoreが経験的によいらしい</p>
 </section>
+</section>
 <section id="causal-forests">
 <h2>Causal Forestsとのつながり<a class="headerlink" href="#causal-forests" title="Permalink to this heading">#</a></h2>
 <blockquote>
@@ -954,11 +1093,16 @@ Y_i(D)
 <li><p>R package: <a class="reference external" href="https://github.com/xnie/rlearner">xnie/rlearner: Quasi-Oracle Estimation of Heterogeneous Treatment Effects</a></p></li>
 </ul>
 </section>
-<section id="id1">
-<h2>参考文献<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
+<section id="id5">
+<h2>参考文献<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.pnas.org/doi/full/10.1073/pnas.1804597116">Künzel, et al. (2019). Metalearners for estimating heterogeneous treatment effects using machine learning.</a></p></li>
 <li><p><a class="reference external" href="https://zenn.dev/s1ok69oo/articles/1eeebe75842a50">機械学習で因果推論~Meta-LearnerとEconML~</a></p></li>
+<li><p><a class="reference external" href="https://www.youtube.com/watch?v=CkQCwh50SEk&amp;ab_channel=vanderSchaarLab">ITE inference - meta-learners for CATE estimation - YouTube</a></p>
+<ul>
+<li><p>よくまとまっている講義</p></li>
+</ul>
+</li>
 </ul>
 </section>
 </section>
@@ -1027,14 +1171,34 @@ Y_i(D)
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#t-learner">T-Learner</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#s-learner">S-Learner</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#x-learners">X-Learners</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cate">CATEの識別可能性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cate2">CATEの推定の2つのアプローチ</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#indirect-approach">Indirect approach</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#direct-approach">Direct approach</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Indirect Approach</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#t-learner">T-learner</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#s-learner">S-learner</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Indirect Approachの欠点</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">1. T-learner が構造をうまく表現できない場合がある</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#s-learner-d-i">2. S-learner が<span class="math notranslate nohighlight">\(D_i\)</span>の変動を捉えないことがある</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#t-learner-s-learnercate">3. T-learner, S-learnerどちらも複雑なCATEをコントロールできない</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Direct Approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ra-learner">RA-learner</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pw-learner">PW-learner</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#x-learners">X-learners</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-forests">Causal Forestsとのつながり</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doubly-robust-learner-dr-learner">Doubly Robust Learner (DR-Learner)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#da-learner">DA-Learner</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#r-leaner">R-Leaner</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考文献</a></li>
 </ul>
   </nav></div>
 
