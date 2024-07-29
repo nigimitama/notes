@@ -808,6 +808,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implicit-api-api">Implicit API （省略記法によるAPIの作成）</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-keyapi">API-key認証するAPIの例</a></li>
 </ul>
             </nav>
@@ -822,6 +823,12 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="aws-sam">
 <h1>AWS SAM メモ<a class="headerlink" href="#aws-sam" title="Permalink to this heading">#</a></h1>
+<section id="implicit-api-api">
+<h2>Implicit API （省略記法によるAPIの作成）<a class="headerlink" href="#implicit-api-api" title="Permalink to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">AWS::Serverless::Function</span></code>のEventsに <code class="docutils literal notranslate"><span class="pre">Type:</span> <span class="pre">Api</span></code> と設定されていながら<code class="docutils literal notranslate"><span class="pre">RestApiId</span></code>が指定されていない場合、<code class="docutils literal notranslate"><span class="pre">AWS::ApiGateway::RestApi</span></code>が自動生成される。</p>
+<p>こうした、明示的に書かずに省略記法で作るAPIをImplicit APIと呼ぶらしい（<a class="reference external" href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-generated-resources-function.html#sam-specification-generated-resources-function-api">参考</a>）</p>
+<p>省略記法の場合、詳細な設定はできない。例えばEndpointTypeを変えたりCORSの設定がしたい場合は自分で <code class="docutils literal notranslate"><span class="pre">AWS::Serverless::Api</span></code> を書いたほうがいい。</p>
+</section>
 <section id="api-keyapi">
 <h2>API-key認証するAPIの例<a class="headerlink" href="#api-keyapi" title="Permalink to this heading">#</a></h2>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
@@ -831,82 +838,82 @@ template.yml<div class="sd-summary-down docutils">
 <div class="sd-summary-up docutils">
 <svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="sd-summary-content sd-card-body docutils">
-<div class="highlight-yml notranslate"><div class="highlight"><pre><span></span>AWSTemplateFormatVersion: &quot;2010-09-09&quot;
-Transform: AWS::Serverless-2016-10-31
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">AWSTemplateFormatVersion</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2010-09-09&quot;</span>
+<span class="nt">Transform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AWS::Serverless-2016-10-31</span>
 
-Resources:
-  # Api Gatewayの設定
-  MyApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: Prod
-      Auth:
-        ApiKeyRequired: true # API Key認証の設定
-      EndpointConfiguration:
-        Type: REGIONAL # EndpointTypeを指定したい場合（任意）
+<span class="nt">Resources</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Api Gatewayの設定</span>
+<span class="w">  </span><span class="nt">MyApi</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AWS::Serverless::Api</span>
+<span class="w">    </span><span class="nt">Properties</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">StageName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Prod</span>
+<span class="w">      </span><span class="nt">Auth</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">ApiKeyRequired</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># API Key認証の設定</span>
+<span class="w">      </span><span class="nt">EndpointConfiguration</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">REGIONAL</span><span class="w"> </span><span class="c1"># EndpointTypeを指定したい場合（任意）</span>
 
-  # API Keyの設定
-  MyApiKey:
-    Type: AWS::ApiGateway::ApiKey
-    DependsOn: # API Gatewayの特定のStageが作成されてからApi Keyを作るようにする（エラー回避のため）
-      - MyApiProdStage
-    Properties:
-      Enabled: true
-      StageKeys:
-        - RestApiId: !Ref MyApi
-          StageName: Prod
+<span class="w">  </span><span class="c1"># API Keyの設定</span>
+<span class="w">  </span><span class="nt">MyApiKey</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AWS::ApiGateway::ApiKey</span>
+<span class="w">    </span><span class="nt">DependsOn</span><span class="p">:</span><span class="w"> </span><span class="c1"># API Gatewayの特定のStageが作成されてからApi Keyを作るようにする（エラー回避のため）</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MyApiProdStage</span>
+<span class="w">    </span><span class="nt">Properties</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">Enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">StageKeys</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">RestApiId</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MyApi</span>
+<span class="w">          </span><span class="nt">StageName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Prod</span>
 
-  # Usage Planの設定。API keyでアクセスを許可するために必要
-  MyApiUsagePlan:
-    Type: AWS::ApiGateway::UsagePlan
-    DependsOn:
-      - MyApiKey
-    Properties:
-      ApiStages:
-        - ApiId: !Ref MyApi
-          Stage: Prod
+<span class="w">  </span><span class="c1"># Usage Planの設定。API keyでアクセスを許可するために必要</span>
+<span class="w">  </span><span class="nt">MyApiUsagePlan</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AWS::ApiGateway::UsagePlan</span>
+<span class="w">    </span><span class="nt">DependsOn</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MyApiKey</span>
+<span class="w">    </span><span class="nt">Properties</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">ApiStages</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ApiId</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MyApi</span>
+<span class="w">          </span><span class="nt">Stage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Prod</span>
 
-  MyApiUsagePlanKey: # UsagePlanKeyはAPI keyとUsagePlanを紐づけるために必要
-    Type: AWS::ApiGateway::UsagePlanKey
-    DependsOn:
-      - MyApiUsagePlan
-    Properties:
-      KeyId: !Ref MyApiKey
-      KeyType: API_KEY
-      UsagePlanId: !Ref MyApiUsagePlan
+<span class="w">  </span><span class="nt">MyApiUsagePlanKey</span><span class="p">:</span><span class="w"> </span><span class="c1"># UsagePlanKeyはAPI keyとUsagePlanを紐づけるために必要</span>
+<span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AWS::ApiGateway::UsagePlanKey</span>
+<span class="w">    </span><span class="nt">DependsOn</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MyApiUsagePlan</span>
+<span class="w">    </span><span class="nt">Properties</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">KeyId</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MyApiKey</span>
+<span class="w">      </span><span class="nt">KeyType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">API_KEY</span>
+<span class="w">      </span><span class="nt">UsagePlanId</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MyApiUsagePlan</span>
 
-  # APIで呼び出すLambda Functionの設定
-  MyFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      PackageType: Image
-      Architectures:
-        - x86_64
-      Events:
-        # Lambdaをトリガーするイベント（EventBridge, API Gatewayなど）
-        HelloWorld:
-          Type: Api
-          Properties:
-            Path: /hello
-            Method: get
-            RestApiId: !Ref MyApi
-    Metadata:
-      Dockerfile: Dockerfile
-      DockerContext: ./src
-      DockerTag: python3.12-v1
+<span class="w">  </span><span class="c1"># APIで呼び出すLambda Functionの設定</span>
+<span class="w">  </span><span class="nt">MyFunction</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AWS::Serverless::Function</span>
+<span class="w">    </span><span class="nt">Properties</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">PackageType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Image</span>
+<span class="w">      </span><span class="nt">Architectures</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">x86_64</span>
+<span class="w">      </span><span class="nt">Events</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># Lambdaをトリガーするイベント（EventBridge, API Gatewayなど）</span>
+<span class="w">        </span><span class="nt">HelloWorld</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Api</span>
+<span class="w">          </span><span class="nt">Properties</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">Path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/hello</span>
+<span class="w">            </span><span class="nt">Method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get</span>
+<span class="w">            </span><span class="nt">RestApiId</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MyApi</span>
+<span class="w">    </span><span class="nt">Metadata</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">Dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dockerfile</span>
+<span class="w">      </span><span class="nt">DockerContext</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./src</span>
+<span class="w">      </span><span class="nt">DockerTag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python3.12-v1</span>
 
-  # （任意）ログの設定。ログもSAMで管理したいなら設定が必要
-  # （自動生成のLogGroupだとStackの削除後も残る。参考：https://dev.classmethod.jp/articles/should-create-cloudwatch-logs-log-group-when-creating-lambda-with-aws-sam/）
-  MyFunctionLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub /aws/lambda/${MyFunction}
-      RetentionInDays: 14
+<span class="w">  </span><span class="c1"># （任意）ログの設定。ログもSAMで管理したいなら設定が必要</span>
+<span class="w">  </span><span class="c1"># （自動生成のLogGroupだとStackの削除後も残る。参考：https://dev.classmethod.jp/articles/should-create-cloudwatch-logs-log-group-when-creating-lambda-with-aws-sam/）</span>
+<span class="w">  </span><span class="nt">MyFunctionLogGroup</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AWS::Logs::LogGroup</span>
+<span class="w">    </span><span class="nt">Properties</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">LogGroupName</span><span class="p">:</span><span class="w"> </span><span class="kt">!Sub</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/aws/lambda/${MyFunction}</span>
+<span class="w">      </span><span class="nt">RetentionInDays</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">14</span>
 
-Outputs:
-  MyAPi:
-    Description: &quot;API Gateway endpoint URL&quot;
-    Value: !Sub &quot;https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/&quot;
+<span class="nt">Outputs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">MyAPi</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;API</span><span class="nv"> </span><span class="s">Gateway</span><span class="nv"> </span><span class="s">endpoint</span><span class="nv"> </span><span class="s">URL&quot;</span>
+<span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="kt">!Sub</span><span class="w"> </span><span class="s">&quot;https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -977,6 +984,7 @@ Outputs:
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implicit-api-api">Implicit API （省略記法によるAPIの作成）</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-keyapi">API-key認証するAPIの例</a></li>
 </ul>
   </nav></div>
