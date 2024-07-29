@@ -785,7 +785,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -801,6 +803,14 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-keyapi">API-key認証するAPIの例</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -812,6 +822,95 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="aws-sam">
 <h1>AWS SAM メモ<a class="headerlink" href="#aws-sam" title="Permalink to this heading">#</a></h1>
+<section id="api-keyapi">
+<h2>API-key認証するAPIの例<a class="headerlink" href="#api-keyapi" title="Permalink to this heading">#</a></h2>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+template.yml<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<div class="highlight-yml notranslate"><div class="highlight"><pre><span></span>AWSTemplateFormatVersion: &quot;2010-09-09&quot;
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  # Api Gatewayの設定
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Auth:
+        ApiKeyRequired: true # API Key認証の設定
+      EndpointConfiguration:
+        Type: REGIONAL # EndpointTypeを指定したい場合（任意）
+
+  # API Keyの設定
+  MyApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    DependsOn: # API Gatewayの特定のStageが作成されてからApi Keyを作るようにする（エラー回避のため）
+      - MyApiProdStage
+    Properties:
+      Enabled: true
+      StageKeys:
+        - RestApiId: !Ref MyApi
+          StageName: Prod
+
+  # Usage Planの設定。API keyでアクセスを許可するために必要
+  MyApiUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    DependsOn:
+      - MyApiKey
+    Properties:
+      ApiStages:
+        - ApiId: !Ref MyApi
+          Stage: Prod
+
+  MyApiUsagePlanKey: # UsagePlanKeyはAPI keyとUsagePlanを紐づけるために必要
+    Type: AWS::ApiGateway::UsagePlanKey
+    DependsOn:
+      - MyApiUsagePlan
+    Properties:
+      KeyId: !Ref MyApiKey
+      KeyType: API_KEY
+      UsagePlanId: !Ref MyApiUsagePlan
+
+  # APIで呼び出すLambda Functionの設定
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Architectures:
+        - x86_64
+      Events:
+        # Lambdaをトリガーするイベント（EventBridge, API Gatewayなど）
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+            RestApiId: !Ref MyApi
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./src
+      DockerTag: python3.12-v1
+
+  # （任意）ログの設定。ログもSAMで管理したいなら設定が必要
+  # （自動生成のLogGroupだとStackの削除後も残る。参考：https://dev.classmethod.jp/articles/should-create-cloudwatch-logs-log-group-when-creating-lambda-with-aws-sam/）
+  MyFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${MyFunction}
+      RetentionInDays: 14
+
+Outputs:
+  MyAPi:
+    Description: &quot;API Gateway endpoint URL&quot;
+    Value: !Sub &quot;https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/&quot;
+</pre></div>
+</div>
+</div>
+</details></section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -868,6 +967,21 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-keyapi">API-key認証するAPIの例</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
