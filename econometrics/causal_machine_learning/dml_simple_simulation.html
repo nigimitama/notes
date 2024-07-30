@@ -856,7 +856,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.PairGrid at 0x7f17b0789c90&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.PairGrid at 0x7fba28d61cc0&gt;
 </pre></div>
 </div>
 <img alt="../../_images/745d0468ce10287de042aee0d34b4078b0b0beda0aec8541f846f2b6ba8f12b7.png" src="../../_images/745d0468ce10287de042aee0d34b4078b0b0beda0aec8541f846f2b6ba8f12b7.png" />
@@ -981,29 +981,60 @@ document.write(`
 <span class="g g-Whitespace">    </span><span class="mi">966</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evals_result</span> <span class="o">=</span> <span class="n">evals_result</span>
 <span class="g g-Whitespace">    </span><span class="mi">967</span> <span class="bp">self</span><span class="o">.</span><span class="n">_best_iteration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Booster</span><span class="o">.</span><span class="n">best_iteration</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/engine.py:307,</span> in <span class="ni">train</span><span class="nt">(params, train_set, num_boost_round, valid_sets, valid_names, feval, init_model, feature_name, categorical_feature, keep_training_booster, callbacks)</span>
-<span class="g g-Whitespace">    </span><span class="mi">295</span> <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks_before_iter</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">296</span>     <span class="n">cb</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">297</span>         <span class="n">callback</span><span class="o">.</span><span class="n">CallbackEnv</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">298</span>             <span class="n">model</span><span class="o">=</span><span class="n">booster</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">304</span>         <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">305</span>     <span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">307</span> <span class="n">booster</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fobj</span><span class="o">=</span><span class="n">fobj</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">309</span> <span class="n">evaluation_result_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_LGBM_BoosterEvalMethodResultType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="g g-Whitespace">    </span><span class="mi">310</span> <span class="c1"># check evaluation result.</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/engine.py:282,</span> in <span class="ni">train</span><span class="nt">(params, train_set, num_boost_round, valid_sets, valid_names, feval, init_model, feature_name, categorical_feature, keep_training_booster, callbacks)</span>
+<span class="g g-Whitespace">    </span><span class="mi">280</span> <span class="c1"># construct booster</span>
+<span class="g g-Whitespace">    </span><span class="mi">281</span> <span class="k">try</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">282</span>     <span class="n">booster</span> <span class="o">=</span> <span class="n">Booster</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">train_set</span><span class="o">=</span><span class="n">train_set</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">283</span>     <span class="k">if</span> <span class="n">is_valid_contain_train</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">284</span>         <span class="n">booster</span><span class="o">.</span><span class="n">set_train_data_name</span><span class="p">(</span><span class="n">train_data_name</span><span class="p">)</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/basic.py:4136,</span> in <span class="ni">Booster.update</span><span class="nt">(self, train_set, fobj)</span>
-<span class="g g-Whitespace">   </span><span class="mi">4133</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__set_objective_to_none</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">4134</span>     <span class="k">raise</span> <span class="n">LightGBMError</span><span class="p">(</span><span class="s2">&quot;Cannot update due to null objective function.&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">4135</span> <span class="n">_safe_call</span><span class="p">(</span>
-<span class="ne">-&gt; </span><span class="mi">4136</span>     <span class="n">_LIB</span><span class="o">.</span><span class="n">LGBM_BoosterUpdateOneIter</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">4137</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">4138</span>         <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">is_finished</span><span class="p">),</span>
-<span class="g g-Whitespace">   </span><span class="mi">4139</span>     <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">4140</span> <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">4141</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_predicted_cur_iter</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__num_dataset</span><span class="p">)]</span>
-<span class="g g-Whitespace">   </span><span class="mi">4142</span> <span class="k">return</span> <span class="n">is_finished</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/basic.py:3637,</span> in <span class="ni">Booster.__init__</span><span class="nt">(self, params, train_set, model_file, model_str)</span>
+<span class="g g-Whitespace">   </span><span class="mi">3630</span>     <span class="bp">self</span><span class="o">.</span><span class="n">set_network</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">3631</span>         <span class="n">machines</span><span class="o">=</span><span class="n">machines</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">3632</span>         <span class="n">local_listen_port</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;local_listen_port&quot;</span><span class="p">],</span>
+<span class="g g-Whitespace">   </span><span class="mi">3633</span>         <span class="n">listen_time_out</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;time_out&quot;</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">3634</span>         <span class="n">num_machines</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;num_machines&quot;</span><span class="p">],</span>
+<span class="g g-Whitespace">   </span><span class="mi">3635</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">3636</span> <span class="c1"># construct booster object</span>
+<span class="ne">-&gt; </span><span class="mi">3637</span> <span class="n">train_set</span><span class="o">.</span><span class="n">construct</span><span class="p">()</span>
+<span class="g g-Whitespace">   </span><span class="mi">3638</span> <span class="c1"># copy the parameters from train_set</span>
+<span class="g g-Whitespace">   </span><span class="mi">3639</span> <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">train_set</span><span class="o">.</span><span class="n">get_params</span><span class="p">())</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/basic.py:2576,</span> in <span class="ni">Dataset.construct</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2571</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_set_init_score_by_predictor</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">2572</span>                 <span class="n">predictor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_predictor</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">used_indices</span><span class="o">=</span><span class="n">used_indices</span>
+<span class="g g-Whitespace">   </span><span class="mi">2573</span>             <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2574</span> <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">2575</span>     <span class="c1"># create train</span>
+<span class="ne">-&gt; </span><span class="mi">2576</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_lazy_init</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">2577</span>         <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2578</span>         <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2579</span>         <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2580</span>         <span class="n">weight</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2581</span>         <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2582</span>         <span class="n">init_score</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">init_score</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2583</span>         <span class="n">predictor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_predictor</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2584</span>         <span class="n">feature_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_name</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2585</span>         <span class="n">categorical_feature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">categorical_feature</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2586</span>         <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2587</span>         <span class="n">position</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2588</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2589</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">free_raw_data</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">2590</span>     <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/basic.py:2144,</span> in <span class="ni">Dataset._lazy_init</span><span class="nt">(self, data, label, reference, weight, group, init_score, predictor, feature_name, categorical_feature, params, position)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2141</span>                 <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">cat_alias</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2142</span>         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;categorical_column&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">categorical_indices</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">2144</span> <span class="n">params_str</span> <span class="o">=</span> <span class="n">_param_dict_to_str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2145</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+<span class="g g-Whitespace">   </span><span class="mi">2146</span> <span class="c1"># process for reference dataset</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/basic.py:535,</span> in <span class="ni">_param_dict_to_str</span><span class="nt">(data)</span>
+<span class="g g-Whitespace">    </span><span class="mi">533</span>     <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_to_string</span><span class="p">,</span><span class="w"> </span><span class="n">val</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">534</span> <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">_NUMERIC_TYPES</span><span class="p">))</span> <span class="ow">or</span> <span class="n">_is_numeric</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">535</span>     <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">536</span> <span class="k">elif</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">537</span>     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown type of parameter:</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">, got:</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
