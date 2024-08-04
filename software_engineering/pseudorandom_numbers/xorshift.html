@@ -69,6 +69,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'software_engineering/pseudorandom_numbers/xorshift';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -640,6 +642,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../../financial_economics/papers/abcd_forcast.html">ABCD Forcast</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../financial_economics/papers/deep_portfolio.html">Deep Portfolio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../financial_economics/papers/llm.html">計量ファイナンスにおけるLLMの活用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/papers/beige_book.html">BeigeBookで利下げ・利上げを予測して国債を買う</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../financial_economics/financial_time_series/index.html">金融時系列解析</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -821,15 +824,30 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">実装</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">理論</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">排他的論理和</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">プログラミングでの表現</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ビットシフト</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Xorshift</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Xorshiftの数学的表現</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xor">XOR演算のベクトル表現</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">ビットシフトの行列表現</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Xorshiftの行列表現</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">実装</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Python</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#javascript">JavaScript</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">問題点</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">派生アルゴリズム</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">応用例</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">問題点</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">派生アルゴリズム</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">応用例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -845,9 +863,215 @@ document.write(`
 <h1>Xorshift<a class="headerlink" href="#xorshift" title="Permalink to this heading">#</a></h1>
 <p><strong>Xorshift</strong> は疑似乱数列生成法の1つ。</p>
 <p>排他的論理和とビットシフトのみで計算するため、計算が高速で、実装もしやすい。</p>
-<p><a class="reference external" href="https://ja.wikipedia.org/wiki/Xorshift">Xorshift - Wikipedia</a></p>
+<p><a class="reference external" href="https://www.jstatsoft.org/article/view/v008i14">Marsaglia, G. (2003). Xorshift rngs. Journal of Statistical software, 8, 1-6.</a></p>
 <section id="id1">
-<h2>実装<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
+<h2>理論<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
+<section id="id2">
+<h3>排他的論理和<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<p>排他的論理和（XOR）は、2つの演算対象のうち片方だけが真（1）であれば真（1）になる演算。多くの言語で<code class="docutils literal notranslate"><span class="pre">^</span></code>が演算子になる。</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>x</p></th>
+<th class="head"><p>y</p></th>
+<th class="head text-left"><p>XOR</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>0</p></td>
+<td class="text-left"><p>0 ^ 0 = 0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0</p></td>
+<td><p>1</p></td>
+<td class="text-left"><p>0 ^ 1 = 1</p></td>
+</tr>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>0</p></td>
+<td class="text-left"><p>1 ^ 0 = 1</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>1</p></td>
+<td class="text-left"><p>1 ^ 1 = 0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>2進数の1桁だけを見る（変数が<span class="math notranslate nohighlight">\(\{0,1\}\)</span>のいずれかの値をとり、2になったら0になるとする）と、XORは足し算のようになっている。</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>x</p></th>
+<th class="head"><p>y</p></th>
+<th class="head text-left"><p>XOR</p></th>
+<th class="head"><p>足し算</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>0</p></td>
+<td class="text-left"><p>0 ^ 0 = 0</p></td>
+<td><p>0 + 0 = 0</p></td>
+</tr>
+<tr class="row-odd"><td><p>0</p></td>
+<td><p>1</p></td>
+<td class="text-left"><p>0 ^ 1 = 1</p></td>
+<td><p>0 + 1 = 1</p></td>
+</tr>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>0</p></td>
+<td class="text-left"><p>1 ^ 0 = 1</p></td>
+<td><p>1 + 0 = 1</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>1</p></td>
+<td class="text-left"><p>1 ^ 1 = 0</p></td>
+<td><p>1 + 1 = 2 → 0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="id3">
+<h4>プログラミングでの表現<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h4>
+<p>2進数 <code class="docutils literal notranslate"><span class="pre">0b0101</span></code> (=5)と <code class="docutils literal notranslate"><span class="pre">0b0011</span></code> (=3) のXORは <code class="docutils literal notranslate"><span class="pre">0b0110</span></code> (=6)になる</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="mb">0b0101</span> <span class="o">^</span> <span class="mb">0b0011</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">bin</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6 0b110
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="id4">
+<h3>ビットシフト<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<p>ビットシフトは、ビット列の中身を左右に移動させる操作。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 0b11 (=3) を左に1桁ずらして 0b110(=6) にする</span>
+<span class="mb">0b11</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id5">
+<h3>Xorshift<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
+<p>Xorshift内で用いられる基本的なシフト演算は</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">^</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>という演算になる（シフトは右シフトでもかまわない）</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="n">x</span> <span class="o">^</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>330
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="id6">
+<h2>Xorshiftの数学的表現<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
+<section id="xor">
+<h3>XOR演算のベクトル表現<a class="headerlink" href="#xor" title="Permalink to this heading">#</a></h3>
+<p>2進数のビット列をベクトルで表すと、XOR演算が足し算という話は、単純にベクトルの和の演算に対応する。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left[\begin{array}{l}
+0 \\
+1 \\
+0 \\
+1
+\end{array}\right]+\left[\begin{array}{l}
+1 \\
+0 \\
+1 \\
+1
+\end{array}\right]=\left[\begin{array}{l}
+0 \\
+1 \\
+1 \\
+0
+\end{array}\right]
+\end{split}\]</div>
+</section>
+<section id="id7">
+<h3>ビットシフトの行列表現<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
+<p>ビット列をベクトルで表現し、ビットシフト演算を行列で表現することもできる。</p>
+<p>例えば、1ビットの左シフトは</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+L_1:=\left[\begin{array}{llll}
+0 &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1 \\
+0 &amp; 0 &amp; 0 &amp; 0
+\end{array}\right]
+\end{split}\]</div>
+<p>という行列で表される。</p>
+<p>例えば、<code class="docutils literal notranslate"><span class="pre">0b0110</span></code>のベクトルに対して掛けると<code class="docutils literal notranslate"><span class="pre">0b1100</span></code>になる</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left[\begin{array}{llll}
+0 &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1 \\
+0 &amp; 0 &amp; 0 &amp; 0
+\end{array}\right]
+\left[\begin{array}{l}
+0 \\
+1 \\
+1 \\
+0
+\end{array}\right]
+= 
+\left[\begin{array}{l}
+1 \\
+1 \\
+0 \\
+0
+\end{array}\right]
+\end{split}\]</div>
+</section>
+<section id="id8">
+<h3>Xorshiftの行列表現<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h3>
+<p>XORとビットシフトがベクトルや行列で表現できるため、Xorshiftの基本操作も行列で表すことができる。</p>
+<p>ビット列のベクトル<span class="math notranslate nohighlight">\(x, y\)</span>についてのXOR演算 <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">^</span> <span class="pre">y</span></code> のベクトル表現は<span class="math notranslate nohighlight">\(x + y\)</span>となる。</p>
+<p>ビット列ベクトルを<span class="math notranslate nohighlight">\(x\)</span>とし、<span class="math notranslate nohighlight">\(a\)</span>ビットの左シフト演算を表す行列を<span class="math notranslate nohighlight">\(L_a\)</span>とすると、ビットシフト演算 <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&lt;&lt;</span> <span class="pre">a</span></code> は <span class="math notranslate nohighlight">\(L_a x\)</span>で表すことができる。</p>
+<p>なので<code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">^</span> <span class="pre">(x</span> <span class="pre">&lt;&lt;</span> <span class="pre">a)</span></code> は</p>
+<div class="math notranslate nohighlight">
+\[
+x + (L_a x) = (I + L_a x) x
+\]</div>
+<p>となる。ここで<span class="math notranslate nohighlight">\(I\)</span>は単位行列。</p>
+<p><span class="math notranslate nohighlight">\(T := (I + L_a x)\)</span>とおくと、この行列<span class="math notranslate nohighlight">\(T\)</span>の性質が乱数生成器としての性質に関わる。</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(T\)</span>が可逆なら出力値も一様である</p></li>
+<li><p><span class="math notranslate nohighlight">\(T\)</span>の位数（order、その行列を何回掛けたら単位行列になるか）が乱数の周期に関係する</p></li>
+</ul>
+<p>などがある（<a class="reference external" href="https://blog.visvirial.com/articles/575">Google Chromeが採用した、擬似乱数生成アルゴリズム「xorshift」の数理 – びりあるの研究ノート</a>）</p>
+</section>
+</section>
+<section id="id9">
+<h2>実装<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h2>
 <section id="python">
 <h3>Python<a class="headerlink" href="#python" title="Permalink to this heading">#</a></h3>
 <aside class="margin sidebar">
@@ -856,30 +1080,33 @@ document.write(`
 </aside>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="mb">0b1010</span> <span class="o">^</span> <span class="mb">0b110</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>12
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Xorshift</span><span class="p">:</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Xorshift64</span><span class="p">:</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">seed</span>
+
+    <span class="k">def</span> <span class="nf">gen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># https://www.cepstrum.co.jp/hobby/xorshift/xorshift.html にて「特性が良い」とされるパラメータ (3, 35, 14)を使用</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
+        <span class="n">x</span> <span class="o">^=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">^=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="mi">35</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">^=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="mi">14</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
+
+<span class="c1"># 使用例</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">Xorshift64</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>  <span class="c1"># シードは非ゼロで初期化</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">gen</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>  <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">4</span>
-    <span class="bp">self</span><span class="o">.</span>
-         <span class="o">^</span>
-<span class="ne">SyntaxError</span>: invalid syntax
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6193530
+732828797610
+108066598636560197
+12399238436484378965293
+1828241189597628788155767877
 </pre></div>
 </div>
 </div>
@@ -922,12 +1149,15 @@ document.write(`
 <p>出所：<a class="reference external" href="https://sbfl.net/blog/2017/06/01/javascript-reproducible-random/">JavaScriptで再現性のある乱数を生成する + 指定した範囲の乱数を生成する</a></p>
 </section>
 </section>
-<section id="id2">
-<h2>問題点<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<section id="id10">
+<h2>問題点<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://qiita.com/Shinoda_Naoki/items/5208b295d633df0aab47">乱数アルゴリズムXorshiftの弱点と改善案 #ゲーム制作 - Qiita</a></p>
+<ul class="simple">
+<li><p>似たシードだと似た乱数が出てくる（Xorshiftに限らない疑似乱数のよくある弱点だが）</p></li>
+</ul>
 </section>
-<section id="id3">
-<h2>派生アルゴリズム<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<section id="id11">
+<h2>派生アルゴリズム<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="http://www.math.sci.hiroshima-u.ac.jp/m-mat/MT/XSADD/index-jp.html">XORSHIFT-ADD (XSadd)</a></p></li>
 <li><p><a class="reference external" href="https://prng.di.unimi.it/">xoshiro/xoroshiro</a></p>
@@ -938,14 +1168,17 @@ document.write(`
 </li>
 </ul>
 </section>
-<section id="id4">
-<h2>応用例<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
+<section id="id12">
+<h2>応用例<a class="headerlink" href="#id12" title="Permalink to this heading">#</a></h2>
 <p>GoogleのV8における <code class="docutils literal notranslate"><span class="pre">Math.random()</span></code> は32ビットのXorshiftを採用しているらしい</p>
 <p><a class="reference external" href="https://blog.visvirial.com/articles/575">Google Chromeが採用した、擬似乱数生成アルゴリズム「xorshift」の数理 – びりあるの研究ノート</a></p>
 </section>
-<section id="id5">
-<h2>参考<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
+<section id="id13">
+<h2>参考<a class="headerlink" href="#id13" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
+<li><p><a class="reference external" href="https://www.jstatsoft.org/article/view/v008i14">Marsaglia, G. (2003). Xorshift rngs. Journal of Statistical software, 8, 1-6.</a></p></li>
+<li><p><a class="reference external" href="https://blog.visvirial.com/articles/575">Google Chromeが採用した、擬似乱数生成アルゴリズム「xorshift」の数理 – びりあるの研究ノート</a></p></li>
+<li><p><a class="reference external" href="https://kanamesasaki.github.io/blog/20220128-xorshift/">Xorshiftをざっくり理解する | Blog</a></p></li>
 <li><p><a class="reference external" href="https://www.cepstrum.co.jp/hobby/xorshift/xorshift.html">良い xorshift、悪い xorshift</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/Nabetani/items/f8357e736f989633a2c0">Xorshift から派生した擬似乱数生成器 #Random - Qiita</a></p></li>
 </ul>
@@ -1016,15 +1249,30 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">実装</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">理論</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">排他的論理和</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">プログラミングでの表現</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ビットシフト</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Xorshift</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Xorshiftの数学的表現</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xor">XOR演算のベクトル表現</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">ビットシフトの行列表現</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Xorshiftの行列表現</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">実装</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Python</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#javascript">JavaScript</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">問題点</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">派生アルゴリズム</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">応用例</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">問題点</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">派生アルゴリズム</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">応用例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">参考</a></li>
 </ul>
   </nav></div>
 
