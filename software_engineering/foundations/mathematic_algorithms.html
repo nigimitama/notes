@@ -878,36 +878,44 @@ document.write(`
 <li><p>上記の篩い落とし操作を、走査している要素の添字がxの平方根に達するまで行う。</p></li>
 <li><p>最後までtrueだった要素の添字を素数リストに追加して処理終了。</p></li>
 </ol>
-<p>（※i^2は間違いか？）</p>
 <p>自分の実装例</p>
 <ul class="simple">
 <li><p>i^2ではなくi*2以上にしている</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
 
 <span class="k">def</span> <span class="nf">eratosthenes</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-    <span class="c1"># 1. 長さxの配列を用意し、1番目の要素にfalseを、2番目以降すべてにtrueを入れる</span>
+    <span class="c1"># 1. 長さxの配列を用意し、1番目の要素にfalseを、2番目以降すべてにtrueを入れる（1は素数ではないため）</span>
     <span class="n">primes</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">nums</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span>
     <span class="n">nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="c1"># 2. 配列の先頭から順に走査し、trueの要素を見つけたらその添字iを素数リストに追加し、配列のi*2以上のiの倍数番目をfalseにする。</span>
+    <span class="c1"># 2. 配列の先頭から順に走査し、trueの要素を見つけたらその添字iを素数リストに追加し、配列のi^2以上のiの倍数番目をfalseにする。</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">num</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">num</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">nums</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
             <span class="n">primes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="o">//</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-                <span class="n">nums</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+                <span class="n">nums</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="c1"># 3. 上記の篩い落とし操作を、走査している要素の添字がxの平方根に達するまで行う。</span>
+        <span class="c1"># NOTE: 2から√nまでのforループにしてもよい</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
             <span class="k">break</span>
     <span class="c1"># 4. 最後までtrueだった要素の添字を素数リストに追加して処理終了。</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">nums</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">nums</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">primes</span><span class="p">):</span>
             <span class="n">primes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">primes</span>
 
-<span class="n">eratosthenes</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">eratosthenes</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[2, 3, 5, 7, 11, 13]
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 </section>
