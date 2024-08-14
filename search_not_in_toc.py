@@ -1,5 +1,4 @@
 # tocに入れ忘れている記事を探す
-from pprint import pprint
 from pathlib import Path
 import yaml
 import os
