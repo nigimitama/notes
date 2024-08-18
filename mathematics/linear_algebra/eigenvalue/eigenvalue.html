@@ -192,6 +192,7 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">数学の初歩</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../set_theory.html">集合論</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../factorization.html">因数分解</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../algebra/index.html">代数学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../algebra/group_theory.html">群論</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../algebra/ring_theory.html">環論</a></li>
@@ -264,6 +265,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_16.html">練習問題メモ 16（基底変換）</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_17.html">練習問題メモ 17（線形写像）</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_18.html">練習問題メモ 18（表現行列）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_19.html">練習問題メモ 19（固有値と固有ベクトル その1－正方行列の定める線形変換の場合－）</a></li>
 </ul>
 </details></li>
 </ul>
@@ -609,6 +611,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../soft_skills/negotiation.html">交渉 / 人を巻き込む</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../soft_skills/leadership.html">リーダーシップ</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">データマネジメント</span></p>
 <ul class="nav bd-sidenav">
@@ -874,9 +877,11 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">固有値・固有ベクトルの求め方</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">固有値の計算</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">固有ベクトルの計算</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">ケイリー・ハミルトンの定理</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">固有値を求める</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">固有空間・固有ベクトルを求める</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#numpy">numpy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">固有ベクトルの計算</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">ケイリー・ハミルトンの定理</a></li>
 </ul>
 </li>
 </ul>
@@ -1157,9 +1162,214 @@ y=\lambda x \\
 </section>
 <section id="id14">
 <h2>固有値・固有ベクトルの求め方<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+例題</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A = \begin{pmatrix}
+1 &amp; 1\\
+2 &amp; 2
+\end{pmatrix}
+\end{split}\]</div>
+<p class="sd-card-text">とする。</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(A\)</span>の固有値と、各固有値に属する1つの固有ベクトルと、固有空間<span class="math notranslate nohighlight">\(V(\lambda)\)</span>を求めよ</p>
+</div>
+</div>
 <section id="id15">
-<h3>固有値の計算<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\((A-\lambda E)x = 0\)</span>が非自明な解<span class="math notranslate nohighlight">\(x\neq 0\)</span>を持つためには<span class="math notranslate nohighlight">\(\det(A - \lambda E)=0\)</span>である必要があるため、そのような<span class="math notranslate nohighlight">\(\lambda\)</span>を求める</p>
+<h3>固有値を求める<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\((A-\lambda E)x = 0\)</span>が非自明な解<span class="math notranslate nohighlight">\(x\neq 0\)</span>を持つためには<span class="math notranslate nohighlight">\(\det(A - \lambda E)=0\)</span>である必要があるため、そのような<span class="math notranslate nohighlight">\(\lambda\)</span>を求める（固有方程式を解く）</p>
+<p>（もし<span class="math notranslate nohighlight">\(A\)</span>が対角行列などの行列式を求めやすい形状の行列であった場合、この部分が少し楽になるので活用しよう）</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\det(A - \lambda I)
+&amp;= \det
+\begin{pmatrix}
+1 - \lambda &amp; 1\\
+2 &amp; 2 - \lambda
+\end{pmatrix}\\
+&amp;= (1 - \lambda)(2 - \lambda) - 2\\
+&amp;= 2 - 3\lambda + \lambda^2 - 2\\
+&amp;= \lambda^2 - 3\lambda\\
+&amp;= (\lambda - 3) \lambda
+&amp;= 0
+\end{aligned}
+\end{split}\]</div>
+<p>なので、<span class="math notranslate nohighlight">\(\lambda = 0, 3\)</span></p>
+</section>
+<section id="id16">
+<h3>固有空間・固有ベクトルを求める<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<p>固有値に対応するベクトルを求める</p>
+<p><span class="math notranslate nohighlight">\(\lambda = 0\)</span>の場合：</p>
+<div class="math notranslate nohighlight">
+\[
+Ax = \lambda x
+\]</div>
+<p>は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{pmatrix}
+1 &amp; 1\\
+2 &amp; 2
+\end{pmatrix}
+\begin{pmatrix}
+x_1 \\ x_2
+\end{pmatrix}
+= \lambda 
+\begin{pmatrix}
+x_1 \\ x_2
+\end{pmatrix}
+\end{split}\]</div>
+<p>であり</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{cases}
+x_1 + x_2 = 0\\
+2 x_1 + 2 x_2 = 0
+\end{cases}
+\end{split}\]</div>
+<p>となる。</p>
+<p>これを解くと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+x_1 = -x_2\\
+x_2 = -x_1
+\end{split}\]</div>
+<p>つまり</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\boldsymbol{x} = 
+\begin{pmatrix}
+x_1 \\ -x_1
+\end{pmatrix}
+\end{split}\]</div>
+<p>であるため、未知の数<span class="math notranslate nohighlight">\(c\in\mathbb{R}\)</span>をもちいて</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\boldsymbol{x}
+= c
+\begin{pmatrix}
+1 \\ -1
+\end{pmatrix}
+\end{split}\]</div>
+<p>と表すことができる。そのため、例えば <span class="math notranslate nohighlight">\(\begin{pmatrix}1 \\ -1\end{pmatrix}\)</span>は固有値<span class="math notranslate nohighlight">\(0\)</span>に属する固有ベクトルのひとつになる。</p>
+<p>固有空間は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+V(0)
+=
+\left .
+\left\{
+c
+\begin{pmatrix}
+1 \\ -1
+\end{pmatrix}
+\right |
+c\in \mathbb{R}
+\right\}
+\end{split}\]</div>
+<p>となる。</p>
+<p><span class="math notranslate nohighlight">\(\lambda = 3\)</span>の場合：</p>
+<div class="math notranslate nohighlight">
+\[
+Ax = \lambda x
+\]</div>
+<p>は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{cases}
+x_1 + x_2 = 3x_1\\
+2 x_1 + 2 x_2 = 3x_2
+\end{cases}
+\end{split}\]</div>
+<p>となる。</p>
+<p>これを解くと</p>
+<div class="math notranslate nohighlight">
+\[
+x_2 = 2 x_1
+\]</div>
+<p>であるため、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\boldsymbol{x}
+= \begin{pmatrix} x_1 \\ 2 x_1 \end{pmatrix}
+= c \begin{pmatrix} 1 \\ 2 \end{pmatrix}, c\in \mathbb{R}
+\end{split}\]</div>
+<p>となり、例えば<span class="math notranslate nohighlight">\(\begin{pmatrix}1 \\ 2\end{pmatrix}\)</span>が固有値<span class="math notranslate nohighlight">\(3\)</span>の固有ベクトルの一つである。</p>
+<p>固有空間<span class="math notranslate nohighlight">\(V(\lambda)\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+V(3)
+=
+\left .
+\left\{
+c
+\begin{pmatrix}
+1 \\ 2
+\end{pmatrix}
+\right |
+c\in \mathbb{R}
+\right\}
+\end{split}\]</div>
+<p>となる。</p>
+</section>
+<section id="numpy">
+<h3>numpy<a class="headerlink" href="#numpy" title="Link to this heading">#</a></h3>
+<p>numpyの<code class="docutils literal notranslate"><span class="pre">numpy.linalg.eig()</span></code>の返り値はノルムが1になるように正規化されている</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="p">])</span>
+
+<span class="n">lambdas</span><span class="p">,</span> <span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">λ=</span><span class="si">{</span><span class="n">lambdas</span><span class="si">}</span>
+<span class="s2">x1=</span><span class="si">{</span><span class="n">vectors</span><span class="p">[:,</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">x1&#39;=</span><span class="si">{</span><span class="p">(</span><span class="n">vectors</span><span class="p">[:,</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">x2=</span><span class="si">{</span><span class="n">vectors</span><span class="p">[:,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">x2&#39;=</span><span class="si">{</span><span class="p">(</span><span class="n">vectors</span><span class="p">[:,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>λ=[0. 3.]
+x1=[-0.707  0.707]
+x1&#39;=[ 1. -1.]
+x2=[-0.447 -0.894]
+x2&#39;=[1. 2.]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 0.70710678, -0.70710678])
+</pre></div>
+</div>
+</div>
+</div>
+<p><span class="math notranslate nohighlight">\(\lambda=0\)</span>について、
+$<span class="math notranslate nohighlight">\(
+\boldsymbol{x} = -\frac{1}{\sqrt{5}} \begin{pmatrix} 1 \\ 2 \end{pmatrix}
+  \simeq \begin{pmatrix} 0.447 \\ 0.894 \end{pmatrix}
+\)</span>$</p>
+<p><span class="math notranslate nohighlight">\(\lambda=3\)</span>について、
+$<span class="math notranslate nohighlight">\(
+\boldsymbol{x} = -\frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ -1 \end{pmatrix}
+  \simeq \begin{pmatrix} -0.707 \\ 0.707 \end{pmatrix}
+\)</span>$</p>
 <p><strong>例1. 対角行列</strong></p>
 <p>対角行列の固有値は対角成分になる。</p>
 <div class="math notranslate nohighlight">
@@ -1268,8 +1478,8 @@ x2=[0.894 0.447]
 </div>
 </div>
 </section>
-<section id="id16">
-<h3>固有ベクトルの計算<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h3>固有ベクトルの計算<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
 <p>固有値が求まれば、あとは定義にあうベクトルを求めるのみ。</p>
 <p><strong>例1.</strong></p>
 <div class="math notranslate nohighlight">
@@ -1319,8 +1529,17 @@ x_1 &amp;= x_2
 1
 \end{pmatrix}
 \end{split}\]</div>
-<p>となる</p>
-<p><span class="math notranslate nohighlight">\(\lambda = 2\)</span>の場合</p>
+<p>となる。</p>
+<p>そのため、固有空間<span class="math notranslate nohighlight">\(W(\lambda)\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[
+W(1) = \left\{\left.
+s \binom{1}{1} \right\rvert\,
+s \in \boldsymbol{R}
+\right\} .
+\]</div>
+<p>であり、固有空間のうちの一つの固有ベクトルが<span class="math notranslate nohighlight">\(\binom{1}{1}\)</span>となる。</p>
+<p><span class="math notranslate nohighlight">\(\lambda = 2\)</span>の場合、</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{pmatrix}
@@ -1397,116 +1616,13 @@ $$
 3 x_2 &= 4 x_2
 \end{align}
 $$
---><div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-例</div>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-A = \begin{pmatrix}
--3 &amp; -2\\
-4 &amp; 3
-\end{pmatrix}
-\end{split}\]</div>
-<p class="sd-card-text">の場合</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-|A - \lambda I|
-&amp;=
-\begin{vmatrix}
--3 - \lambda &amp; -2 \\
-4 &amp; 3 - \lambda \\
-\end{vmatrix}
-\\
-&amp;= (-3 \lambda)(3 - \lambda) + 4 \times 2\\
-&amp;= -9 + 3\lambda - 3\lambda + \lambda^2 + 8\\
-&amp;= \lambda^2 - 1\\
-&amp;= (\lambda - 1)(\lambda + 1)\\
-&amp;= 0
-\end{align}
-\end{split}\]</div>
-<p class="sd-card-text">より、<span class="math notranslate nohighlight">\(\lambda = 1, -1\)</span>が求まる。（それぞれ<span class="math notranslate nohighlight">\(\lambda_1, \lambda_2\)</span>とおくことにする）</p>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(\lambda_1 = 1\)</span>に対応する固有ベクトルを<span class="math notranslate nohighlight">\(\boldsymbol{x}=(x_1,x_2)^\top\)</span>とおいて次のように求める</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-A \boldsymbol{x} = \lambda_1 \boldsymbol{x}
-\iff
-\begin{align}
--3 x_1 - 2 x_2 &amp;= x_1\\
-4 x_1 + 3 x_2 &amp;= x_2\\
-\end{align}
-\end{split}\]</div>
-<p class="sd-card-text">より<span class="math notranslate nohighlight">\(-2 x_1 = x_2\)</span>という関係性になるので、変数<span class="math notranslate nohighlight">\(s\)</span>を使って次のように表す。</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\boldsymbol{x} = \begin{pmatrix}
-s \\ -2 s
-\end{pmatrix}
-\end{split}\]</div>
-<p class="sd-card-text">同様に、<span class="math notranslate nohighlight">\(\lambda_2 = -1\)</span>に対応する固有ベクトルを<span class="math notranslate nohighlight">\(\boldsymbol{y}=(y_1, y_2)^\top\)</span>とおいて次のように求める</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-A \boldsymbol{x} = \lambda_2 \boldsymbol{y}
-\iff
-\begin{align}
--3 y_1 - 2 y_2 &amp;= -y_1\\
-4 y_1 + 3 y_2 &amp;= -y_2\\
-\end{align}
-\end{split}\]</div>
-<p class="sd-card-text">より<span class="math notranslate nohighlight">\(y_1 = -y_2\)</span>という関係性なので、変数<span class="math notranslate nohighlight">\(t\)</span>を使って</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\boldsymbol{y} = \begin{pmatrix}
-t \\ -t
-\end{pmatrix}
-\end{split}\]</div>
-<p class="sd-card-text">となる。</p>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(s\)</span>や<span class="math notranslate nohighlight">\(t\)</span>は任意の値でよいので、固有ベクトルの長さが1になるように定めると、固有ベクトルは</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\boldsymbol{x} = \begin{pmatrix} 1/\sqrt{5} \\ -2/\sqrt{5} \end{pmatrix}
-  \simeq \begin{pmatrix} 0.447 \\ -0.894 \end{pmatrix}
-, \hspace{2em}
-\boldsymbol{y} = \begin{pmatrix} 1/\sqrt{2} \\ -1/\sqrt{2} \end{pmatrix}
-  \simeq \begin{pmatrix} 0.707 \\ -0.707 \end{pmatrix}
-\end{split}\]</div>
-<p class="sd-card-text">となる。</p>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-<span class="p">])</span>
-
-<span class="n">lambdas</span><span class="p">,</span> <span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">λ=</span><span class="si">{</span><span class="n">lambdas</span><span class="si">}</span>
-<span class="s2">x=</span><span class="si">{</span><span class="n">vectors</span><span class="p">[:,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span>
-<span class="s2">y=</span><span class="si">{</span><span class="n">vectors</span><span class="p">[:,</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>λ=[-1.  1.]
-x=[ 0.447 -0.894]
-y=[-0.707  0.707]
-</pre></div>
-</div>
-</div>
-</div>
-<ul class="simple">
+--><ul class="simple">
 <li><p>対象行列の固有値は負をとらない</p></li>
 <li><p>固有値に0がある（正定値じゃない）と、ランクが下がり、逆行列をもたない</p></li>
 </ul>
 </section>
-<section id="id17">
-<h3>ケイリー・ハミルトンの定理<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<section id="id18">
+<h3>ケイリー・ハミルトンの定理<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
 <div class="admonition- admonition">
 <p class="admonition-title">ケイリー・ハミルトンの定理</p>
 <p><span class="math notranslate nohighlight">\(A\)</span>の固有多項式を<span class="math notranslate nohighlight">\(\phi_A(t)\)</span>とするとき</p>
@@ -1718,9 +1834,11 @@ A^7
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">固有値・固有ベクトルの求め方</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">固有値の計算</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">固有ベクトルの計算</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">ケイリー・ハミルトンの定理</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">固有値を求める</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">固有空間・固有ベクトルを求める</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#numpy">numpy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">固有ベクトルの計算</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">ケイリー・ハミルトンの定理</a></li>
 </ul>
 </li>
 </ul>
