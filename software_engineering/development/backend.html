@@ -859,13 +859,13 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">データベース</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">データベースの構築</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">インデックス</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">複合インデックス</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">カーディナリティの高い列にインデックスを張る</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tips">データベースの構築TIPS</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">インデックス</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">複合インデックス</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">カーディナリティの高い列にインデックスを張る</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
 </ul>
 </li>
 </ul>
@@ -886,23 +886,22 @@ document.write(`
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.sraoss.co.jp/tech-blog/db-special-lecture/masunaga-db-special-lecture-11/">増永教授のDB特論⑪「結果整合性」</a></p></li>
 </ul>
+<section id="tips">
+<h3>データベースの構築TIPS<a class="headerlink" href="#tips" title="Link to this heading">#</a></h3>
 <section id="id3">
-<h3>データベースの構築<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
-<p>についてざっくりメモ</p>
+<h4>インデックス<a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
+<p>インデックスを貼ると、基本的にはデータがB-tree構造で保持されて<span class="math notranslate nohighlight">\(O(n)\)</span>ではなく<span class="math notranslate nohighlight">\(O(\log n)\)</span>で検索できるようになる。
+よって、WHERE句などで特定の値を検索されるカラムはインデックスを張ったほうがよい。</p>
+</section>
 <section id="id4">
-<h4>インデックス<a class="headerlink" href="#id4" title="Link to this heading">#</a></h4>
-<p>インデックスを貼ると、基本的にはデータがB-tree構造で保持されて<span class="math notranslate nohighlight">\(O(n)\)</span>ではなく<span class="math notranslate nohighlight">\(O(n\log n)\)</span>で検索できるようになる。</p>
-<p>よって、WHERE句などで特定の値を検索されるカラムはインデックスを張ったほうがよい。</p>
+<h4>複合インデックス<a class="headerlink" href="#id4" title="Link to this heading">#</a></h4>
+<p>複数のカラムにまたがって作成するインデックスを <strong>複合インデックス</strong> (composite index)という。
+WHERE句で複数のカラムを条件に使う場合、それらを含む複合インデックスを張っておくと検索を高速化できる。</p>
 </section>
 <section id="id5">
-<h4>複合インデックス<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
-<p>複数のカラムにまたがって作成するインデックスを <strong>複合インデックス</strong> (composite index)という。</p>
-<p>WHERE句で複数のカラムを条件に使う場合、それらを含む複合インデックスを張っておくと検索を高速化できる。</p>
-</section>
-<section id="id6">
-<h4>カーディナリティの高い列にインデックスを張る<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
-<p>値の種類が多いもの（例えば建物のテーブルにおける市区町村idなど）で絞り込むと効率的にレコード数を減らせる。</p>
-<p>そうしたカラムに優先的にインデックスを貼り、WHERE句の条件でも使う</p>
+<h4>カーディナリティの高い列にインデックスを張る<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<p>値の種類が多いもの（例えば建物のテーブルにおける市区町村idなど）で絞り込むと効率的にレコード数を減らせる。
+そうしたカラムに優先的にインデックスを貼り、WHERE句の条件でも使う。</p>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
@@ -928,8 +927,8 @@ document.write(`
 </div>
 </section>
 </section>
-<section id="id7">
-<h3>参考<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>参考<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://zenn.dev/yuki_tu/articles/c0a11385a33e0c">DBにおけるインデックス設計入門</a></p></li>
 <li><p><a class="reference external" href="https://qiita.com/masayasviel/items/b4f2fe76235f30270b07">DBのインデックスを理解しよう #MySQL - Qiita</a></p></li>
@@ -1003,13 +1002,13 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">データベース</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">データベースの構築</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">インデックス</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">複合インデックス</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">カーディナリティの高い列にインデックスを張る</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tips">データベースの構築TIPS</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">インデックス</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">複合インデックス</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">カーディナリティの高い列にインデックスを張る</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
 </ul>
 </li>
 </ul>
