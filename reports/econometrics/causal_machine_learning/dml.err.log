@@ -1,0 +1,50 @@
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 1314, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/usr/local/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+  File "/usr/local/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# 実装のイメージ（簡単のためサンプル分割なし）
+from lightgbm import LGBMRegressor
+from sklearn.model_selection import KFold
+
+kf = KFold(n_splits=5)
+kf.get_n_splits(X)
+thetas = []
+for i, (train_idx, test_idx) in enumerate(kf.split(X)):
+    # 局外関数の推定
+    m = LGBMRegressor(max_depth=4, verbose=-1).fit(X[train_idx], D[train_idx])
+    l = LGBMRegressor(max_depth=4, verbose=-1).fit(X[train_idx], Y[train_idx])
+    # 残差の計算
+    V_hat = D[test_idx] - m.predict(X[test_idx])
+    Y_res = Y[test_idx] - l.predict(X[test_idx])
+    # θの推定
+    theta_hat = np.mean(V_hat * V_hat) ** (-1) * np.mean(V_hat * Y_res)
+    thetas.append(theta_hat)
+np.mean(thetas)
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[4], line 6[0m
+[1;32m      3[0m [38;5;28;01mfrom[39;00m [38;5;21;01msklearn[39;00m[38;5;21;01m.[39;00m[38;5;21;01mmodel_selection[39;00m [38;5;28;01mimport[39;00m KFold
+[1;32m      5[0m kf [38;5;241m=[39m KFold(n_splits[38;5;241m=[39m[38;5;241m5[39m)
+[0;32m----> 6[0m kf[38;5;241m.[39mget_n_splits([43mX[49m)
+[1;32m      7[0m thetas [38;5;241m=[39m []
+[1;32m      8[0m [38;5;28;01mfor[39;00m i, (train_idx, test_idx) [38;5;129;01min[39;00m [38;5;28menumerate[39m(kf[38;5;241m.[39msplit(X)):
+[1;32m      9[0m     [38;5;66;03m# 局外関数の推定[39;00m
+
+[0;31mNameError[0m: name 'X' is not defined
+

@@ -634,7 +634,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/frontend.html">フロントエンド開発</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/backend.html">バックエンド開発</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/networking.html">ネットワーク・通信</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/domain_driven_design.html">ドメイン駆動設計</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/design.html">要件定義・設計</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/virtualization.html">仮想化技術</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/serverless.html">Serverless / FaaS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/aws_sam.html">AWS SAM メモ</a></li>
 </ul>
@@ -900,6 +901,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">cross fitting</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -933,24 +935,23 @@ D = m_0(X) + V, \hspace{1em} E[V|X] = 0
 </section>
 <section id="id2">
 <h2>先行研究<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>Robinson (1988)は部分線形モデルを提案し、一致推定量も導出した</p>
+<p><a class="reference external" href="https://www.jstor.org/stable/1912705">Robinson (1988)</a> は部分線形モデルを提案し、一致推定量も導出した</p>
 <div class="admonition-robinson-1988 admonition">
 <p class="admonition-title">Robinson (1988)の推定量</p>
 <p>部分線形モデル</p>
 <div class="math notranslate nohighlight">
 \[
-Y = D \theta_0 + g(X) + U, \quad E[U|D,X]=0
+Y = D \theta_0 + g_0(X) + U, \quad E[U|X, D]=0
 \]</div>
 <p>の両辺を<span class="math notranslate nohighlight">\(X\)</span>で条件づけて期待値をとると</p>
 <div class="math notranslate nohighlight">
 \[
-E[Y|X] = E[D|X] \theta_0 + g(X)
+E[Y|X] = E[D|X] \theta_0 + g_0(X)
 \]</div>
 <p>これをモデルから差し引くと</p>
 <div class="math notranslate nohighlight">
 \[
-Y - E[Y|X]
-= \theta_0 (D - E[D|X]) + U
+Y - E[Y|X] = \theta_0 (D - E[D|X]) + U
 \]</div>
 <p>という線形回帰の形になる（FWL定理の残差回帰の形）</p>
 <p><span class="math notranslate nohighlight">\(\tilde{Y}_i = Y_i - E[Y_i|X_i]\)</span>、<span class="math notranslate nohighlight">\(\tilde{D}_i = D_i - E[D_i|X_i]\)</span>とおけば、OLS推定量の形になる</p>
@@ -964,18 +965,19 @@ Y - E[Y|X]
 <ul class="simple">
 <li><p><a class="reference external" href="https://sites.google.com/site/naoyasueishij/teaching/nonpara">末石直也 - セミ・ノンパラメトリック計量分析 (京都大学)</a> 第5回 <a class="reference external" href="https://drive.google.com/file/d/0B6W_J4QoAI6wcWdwYkNwUU5DWTA/view?resourcekey=0--WtAUb3PgzgBpsw1XtvhzQ">部分線形モデルとセミパラメトリック推定量の性質</a></p></li>
 <li><p>西山・人見（2023）『ノン・セミパラメトリック統計解析』、共立出版</p></li>
+<li><p><a class="reference external" href="https://www.jstor.org/stable/1912705">Robinson, P. M. (1988). Root‐N‐consistent semi‐parametric regression. Econometrica 56, 931–54.</a></p></li>
 </ul>
 </div>
 <section id="donsker">
 <h3>Donsker条件<a class="headerlink" href="#donsker" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://www.jstor.org/stable/2951475">Andrew (1994)</a> はプラグイン推定量が漸近正規性・<span class="math notranslate nohighlight">\(\sqrt{n}\)</span>-consistent 一致性をもつ条件を明らかにした</p>
 <p>その条件を満たすために使われるのが、Donsker条件（Donsker condition）という条件を満たすクラスの関数（複雑性の低い関数）をノンパラメトリック推定量に使うというもの。</p>
-<p>機械学習アルゴリズムによる推定量は複雑度が高く、一般にDonsker条件を満たさない。よってRobinson（1988）の推定量に機械学習をそのまま組み込むと漸近正規・<span class="math notranslate nohighlight">\(\sqrt{n}\)</span>-consistentにならない</p>
+<p>機械学習アルゴリズムによる推定量は複雑度が高く、一般にDonsker条件を満たさない。<strong>よってRobinson（1988）の推定量に機械学習をそのまま組み込むと漸近正規推定量・<span class="math notranslate nohighlight">\(\sqrt{n}\)</span>-consistentにならない</strong></p>
 </section>
 </section>
 <section id="id3">
 <h2>課題<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p><span class="math notranslate nohighlight">\(g(X)\)</span>を機械学習で作って線形回帰するだけだと推定量は<span class="math notranslate nohighlight">\(\sqrt{n}\)</span>の収束レートにならない</p>
+<p><span class="math notranslate nohighlight">\(g_0(X)\)</span>を機械学習で作って線形回帰するだけだと推定量は<span class="math notranslate nohighlight">\(\sqrt{n}\)</span>の収束レートにならない</p>
 <p>2つのバイアスがある</p>
 <ol class="arabic simple">
 <li><p>正則化バイアス（Reguralization bias）</p></li>
@@ -983,8 +985,8 @@ Y - E[Y|X]
 </ol>
 <p>それぞれの対策として、</p>
 <ol class="arabic simple">
-<li><p>正則化バイアス → 残差回帰（直交化）で対応</p></li>
-<li><p>過学習 → Cross-Fittingで対応</p></li>
+<li><p>正則化バイアス → <strong>ネイマン直交化（例：残差回帰）</strong> で対応</p></li>
+<li><p>過学習 → <strong>Cross-Fitting</strong> で対応</p></li>
 </ol>
 <p>を行う</p>
 </section>
@@ -1717,6 +1719,45 @@ E[Y|X] \approx \hat{\ell}_0(X_i)
 </pre></div>
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 実装のイメージ（簡単のためサンプル分割なし）</span>
+<span class="kn">from</span> <span class="nn">lightgbm</span> <span class="kn">import</span> <span class="n">LGBMRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">KFold</span>
+
+<span class="n">kf</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">kf</span><span class="o">.</span><span class="n">get_n_splits</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">thetas</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">)):</span>
+    <span class="c1"># 局外関数の推定</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">D</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
+    <span class="c1"># 残差の計算</span>
+    <span class="n">V_hat</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span>
+    <span class="n">Y_res</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">l</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span>
+    <span class="c1"># θの推定</span>
+    <span class="n">theta_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">V_hat</span> <span class="o">*</span> <span class="n">V_hat</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">V_hat</span> <span class="o">*</span> <span class="n">Y_res</span><span class="p">)</span>
+    <span class="n">thetas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">theta_hat</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">thetas</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">6</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">KFold</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">kf</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="ne">----&gt; </span><span class="mi">6</span> <span class="n">kf</span><span class="o">.</span><span class="n">get_n_splits</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="n">thetas</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">)):</span>
+<span class="g g-Whitespace">      </span><span class="mi">9</span>     <span class="c1"># 局外関数の推定</span>
+
+<span class="ne">NameError</span>: name &#39;X&#39; is not defined
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 <section id="id13">
 <h2>参考<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
@@ -2051,6 +2092,22 @@ Y - E[Y|X]
 </div>
 </section>
 </section>
+<section id="id18">
+<h2>参考<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.web-nippyo.jp/13331/">機械学習×計量経済学：Double/Debiased Machine Learning | Web日本評論</a></p></li>
+<li><p><a class="reference external" href="https://amzn.to/4cCXO9X">金本拓. (2024). 因果推論: 基礎から機械学習・時系列解析・因果探索を用いた意思決定のアプローチ. 株式会社 オーム社.</a></p></li>
+</ul>
+<p>ノンパラ関連</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://amzn.to/3yITuIz">末石直也. (2024). データ駆動型回帰分析: 計量経済学と機械学習の融合.</a></p></li>
+<li><p><a class="reference external" href="https://amzn.to/3Mj6qrt">西山慶彦, &amp; 人見光太郎. (2023). ノン・セミパラメトリック統計解析.</a></p></li>
+</ul>
+<p>モーメント法</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://amzn.to/3T5k4SZ">西山慶彦, 新谷元嗣, 川口大司, &amp; 奥井亮. (2019). 計量計済学.</a></p></li>
+</ul>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -2157,6 +2214,7 @@ Y - E[Y|X]
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">cross fitting</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">参考</a></li>
 </ul>
   </nav></div>
 
