@@ -490,6 +490,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../machine_learning/evaluation/evaluation.html">予測モデルの評価</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../machine_learning/evaluation/cross_validation.html">交差検証</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../machine_learning/evaluation/generalization_error.html">汎化誤差</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../machine_learning/evaluation/irreducible_error.html">削減不能な誤差の推定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../machine_learning/evaluation/aic.html">AICとCross Validation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../machine_learning/evaluation/metrics.html">Metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../machine_learning/evaluation/uncertainty_of_prediction.html">予測の不確実性の評価</a></li>
@@ -637,14 +638,18 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/networking.html">ネットワーク・通信</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/design.html">要件定義・設計</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/virtualization.html">仮想化技術</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/serverless.html">Serverless / FaaS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/aws_sam.html">AWS SAM メモ</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/webapp_framework.html">Web Application Architecture</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../software_engineering/data_store/index.html">データストア（ストレージ・RDB）</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/data_store/rdbms.html">RDBMS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/data_store/tenant_separation.html">テナント分離</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../software_engineering/faas/index.html">Function as a Service (FaaS)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/faas/faas.html">FaaS概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/faas/aws_lambda.html">AWS Lambda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/faas/aws_sam.html">AWS SAM メモ</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../software_engineering/security/index.html">サイバーセキュリティ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -872,7 +877,10 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">対角化の条件</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">対角化の方法</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">例</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">対角化可能の判定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">対角化可能の判定</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">固有値の重複度（重解）と固有空間の次元数</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -980,6 +988,7 @@ P^{-1} A P=
 <div class="math notranslate nohighlight">
 \[\begin{split}
 AP
+= A \begin{pmatrix} \boldsymbol{x}_1 &amp; \boldsymbol{x}_2 &amp; \cdots &amp; \boldsymbol{x}_n \end{pmatrix}
 = \begin{pmatrix} A \boldsymbol{x}_1 &amp; A \boldsymbol{x}_2 &amp; \cdots &amp; A \boldsymbol{x}_n \end{pmatrix}
 = \begin{pmatrix} \lambda_1 \boldsymbol{x}_1 &amp; \lambda_2 \boldsymbol{x}_2 &amp; \cdots &amp; \lambda_n \boldsymbol{x}_n \end{pmatrix}
 = P
@@ -1089,6 +1098,94 @@ P =
 <p><span class="math notranslate nohighlight">\(V\)</span> が <span class="math notranslate nohighlight">\(n\)</span> 次元ベクトル空間で、その線型変換 <span class="math notranslate nohighlight">\(F\)</span> が <span class="math notranslate nohighlight">\(n\)</span> 個の 相異なる固有値 <span class="math notranslate nohighlight">\(\lambda_1, \lambda_2, \cdots, \lambda_n\)</span> をもつとする。</p>
 <p>そのとき、それらに属する固有ベクトル <span class="math notranslate nohighlight">\(v_1, v_2, \cdots, v_n\)</span> は <span class="math notranslate nohighlight">\(V\)</span> の基底をなし、したがって <span class="math notranslate nohighlight">\(F\)</span> は対角化可能である。</p>
 </div>
+<section id="id6">
+<h4>固有値の重複度（重解）と固有空間の次元数<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
+<div class="admonition- admonition">
+<p class="admonition-title">定理</p>
+<p><span class="math notranslate nohighlight">\(A\in M_n(\mathbb{R})\)</span>、<span class="math notranslate nohighlight">\(\lambda\)</span>を<span class="math notranslate nohighlight">\(A\)</span>の1つの固有値とするとき、</p>
+<p><span class="math notranslate nohighlight">\(\lambda\)</span>に属する固有空間の次元<span class="math notranslate nohighlight">\(\leq\)</span> <span class="math notranslate nohighlight">\(\lambda\)</span>の重複度</p>
+<p>が成り立つ</p>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+例</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A =
+\begin{pmatrix}
+1 &amp; 1\\
+0 &amp; 1
+\end{pmatrix}
+\end{split}\]</div>
+<p class="sd-card-text">は、三角行列なので</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\det(A - \lambda I)
+= \det
+\begin{pmatrix}
+1-\lambda &amp; 1\\
+0 &amp; 1-\lambda
+\end{pmatrix}
+= (1-\lambda)^2
+\end{split}\]</div>
+<p class="sd-card-text">と、<span class="math notranslate nohighlight">\(\lambda = 1\)</span>だけが固有値で、その重複度は2である。固有空間<span class="math notranslate nohighlight">\(V(1)\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[
+V(1)=\left\{\left.c\binom{1}{0} \right\rvert\, c \in \boldsymbol{R}\right\}
+\]</div>
+<p class="sd-card-text">この空間の次元は1である。</p>
+</div>
+</div>
+<div class="admonition- admonition">
+<p class="admonition-title">定理</p>
+<p><span class="math notranslate nohighlight">\(A\in M_n(\mathbb{R})\)</span>の相異なる固有値を<span class="math notranslate nohighlight">\(\lambda_1,\cdots,\lambda_s\)</span>とし、<span class="math notranslate nohighlight">\(\lambda_i\)</span>に属する固有空間を<span class="math notranslate nohighlight">\(V(\lambda_i)\)</span>とすると、</p>
+<div class="math notranslate nohighlight">
+\[
+\sum^s_{i=1} \dim V(\lambda_i)
+\leq n
+\]</div>
+<p>が成り立つ</p>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+例：固有値が重解</div>
+<div class="admonition- admonition">
+<p class="admonition-title">定理</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(A\in M_n(\mathbb{R})\)</span>、<span class="math notranslate nohighlight">\(\lambda\)</span>を<span class="math notranslate nohighlight">\(A\)</span>の1つの固有値とするとき、</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(\lambda\)</span>に属する固有空間の次元<span class="math notranslate nohighlight">\(\leq\)</span> <span class="math notranslate nohighlight">\(\lambda\)</span>の重複度</p>
+<p class="sd-card-text">が成り立つ</p>
+</div>
+<p class="sd-card-text">という定理がある。</p>
+<p class="sd-card-text">たとえば</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A =
+\begin{pmatrix}
+1 &amp; 1\\
+0 &amp; 1
+\end{pmatrix}
+\end{split}\]</div>
+<p class="sd-card-text">は、三角行列なので</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\det(A - \lambda I)
+= \det
+\begin{pmatrix}
+1-\lambda &amp; 1\\
+0 &amp; 1-\lambda
+\end{pmatrix}
+= (1-\lambda)^2
+\end{split}\]</div>
+<p class="sd-card-text">と、<span class="math notranslate nohighlight">\(\lambda = 1\)</span>だけが固有値で、その重複度は2である。固有空間<span class="math notranslate nohighlight">\(V(1)\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[
+V(1)=\left\{\left.c\binom{1}{0} \right\rvert\, c \in \boldsymbol{R}\right\}
+\]</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 </section>
@@ -1160,7 +1257,10 @@ P =
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">対角化の条件</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">対角化の方法</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">例</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">対角化可能の判定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">対角化可能の判定</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">固有値の重複度（重解）と固有空間の次元数</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

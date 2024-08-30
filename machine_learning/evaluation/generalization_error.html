@@ -75,7 +75,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'machine_learning/evaluation/generalization_error';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="AICとCross Validation" href="aic.html" />
+    <link rel="next" title="削減不能な誤差の推定" href="irreducible_error.html" />
     <link rel="prev" title="交差検証" href="cross_validation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -490,6 +490,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="evaluation.html">予測モデルの評価</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="cross_validation.html">交差検証</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">汎化誤差</a></li>
+<li class="toctree-l2"><a class="reference internal" href="irreducible_error.html">削減不能な誤差の推定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="aic.html">AICとCross Validation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="metrics.html">Metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="uncertainty_of_prediction.html">予測の不確実性の評価</a></li>
@@ -637,14 +638,18 @@
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/networking.html">ネットワーク・通信</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/design.html">要件定義・設計</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/virtualization.html">仮想化技術</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/serverless.html">Serverless / FaaS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/aws_sam.html">AWS SAM メモ</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/webapp_framework.html">Web Application Architecture</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/data_store/index.html">データストア（ストレージ・RDB）</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/data_store/rdbms.html">RDBMS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/data_store/tenant_separation.html">テナント分離</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/faas/index.html">Function as a Service (FaaS)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/faas/faas.html">FaaS概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/faas/aws_lambda.html">AWS Lambda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/faas/aws_sam.html">AWS SAM メモ</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/security/index.html">サイバーセキュリティ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -875,14 +880,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">訓練誤差</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">汎化誤差</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">汎化誤差の推定</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">汎化誤差上界</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">汎化誤差の推定</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">汎化誤差上界</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chernoff-bound">Chernoff bound</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pac-bayesian-bound">PAC-Bayesian bound</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">訓練誤差ベース</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">テスト誤差ベース</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">ノイズ付加</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">訓練誤差ベース</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">テスト誤差ベース</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">ノイズ付加</a></li>
 </ul>
 </li>
 </ul>
@@ -939,21 +943,12 @@ E_{D_L}[TE] \leq GE \leq E_{D_T}[HoldOutError]
 </section>
 </section>
 <section id="id6">
-<h2>汎化誤差<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
-<p>目的変数<span class="math notranslate nohighlight">\(Y\)</span>、訓練済みモデル<span class="math notranslate nohighlight">\(\hat{f}(X)\)</span>、誤差関数<span class="math notranslate nohighlight">\(L(Y, \hat{f}(X))\)</span>について期待値をとったもの</p>
-<div class="math notranslate nohighlight">
-\[
-E[L(Y, \hat{f}(X))]
-\]</div>
-<p>を汎化誤差という（厳密にはY,Xの同時分布での期待値）</p>
-</section>
-<section id="id7">
-<h2>汎化誤差の推定<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<h2>汎化誤差の推定<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <p>Hold out</p>
 <p>Cross Validation</p>
 </section>
-<section id="id8">
-<h2>汎化誤差上界<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h2>汎化誤差上界<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <section id="chernoff-bound">
 <h3>Chernoff bound<a class="headerlink" href="#chernoff-bound" title="Link to this heading">#</a></h3>
 </section>
@@ -962,16 +957,16 @@ E[L(Y, \hat{f}(X))]
 <p>Catoni bound</p>
 <p><a class="reference external" href="https://arxiv.org/abs/2110.11216">[2110.11216] User-friendly introduction to PAC-Bayes bounds</a></p>
 </section>
-<section id="id9">
-<h3>訓練誤差ベース<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>訓練誤差ベース<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <p>訓練誤差ベースの汎化誤差上界は実験してみると100%近くの意味のない値になることも多い<a class="reference external" href="https://arxiv.org/abs/2012.04115">[2012.04115] Generalization bounds for deep learning</a></p>
 </section>
-<section id="id10">
-<h3>テスト誤差ベース<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>テスト誤差ベース<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <p>テスト用データを使って汎化誤差上界を計算したもの</p>
 </section>
-<section id="id11">
-<h3>ノイズ付加<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>ノイズ付加<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p>ノイズ耐性と汎化性能は相関する</p>
 <p>そこでノイズ付加汎化誤差上界を計算するアプローチがある</p>
 </section>
@@ -1018,11 +1013,11 @@ E[L(Y, \hat{f}(X))]
       </div>
     </a>
     <a class="right-next"
-       href="aic.html"
+       href="irreducible_error.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">AICとCross Validation</p>
+        <p class="prev-next-title">削減不能な誤差の推定</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1048,14 +1043,13 @@ E[L(Y, \hat{f}(X))]
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">訓練誤差</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">汎化誤差</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">汎化誤差の推定</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">汎化誤差上界</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">汎化誤差の推定</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">汎化誤差上界</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chernoff-bound">Chernoff bound</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pac-bayesian-bound">PAC-Bayesian bound</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">訓練誤差ベース</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">テスト誤差ベース</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">ノイズ付加</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">訓練誤差ベース</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">テスト誤差ベース</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">ノイズ付加</a></li>
 </ul>
 </li>
 </ul>

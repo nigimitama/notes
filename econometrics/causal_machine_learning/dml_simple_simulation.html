@@ -490,6 +490,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/evaluation/evaluation.html">予測モデルの評価</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/cross_validation.html">交差検証</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/generalization_error.html">汎化誤差</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/irreducible_error.html">削減不能な誤差の推定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/aic.html">AICとCross Validation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/metrics.html">Metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/uncertainty_of_prediction.html">予測の不確実性の評価</a></li>
@@ -637,14 +638,18 @@
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/networking.html">ネットワーク・通信</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/design.html">要件定義・設計</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/virtualization.html">仮想化技術</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/serverless.html">Serverless / FaaS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/aws_sam.html">AWS SAM メモ</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/webapp_framework.html">Web Application Architecture</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/data_store/index.html">データストア（ストレージ・RDB）</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/data_store/rdbms.html">RDBMS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/data_store/tenant_separation.html">テナント分離</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/faas/index.html">Function as a Service (FaaS)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/faas/faas.html">FaaS概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/faas/aws_lambda.html">AWS Lambda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/faas/aws_sam.html">AWS SAM メモ</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/security/index.html">サイバーセキュリティ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -871,6 +876,7 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dml">DML</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-fitting">もしCross Fittingがなければ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ライブラリと一致するか</a></li>
 </ul>
             </nav>
         </div>
@@ -913,7 +919,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.PairGrid at 0x7fdfbc450880&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.PairGrid at 0x7f0340357670&gt;
 </pre></div>
 </div>
 <img alt="../../_images/745d0468ce10287de042aee0d34b4078b0b0beda0aec8541f846f2b6ba8f12b7.png" src="../../_images/745d0468ce10287de042aee0d34b4078b0b0beda0aec8541f846f2b6ba8f12b7.png" />
@@ -989,67 +995,78 @@ document.write(`
 <span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
 <span class="n">File</span> <span class="o">&lt;</span><span class="n">timed</span> <span class="n">exec</span><span class="o">&gt;</span><span class="p">:</span><span class="mi">6</span>
 
-<span class="nn">Cell In[2], line 13,</span> in <span class="ni">dml1</span><span class="nt">(Y, D, X)</span>
-<span class="g g-Whitespace">     </span><span class="mi">11</span> <span class="n">l</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
-<span class="g g-Whitespace">     </span><span class="mi">12</span> <span class="c1"># 残差の計算</span>
-<span class="ne">---&gt; </span><span class="mi">13</span> <span class="n">V_hat</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span>
-<span class="g g-Whitespace">     </span><span class="mi">14</span> <span class="n">Y_res</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">l</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span>
-<span class="g g-Whitespace">     </span><span class="mi">15</span> <span class="c1"># θの推定</span>
+<span class="nn">Cell In[2], line 10,</span> in <span class="ni">dml1</span><span class="nt">(Y, D, X)</span>
+<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="n">thetas</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">)):</span>
+<span class="g g-Whitespace">      </span><span class="mi">9</span>     <span class="c1"># 局外関数の推定</span>
+<span class="ne">---&gt; </span><span class="mi">10</span>     <span class="n">m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">D</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
+<span class="g g-Whitespace">     </span><span class="mi">11</span>     <span class="n">l</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
+<span class="g g-Whitespace">     </span><span class="mi">12</span>     <span class="c1"># 残差の計算</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/sklearn.py:1036,</span> in <span class="ni">LGBMModel.predict</span><span class="nt">(self, X, raw_score, start_iteration, num_iteration, pred_leaf, pred_contrib, validate_features, **kwargs)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1033</span> <span class="n">predict_params</span> <span class="o">=</span> <span class="n">_choose_param_value</span><span class="p">(</span><span class="s2">&quot;num_threads&quot;</span><span class="p">,</span> <span class="n">predict_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1034</span> <span class="n">predict_params</span><span class="p">[</span><span class="s2">&quot;num_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_n_jobs</span><span class="p">(</span><span class="n">predict_params</span><span class="p">[</span><span class="s2">&quot;num_threads&quot;</span><span class="p">])</span>
-<span class="ne">-&gt; </span><span class="mi">1036</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Booster</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>  <span class="c1"># type: ignore[union-attr]</span>
-<span class="g g-Whitespace">   </span><span class="mi">1037</span>     <span class="n">X</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1038</span>     <span class="n">raw_score</span><span class="o">=</span><span class="n">raw_score</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1039</span>     <span class="n">start_iteration</span><span class="o">=</span><span class="n">start_iteration</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1040</span>     <span class="n">num_iteration</span><span class="o">=</span><span class="n">num_iteration</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1041</span>     <span class="n">pred_leaf</span><span class="o">=</span><span class="n">pred_leaf</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1042</span>     <span class="n">pred_contrib</span><span class="o">=</span><span class="n">pred_contrib</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1043</span>     <span class="n">validate_features</span><span class="o">=</span><span class="n">validate_features</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1044</span>     <span class="o">**</span><span class="n">predict_params</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1045</span> <span class="p">)</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/basic.py:4739,</span> in <span class="ni">Booster.predict</span><span class="nt">(self, data, start_iteration, num_iteration, raw_score, pred_leaf, pred_contrib, data_has_header, validate_features, **kwargs)</span>
-<span class="g g-Whitespace">   </span><span class="mi">4682</span> <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">4683</span>     <span class="bp">self</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">4684</span>     <span class="n">data</span><span class="p">:</span> <span class="n">_LGBM_PredictDataType</span><span class="p">,</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/sklearn.py:1189,</span> in <span class="ni">LGBMRegressor.fit</span><span class="nt">(self, X, y, sample_weight, init_score, eval_set, eval_names, eval_sample_weight, eval_init_score, eval_metric, feature_name, categorical_feature, callbacks, init_model)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1172</span> <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>  <span class="c1"># type: ignore[override]</span>
+<span class="g g-Whitespace">   </span><span class="mi">1173</span>     <span class="bp">self</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1174</span>     <span class="n">X</span><span class="p">:</span> <span class="n">_LGBM_ScikitMatrixLike</span><span class="p">,</span>
    <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">4692</span>     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">4693</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">]]:</span>
-<span class="g g-Whitespace">   </span><span class="mi">4694</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;Make a prediction.</span>
-<span class="g g-Whitespace">   </span><span class="mi">4695</span><span class="sd"> </span>
-<span class="g g-Whitespace">   </span><span class="mi">4696</span><span class="sd">     Parameters</span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">   </span><span class="mi">4737</span><span class="sd">         Can be sparse or a list of sparse objects (each element represents predictions for one class) for feature contributions (when ``pred_contrib=True``).</span>
-<span class="g g-Whitespace">   </span><span class="mi">4738</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">-&gt; </span><span class="mi">4739</span>     <span class="n">predictor</span> <span class="o">=</span> <span class="n">_InnerPredictor</span><span class="o">.</span><span class="n">from_booster</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">4740</span>         <span class="n">booster</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">4741</span>         <span class="n">pred_parameter</span><span class="o">=</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs</span><span class="p">),</span>
-<span class="g g-Whitespace">   </span><span class="mi">4742</span>     <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">4743</span>     <span class="k">if</span> <span class="n">num_iteration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">4744</span>         <span class="k">if</span> <span class="n">start_iteration</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1186</span>     <span class="n">init_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">Booster</span><span class="p">,</span> <span class="n">LGBMModel</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1187</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;LGBMRegressor&quot;</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1188</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;Docstring is inherited from the LGBMModel.&quot;&quot;&quot;</span>
+<span class="ne">-&gt; </span><span class="mi">1189</span>     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1190</span>         <span class="n">X</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1191</span>         <span class="n">y</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1192</span>         <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1193</span>         <span class="n">init_score</span><span class="o">=</span><span class="n">init_score</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1194</span>         <span class="n">eval_set</span><span class="o">=</span><span class="n">eval_set</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1195</span>         <span class="n">eval_names</span><span class="o">=</span><span class="n">eval_names</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1196</span>         <span class="n">eval_sample_weight</span><span class="o">=</span><span class="n">eval_sample_weight</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1197</span>         <span class="n">eval_init_score</span><span class="o">=</span><span class="n">eval_init_score</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1198</span>         <span class="n">eval_metric</span><span class="o">=</span><span class="n">eval_metric</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1199</span>         <span class="n">feature_name</span><span class="o">=</span><span class="n">feature_name</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1200</span>         <span class="n">categorical_feature</span><span class="o">=</span><span class="n">categorical_feature</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1201</span>         <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1202</span>         <span class="n">init_model</span><span class="o">=</span><span class="n">init_model</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1203</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1204</span>     <span class="k">return</span> <span class="bp">self</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/basic.py:1025,</span> in <span class="ni">_InnerPredictor.from_booster</span><span class="nt">(cls, booster, pred_parameter)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1014</span><span class="w"> </span><span class="sd">&quot;&quot;&quot;Initialize an ``_InnerPredictor`` from a ``Booster``.</span>
-<span class="g g-Whitespace">   </span><span class="mi">1015</span><span class="sd"> </span>
-<span class="g g-Whitespace">   </span><span class="mi">1016</span><span class="sd"> Parameters</span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1021</span><span class="sd">     Other parameters for the prediction.</span>
-<span class="g g-Whitespace">   </span><span class="mi">1022</span><span class="sd"> &quot;&quot;&quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">1023</span> <span class="n">out_cur_iter</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1024</span> <span class="n">_safe_call</span><span class="p">(</span>
-<span class="ne">-&gt; </span><span class="mi">1025</span>     <span class="n">_LIB</span><span class="o">.</span><span class="n">LGBM_BoosterGetCurrentIteration</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1026</span>         <span class="n">booster</span><span class="o">.</span><span class="n">_handle</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1027</span>         <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">out_cur_iter</span><span class="p">),</span>
-<span class="g g-Whitespace">   </span><span class="mi">1028</span>     <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1029</span> <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1030</span> <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1031</span>     <span class="n">booster_handle</span><span class="o">=</span><span class="n">booster</span><span class="o">.</span><span class="n">_handle</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1032</span>     <span class="n">pandas_categorical</span><span class="o">=</span><span class="n">booster</span><span class="o">.</span><span class="n">pandas_categorical</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1033</span>     <span class="n">pred_parameter</span><span class="o">=</span><span class="n">pred_parameter</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1034</span>     <span class="n">manage_handle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1035</span> <span class="p">)</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/sklearn.py:955,</span> in <span class="ni">LGBMModel.fit</span><span class="nt">(self, X, y, sample_weight, init_score, group, eval_set, eval_names, eval_sample_weight, eval_class_weight, eval_init_score, eval_group, eval_metric, feature_name, categorical_feature, callbacks, init_model)</span>
+<span class="g g-Whitespace">    </span><span class="mi">952</span> <span class="n">evals_result</span><span class="p">:</span> <span class="n">_EvalResultDict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="g g-Whitespace">    </span><span class="mi">953</span> <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record_evaluation</span><span class="p">(</span><span class="n">evals_result</span><span class="p">))</span>
+<span class="ne">--&gt; </span><span class="mi">955</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Booster</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">956</span>     <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">957</span>     <span class="n">train_set</span><span class="o">=</span><span class="n">train_set</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">958</span>     <span class="n">num_boost_round</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_estimators</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">959</span>     <span class="n">valid_sets</span><span class="o">=</span><span class="n">valid_sets</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">960</span>     <span class="n">valid_names</span><span class="o">=</span><span class="n">eval_names</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">961</span>     <span class="n">feval</span><span class="o">=</span><span class="n">eval_metrics_callable</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+<span class="g g-Whitespace">    </span><span class="mi">962</span>     <span class="n">init_model</span><span class="o">=</span><span class="n">init_model</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">963</span>     <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">964</span> <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">966</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evals_result</span> <span class="o">=</span> <span class="n">evals_result</span>
+<span class="g g-Whitespace">    </span><span class="mi">967</span> <span class="bp">self</span><span class="o">.</span><span class="n">_best_iteration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Booster</span><span class="o">.</span><span class="n">best_iteration</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/engine.py:307,</span> in <span class="ni">train</span><span class="nt">(params, train_set, num_boost_round, valid_sets, valid_names, feval, init_model, feature_name, categorical_feature, keep_training_booster, callbacks)</span>
+<span class="g g-Whitespace">    </span><span class="mi">295</span> <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks_before_iter</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">296</span>     <span class="n">cb</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">297</span>         <span class="n">callback</span><span class="o">.</span><span class="n">CallbackEnv</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">298</span>             <span class="n">model</span><span class="o">=</span><span class="n">booster</span><span class="p">,</span>
+   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">304</span>         <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">305</span>     <span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">307</span> <span class="n">booster</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fobj</span><span class="o">=</span><span class="n">fobj</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">309</span> <span class="n">evaluation_result_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_LGBM_BoosterEvalMethodResultType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="g g-Whitespace">    </span><span class="mi">310</span> <span class="c1"># check evaluation result.</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/basic.py:4136,</span> in <span class="ni">Booster.update</span><span class="nt">(self, train_set, fobj)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4133</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__set_objective_to_none</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">4134</span>     <span class="k">raise</span> <span class="n">LightGBMError</span><span class="p">(</span><span class="s2">&quot;Cannot update due to null objective function.&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4135</span> <span class="n">_safe_call</span><span class="p">(</span>
+<span class="ne">-&gt; </span><span class="mi">4136</span>     <span class="n">_LIB</span><span class="o">.</span><span class="n">LGBM_BoosterUpdateOneIter</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">4137</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">4138</span>         <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">is_finished</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">4139</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4140</span> <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4141</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_predicted_cur_iter</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__num_dataset</span><span class="p">)]</span>
+<span class="g g-Whitespace">   </span><span class="mi">4142</span> <span class="k">return</span> <span class="n">is_finished</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">1</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
@@ -1115,6 +1132,140 @@ Wall time: 19.2 s
 </div>
 </div>
 </section>
+<section id="id2">
+<h2>ライブラリと一致するか<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">gen_data</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">)</span>
+<span class="n">theta_hat</span> <span class="o">=</span> <span class="n">dml1</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">theta</span><span class="si">=:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">theta_hat</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>theta=5.0, theta_hat=4.996
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>x</th>
+      <th>y</th>
+      <th>d</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>8.397135</td>
+      <td>99.940053</td>
+      <td>99.940053</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>7.304758</td>
+      <td>67.200958</td>
+      <td>67.200958</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8.947698</td>
+      <td>104.094708</td>
+      <td>104.094708</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>9.699176</td>
+      <td>127.140504</td>
+      <td>127.140504</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>7.972729</td>
+      <td>91.577762</td>
+      <td>91.577762</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    
+<span class="kn">from</span> <span class="nn">doubleml</span> <span class="kn">import</span> <span class="n">DoubleMLData</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">DoubleMLData</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y_col</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">d_cols</span><span class="o">=</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="n">x_cols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+
+<span class="kn">from</span> <span class="nn">doubleml</span> <span class="kn">import</span> <span class="n">DoubleMLPLR</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">dml</span> <span class="o">=</span> <span class="n">DoubleMLPLR</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+<span class="n">dml</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dml</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>================== DoubleMLPLR Object ==================
+
+------------------ Data summary      ------------------
+Outcome variable: y
+Treatment variable(s): [&#39;d&#39;]
+Covariates: [&#39;x&#39;]
+Instrument variable(s): None
+No. Observations: 500
+
+------------------ Score &amp; algorithm ------------------
+Score function: partialling out
+
+------------------ Machine learner   ------------------
+Learner ml_l: LGBMRegressor(max_depth=4, verbose=-1)
+Learner ml_m: LGBMRegressor(verbose=-1)
+Out-of-sample Performance:
+Regression:
+Learner ml_l RMSE: [[10.77148372]]
+Learner ml_m RMSE: [[10.86900956]]
+
+------------------ Resampling        ------------------
+No. folds: 5
+No. repeated sample splits: 1
+
+------------------ Fit summary       ------------------
+       coef   std err           t  P&gt;|t|     2.5 %   97.5 %
+d  0.989565  0.002293  431.535933    0.0  0.985071  0.99406
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1165,6 +1316,7 @@ Wall time: 19.2 s
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dml">DML</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-fitting">もしCross Fittingがなければ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ライブラリと一致するか</a></li>
 </ul>
   </nav></div>
 
