@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Casual Tree/Forest &#8212; データサイエンス関連+αのメモ</title>
+    <title>シミュレーション &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -70,11 +70,13 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/causal_machine_learning/causal_forest';</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/dml/dml_simple_simulation';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Double/Debiased Machine Learning" href="dml.html" />
-    <link rel="prev" title="Meta Learner" href="meta_learner.html" />
+    <link rel="next" title="DMLパッケージで試してみる" href="dml_example.html" />
+    <link rel="prev" title="DoubleMLパッケージによるDMLのシミュレーション" href="dml_simulation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -437,14 +439,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../synthetic_control.html">Synthetic Control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../causalimpact.html">Causal Impact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gmm.html">一般化モーメント法</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Causal Machine Learning</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="meta_learner.html">Meta Learner</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Casual Tree/Forest</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Double/Debiased Machine Learning (DML)</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="dml.html">Double/Debiased Machine Learning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dml_example.html">DMLパッケージで試してみる</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dml_simulation.html">DoubleMLパッケージによるDMLのシミュレーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applied_research.html">Causal ML系の応用研究</a></li>
-<li class="toctree-l2"><a class="reference internal" href="model_evaluation.html">モデルの評価</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">シミュレーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dml_example.html">DMLパッケージで試してみる</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../causal_forest/index.html">Causal Forest / GRF</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../causal_machine_learning/index.html">Causal Machine Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../causal_machine_learning/applied_research.html">Causal ML系の応用研究</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../causal_machine_learning/model_evaluation.html">モデルの評価</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../causal_discovery.html">統計的因果探索</a></li>
@@ -783,7 +790,7 @@
       
       
       
-      <li><a href="../../_sources/econometrics/causal_machine_learning/causal_forest.ipynb" target="_blank"
+      <li><a href="../../_sources/econometrics/dml/dml_simple_simulation.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -867,7 +874,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Casual Tree/Forest</h1>
+    <h1>シミュレーション</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -877,11 +884,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-tree">Causal Tree</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grf">GRFは欠陥あり？</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">参考</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dml">DML</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-fitting">もしCross Fittingがなければ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ライブラリと一致するか</a></li>
 </ul>
             </nav>
         </div>
@@ -893,27 +898,455 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="casual-tree-forest">
-<h1>Casual Tree/Forest<a class="headerlink" href="#casual-tree-forest" title="Link to this heading">#</a></h1>
-<section id="causal-tree">
-<h2>Causal Tree<a class="headerlink" href="#causal-tree" title="Link to this heading">#</a></h2>
-<section id="grf">
-<h3>GRFは欠陥あり？<a class="headerlink" href="#grf" title="Link to this heading">#</a></h3>
-<p>Atlantic causal inference conferenceの因果推論コンペでの成績は悪かったらしい</p>
-<p>（<a class="reference external" href="https://twitter.com/kenmcalinn/status/1630768792912506881">Ken McAlinnさんはTwitterを使っています: 「因果推定コンテストで回帰分析にボロ負けした話もちゃんと載せてほしい。」 / Twitter</a>）</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>シミュレーション<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">m</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">gen_data</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="n">V</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">D</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">+</span> <span class="n">g</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="n">U</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span>
+
+<span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">gen_data</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">Y</span><span class="o">=</span><span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">))))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.PairGrid at 0x7fec24cf36a0&gt;
+</pre></div>
+</div>
+<img alt="../../_images/745d0468ce10287de042aee0d34b4078b0b0beda0aec8541f846f2b6ba8f12b7.png" src="../../_images/745d0468ce10287de042aee0d34b4078b0b0beda0aec8541f846f2b6ba8f12b7.png" />
+</div>
+</div>
+<p>DML1を真似たやつ</p>
+<ol class="arabic simple">
+<li><p>サンプルを<span class="math notranslate nohighlight">\(K\)</span>個に分割する。</p></li>
+<li><p><span class="math notranslate nohighlight">\(k \in K\)</span>について、<span class="math notranslate nohighlight">\(k\)</span>番目のチャンクのサンプルのインデックスの集合を<span class="math notranslate nohighlight">\(I_k\)</span>とする。<span class="math notranslate nohighlight">\(i \notin I_k\)</span>のサンプルで局外関数の推定を行う：<span class="math notranslate nohighlight">\(\hat{\eta}_{0,k} = (\hat{\eta}_{0}(W_i)_{i \notin I_k})\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(i \in I_k\)</span>のサンプルで<span class="math notranslate nohighlight">\(\theta\)</span>を推定</p></li>
+<li><p><span class="math notranslate nohighlight">\(\hat{\theta}_{0,k}\)</span>の平均を集計</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lightgbm</span> <span class="kn">import</span> <span class="n">LGBMRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">KFold</span>
+
+<span class="k">def</span> <span class="nf">dml1</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+    <span class="n">kf</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">kf</span><span class="o">.</span><span class="n">get_n_splits</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">thetas</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">)):</span>
+        <span class="c1"># 局外関数の推定</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">D</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
+        <span class="c1"># 残差の計算</span>
+        <span class="n">V_hat</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span>
+        <span class="n">Y_res</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">l</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span>
+        <span class="c1"># θの推定</span>
+        <span class="n">theta_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">V_hat</span> <span class="o">*</span> <span class="n">V_hat</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">V_hat</span> <span class="o">*</span> <span class="n">Y_res</span><span class="p">)</span>
+        <span class="n">thetas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">theta_hat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">thetas</span><span class="p">)</span>
+
+<span class="n">dml1</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.996210951148309
+</pre></div>
+</div>
+</div>
+</div>
+<section id="dml">
+<h2>DML<a class="headerlink" href="#dml" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">n_rep</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">estimation_errors</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i_rep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
+    <span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">gen_data</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">i_rep</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">theta_hat</span> <span class="o">=</span> <span class="n">dml1</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+    <span class="n">estimation_error</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">theta_hat</span>
+    <span class="n">estimation_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">estimation_error</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">estimation_errors</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\theta - \hat{\theta}$&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Estimation Error&quot;</span><span class="p">)</span>
+
+<span class="n">mean_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">estimation_errors</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">mean_error</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkblue&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">mean_error</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot; mean=</span><span class="si">{</span><span class="n">mean_error</span><span class="si">:</span><span class="s2">.2g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
+<span class="n">File</span> <span class="o">&lt;</span><span class="n">timed</span> <span class="n">exec</span><span class="o">&gt;</span><span class="p">:</span><span class="mi">6</span>
+
+<span class="nn">Cell In[2], line 10,</span> in <span class="ni">dml1</span><span class="nt">(Y, D, X)</span>
+<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="n">thetas</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">)):</span>
+<span class="g g-Whitespace">      </span><span class="mi">9</span>     <span class="c1"># 局外関数の推定</span>
+<span class="ne">---&gt; </span><span class="mi">10</span>     <span class="n">m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">D</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
+<span class="g g-Whitespace">     </span><span class="mi">11</span>     <span class="n">l</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
+<span class="g g-Whitespace">     </span><span class="mi">12</span>     <span class="c1"># 残差の計算</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/sklearn.py:1189,</span> in <span class="ni">LGBMRegressor.fit</span><span class="nt">(self, X, y, sample_weight, init_score, eval_set, eval_names, eval_sample_weight, eval_init_score, eval_metric, feature_name, categorical_feature, callbacks, init_model)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1172</span> <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>  <span class="c1"># type: ignore[override]</span>
+<span class="g g-Whitespace">   </span><span class="mi">1173</span>     <span class="bp">self</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1174</span>     <span class="n">X</span><span class="p">:</span> <span class="n">_LGBM_ScikitMatrixLike</span><span class="p">,</span>
+   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1186</span>     <span class="n">init_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">Booster</span><span class="p">,</span> <span class="n">LGBMModel</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1187</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;LGBMRegressor&quot;</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1188</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;Docstring is inherited from the LGBMModel.&quot;&quot;&quot;</span>
+<span class="ne">-&gt; </span><span class="mi">1189</span>     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1190</span>         <span class="n">X</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1191</span>         <span class="n">y</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1192</span>         <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1193</span>         <span class="n">init_score</span><span class="o">=</span><span class="n">init_score</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1194</span>         <span class="n">eval_set</span><span class="o">=</span><span class="n">eval_set</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1195</span>         <span class="n">eval_names</span><span class="o">=</span><span class="n">eval_names</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1196</span>         <span class="n">eval_sample_weight</span><span class="o">=</span><span class="n">eval_sample_weight</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1197</span>         <span class="n">eval_init_score</span><span class="o">=</span><span class="n">eval_init_score</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1198</span>         <span class="n">eval_metric</span><span class="o">=</span><span class="n">eval_metric</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1199</span>         <span class="n">feature_name</span><span class="o">=</span><span class="n">feature_name</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1200</span>         <span class="n">categorical_feature</span><span class="o">=</span><span class="n">categorical_feature</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1201</span>         <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1202</span>         <span class="n">init_model</span><span class="o">=</span><span class="n">init_model</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1203</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1204</span>     <span class="k">return</span> <span class="bp">self</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/sklearn.py:955,</span> in <span class="ni">LGBMModel.fit</span><span class="nt">(self, X, y, sample_weight, init_score, group, eval_set, eval_names, eval_sample_weight, eval_class_weight, eval_init_score, eval_group, eval_metric, feature_name, categorical_feature, callbacks, init_model)</span>
+<span class="g g-Whitespace">    </span><span class="mi">952</span> <span class="n">evals_result</span><span class="p">:</span> <span class="n">_EvalResultDict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="g g-Whitespace">    </span><span class="mi">953</span> <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record_evaluation</span><span class="p">(</span><span class="n">evals_result</span><span class="p">))</span>
+<span class="ne">--&gt; </span><span class="mi">955</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Booster</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">956</span>     <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">957</span>     <span class="n">train_set</span><span class="o">=</span><span class="n">train_set</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">958</span>     <span class="n">num_boost_round</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_estimators</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">959</span>     <span class="n">valid_sets</span><span class="o">=</span><span class="n">valid_sets</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">960</span>     <span class="n">valid_names</span><span class="o">=</span><span class="n">eval_names</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">961</span>     <span class="n">feval</span><span class="o">=</span><span class="n">eval_metrics_callable</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+<span class="g g-Whitespace">    </span><span class="mi">962</span>     <span class="n">init_model</span><span class="o">=</span><span class="n">init_model</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">963</span>     <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">964</span> <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">966</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evals_result</span> <span class="o">=</span> <span class="n">evals_result</span>
+<span class="g g-Whitespace">    </span><span class="mi">967</span> <span class="bp">self</span><span class="o">.</span><span class="n">_best_iteration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Booster</span><span class="o">.</span><span class="n">best_iteration</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/engine.py:335,</span> in <span class="ni">train</span><span class="nt">(params, train_set, num_boost_round, valid_sets, valid_names, feval, init_model, feature_name, categorical_feature, keep_training_booster, callbacks)</span>
+<span class="g g-Whitespace">    </span><span class="mi">333</span>     <span class="n">booster</span><span class="o">.</span><span class="n">best_score</span><span class="p">[</span><span class="n">dataset_name</span><span class="p">][</span><span class="n">eval_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span>
+<span class="g g-Whitespace">    </span><span class="mi">334</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_training_booster</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">335</span>     <span class="n">booster</span><span class="o">.</span><span class="n">model_from_string</span><span class="p">(</span><span class="n">booster</span><span class="o">.</span><span class="n">model_to_string</span><span class="p">())</span><span class="o">.</span><span class="n">free_dataset</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">336</span> <span class="k">return</span> <span class="n">booster</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/basic.py:4599,</span> in <span class="ni">Booster.model_to_string</span><span class="nt">(self, num_iteration, start_iteration, importance_type)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4587</span>     <span class="n">ptr_string_buffer</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_char_p</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">addressof</span><span class="p">(</span><span class="n">string_buffer</span><span class="p">))</span>
+<span class="g g-Whitespace">   </span><span class="mi">4588</span>     <span class="n">_safe_call</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">4589</span>         <span class="n">_LIB</span><span class="o">.</span><span class="n">LGBM_BoosterSaveModelToString</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">4590</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="p">,</span>
+   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4597</span>         <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4598</span>     <span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">4599</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">string_buffer</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4600</span> <span class="n">ret</span> <span class="o">+=</span> <span class="n">_dump_pandas_categorical</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pandas_categorical</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4601</span> <span class="k">return</span> <span class="n">ret</span>
+
+<span class="ne">KeyboardInterrupt</span>: 
+</pre></div>
+</div>
+</div>
+</div>
 </section>
-<section id="id1">
-<h3>参考<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Susan Atheyらの講義資料：<a class="reference external" href="https://gsbdbi.github.io/ml_tutorial/hte_tutorial/hte_tutorial.html">Estimation of Heterogeneous Treatment Effects</a></p></li>
-<li><p><a class="reference external" href="https://arxiv.org/abs/1510.04342">Wager, S., &amp; Athey, S. (2015). Estimation and inference of heterogeneous treatment effects using random forests. arXiv preprint arXiv: 151004342.</a></p>
-<ul>
-<li><p>関連：<a class="reference external" href="https://arxiv.org/abs/1405.0352">Wager, S. (2014). Asymptotic theory for random forests. arXiv preprint arXiv:1405.0352.</a></p></li>
-</ul>
-</li>
-<li><p><a class="reference external" href="https://arxiv.org/abs/1902.07409">Athey, S., &amp; Wager, S. (2019). Estimating treatment effects with causal forests: An application. Observational Studies, 5(2), 37-51.</a></p></li>
-</ul>
+<section id="cross-fitting">
+<h2>もしCross Fittingがなければ<a class="headerlink" href="#cross-fitting" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">estimate_without_cross_fitting</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+    <span class="c1"># 局外関数の推定</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+    <span class="c1"># 残差の計算</span>
+    <span class="n">V_hat</span> <span class="o">=</span> <span class="n">D</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">Y_res</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="n">l</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="c1"># θの推定</span>
+    <span class="n">theta_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">V_hat</span> <span class="o">*</span> <span class="n">V_hat</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">V_hat</span> <span class="o">*</span> <span class="n">Y_res</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">theta_hat</span>
+
+<span class="n">estimate_without_cross_fitting</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.8689337039631475
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">n_rep</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">estimation_errors</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i_rep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
+    <span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">gen_data</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">i_rep</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">theta_hat</span> <span class="o">=</span> <span class="n">estimate_without_cross_fitting</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+    <span class="n">estimation_error</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">theta_hat</span>
+    <span class="n">estimation_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">estimation_error</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">estimation_errors</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\theta - \hat{\theta}$&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Estimation Error (without splitting)&quot;</span><span class="p">)</span>
+
+<span class="n">mean_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">estimation_errors</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">mean_error</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkblue&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">mean_error</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot; mean=</span><span class="si">{</span><span class="n">mean_error</span><span class="si">:</span><span class="s2">.2g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 2min 39s, sys: 868 ms, total: 2min 40s
+Wall time: 20.3 s
+</pre></div>
+</div>
+<img alt="../../_images/e327772bfa14bc8467140ca332f98a821b40ca3778a634414e2bdc1754c76c9e.png" src="../../_images/e327772bfa14bc8467140ca332f98a821b40ca3778a634414e2bdc1754c76c9e.png" />
+</div>
+</div>
 </section>
+<section id="id2">
+<h2>ライブラリと一致するか<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">gen_data</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">)</span>
+<span class="n">theta_hat</span> <span class="o">=</span> <span class="n">dml1</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">theta</span><span class="si">=:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">theta_hat</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>theta=7.0, theta_hat=7.002
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>x</th>
+      <th>y</th>
+      <th>d</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>8.397135</td>
+      <td>99.940053</td>
+      <td>99.940053</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>7.304758</td>
+      <td>67.200958</td>
+      <td>67.200958</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8.947698</td>
+      <td>104.094708</td>
+      <td>104.094708</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>9.699176</td>
+      <td>127.140504</td>
+      <td>127.140504</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>7.972729</td>
+      <td>91.577762</td>
+      <td>91.577762</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    
+<span class="kn">from</span> <span class="nn">doubleml</span> <span class="kn">import</span> <span class="n">DoubleMLData</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">DoubleMLData</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y_col</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">d_cols</span><span class="o">=</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="n">x_cols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+
+<span class="kn">from</span> <span class="nn">doubleml</span> <span class="kn">import</span> <span class="n">DoubleMLPLR</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">dml</span> <span class="o">=</span> <span class="n">DoubleMLPLR</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+<span class="n">dml</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dml</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>================== DoubleMLPLR Object ==================
+
+------------------ Data summary      ------------------
+Outcome variable: y
+Treatment variable(s): [&#39;d&#39;]
+Covariates: [&#39;x&#39;]
+Instrument variable(s): None
+No. Observations: 500
+
+------------------ Score &amp; algorithm ------------------
+Score function: partialling out
+
+------------------ Machine learner   ------------------
+Learner ml_l: LGBMRegressor(max_depth=4, verbose=-1)
+Learner ml_m: LGBMRegressor(verbose=-1)
+Out-of-sample Performance:
+Regression:
+Learner ml_l RMSE: [[10.77148372]]
+Learner ml_m RMSE: [[10.86900956]]
+
+------------------ Resampling        ------------------
+No. folds: 5
+No. repeated sample splits: 1
+
+------------------ Fit summary       ------------------
+       coef   std err           t  P&gt;|t|     2.5 %   97.5 %
+d  0.989565  0.002293  431.535933    0.0  0.985071  0.99406
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">3141</span><span class="p">)</span>
+<span class="n">n_obs</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">n_vars</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_obs</span><span class="p">,</span> <span class="n">n_vars</span><span class="p">))</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_obs</span><span class="p">,))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">d</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_obs</span><span class="p">,))</span>
+
+<span class="n">dml_data_sim</span> <span class="o">=</span> <span class="n">DoubleMLData</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dml_data_sim</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>================== DoubleMLData Object ==================
+
+------------------ Data summary      ------------------
+Outcome variable: y
+Treatment variable(s): [&#39;d&#39;]
+Covariates: [&#39;X1&#39;, &#39;X2&#39;, &#39;X3&#39;, &#39;X4&#39;, &#39;X5&#39;, &#39;X6&#39;, &#39;X7&#39;, &#39;X8&#39;, &#39;X9&#39;, &#39;X10&#39;, &#39;X11&#39;, &#39;X12&#39;, &#39;X13&#39;, &#39;X14&#39;, &#39;X15&#39;, &#39;X16&#39;, &#39;X17&#39;, &#39;X18&#39;, &#39;X19&#39;, &#39;X20&#39;, &#39;X21&#39;, &#39;X22&#39;, &#39;X23&#39;, &#39;X24&#39;, &#39;X25&#39;, &#39;X26&#39;, &#39;X27&#39;, &#39;X28&#39;, &#39;X29&#39;, &#39;X30&#39;, &#39;X31&#39;, &#39;X32&#39;, &#39;X33&#39;, &#39;X34&#39;, &#39;X35&#39;, &#39;X36&#39;, &#39;X37&#39;, &#39;X38&#39;, &#39;X39&#39;, &#39;X40&#39;, &#39;X41&#39;, &#39;X42&#39;, &#39;X43&#39;, &#39;X44&#39;, &#39;X45&#39;, &#39;X46&#39;, &#39;X47&#39;, &#39;X48&#39;, &#39;X49&#39;, &#39;X50&#39;, &#39;X51&#39;, &#39;X52&#39;, &#39;X53&#39;, &#39;X54&#39;, &#39;X55&#39;, &#39;X56&#39;, &#39;X57&#39;, &#39;X58&#39;, &#39;X59&#39;, &#39;X60&#39;, &#39;X61&#39;, &#39;X62&#39;, &#39;X63&#39;, &#39;X64&#39;, &#39;X65&#39;, &#39;X66&#39;, &#39;X67&#39;, &#39;X68&#39;, &#39;X69&#39;, &#39;X70&#39;, &#39;X71&#39;, &#39;X72&#39;, &#39;X73&#39;, &#39;X74&#39;, &#39;X75&#39;, &#39;X76&#39;, &#39;X77&#39;, &#39;X78&#39;, &#39;X79&#39;, &#39;X80&#39;, &#39;X81&#39;, &#39;X82&#39;, &#39;X83&#39;, &#39;X84&#39;, &#39;X85&#39;, &#39;X86&#39;, &#39;X87&#39;, &#39;X88&#39;, &#39;X89&#39;, &#39;X90&#39;, &#39;X91&#39;, &#39;X92&#39;, &#39;X93&#39;, &#39;X94&#39;, &#39;X95&#39;, &#39;X96&#39;, &#39;X97&#39;, &#39;X98&#39;, &#39;X99&#39;, &#39;X100&#39;]
+Instrument variable(s): None
+No. Observations: 500
+
+------------------ DataFrame info    ------------------
+&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 500 entries, 0 to 499
+Columns: 102 entries, X1 to d
+dtypes: float64(102)
+memory usage: 398.6 KB
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">doubleml</span> <span class="kn">import</span> <span class="n">DoubleMLPLR</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">dml</span> <span class="o">=</span> <span class="n">DoubleMLPLR</span><span class="p">(</span><span class="n">dml_data_sim</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+<span class="n">dml</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dml</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>================== DoubleMLPLR Object ==================
+
+------------------ Data summary      ------------------
+Outcome variable: y
+Treatment variable(s): [&#39;d&#39;]
+Covariates: [&#39;X1&#39;, &#39;X2&#39;, &#39;X3&#39;, &#39;X4&#39;, &#39;X5&#39;, &#39;X6&#39;, &#39;X7&#39;, &#39;X8&#39;, &#39;X9&#39;, &#39;X10&#39;, &#39;X11&#39;, &#39;X12&#39;, &#39;X13&#39;, &#39;X14&#39;, &#39;X15&#39;, &#39;X16&#39;, &#39;X17&#39;, &#39;X18&#39;, &#39;X19&#39;, &#39;X20&#39;, &#39;X21&#39;, &#39;X22&#39;, &#39;X23&#39;, &#39;X24&#39;, &#39;X25&#39;, &#39;X26&#39;, &#39;X27&#39;, &#39;X28&#39;, &#39;X29&#39;, &#39;X30&#39;, &#39;X31&#39;, &#39;X32&#39;, &#39;X33&#39;, &#39;X34&#39;, &#39;X35&#39;, &#39;X36&#39;, &#39;X37&#39;, &#39;X38&#39;, &#39;X39&#39;, &#39;X40&#39;, &#39;X41&#39;, &#39;X42&#39;, &#39;X43&#39;, &#39;X44&#39;, &#39;X45&#39;, &#39;X46&#39;, &#39;X47&#39;, &#39;X48&#39;, &#39;X49&#39;, &#39;X50&#39;, &#39;X51&#39;, &#39;X52&#39;, &#39;X53&#39;, &#39;X54&#39;, &#39;X55&#39;, &#39;X56&#39;, &#39;X57&#39;, &#39;X58&#39;, &#39;X59&#39;, &#39;X60&#39;, &#39;X61&#39;, &#39;X62&#39;, &#39;X63&#39;, &#39;X64&#39;, &#39;X65&#39;, &#39;X66&#39;, &#39;X67&#39;, &#39;X68&#39;, &#39;X69&#39;, &#39;X70&#39;, &#39;X71&#39;, &#39;X72&#39;, &#39;X73&#39;, &#39;X74&#39;, &#39;X75&#39;, &#39;X76&#39;, &#39;X77&#39;, &#39;X78&#39;, &#39;X79&#39;, &#39;X80&#39;, &#39;X81&#39;, &#39;X82&#39;, &#39;X83&#39;, &#39;X84&#39;, &#39;X85&#39;, &#39;X86&#39;, &#39;X87&#39;, &#39;X88&#39;, &#39;X89&#39;, &#39;X90&#39;, &#39;X91&#39;, &#39;X92&#39;, &#39;X93&#39;, &#39;X94&#39;, &#39;X95&#39;, &#39;X96&#39;, &#39;X97&#39;, &#39;X98&#39;, &#39;X99&#39;, &#39;X100&#39;]
+Instrument variable(s): None
+No. Observations: 500
+
+------------------ Score &amp; algorithm ------------------
+Score function: partialling out
+
+------------------ Machine learner   ------------------
+Learner ml_l: LGBMRegressor(max_depth=4, verbose=-1)
+Learner ml_m: LGBMRegressor(verbose=-1)
+Out-of-sample Performance:
+Regression:
+Learner ml_l RMSE: [[8.69278568]]
+Learner ml_m RMSE: [[2.22238082]]
+
+------------------ Resampling        ------------------
+No. folds: 5
+No. repeated sample splits: 1
+
+------------------ Fit summary       ------------------
+      coef   std err          t          P&gt;|t|     2.5 %    97.5 %
+d  3.48904  0.108446  32.172982  4.214560e-227  3.276489  3.701591
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 </section>
 
@@ -930,7 +1363,7 @@ document.write(`
         },
         kernelOptions: {
             name: "python3",
-            path: "./econometrics/causal_machine_learning"
+            path: "./econometrics/dml"
         },
         predefinedOutput: true
     }
@@ -948,20 +1381,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="meta_learner.html"
+       href="dml_simulation.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Meta Learner</p>
+        <p class="prev-next-title">DoubleMLパッケージによるDMLのシミュレーション</p>
       </div>
     </a>
     <a class="right-next"
-       href="dml.html"
+       href="dml_example.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Double/Debiased Machine Learning</p>
+        <p class="prev-next-title">DMLパッケージで試してみる</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -981,11 +1414,9 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-tree">Causal Tree</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grf">GRFは欠陥あり？</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">参考</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dml">DML</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-fitting">もしCross Fittingがなければ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ライブラリと一致するか</a></li>
 </ul>
   </nav></div>
 
