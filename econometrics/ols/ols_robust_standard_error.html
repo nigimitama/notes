@@ -70,6 +70,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/ols/ols_robust_standard_error';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -861,7 +863,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -877,6 +881,22 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">単回帰の場合</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">標準誤差</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">古典的な単回帰モデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">不均一分散</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#white">Whiteの標準誤差</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wip">実験（WIP)</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -888,6 +908,157 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="ols">
 <h1>OLSのロバスト標準誤差<a class="headerlink" href="#ols" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>単回帰の場合<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>線形回帰モデル</p>
+<div class="math notranslate nohighlight">
+\[
+Y = \beta_0 + \beta_1 X_1  + \cdots + \beta_m X_m + e
+\]</div>
+<p>を考える</p>
+<section id="id2">
+<h3>標準誤差<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+</section>
+<section id="id3">
+<h3>古典的な単回帰モデル<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(n\)</span>個の観測値による古典的な単回帰モデルを想定する。</p>
+<div class="math notranslate nohighlight">
+\[
+Y_i=\alpha+\beta X_i+u_i, \quad i=1,2, \ldots, n
+\]</div>
+<p>ここで、以下を仮定する</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+古典的正規線形回帰モデル（classical normal linear regression model: CNLRM）の仮定</div>
+<ol class="arabic simple">
+<li><p class="sd-card-text">説明変数<span class="math notranslate nohighlight">\(X_i\)</span>は非確率的（定数）である</p></li>
+<li><p class="sd-card-text">誤差項の期待値はゼロ：<span class="math notranslate nohighlight">\(E(u_i) = 0\)</span></p></li>
+<li><p class="sd-card-text">母分散が均一：<span class="math notranslate nohighlight">\(\operatorname{Var}(u_i) = E(u_i^2) = \sigma^2\)</span></p></li>
+<li><p class="sd-card-text">独立標本であり、共分散はゼロ・無相関：<span class="math notranslate nohighlight">\(\operatorname{Cov}(u_i, u_j) = E(u_i u_j) = 0\)</span></p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(Y\)</span>は正規分布に従う（正規性）：<span class="math notranslate nohighlight">\(Y_i \sim N(\alpha+\beta X_i+u_i, \sigma^2), u_i \sim N(0, \sigma^2)\)</span></p></li>
+</ol>
+</div>
+</div>
+<p>OLS推定量は以下のものになる</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{cases}
+\sum \hat{u}_i=\sum(Y_i-\hat{\alpha}-\hat{\beta} X_i)=0 \\
+\sum \hat{u}_i X_i=\sum(Y_i-\hat{\alpha}-\hat{\beta} X_i) X_i=0
+\end{cases}
+\Rightarrow
+\hat{\alpha}=\bar{Y}-\hat{\beta} \bar{X}, \quad \hat{\beta}=\frac{S_{X Y}}{S_{X X}}
+\end{split}\]</div>
+<p>ここで、</p>
+<div class="math notranslate nohighlight">
+\[
+S_{X X}=\sum(X_i-\bar{X}) X_i, \quad S_{X Y}=\sum(X_i-\bar{X}) Y_i
+\]</div>
+<p>であるため、<span class="math notranslate nohighlight">\(\hat{\beta}\)</span>の式に代入すると</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\beta}
+=\frac{S_{X Y}}{S_{X X}}
+=\frac{\sum(X_i-\bar{X}) Y_i}{S_{X X}}
+=\sum\left(\frac{X_i-\bar{X}}{S_{X X}}\right) Y_i
+=\sum w_i Y_i,
+\quad w_i=\frac{X_i-\bar{X}}{S_{X X}}
+\]</div>
+<p>となり、OLS推定量<span class="math notranslate nohighlight">\(\hat\beta\)</span>は<span class="math notranslate nohighlight">\(w_i\)</span>という重みによる<span class="math notranslate nohighlight">\(Y_i\)</span>の線形和の形になっている</p>
+<p>そのため</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{\beta}
+=\sum w_i Y_i
+=\sum w_i\left(\alpha+\beta X_i+u_i\right)
+&amp;=\alpha \underbrace{\sum w_i}_{=0}+\beta \underbrace{\sum w_i X_i}_{=1}+\sum w_i u_i \\
+&amp; =\beta+\sum w_i u_i
+\end{aligned}
+\end{split}\]</div>
+<p>と、<span class="math notranslate nohighlight">\(\hat\beta\)</span>は真値<span class="math notranslate nohighlight">\(\beta\)</span>の周りを誤差の加重和<span class="math notranslate nohighlight">\(\sum w_i u_i\)</span>の分だけばらつく確率変数であり、一般に<span class="math notranslate nohighlight">\(\hat\beta\neq\beta\)</span>であることがわかる。</p>
+<p>誤差項<span class="math notranslate nohighlight">\(u_i\)</span>の仮定により、推定誤差の期待値はゼロになる</p>
+<div class="math notranslate nohighlight">
+\[
+E(\sum_{i=1}^n w_i u_i) =\sum_{i=1}^n w_i \underbrace{ E(u_i) }_{=0} = 0
+\]</div>
+<p>分散は</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{Var}(\sum_{i=1}^n w_i u_i)
+= \sum_{i=1}^n w_i^2 \operatorname{Var}(u_i)
+= \sigma^2 \sum_{i=1}^n w_i^2
+= \frac{\sigma^2}{S_{XX}}
+\]</div>
+<p>最後の等式は<span class="math notranslate nohighlight">\(\sum_{i=1}^n w_i^2=\frac{1}{S_{XX}}\)</span>を利用している</p>
+<p>よって</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{E}(\hat{\beta})=\beta
+, \quad
+\operatorname{Var}(\hat{\beta})=\frac{\sigma^2}{S_{X X}}=\frac{\sigma^2}{\sum(X_i-\bar{X})^2}
+=\frac{\sigma^2}{(n-1) s_X^2}
+\]</div>
+<p><span class="math notranslate nohighlight">\(s_X^2\)</span>は<span class="math notranslate nohighlight">\(X\)</span>の標本分散。サンプル数<span class="math notranslate nohighlight">\(n\)</span>が大きいほど<span class="math notranslate nohighlight">\(\operatorname{Var}(\hat{\beta})\)</span>は減少する</p>
+<p>条件付き分散は以下のようになる</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\operatorname{Var}\left(\hat{\beta} \mid X_1, X_2, \ldots, X_n\right)
+&amp;=\frac{1}{S_{X X}^2} \sum\left(X_i-\bar{X}\right)^2 \sigma^2\\
+&amp;=\frac{\sigma^2}{S_{X X}^2} \underbrace{ \sum(X_i-\bar{X})^2 }_{= S_{X X}} \\
+&amp;=\frac{\sigma^2}{S_{X X}}
+\end{aligned}
+\end{split}\]</div>
+</section>
+<section id="id4">
+<h3>不均一分散<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>古典的な線形回帰モデルの仮定では、誤差項<span class="math notranslate nohighlight">\(e_i\)</span>について</p>
+<ul class="simple">
+<li><p>均一分散 <span class="math notranslate nohighlight">\(\operatorname{Var}(e_i) = \sigma^2\)</span></p></li>
+<li><p>正規性 <span class="math notranslate nohighlight">\(e_i \sim N(0, \sigma^2)\)</span></p></li>
+</ul>
+<p>を仮定する。</p>
+<p>よりモダンな線形回帰モデルでは不均一分散を許容し、誤差項の分布も特定しない（モデルは線形だが分布は特定しない、セミパラメトリックな立場をとる）。回帰係数の推定においてはその2つは仮定しなくても古典的線形回帰モデルと同じ推定量が得られる。</p>
+<p>不均一分散のもとで、OLS推定量の条件付き分散は</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{Var}\left(\hat{\beta} \mid X_1, X_2, \ldots, X_n\right)=\frac{1}{S_{X X}^2} \sum\left(X_i-\bar{X}\right)^2 \sigma_i^2
+\]</div>
+<p>と、均一分散の場合より複雑になる</p>
+<p>OLSは漸近正規推定量になる</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\beta} \stackrel{a}{\sim} \mathrm{N}(\beta, \operatorname{Avar}(\hat{\beta}))
+,\quad
+\operatorname{Avar}(\hat{\beta})=\frac{1}{n \sigma_X^4} \mathrm{E}\left[\left(X_i-\mu_X\right)^2 \sigma_i^2\right]
+\]</div>
+<p><span class="math notranslate nohighlight">\(\operatorname{Avar}(\hat{\beta})\)</span>は未知の<span class="math notranslate nohighlight">\(\sigma^2_i\)</span>を含んでいるので、何らかの方法で推定する</p>
+</section>
+<section id="white">
+<h3>Whiteの標準誤差<a class="headerlink" href="#white" title="Link to this heading">#</a></h3>
+<p>よく使われる推定量は、ホワイトの頑健な分散推定量</p>
+<div class="math notranslate nohighlight">
+\[
+V = \frac{1}{n s_X^4} \cdot \frac{1}{n} \sum\left(X_i-\bar{X}\right)^2 \hat{u}_i^2=\frac{1}{n^2 s_X^4} \sum\left(X_i-\bar{X}\right)^2 \hat{u}_i^2
+\]</div>
+<p>その平方根はホワイトの標準誤差として知られる</p>
+<div class="math notranslate nohighlight">
+\[
+\text { s.e. }(\hat{\beta})=\sqrt{V}=\frac{1}{n s_X^2} \sqrt{\sum\left(X_i-\bar{X}\right)^2 \hat{u}_i^2}
+\]</div>
+</section>
+</section>
+<section id="id5">
+<h2>参考<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>鹿野繁樹. (2015). 新しい計量経済学: データで因果関係に迫る.</p></li>
+<li><p><a class="reference external" href="https://declaredesign.org/r/estimatr/articles/mathematical-notes.html">Mathematical notes for estimatr • estimatr</a></p></li>
+</ul>
+</section>
+<section id="wip">
+<h2>実験（WIP)<a class="headerlink" href="#wip" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -911,7 +1082,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7f88307d1db0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7f9fb8cdddb0&gt;
 </pre></div>
 </div>
 <img alt="../../_images/83fee9984111342e5a35e363c47f8200a39bf6c884c5a18b93e4deaf63f14928.png" src="../../_images/83fee9984111342e5a35e363c47f8200a39bf6c884c5a18b93e4deaf63f14928.png" />
@@ -955,6 +1126,7 @@ document.write(`
 </div>
 </div>
 </div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1011,6 +1183,29 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">単回帰の場合</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">標準誤差</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">古典的な単回帰モデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">不均一分散</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#white">Whiteの標準誤差</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wip">実験（WIP)</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
