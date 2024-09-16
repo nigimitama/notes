@@ -886,14 +886,30 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">単回帰の場合</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">標準誤差</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">古典的な単回帰モデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">不均一分散</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">単回帰モデルの場合</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">推定量</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">推定量の誤差</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">古典的線形回帰モデルの場合</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">推定量の分散</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">条件付き分散</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">不均一分散</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">条件付き分散</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">漸近分散</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#white">Whiteの標準誤差</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">重回帰モデルの場合</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">推定量の誤差</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">推定量の一致性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">漸近正規性</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">漸近分散の推定量</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">参考</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wip">実験（WIP)</a></li>
 </ul>
             </nav>
@@ -909,38 +925,14 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="ols">
 <h1>OLSのロバスト標準誤差<a class="headerlink" href="#ols" title="Link to this heading">#</a></h1>
 <section id="id1">
-<h2>単回帰の場合<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>線形回帰モデル</p>
-<div class="math notranslate nohighlight">
-\[
-Y = \beta_0 + \beta_1 X_1  + \cdots + \beta_m X_m + e
-\]</div>
-<p>を考える</p>
-<section id="id2">
-<h3>標準誤差<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
-</section>
-<section id="id3">
-<h3>古典的な単回帰モデル<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(n\)</span>個の観測値による古典的な単回帰モデルを想定する。</p>
+<h2>単回帰モデルの場合<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p><span class="math notranslate nohighlight">\(n\)</span>個の観測値による単回帰モデルを想定する。</p>
 <div class="math notranslate nohighlight">
 \[
 Y_i=\alpha+\beta X_i+u_i, \quad i=1,2, \ldots, n
 \]</div>
-<p>ここで、以下を仮定する</p>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-古典的正規線形回帰モデル（classical normal linear regression model: CNLRM）の仮定</div>
-<ol class="arabic simple">
-<li><p class="sd-card-text">説明変数<span class="math notranslate nohighlight">\(X_i\)</span>は非確率的（定数）である</p></li>
-<li><p class="sd-card-text">誤差項の期待値はゼロ：<span class="math notranslate nohighlight">\(E(u_i) = 0\)</span></p></li>
-<li><p class="sd-card-text">母分散が均一：<span class="math notranslate nohighlight">\(\operatorname{Var}(u_i) = E(u_i^2) = \sigma^2\)</span></p></li>
-<li><p class="sd-card-text">独立標本であり、共分散はゼロ・無相関：<span class="math notranslate nohighlight">\(\operatorname{Cov}(u_i, u_j) = E(u_i u_j) = 0\)</span></p></li>
-<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(Y\)</span>は正規分布に従う（正規性）：<span class="math notranslate nohighlight">\(Y_i \sim N(\alpha+\beta X_i+u_i, \sigma^2), u_i \sim N(0, \sigma^2)\)</span></p></li>
-</ol>
-</div>
-</div>
-<p>OLS推定量は以下のものになる</p>
+<section id="id2">
+<h3>推定量<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{cases}
@@ -966,7 +958,9 @@ S_{X X}=\sum(X_i-\bar{X}) X_i, \quad S_{X Y}=\sum(X_i-\bar{X}) Y_i
 \quad w_i=\frac{X_i-\bar{X}}{S_{X X}}
 \]</div>
 <p>となり、OLS推定量<span class="math notranslate nohighlight">\(\hat\beta\)</span>は<span class="math notranslate nohighlight">\(w_i\)</span>という重みによる<span class="math notranslate nohighlight">\(Y_i\)</span>の線形和の形になっている</p>
-<p>そのため</p>
+</section>
+<section id="id3">
+<h3>推定量の誤差<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
@@ -983,7 +977,16 @@ S_{X X}=\sum(X_i-\bar{X}) X_i, \quad S_{X Y}=\sum(X_i-\bar{X}) Y_i
 \[
 E(\sum_{i=1}^n w_i u_i) =\sum_{i=1}^n w_i \underbrace{ E(u_i) }_{=0} = 0
 \]</div>
-<p>分散は</p>
+</section>
+<section id="id4">
+<h3>古典的線形回帰モデルの場合<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>古典的な線形回帰モデルの仮定のうち、</p>
+<blockquote>
+<div><p>母分散が均一：<span class="math notranslate nohighlight">\(\operatorname{Var}(u_i) = E(u_i^2) = \sigma^2\)</span></p>
+</div></blockquote>
+<p>というものが関わってくる</p>
+<section id="id5">
+<h4>推定量の分散<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
 <div class="math notranslate nohighlight">
 \[
 \operatorname{Var}(\sum_{i=1}^n w_i u_i)
@@ -1001,7 +1004,9 @@ E(\sum_{i=1}^n w_i u_i) =\sum_{i=1}^n w_i \underbrace{ E(u_i) }_{=0} = 0
 =\frac{\sigma^2}{(n-1) s_X^2}
 \]</div>
 <p><span class="math notranslate nohighlight">\(s_X^2\)</span>は<span class="math notranslate nohighlight">\(X\)</span>の標本分散。サンプル数<span class="math notranslate nohighlight">\(n\)</span>が大きいほど<span class="math notranslate nohighlight">\(\operatorname{Var}(\hat{\beta})\)</span>は減少する</p>
-<p>条件付き分散は以下のようになる</p>
+</section>
+<section id="id6">
+<h4>条件付き分散<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
@@ -1012,8 +1017,9 @@ E(\sum_{i=1}^n w_i u_i) =\sum_{i=1}^n w_i \underbrace{ E(u_i) }_{=0} = 0
 \end{aligned}
 \end{split}\]</div>
 </section>
-<section id="id4">
-<h3>不均一分散<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+</section>
+<section id="id7">
+<h3>不均一分散<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <p>古典的な線形回帰モデルの仮定では、誤差項<span class="math notranslate nohighlight">\(e_i\)</span>について</p>
 <ul class="simple">
 <li><p>均一分散 <span class="math notranslate nohighlight">\(\operatorname{Var}(e_i) = \sigma^2\)</span></p></li>
@@ -1021,12 +1027,17 @@ E(\sum_{i=1}^n w_i u_i) =\sum_{i=1}^n w_i \underbrace{ E(u_i) }_{=0} = 0
 </ul>
 <p>を仮定する。</p>
 <p>よりモダンな線形回帰モデルでは不均一分散を許容し、誤差項の分布も特定しない（モデルは線形だが分布は特定しない、セミパラメトリックな立場をとる）。回帰係数の推定においてはその2つは仮定しなくても古典的線形回帰モデルと同じ推定量が得られる。</p>
+<section id="id8">
+<h4>条件付き分散<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
 <p>不均一分散のもとで、OLS推定量の条件付き分散は</p>
 <div class="math notranslate nohighlight">
 \[
 \operatorname{Var}\left(\hat{\beta} \mid X_1, X_2, \ldots, X_n\right)=\frac{1}{S_{X X}^2} \sum\left(X_i-\bar{X}\right)^2 \sigma_i^2
 \]</div>
 <p>と、均一分散の場合より複雑になる</p>
+</section>
+<section id="id9">
+<h4>漸近分散<a class="headerlink" href="#id9" title="Link to this heading">#</a></h4>
 <p>OLSは漸近正規推定量になる</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1035,6 +1046,7 @@ E(\sum_{i=1}^n w_i u_i) =\sum_{i=1}^n w_i \underbrace{ E(u_i) }_{=0} = 0
 \operatorname{Avar}(\hat{\beta})=\frac{1}{n \sigma_X^4} \mathrm{E}\left[\left(X_i-\mu_X\right)^2 \sigma_i^2\right]
 \]</div>
 <p><span class="math notranslate nohighlight">\(\operatorname{Avar}(\hat{\beta})\)</span>は未知の<span class="math notranslate nohighlight">\(\sigma^2_i\)</span>を含んでいるので、何らかの方法で推定する</p>
+</section>
 </section>
 <section id="white">
 <h3>Whiteの標準誤差<a class="headerlink" href="#white" title="Link to this heading">#</a></h3>
@@ -1050,8 +1062,178 @@ V = \frac{1}{n s_X^4} \cdot \frac{1}{n} \sum\left(X_i-\bar{X}\right)^2 \hat{u}_i
 \]</div>
 </section>
 </section>
-<section id="id5">
-<h2>参考<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id10">
+<h2>重回帰モデルの場合<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<p><span class="math notranslate nohighlight">\(n\in\mathbb{N}\)</span>個の観測値があるとし、目的変数<span class="math notranslate nohighlight">\(Y\in \mathbb{R}^n\)</span>、説明変数<span class="math notranslate nohighlight">\(X\in\mathbb{R}^{n\times m}\)</span>、誤差項<span class="math notranslate nohighlight">\(u\in\mathbb{R}^n\)</span>について</p>
+<div class="math notranslate nohighlight">
+\[
+Y = X \beta + u
+\]</div>
+<p>という線形モデルを考える</p>
+<section id="id11">
+<h3>推定量の誤差<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>OLS推定量</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\beta} = (X^T X)^{-1} X^T Y
+\]</div>
+<p>を真値+αの形式にすると、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{\beta}
+&amp;= (X^T X)^{-1} X^T Y\\
+&amp;= (X^T X)^{-1} X^T (X\beta + u)\\
+&amp;= \underbrace{ (X^T X)^{-1} X^T X}_{=I} \beta + (X^T X)^{-1} X^T u\\
+&amp;= \beta + (X^T X)^{-1} X^T u\\
+&amp;= \beta + \left(\frac{1}{n} X^T X \right)^{-1} \frac{1}{n} X^T u\\
+\end{aligned}
+\end{split}\]</div>
+<p>と表すことができる。</p>
+</section>
+<section id="id12">
+<h3>推定量の一致性<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<p>線形回帰モデルの外生性の仮定<span class="math notranslate nohighlight">\(E(X_i u_i) = 0\)</span>が満たされるなら、</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{n} X^T u
+= \frac{1}{n} \sum_{i=1}^n X_i u_i 
+\overset{p}{\to} E(X_i u_i) = 0
+\]</div>
+<p>であるから、誤差の項<span class="math notranslate nohighlight">\((X^T X)^{-1} X^T u\)</span>は消失する</p>
+</section>
+<section id="id13">
+<h3>漸近正規性<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<p>OLS推定量</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\beta}
+= \beta + \left(\frac{1}{N} X^T X\right)^{-1} \frac{1}{N} X^T u
+\]</div>
+<p>を整理して以下の形にする</p>
+<div class="math notranslate nohighlight">
+\[
+\sqrt{N} (\hat{\beta} - \beta)
+=
+\left(
+    \frac{1}{N} X^T X
+\right)^{-1}
+\frac{1}{\sqrt{N}} X^T u
+\]</div>
+<p><span class="math notranslate nohighlight">\(\frac{1}{\sqrt{N}} X^T u\)</span>は<span class="math notranslate nohighlight">\(\frac{1}{\sqrt{N}} \sum^N_{i=1} X_i u_i\)</span>と書くことができる。OLSの仮定より</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+E(X_i u_i) &amp;= 0\\
+Var(X_i u_i) &amp;= E(u^2 X_i X^T_i)
+\end{align}
+\end{split}\]</div>
+<p>なので、中心極限定理により</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{\sqrt{N}} X^T u
+= \frac{1}{\sqrt{N}} \sum^N_{i=1} X_i u_i
+ \overset{d}{\longrightarrow} N\left( 0, E(u_i^2 X_i X_i^T) \right)
+\]</div>
+<p>となる。</p>
+<p>一致性のときに導出した</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{N} X^T X
+\overset{p}{\longrightarrow} E(X_i X_i^T)
+\]</div>
+<p>を使うと、スルツキーの定理を用いて</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\sqrt{N} (\hat{\beta} - \beta)
+&amp;=
+\left(
+    \frac{1}{N} X^T X
+\right)^{-1}
+\frac{1}{\sqrt{N}} X^T u
+\overset{d}{\longrightarrow} \left( E(X_i X_i^T)  \right)^{-1} \times N\left( 0, E(u_i^2 X_i X_i^T) \right)\\
+&amp;= N\left( 0,
+    \left( E(X_i X_i^T)  \right)^{-1}  E(u_i^2 X_i X_i^T)  \left( E(X_i X_i^T)  \right)^{-1}
+\right)\\
+&amp;= N(0, V)\\
+\end{align}
+\end{split}\]</div>
+<p>となる。</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">スルツキーの定理</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">確率変数の行列<span class="math notranslate nohighlight">\(Y_N, Y, X_N, X \in \mathbb{R}^{N\times N}\)</span>、正則行列<span class="math notranslate nohighlight">\(C \in \mathbb{R}^{N\times N}\)</span>があるとする。</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(N\to \infty\)</span>のとき</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+X_N \xrightarrow{d} X\\
+Y_N \xrightarrow{d} C\\
+\end{split}\]</div>
+<p class="sd-card-text">とする。</p>
+<p class="sd-card-text">このとき、以下の結果が成り立ち、これを <strong>スルツキーの定理</strong> という</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(X_N + Y_N \xrightarrow{d} X + C\)</span></p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(Y_N X_N \xrightarrow{d} C X\)</span></p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(Y_N^{-1}X_N \xrightarrow{d} C^{-1} X\)</span></p></li>
+</ol>
+</div>
+</details><p><span class="math notranslate nohighlight">\(V\)</span>は以下のように一致推定できる</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{V}_{\mathrm{HC0}} &amp; =\left[\frac{1}{N} \sum_{i=1}^N X_i X_i^T\right]^{-1} \frac{1}{N} \sum_{i=1}^N \hat{u}_i^2 X_i X_i^T\left[\frac{1}{N} \sum_{i=1}^N X_i X_i^T\right]^{-1} \\
+&amp; =\left(\frac{1}{N} X^T X\right)^{-1} \frac{1}{N} X^T
+\operatorname{diag}[\hat{u}_i^2] 
+X\left(\frac{1}{N} X^T X\right)^{-1}
+\end{aligned}
+\end{split}\]</div>
+<p>ただし、<span class="math notranslate nohighlight">\(\operatorname{diag}[\hat{u}_i^2] \)</span>は対角要素に<span class="math notranslate nohighlight">\(\hat{u}_1^2, \dots, \hat{u}_N^2\)</span>を並べた対角行列である。
+これはHC0と呼ばれるタイプの誤差分散の推定量である</p>
+</section>
+</section>
+<section id="id14">
+<h2>漸近分散の推定量<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>{estimatr}パッケージでの呼び名</p></th>
+<th class="head"><p>分散の推定量<span class="math notranslate nohighlight">\(\widehat{\mathrm{V}}[\widehat{\beta}]\)</span></p></th>
+<th class="head"><p>notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;classical&quot;</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{\mathbf{e}^\top\mathbf{e}}{n-m} (\mathbf{X}^{\top}\mathbf{X})^{-1}\)</span></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;HC0&quot;</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\((\mathbf{X}^{\top}\mathbf{X})^{-1}\mathbf{X}^{\top}\mathrm{diag}\left[e_i^2\right]\mathbf{X}(\mathbf{X}^{\top}\mathbf{X})^{-1}\)</span></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;HC1&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;stata&quot;</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{n}{n-m}(\mathbf{X}^{\top}\mathbf{X})^{-1}\mathbf{X}^{\top}\mathrm{diag}\left[e_i^2\right]\mathbf{X}(\mathbf{X}^{\top}\mathbf{X})^{-1}\)</span></p></td>
+<td><p>Eicker-Huber-Whiteの分散推定量などと呼ばれる</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;HC2&quot;</span></code> (default)</p></td>
+<td><p><span class="math notranslate nohighlight">\((\mathbf{X}^{\top}\mathbf{X})^{-1}\mathbf{X}^{\top}\mathrm{diag}\left[\frac{e_i^2}{1-h_{ii}}\right]\mathbf{X}(\mathbf{X}^{\top}\mathbf{X})^{-1}\)</span></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;HC3&quot;</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\((\mathbf{X}^{\top}\mathbf{X})^{-1}\mathbf{X}{\top}\mathrm{diag}\left[\frac{e_i^2}{(1-h_{ii})^2}\right]\mathbf{X}(\mathbf{X}^{\top}\mathbf{X})^{-1}\)</span></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(h_{ii}=X_i (X^T X)^{-1} X_i^T\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(e_i = Y_i - X_i \hat{\beta}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(m\)</span>は推定量の次元数</p></li>
+</ul>
+<p>出所：<a class="reference external" href="https://declaredesign.org/r/estimatr/articles/mathematical-notes.html">estimatr</a>パッケージのドキュメント</p>
+</section>
+<section id="id15">
+<h2>参考<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>鹿野繁樹. (2015). 新しい計量経済学: データで因果関係に迫る.</p></li>
 <li><p><a class="reference external" href="https://declaredesign.org/r/estimatr/articles/mathematical-notes.html">Mathematical notes for estimatr • estimatr</a></p></li>
@@ -1082,7 +1264,7 @@ V = \frac{1}{n s_X^4} \cdot \frac{1}{n} \sum\left(X_i-\bar{X}\right)^2 \hat{u}_i
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7fa2207bdd80&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7f82ccb55db0&gt;
 </pre></div>
 </div>
 <img alt="../../_images/83fee9984111342e5a35e363c47f8200a39bf6c884c5a18b93e4deaf63f14928.png" src="../../_images/83fee9984111342e5a35e363c47f8200a39bf6c884c5a18b93e4deaf63f14928.png" />
@@ -1193,14 +1375,30 @@ V = \frac{1}{n s_X^4} \cdot \frac{1}{n} \sum\left(X_i-\bar{X}\right)^2 \hat{u}_i
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">単回帰の場合</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">標準誤差</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">古典的な単回帰モデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">不均一分散</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">単回帰モデルの場合</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">推定量</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">推定量の誤差</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">古典的線形回帰モデルの場合</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">推定量の分散</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">条件付き分散</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">不均一分散</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">条件付き分散</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">漸近分散</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#white">Whiteの標準誤差</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">重回帰モデルの場合</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">推定量の誤差</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">推定量の一致性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">漸近正規性</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">漸近分散の推定量</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">参考</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wip">実験（WIP)</a></li>
 </ul>
   </nav></div>
