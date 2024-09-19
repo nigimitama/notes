@@ -75,7 +75,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'mathematics/linear_algebra/vector_space/inner_product_space';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="ノルム線型空間とヒルベルト空間" href="normed_vector_space.html" />
+    <link rel="next" title="直交化" href="orthogonalization.html" />
     <link rel="prev" title="双対空間" href="dual_space.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -226,6 +226,7 @@
 <li class="toctree-l3"><a class="reference internal" href="rank.html">行列の階数（rank）</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dual_space.html">双対空間</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">内積空間</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orthogonalization.html">直交化</a></li>
 <li class="toctree-l3"><a class="reference internal" href="normed_vector_space.html">ノルム線型空間とヒルベルト空間</a></li>
 </ul>
 </details></li>
@@ -271,6 +272,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_20.html">練習問題メモ 20（固有値と固有ベクトル その2－一般の線形変換の場合－）</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_21.html">練習問題メモ 21（対角化）</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_22.html">練習問題メモ 22（内積空間）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_23.html">練習問題メモ 23（正規直交基底）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../exercise/exercise_24.html">練習問題メモ 24（対称行列の対角化）</a></li>
 </ul>
 </details></li>
 </ul>
@@ -668,6 +671,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../software_engineering/security/index.html">サイバーセキュリティ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/security/security.html">個人としてのセキュリティ対策</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/security/website.html">ウェブアプリ開発のセキュリティ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/security/cwe.html">CWE (Common Weakness Enumeration)</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../software_engineering/pseudorandom_numbers/index.html">疑似乱数</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -899,14 +903,6 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">直交補空間</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">直交化</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">正規直交系</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">シュミットの正規直交化法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">計量を保つ写像</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">直交変換</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">直交行列</a></li>
-</ul>
-</li>
 </ul>
             </nav>
         </div>
@@ -1080,311 +1076,6 @@ V=W \oplus W^{\perp}
 \]</div>
 <p>と表す。<span class="math notranslate nohighlight">\(V\)</span>をこのような形に書くことを <strong>直和分解</strong> という。</p>
 </section>
-<section id="id9">
-<h2>直交化<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
-<section id="id10">
-<h3>正規直交系<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
-<div class="admonition- admonition">
-<p class="admonition-title">定義（正規直交系）</p>
-<p>内積空間 <span class="math notranslate nohighlight">\(V\)</span> において、 <span class="math notranslate nohighlight">\(V\)</span> の <span class="math notranslate nohighlight">\(m\)</span> 個のベクトル <span class="math notranslate nohighlight">\(\boldsymbol{a}_1, \cdots, \boldsymbol{a}_m\)</span> が <span class="math notranslate nohighlight">\(\langle \boldsymbol{a}_i, \boldsymbol{a}_j\rangle = \delta_{i j}\)</span> すなわち <span class="math notranslate nohighlight">\(\langle \boldsymbol{a}_i, \boldsymbol{a}_j\rangle = \begin{cases}1 &amp; (i=j) \\ 0 &amp; (i \neq j)\end{cases}\)</span> をみたすとき、 <strong>正規直交系</strong> という。
-::</p>
-</div>
-<div class="tip admonition">
-<p class="admonition-title">定理</p>
-<p>正規直交系は1次独立である。</p>
-</div>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(a_1, \cdots, a_m\)</span> を正規直交系とする。 いま,</p>
-<div class="math notranslate nohighlight">
-\[
-c_1 \boldsymbol{a}_1+\cdots+c_m \boldsymbol{a}_m=\mathbf{0}
-\]</div>
-<p class="sd-card-text">とすると，任意の <span class="math notranslate nohighlight">\(i \ (1 \leqq i \leqq m)\)</span> について， <span class="math notranslate nohighlight">\(\langle \boldsymbol{a}_i, \boldsymbol{0}\rangle = 0\)</span> であるから,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
-0
-&amp;= \langle \boldsymbol{a}_i, \mathbf{0} \rangle\\
-&amp;= \langle \boldsymbol{a}_i, c_1 \boldsymbol{a}_1+\cdots+c_m \boldsymbol{a}_m\rangle\\
-&amp;= \sum_{j=1}^m c_j \langle \boldsymbol{a}_i, \boldsymbol{a}_j\rangle \quad (内積の線形性のため)\\
-&amp;=c_i \langle \boldsymbol{a}_i, \boldsymbol{a}_i\rangle \quad (正規直交系の定義より \langle \boldsymbol{a}_i, \boldsymbol{a}_i\rangle = 1)\\
-&amp;=c_i
-\end{aligned}
-\end{split}\]</div>
-<p class="sd-card-text">よって, <span class="math notranslate nohighlight">\(a_1, \cdots, a_m\)</span> は 1 次独立である。</p>
-</div>
-</details><div class="admonition- admonition">
-<p class="admonition-title">定義（正規直交基底）</p>
-<p>正規直交系である基底のことを <strong>正規直交基底</strong> という。</p>
-</div>
-</section>
-<section id="id11">
-<h3>シュミットの正規直交化法<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
-<p>シュミットの正規直交化法は、内積空間<span class="math notranslate nohighlight">\(V\)</span>において1次独立なベクトルの系<span class="math notranslate nohighlight">\(\boldsymbol{a}_1, \cdots, \boldsymbol{a}_r\)</span>が与えられたとき、正規直交系<span class="math notranslate nohighlight">\(\boldsymbol{v}_1, \cdots, \boldsymbol{v}_r\)</span>を作り出す方法。</p>
-<p>まず<span class="math notranslate nohighlight">\(\boldsymbol{a}_1 \neq \boldsymbol{0}\)</span>より、</p>
-<div class="math notranslate nohighlight">
-\[
-\boldsymbol{v}_1 = \frac{\boldsymbol{a}_1}{\|\boldsymbol{a}_1\|}
-\]</div>
-<p>とおけば、<span class="math notranslate nohighlight">\(\|\boldsymbol{v}_1\| = 1\)</span>となる</p>
-<p>つづいて、<span class="math notranslate nohighlight">\(\boldsymbol{a}_2 - c \boldsymbol{v}_1, \ c\in \mathbb{R}\)</span> とおく。
-<span class="math notranslate nohighlight">\(\langle \boldsymbol{a}_2 - c \boldsymbol{v}_1, \boldsymbol{v}_1 \rangle = 0\)</span>（<span class="math notranslate nohighlight">\(\boldsymbol{v}_1\)</span>と直交する）とおいて、この<span class="math notranslate nohighlight">\(c\)</span>を求める。</p>
-<div class="math notranslate nohighlight">
-\[
-\langle \boldsymbol{a}_2 - c \boldsymbol{v}_1, \boldsymbol{v}_1 \rangle
-= \langle \boldsymbol{a}_2, \boldsymbol{v}_1 \rangle
-- c \langle \boldsymbol{v}_1, \boldsymbol{v}_1 \rangle
-= 0
-\]</div>
-<p>より</p>
-<div class="math notranslate nohighlight">
-\[
-c = \frac{ \langle \boldsymbol{a}_2, \boldsymbol{v}_1 \rangle }{ \langle \boldsymbol{v}_1, \boldsymbol{v}_1 \rangle }
-= \langle \boldsymbol{a}_2, \boldsymbol{v}_1 \rangle
-\]</div>
-<p>となる。<span class="math notranslate nohighlight">\(\boldsymbol{a}_1\)</span> と <span class="math notranslate nohighlight">\(\boldsymbol{a}_2\)</span>は1次独立であり、<span class="math notranslate nohighlight">\(\boldsymbol{v}_1\)</span>は<span class="math notranslate nohighlight">\(\boldsymbol{a}_1\)</span>のスカラー倍であるから、<span class="math notranslate nohighlight">\(\boldsymbol{a}_2 - c \boldsymbol{v} \neq \boldsymbol{0}\)</span>である。
-そこで</p>
-<div class="math notranslate nohighlight">
-\[
-\boldsymbol{v}_2
-= \frac{\boldsymbol{a}_2 - c \boldsymbol{v}_1 }
-{\| \boldsymbol{a}_2 - c \boldsymbol{v}_1 \| }
-\]</div>
-<p>とおけば、</p>
-<div class="math notranslate nohighlight">
-\[
-\langle \boldsymbol{v}_1, \boldsymbol{v}_2 \rangle = 0, \quad \|\boldsymbol{v}_2\| = 1
-\]</div>
-<p>となる。ここで <span class="math notranslate nohighlight">\(a_1\)</span> と <span class="math notranslate nohighlight">\(a_2\)</span> の生成するベクトル空間と <span class="math notranslate nohighlight">\(v_1\)</span> と <span class="math notranslate nohighlight">\(v_2\)</span> の生成するベクトル空間は一致している。</p>
-<p>3番目のベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a}_3\)</span>について、<span class="math notranslate nohighlight">\(c_1 = \langle \boldsymbol{a}_3, \boldsymbol{v}_1 \rangle, c_2 = \langle \boldsymbol{a}_3, \boldsymbol{v}_2 \rangle\)</span>とおくと、</p>
-<div class="math notranslate nohighlight">
-\[
-\langle
-\boldsymbol{a}_3 - (c_1 \boldsymbol{v}_1 + c_2 \boldsymbol{v}_2), \boldsymbol{v}_i
-\rangle
-=0
-\quad (i=1,2)
-\]</div>
-<p>となる。</p>
-<p>仮定より<span class="math notranslate nohighlight">\(a_1,a_2,a_3\)</span>は1次独立であり、<span class="math notranslate nohighlight">\(v_1,v_2\)</span>は<span class="math notranslate nohighlight">\(a_1,a_2\)</span>の1次結合で書き表されるから、<span class="math notranslate nohighlight">\(\boldsymbol{a}_3 - (c_1 \boldsymbol{v}_1 + c_2 \boldsymbol{v}_2) \neq \boldsymbol{0}\)</span>である。
-よって</p>
-<div class="math notranslate nohighlight">
-\[
-\boldsymbol{v}_3
-= \frac{ \boldsymbol{a}_3 - (c_1 \boldsymbol{v}_1 + c_2 \boldsymbol{v}_2) }
-{\| \boldsymbol{a}_3 - (c_1 \boldsymbol{v}_1 + c_2 \boldsymbol{v}_2)\| }
-\]</div>
-<p>とすれば、</p>
-<div class="math notranslate nohighlight">
-\[
-\langle \boldsymbol{v}_3, \boldsymbol{v}_i \rangle = 0
-\quad
-(i=1,2)
-\quad
-\| \boldsymbol{v}_3 \| = 1
-\]</div>
-<p>である。
-以下この操作を続ければよい。</p>
-<p>厳密には、帰納法を使う</p>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(1 \leqq k&lt;r\)</span> なる <span class="math notranslate nohighlight">\(k\)</span> に対して 正規直交系 <span class="math notranslate nohighlight">\(\boldsymbol{v}_1, \cdots, \boldsymbol{v}_k\)</span> が存在して <span class="math notranslate nohighlight">\(1 \leqq i \leqq k\)</span> なる任意の <span class="math notranslate nohighlight">\(i\)</span> に対して <span class="math notranslate nohighlight">\(\boldsymbol{v}_1, \cdots, \boldsymbol{v}_i\)</span> が生成するベクトル空間と <span class="math notranslate nohighlight">\(\boldsymbol{a}_1, \cdots, \boldsymbol{a}_i\)</span> が生成 するベクトル空間が一致すると仮定する。すなわち</p>
-<div class="math notranslate nohighlight">
-\[
-S\left[\boldsymbol{v}_1, \cdots, \boldsymbol{v}_i\right]=S\left[\boldsymbol{a}_1, \cdots, \boldsymbol{a}_i\right] \quad(i=1, \cdots, k)
-\]</div>
-<p class="sd-card-text">そのとき</p>
-<div class="math notranslate nohighlight">
-\[
-c_i=\langle a_{k+1}, v_i\rangle  \quad(i=1, \cdots, k)
-\]</div>
-<p class="sd-card-text">とおくと</p>
-<div class="math notranslate nohighlight">
-\[
-\langle \boldsymbol{a}_{k+1}-\sum_{i=1}^k c_i \boldsymbol{v}_i, \boldsymbol{v}_j \rangle
-= 0 \quad(j=1, \cdots, k)
-\]</div>
-<p class="sd-card-text">である。
-仮定より <span class="math notranslate nohighlight">\(\boldsymbol{a}_1, \cdots, \boldsymbol{a}_k, \boldsymbol{a}_{k+1}\)</span> が 1次独立で、帰納法の仮定で <span class="math notranslate nohighlight">\(\boldsymbol{v}_1, \cdots, \boldsymbol{v}_k\)</span> は <span class="math notranslate nohighlight">\(\boldsymbol{a}_1, \cdots, \boldsymbol{a}_k\)</span> の 1 次結合で表わされるから、</p>
-<div class="math notranslate nohighlight">
-\[
-\boldsymbol{a}_{k+1}-\sum_{i=1}^k c_i \boldsymbol{v}_i \neq \mathbf{0}
-\]</div>
-<p class="sd-card-text">よって</p>
-<div class="math notranslate nohighlight">
-\[
-\boldsymbol{v}_{k+1}=\frac{\boldsymbol{a}_{k+1}-\sum_{i=1}^k c_i \boldsymbol{v}_i}{\left\|\boldsymbol{a}_{k+1}-\sum_{i=1}^k c_i \boldsymbol{v}_i\right\|}
-\]</div>
-<p class="sd-card-text">とおくと、</p>
-<div class="math notranslate nohighlight">
-\[
-\langle \boldsymbol{v}_{k+1}, \boldsymbol{v}_j\rangle
-= 0 \quad(j=1, \cdots, k), \quad\left\|\boldsymbol{v}_{k+1}\right\|=1
-\]</div>
-<p class="sd-card-text">となる。帰納法の仮定と <span class="math notranslate nohighlight">\(\boldsymbol{v}_{k+1}\)</span> の定義の式から、<span class="math notranslate nohighlight">\(\boldsymbol{v}_{k+1}\)</span> は <span class="math notranslate nohighlight">\(\boldsymbol{a}_1, \cdots, \boldsymbol{a}_{k+1}\)</span> の1次結合で表わされ、同じ式から <span class="math notranslate nohighlight">\(\boldsymbol{a}_{k+1}\)</span> は <span class="math notranslate nohighlight">\(\boldsymbol{v}_1, \cdots, \boldsymbol{v}_{k+1}\)</span> の 1次結合で表わされるから、</p>
-<div class="math notranslate nohighlight">
-\[
-S\left[\boldsymbol{v}_1, \cdots, \boldsymbol{v}_{k+1}\right]=S\left[\boldsymbol{a}_1, \cdots, \boldsymbol{a}_{k+1}\right]
-\]</div>
-<p class="sd-card-text">が成り立つ。</p>
-</div>
-</div>
-<div class="tip admonition">
-<p class="admonition-title">定理</p>
-<p>内積空間 <span class="math notranslate nohighlight">\(V\)</span> の任意の部分空間 <span class="math notranslate nohighlight">\(W\)</span> は正規直交基底をもつ。とくに <span class="math notranslate nohighlight">\(V\)</span> は正規直交基底をもつ。</p>
-</div>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(W\)</span> の基底 <span class="math notranslate nohighlight">\(\boldsymbol{a}_1, \cdots, \boldsymbol{a}_r\)</span> をとり、これをシュミットの正規直交化法で正規直交系 <span class="math notranslate nohighlight">\(v_1, \cdots, v_r\)</span> をつくると</p>
-<div class="math notranslate nohighlight">
-\[
-S\left[\boldsymbol{v}_1, \cdots, \boldsymbol{v}_r\right]=S\left[\boldsymbol{a}_1, \cdots, \boldsymbol{a}_r\right]=W
-\]</div>
-<p class="sd-card-text">であるから、<span class="math notranslate nohighlight">\(v_1, \cdots, v_r\)</span> は <span class="math notranslate nohighlight">\(W\)</span> の正規直交基底である。 とくに <span class="math notranslate nohighlight">\(W=V\)</span> のときが定理の後半の主張である。</p>
-</div>
-</details><div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 例</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="n">a1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">a2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">a3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-
-<span class="n">v1</span> <span class="o">=</span> <span class="n">a1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a1</span><span class="p">)</span>
-<span class="n">c</span> <span class="o">=</span> <span class="n">a2</span> <span class="o">@</span> <span class="n">v1</span>
-<span class="n">v2</span> <span class="o">=</span> <span class="p">(</span><span class="n">a2</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">v1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a2</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">v1</span><span class="p">)</span>
-
-<span class="n">c1</span> <span class="o">=</span> <span class="n">a3</span> <span class="o">@</span> <span class="n">v1</span>
-<span class="n">c2</span> <span class="o">=</span> <span class="n">a3</span> <span class="o">@</span> <span class="n">v2</span>
-<span class="n">v</span> <span class="o">=</span> <span class="n">a3</span> <span class="o">-</span> <span class="p">(</span><span class="n">c1</span> <span class="o">*</span> <span class="n">v1</span> <span class="o">+</span> <span class="n">c2</span> <span class="o">*</span> <span class="n">v2</span><span class="p">)</span>
-<span class="n">v3</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-
-<span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 0.6, -0.8, -0. ],
-       [ 0.6,  0.4, -0.7],
-       [ 0.6,  0.4,  0.7]])
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="id12">
-<h3>計量を保つ写像<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
-<p>2つの計量ベクトル空間（内積空間）<span class="math notranslate nohighlight">\(V, V^{\prime}\)</span> の間の線形写像 <span class="math notranslate nohighlight">\(f: V \rightarrow V^{\prime}\)</span> が, 任意の <span class="math notranslate nohighlight">\(\boldsymbol{x}, \boldsymbol{y}\)</span> <span class="math notranslate nohighlight">\(\in V\)</span> に対して等式</p>
-<div class="math notranslate nohighlight">
-\[
-\langle f(\boldsymbol{x}), f(\boldsymbol{y}) \rangle  =\langle \boldsymbol{x}, \boldsymbol{y} \rangle
-\]</div>
-<p>を満たすとき, <span class="math notranslate nohighlight">\(f\)</span> は <strong>計量を保つ</strong>, または <strong>内積を保つ</strong> という。</p>
-<p>また、<span class="math notranslate nohighlight">\(f\)</span>を <strong>計量同型写像</strong> であるという。</p>
-</section>
-<section id="id13">
-<h3>直交変換<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(V = V'\)</span>のとき、計量同型写像<span class="math notranslate nohighlight">\(f: V\to V\)</span>は <strong>直交変換</strong> という。</p>
-<div class="admonition- admonition">
-<p class="admonition-title">定理</p>
-<p><span class="math notranslate nohighlight">\(V\)</span> を計量ベクトル空間， <span class="math notranslate nohighlight">\(\boldsymbol{a}_1, \cdots, \boldsymbol{a}_n\)</span> を <span class="math notranslate nohighlight">\(V\)</span> の 1組の正規直交基底とする。線形変換 <span class="math notranslate nohighlight">\(f: V \rightarrow V\)</span> に関して、次の 2 つの条件は同値である。</p>
-<p>(1) <span class="math notranslate nohighlight">\(f\)</span> は直交変換</p>
-<p>(2) <span class="math notranslate nohighlight">\(f\left(\boldsymbol{a}_1\right), \cdots, f\left(\boldsymbol{a}_n\right)\)</span> は <span class="math notranslate nohighlight">\(V\)</span> の正規直交基底である</p>
-</div>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text"><span class="math notranslate nohighlight">\((1) \implies (2) \quad f\)</span> は直交変換であるから</p>
-<div class="math notranslate nohighlight">
-\[
-\langle f(\boldsymbol{a}_i), f(\boldsymbol{a}_j)\rangle
-= \langle \boldsymbol{a}_i, \boldsymbol{a}_j\rangle
-= \delta_{i j} \quad(1 \leqq i, j \leqq n)
-\]</div>
-<p class="sd-card-text">となる。つまり, <span class="math notranslate nohighlight">\(f(\boldsymbol{a}_1), \cdots, f(\boldsymbol{a}_n)\)</span> は <span class="math notranslate nohighlight">\(V\)</span> の正規直交系である。定理よりこれらは 1 次独立であり、</p>
-<div class="math notranslate nohighlight">
-\[
-\operatorname{dim} V=n
-\]</div>
-<p class="sd-card-text">であるので、<span class="math notranslate nohighlight">\(f\left(\boldsymbol{a}_1\right), \cdots, f\left(\boldsymbol{a}_n\right)\)</span> は正規直交基底である。</p>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\((1) \Longleftarrow(2) \quad V\)</span> の任意のべクトル <span class="math notranslate nohighlight">\(\boldsymbol{x}, \boldsymbol{y}\)</span> を</p>
-<div class="math notranslate nohighlight">
-\[
-\boldsymbol{x}=x_1 \boldsymbol{a}_1+\cdots+x_n \boldsymbol{a}_n, \quad \boldsymbol{y}=y_1 \boldsymbol{a}_1+\cdots+y_n \boldsymbol{a}_n
-\]</div>
-<p class="sd-card-text">と表わすとき、定理より</p>
-<div class="math notranslate nohighlight">
-\[
-\langle \boldsymbol{x}, \boldsymbol{y} \rangle = x_1 y_1+\cdots+x_n y_n
-\]</div>
-<p class="sd-card-text">である。また、<span class="math notranslate nohighlight">\(f\)</span> は線形写像であるから</p>
-<div class="math notranslate nohighlight">
-\[
-f(\boldsymbol{x}) = x_1 f(\boldsymbol{a}_1) + \cdots + x_n f(\boldsymbol{a}_n),
-\quad f(\boldsymbol{y}) = y_1 f(\boldsymbol{a}_1) + \cdots + y_n f(\boldsymbol{a}_n)
-\]</div>
-<p class="sd-card-text">であり，仮定より <span class="math notranslate nohighlight">\(f\left(\boldsymbol{a}_1\right), \cdots, f\left(\boldsymbol{a}_n\right)\)</span> は正規直交基底であるから，</p>
-<div class="math notranslate nohighlight">
-\[
-\langle f(\boldsymbol{x}), f(\boldsymbol{y}) \rangle = x_1 y_1+\cdots+x_n y_n
-\]</div>
-<p class="sd-card-text">となる. よって等式</p>
-<div class="math notranslate nohighlight">
-\[
-\langle f(\boldsymbol{x}), f(\boldsymbol{y}) \rangle
-= \langle \boldsymbol{x}, \boldsymbol{y} \rangle
-\]</div>
-<p class="sd-card-text">が成り立つ。</p>
-</div>
-</details></section>
-<section id="id14">
-<h3>直交行列<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(n\)</span>次正方行列<span class="math notranslate nohighlight">\(A\)</span>が</p>
-<div class="math notranslate nohighlight">
-\[
-A^T A = A A^T = E
-\]</div>
-<p>を満たすとき（つまり<span class="math notranslate nohighlight">\(A^T = A^{-1}\)</span>）のとき、<span class="math notranslate nohighlight">\(A\)</span>を直交行列という。</p>
-<div class="admonition- admonition">
-<p class="admonition-title">定理</p>
-<p><span class="math notranslate nohighlight">\(A\)</span> を <span class="math notranslate nohighlight">\(n\)</span> 次正方行列とするとき, 次の 5 つの条件は同値である. ただし， <span class="math notranslate nohighlight">\(R^n\)</span> には標準的内積を考える。</p>
-<p>（1） <span class="math notranslate nohighlight">\(A\)</span> は直交行列である。</p>
-<p>（2） <span class="math notranslate nohighlight">\(A\)</span> の列ベクトル全体は <span class="math notranslate nohighlight">\(\boldsymbol{R}^n\)</span> の正規直交基底である。</p>
-<p>（3） <span class="math notranslate nohighlight">\(A\)</span> の行ベクトル全体は <span class="math notranslate nohighlight">\(\boldsymbol{R}^n\)</span> の正規直交基底である。</p>
-<p>（4） <span class="math notranslate nohighlight">\(A: \boldsymbol{R}^n \rightarrow \boldsymbol{R}^n\)</span> は計量を保つ。</p>
-<p>（5） <span class="math notranslate nohighlight">\(A: \boldsymbol{R}^n \rightarrow \boldsymbol{R}^n\)</span> は長さを保つ。</p>
-</div>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(n\)</span> 次正方行列 <span class="math notranslate nohighlight">\(A\)</span> が与えられたとき、<span class="math notranslate nohighlight">\(A=\left(\boldsymbol{a}_1, \cdots, \boldsymbol{a}_n\right)=\left(\begin{array}{c}\boldsymbol{a}_1^{\prime} \\ \vdots \\ \boldsymbol{a}_n^{\prime}\end{array}\right)\)</span> をそれぞれ <span class="math notranslate nohighlight">\(A\)</span> の列ベクトル表示、行ベクトル表示とする。</p>
-<p class="sd-card-text">(1) <span class="math notranslate nohighlight">\(\iff\)</span> (2):
-$<span class="math notranslate nohighlight">\(
-\begin{aligned}
-A \text { は直交行列 } \iff &amp; A^T A = E
-\\
-\iff &amp; \boldsymbol{a}_i^T \boldsymbol{a}_j = \langle \boldsymbol{a}_i, \boldsymbol{a}_j \rangle =\delta_{i j} \quad(1 \leqq i, j \leqq n)
-\\
-&amp; \left( A^T A \text { の }(i, j) \text { 成分が } \boldsymbol{a}_i^T \boldsymbol{a}_j \text { であるから }\right)
-\\
-\iff &amp; \boldsymbol{a}_1, \cdots, \boldsymbol{a}_n \text { は } \mathbb{R}^n \text { の正規直交基底 }
-\end{aligned}
-\)</span>$</p>
-<p class="sd-card-text">(2)<span class="math notranslate nohighlight">\(\iff\)</span> (4):</p>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span> の標準基底 <span class="math notranslate nohighlight">\(\boldsymbol{e}_1, \cdots, \boldsymbol{e}_n\)</span> は， <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span> の標準的な内積に関して正規直交基底である。そして</p>
-<div class="math notranslate nohighlight">
-\[
-A \boldsymbol{e}_1 = \boldsymbol{a}_1, \cdots, A \boldsymbol{e}_n = \boldsymbol{a}_n
-\]</div>
-<p class="sd-card-text">であるから，定理より次の同値が成り立つ。
-<span class="math notranslate nohighlight">\(A: \mathbb{R}^n \rightarrow \mathbb{R}^n\)</span> は直交変換 <span class="math notranslate nohighlight">\(\iff\boldsymbol{a}, \cdots, \boldsymbol{a}\)</span> は <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span> の正規直交基底</p>
-</div>
-</details></section>
-</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1427,11 +1118,11 @@ A \boldsymbol{e}_1 = \boldsymbol{a}_1, \cdots, A \boldsymbol{e}_n = \boldsymbol{
       </div>
     </a>
     <a class="right-next"
-       href="normed_vector_space.html"
+       href="orthogonalization.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">ノルム線型空間とヒルベルト空間</p>
+        <p class="prev-next-title">直交化</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1462,14 +1153,6 @@ A \boldsymbol{e}_1 = \boldsymbol{a}_1, \cdots, A \boldsymbol{e}_n = \boldsymbol{
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">直交補空間</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">直交化</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">正規直交系</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">シュミットの正規直交化法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">計量を保つ写像</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">直交変換</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">直交行列</a></li>
-</ul>
-</li>
 </ul>
   </nav></div>
 
