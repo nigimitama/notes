@@ -384,6 +384,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../statistical_modeling/glm/index.html">一般化線形モデル（GLM)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../statistical_modeling/glm/introduction.html">概要</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../statistical_modeling/glm/logistic_regression.html">ロジスティック回帰モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../statistical_modeling/glm/pseudo_r_squared.html">疑似R2乗値</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../statistical_modeling/bayes_modeling/index.html">ベイズ統計モデリング</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1049,7 +1050,56 @@ V(7) =\left\{\left.c\left(\begin{array}{l} 1 \\ 2 \end{array}\right) \right\rver
 \boldsymbol{x}_1 = \begin{pmatrix} -2\\ 1\end{pmatrix}, \quad
 \boldsymbol{x}_2 = \begin{pmatrix} 1\\ 2\end{pmatrix}
 \end{split}\]</div>
-<p>とおく。<span class="math notranslate nohighlight">\(\boldsymbol{x}_1, \boldsymbol{x}_2\)</span>は1次独立なので個別にシュミットの直交化をして<span class="math notranslate nohighlight">\(\boldsymbol{p}_1, \boldsymbol{p}_2\)</span>とおくと</p>
+<p>とおく。<span class="math notranslate nohighlight">\(\boldsymbol{x}_1, \boldsymbol{x}_2\)</span>にシュミットの直交化を行い<span class="math notranslate nohighlight">\(\boldsymbol{p}_1,\boldsymbol{p}_2\)</span>とすると、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\boldsymbol{p}_1 &amp;= \frac{\boldsymbol{x}_1}{\|\boldsymbol{x}_1\|}
+= \frac{1}{\sqrt{5}} \begin{pmatrix} -2\\ 1\end{pmatrix}
+= \begin{pmatrix} \frac{-2}{\sqrt{5}}\\ \frac{1}{\sqrt{5}}\end{pmatrix}
+\end{aligned}\end{split}\]</div>
+<p>であり
+$<span class="math notranslate nohighlight">\(
+c = \langle \boldsymbol{x}_2, \boldsymbol{p}_1 \rangle
+= 1 \cdot \frac{-2}{\sqrt{5}} + 2 \cdot \frac{1}{\sq
+rt{5
+}}
+= 0
+\)</span><span class="math notranslate nohighlight">\(
+より
+\)</span><span class="math notranslate nohighlight">\(
+\boldsymbol{p}_2
+= \frac{\boldsymbol{x}_2 - c \boldsymbol{p}_1 }
+{\| \boldsymbol{x}_2 - c \boldsymbol{p}_1 \| }
+= \frac{\boldsymbol{x}_2 } {\| \boldsymbol{x}_2 \| }
+= \frac{1}{\sqrt{5}} \begin{pmatrix} 1\\ 2\end{pmatrix}
+= \begin{pmatrix} \frac{1}{\sqrt{5}}\\ \frac{2}{\sq
+rt{5}}\end{pmatrix}
+\)</span><span class="math notranslate nohighlight">\(
+\)</span>P=(\boldsymbol{p}_1,
+\boldsymbol{p}_2)<span class="math notranslate nohighlight">\(とおいた行列
+\)</span><span class="math notranslate nohighlight">\(
+P=
+\begin{pmatrix}
+ \frac{-2}{\sqrt{5}} &amp; \frac{1}{\sqrt{5}}\\
+ \frac{1}{\sqrt{5}} &amp; \frac{2}{\sqrt{5}}
+\end{pmatrix}
+\)</span>$</p>
+<p>により<span class="math notranslate nohighlight">\(A\)</span>は対角化できる</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+P^{-1} A P
+= 
+\begin{pmatrix}
+2 &amp; 0 \\
+0 &amp; 7
+\end{pmatrix}
+\end{split}\]</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">個別に直交化する例</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">（これがいいのかはわからんが、対角化はできる）</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(\boldsymbol{x}_1, \boldsymbol{x}_2\)</span>は1次独立なので個別にシュミットの直交化をして<span class="math notranslate nohighlight">\(\boldsymbol{p}_1, \boldsymbol{p}_2\)</span>とおくと</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
@@ -1062,7 +1112,7 @@ V(7) =\left\{\left.c\left(\begin{array}{l} 1 \\ 2 \end{array}\right) \right\rver
 = \begin{pmatrix} \frac{1}{\sqrt{5}}\\ \frac{2}{\sqrt{5}}\end{pmatrix}
 \end{aligned}
 \end{split}\]</div>
-<p><span class="math notranslate nohighlight">\(P=(\boldsymbol{p}_1, \boldsymbol{p}_2)\)</span>とおいた行列</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(P=(\boldsymbol{p}_1, \boldsymbol{p}_2)\)</span>とおいた行列</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 P=
@@ -1071,7 +1121,7 @@ P=
  \frac{1}{\sqrt{5}} &amp; \frac{2}{\sqrt{5}}
 \end{pmatrix}
 \end{split}\]</div>
-<p>により<span class="math notranslate nohighlight">\(A\)</span>は対角化できる</p>
+<p class="sd-card-text">により<span class="math notranslate nohighlight">\(A\)</span>は対角化できる</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 P^{-1} A P
@@ -1081,36 +1131,22 @@ P^{-1} A P
 0 &amp; 7
 \end{pmatrix}
 \end{split}\]</div>
-<div class="cell docutils container">
+</div>
+</details><div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sp</span>
 
-<span class="n">a1</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">a2</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+<span class="p">])</span>
 
-<span class="n">p1</span> <span class="o">=</span> <span class="n">a1</span> <span class="o">/</span> <span class="n">a1</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
-<span class="n">c</span> <span class="o">=</span> <span class="n">a2</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">p1</span>
-<span class="n">v2</span> <span class="o">=</span> <span class="p">(</span><span class="n">a2</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">p1</span><span class="p">)</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">/</span> <span class="n">x1</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">x2</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">p1</span>
+<span class="n">v2</span> <span class="o">=</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">p1</span><span class="p">)</span>
 <span class="n">p2</span> <span class="o">=</span> <span class="n">v2</span> <span class="o">/</span> <span class="n">v2</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
-<span class="n">P</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-<span class="n">P</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\begin{split}\displaystyle \left[\begin{matrix}- \frac{2 \sqrt{5}}{5} &amp; \frac{\sqrt{5}}{5}\\\frac{\sqrt{5}}{5} &amp; \frac{2 \sqrt{5}}{5}\end{matrix}\right]\end{split}\]</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sp</span>
-
-<span class="n">a1</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">a2</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
-
-<span class="n">p1</span> <span class="o">=</span> <span class="n">a1</span> <span class="o">/</span> <span class="n">a1</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
-<span class="n">p2</span> <span class="o">=</span> <span class="n">a2</span> <span class="o">/</span> <span class="n">a2</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
 <span class="n">P</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 <span class="n">P</span>
 </pre></div>
@@ -1128,14 +1164,31 @@ P^{-1} A P
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">P</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">@</span> <span class="n">A</span> <span class="o">@</span> <span class="n">P</span>
-
-<span class="ne">NameError</span>: name &#39;A&#39; is not defined
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}2 &amp; 0\\0 &amp; 7\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">P</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">GramSchmidt</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">]))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="n">P</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}-2 &amp; 1\\1 &amp; 2\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">P</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">@</span> <span class="n">A</span> <span class="o">@</span> <span class="n">P</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}2 &amp; 0\\0 &amp; 7\end{matrix}\right]\end{split}\]</div>
 </div>
 </div>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
@@ -1174,35 +1227,191 @@ x_2 = \begin{pmatrix} -3 \\ 0 \\ 1 \end{pmatrix}, \quad
 x_3 = \begin{pmatrix} 1 \\ 2 \\ 3 \end{pmatrix}
 \end{split}\]</div>
 <p>を用いる。</p>
-<p>相異なる固有値に属する固有ベクトルたちは1次独立であり、別々に直交化できるため、ノルム</p>
+<p>これらを直交化したベクトルを<span class="math notranslate nohighlight">\(p_1, p_2, p_3\)</span>とする。シュミットの直交化で求めていく。</p>
+<p>(1) <span class="math notranslate nohighlight">\(p_1\)</span>を求める</p>
+<p><span class="math notranslate nohighlight">\(\|x_1\| = \sqrt{|2|^2+|1|^2} = \sqrt{5}\)</span>なので、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+p_1 = \frac{x_1}{\|x_1\|} = \frac{1}{\sqrt{5}} \begin{pmatrix} -2 \\ 1 \\ 0 \end{pmatrix}
+= \begin{pmatrix} \frac{-2}{\sqrt{5}} \\ \frac{1}{\sqrt{5}} \\ 0 \end{pmatrix}
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sp</span>
+
+<span class="n">x1</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">x3</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+
+<span class="n">p1</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">/</span> <span class="n">x1</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+<span class="n">p1</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}- \frac{2 \sqrt{5}}{5}\\\frac{\sqrt{5}}{5}\\0\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<p>(2) <span class="math notranslate nohighlight">\(p_2\)</span>を求める</p>
+<div class="math notranslate nohighlight">
+\[
+c
+= \langle \boldsymbol{x}_2, \boldsymbol{p}_1 \rangle
+= -3 \cdot \frac{-2}{\sqrt{5}}
+= \frac{6}{\sqrt{5}}
+\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\boldsymbol{x}_2 - c \boldsymbol{p}_1
+=
+\begin{pmatrix} -3 \\ 0 \\ 1 \end{pmatrix} -
+\frac{6}{\sqrt{5}}
+\begin{pmatrix} \frac{-2}{\sqrt{5}} \\ \frac{1}{\sqrt{5}} \\ 0 \end{pmatrix}
+=
+\begin{pmatrix} -3 \\ 0 \\ 1 \end{pmatrix} -
+\begin{pmatrix} \frac{-12}{5} \\ \frac{6}{5} \\ 0 \end{pmatrix}
+=
+\begin{pmatrix}
+\frac{-15}{5} - \frac{-12}{5} \\
+-\frac{6}{5} \\
+1
+\end{pmatrix}
+=
+\begin{pmatrix}
+-\frac{3}{5}\\
+-\frac{6}{5} \\
+1
+\end{pmatrix}
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[
+\| \boldsymbol{x}_2 - c \boldsymbol{p}_1 \|
+= \sqrt{
+\left|-\frac{3}{5}\right|^2 + \left|-\frac{6}{5}\right|^2 + 1^2
+}
+= \sqrt{ \frac{9}{25} + \frac{36}{25} + \frac{25}{25} }
+= \sqrt{ \frac{70}{25} }
+= \frac{\sqrt{70}}{5}
+\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\boldsymbol{p}_2
+= \frac{\boldsymbol{x}_2 - c \boldsymbol{p}_1 }
+{\| \boldsymbol{x}_2 - c \boldsymbol{p}_1 \| }
+=
+\frac{5}{\sqrt{70}}
+\begin{pmatrix}
+-\frac{3}{5}\\
+-\frac{6}{5} \\
+1
+\end{pmatrix}
+=
+\begin{pmatrix}
+-\frac{3}{\sqrt{70}}\\
+-\frac{6}{\sqrt{70}} \\
+\frac{5}{\sqrt{70}}
+\end{pmatrix}
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">x2</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">p1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">p1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">p1</span><span class="p">)</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+<span class="n">p2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}- \frac{3 \sqrt{70}}{70}\\- \frac{3 \sqrt{70}}{35}\\\frac{\sqrt{70}}{14}\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<p>(3) <span class="math notranslate nohighlight">\(p_3\)</span>を求める</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
-\|x_1\| &amp;= \sqrt{|2|^2+|1|^2} = \sqrt{5}\\
-\|x_2\| &amp;= \sqrt{|3|^2+|1|^2} = \sqrt{10}\\
-\|x_3\| &amp;= \sqrt{|1|^2+|2|^2+|3|^2} = \sqrt{14}\\
+c_1 &amp;= \langle x_3, p_1 \rangle
+= 1 \cdot \frac{-2}{\sqrt{5}} + 2 \cdot \frac{1}{\sqrt{5}} + 3 \cdot 0
+= 0
+\\
+c_2 &amp;= \langle x_3, p_2 \rangle
+=1 \cdot \frac{-3}{\sqrt{70}} + 2 \cdot \frac{-6}{\sqrt{70}} + 3 \cdot \frac{5}{\sqrt{70}}
+= \frac{-3 - 12 + 15}{\sqrt{70}} = 0
+\\
+\|x_3\| &amp;= \sqrt{|1|^2+|2|^2+|3|^2} = \sqrt{14}
 \end{aligned}
 \end{split}\]</div>
-<p>を用いて</p>
+<p>なので</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\begin{aligned}
-p_1 &amp;= \frac{x_1}{\|x_1\|} = \frac{1}{\sqrt{5}} \begin{pmatrix} -2 \\ 1 \\ 0 \end{pmatrix}\\
-p_2 &amp;= \frac{x_2}{\|x_2\|} = \frac{1}{\sqrt{10}} \begin{pmatrix} -3 \\ 0 \\ 1 \end{pmatrix}\\
-p_3 &amp;= \frac{x_3}{\|x_3\|} = \frac{1}{\sqrt{14}} \begin{pmatrix} 1 \\ 2 \\ 3 \end{pmatrix}
-\end{aligned}
+\boldsymbol{p}_3
+= \frac{ \boldsymbol{x}_3 - (c_1 \boldsymbol{p}_1 + c_2 \boldsymbol{p}_2) }
+{\| \boldsymbol{x}_3 - (c_1 \boldsymbol{p}_1 + c_2 \boldsymbol{p}_2)\| }
+=  \frac{ \boldsymbol{x}_3 }{\| \boldsymbol{x}_3 \| }
+=  \frac{1}{\sqrt{14}} \begin{pmatrix} 1 \\ 2 \\ 3 \end{pmatrix}
 \end{split}\]</div>
-<p>とおく。これらを列ベクトルにもつ行列を<span class="math notranslate nohighlight">\(P=(p_1,p_2,p_3)\)</span>とおく。</p>
+<p><span class="math notranslate nohighlight">\(P=(p_1,p_2,p_3)\)</span>とする</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 P=
 \begin{pmatrix} 
--\frac{2}{\sqrt{5}} &amp; -\frac{3}{14} &amp; \frac{1}{\sqrt{14}}\\
-\frac{1}{\sqrt{5}} &amp; 0              &amp; \frac{2}{\sqrt{14}}\\
-0 &amp;  \frac{1}{\sqrt{10}}            &amp; \frac{3}{\sqrt{14}}
+-\frac{2}{\sqrt{5}} &amp; -\frac{3}{\sqrt{70}} &amp; \frac{1}{\sqrt{14}}\\
+\frac{1}{\sqrt{5}}  &amp; -\frac{6}{\sqrt{70}} &amp; \frac{2}{\sqrt{14}}\\
+0                   &amp;  \frac{5}{\sqrt{70}} &amp; \frac{3}{\sqrt{14}}
 \end{pmatrix}
 \end{split}\]</div>
-<p><span class="math notranslate nohighlight">\(A\)</span>は<span class="math notranslate nohighlight">\(P\)</span>で対角化可能である。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p3</span> <span class="o">=</span> <span class="n">x3</span> <span class="o">/</span> <span class="n">x3</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+<span class="n">p3</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}\frac{\sqrt{14}}{14}\\\frac{\sqrt{14}}{7}\\\frac{3 \sqrt{14}}{14}\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">P</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="n">P</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}- \frac{2 \sqrt{5}}{5} &amp; - \frac{3 \sqrt{70}}{70} &amp; \frac{\sqrt{14}}{14}\\\frac{\sqrt{5}}{5} &amp; - \frac{3 \sqrt{70}}{35} &amp; \frac{\sqrt{14}}{7}\\0 &amp; \frac{\sqrt{70}}{14} &amp; \frac{3 \sqrt{14}}{14}\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">P</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}- \frac{2 \sqrt{5}}{5} &amp; \frac{\sqrt{5}}{5} &amp; 0\\- \frac{3 \sqrt{70}}{70} &amp; - \frac{3 \sqrt{70}}{35} &amp; \frac{\sqrt{70}}{14}\\\frac{\sqrt{14}}{14} &amp; \frac{\sqrt{14}}{7} &amp; \frac{3 \sqrt{14}}{14}\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">9</span><span class="p">]</span>
+<span class="p">])</span>
+
+<span class="n">P</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">@</span> <span class="n">A</span> <span class="o">@</span> <span class="n">P</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 14\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 P^{-1} A P
@@ -1213,7 +1422,41 @@ P^{-1} A P
 0 &amp; 0 &amp; 14
 \end{array}\right]
 \end{split}\]</div>
-<div class="cell docutils container">
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">簡易版</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">相異なる固有値に属する固有ベクトルたちは1次独立であり、別々に直交化できるため、ノルム</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\|x_1\| &amp;= \sqrt{|2|^2+|1|^2} = \sqrt{5}\\
+\|x_2\| &amp;= \sqrt{|3|^2+|1|^2} = \sqrt{10}\\
+\|x_3\| &amp;= \sqrt{|1|^2+|2|^2+|3|^2} = \sqrt{14}\\
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">を用いて</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+p_1 &amp;= \frac{x_1}{\|x_1\|} = \frac{1}{\sqrt{5}} \begin{pmatrix} -2 \\ 1 \\ 0 \end{pmatrix}
+= \begin{pmatrix} \frac{-2}{\sqrt{5}} \\ \frac{1}{\sqrt{5}} \\ 0 \end{pmatrix}\\
+p_2 &amp;= \frac{x_2}{\|x_2\|} = \frac{1}{\sqrt{10}} \begin{pmatrix} -3 \\ 0 \\ 1 \end{pmatrix}\\
+p_3 &amp;= \frac{x_3}{\|x_3\|} = \frac{1}{\sqrt{14}} \begin{pmatrix} 1 \\ 2 \\ 3 \end{pmatrix}
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">とおく。これらを列ベクトルにもつ行列を<span class="math notranslate nohighlight">\(P=(p_1,p_2,p_3)\)</span>とおく。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+P=
+\begin{pmatrix} 
+-\frac{2}{\sqrt{5}} &amp; -\frac{3}{14} &amp; \frac{1}{\sqrt{14}}\\
+\frac{1}{\sqrt{5}} &amp; 0              &amp; \frac{2}{\sqrt{14}}\\
+0 &amp;  \frac{1}{\sqrt{10}}            &amp; \frac{3}{\sqrt{14}}
+\end{pmatrix}
+\end{split}\]</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(A\)</span>は<span class="math notranslate nohighlight">\(P\)</span>で対角化可能である。</p>
+</div>
+</details><div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sp</span>
 
@@ -1242,7 +1485,7 @@ P^{-1} A P
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\begin{split}\displaystyle \left[\begin{matrix}- \frac{2}{5} &amp; \frac{1}{5} &amp; 0\\- \frac{3}{14} &amp; - \frac{3}{7} &amp; \frac{5}{14}\\\frac{1}{14} &amp; \frac{1}{7} &amp; \frac{3}{14}\end{matrix}\right]\end{split}\]</div>
+\[\begin{split}\displaystyle \left[\begin{matrix}- \frac{\sqrt{5}}{7} &amp; \frac{5 \sqrt{5}}{7} &amp; - \frac{3 \sqrt{5}}{7}\\- \frac{3 \sqrt{10}}{14} &amp; - \frac{3 \sqrt{10}}{7} &amp; \frac{5 \sqrt{10}}{14}\\\frac{\sqrt{14}}{14} &amp; \frac{\sqrt{14}}{7} &amp; \frac{3 \sqrt{14}}{14}\end{matrix}\right]\end{split}\]</div>
 </div>
 </div>
 <div class="cell docutils container">
@@ -1312,7 +1555,7 @@ b &amp; c
 d &amp; e
 \end{array}\right)\binom{x}{y}+f=0
 \end{split}\]</div>
-<p>と表される。ここで、行列 <span class="math notranslate nohighlight">\(\left(\begin{array}{ll}a &amp; b \\ b &amp; c\end{array}\right)\)</span> は対称行列であることに注意しよう。対称行列の直交行列による対角化を用いると、上記のような方程式を<strong>標準形</strong>*という、よりわかりやすい式で表すことができる。例えば、楕円、双曲線、放物線の標準形 はそれぞれ</p>
+<p>と表される。ここで、行列 <span class="math notranslate nohighlight">\(\left(\begin{array}{ll}a &amp; b \\ b &amp; c\end{array}\right)\)</span> は対称行列であることに注意しよう。対称行列の直交行列による対角化を用いると、上記のような方程式を<strong>標準形</strong>という、よりわかりやすい式で表すことができる。例えば、楕円、双曲線、放物線の標準形 はそれぞれ</p>
 <div class="math notranslate nohighlight">
 \[
 \frac{x^2}{a^2}+\frac{y^2}{b^2}=1, \quad \frac{x^2}{a^2}-\frac{y^2}{b^2}=1, \quad y=a x^2
