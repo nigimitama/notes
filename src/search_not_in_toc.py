@@ -4,7 +4,6 @@ import yaml
 import os
 
 
-list(Path().glob("*"))
 book_dir = Path("./book")
 os.chdir(book_dir)
 book_dir = Path(".")
