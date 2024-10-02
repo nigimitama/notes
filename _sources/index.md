@@ -179,6 +179,7 @@
 
 - [](soft_skills/logic/index)
 - [](soft_skills/negotiation)
+- [](soft_skills/harvard_negotiation)
 - [](soft_skills/leadership)
 - [](soft_skills/writing)
 :::
