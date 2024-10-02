@@ -929,15 +929,15 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>主成分分析<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <p>主成分分析は学習データの分散が最大になる方向への線形変換を求める手法。</p>
-<p><span class="math notranslate nohighlight">\(d\)</span>次元の学習データ<span class="math notranslate nohighlight">\(\boldsymbol{x}_i=(x_{i1}, ..., x_{id})^T\)</span>が<span class="math notranslate nohighlight">\(N\)</span>個あるデータ行列を<span class="math notranslate nohighlight">\(\boldsymbol{X} = (\boldsymbol{x}_1, ..., \boldsymbol{x}_N)^T\)</span>とする。</p>
-<p>そこから平均ベクトル<span class="math notranslate nohighlight">\(\bar{\boldsymbol{x}}=(\bar{x}_1, ..., \bar{x}_d)^T\)</span>を引き算した行列を<span class="math notranslate nohighlight">\(\bar{\boldsymbol{X}}=(\boldsymbol{x}_1 - \bar{\boldsymbol{x}}, ..., \boldsymbol{x}_N - \bar{\boldsymbol{x}})^T\)</span>とおけば、共分散行列<span class="math notranslate nohighlight">\(\boldsymbol{\Sigma}\)</span>は</p>
+<p><span class="math notranslate nohighlight">\(D\)</span>次元のデータ<span class="math notranslate nohighlight">\(\boldsymbol{x}=(x_1, \cdots, x_D)^T\)</span>が<span class="math notranslate nohighlight">\(N\)</span>個あるとする。<span class="math notranslate nohighlight">\(i\)</span>番目の観測値を行ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{x}_i\)</span>として表し、データを行列<span class="math notranslate nohighlight">\(X = (\boldsymbol{x}_1, \cdots, \boldsymbol{x}_N)^T\)</span>と表す。</p>
+<p>各変数の平均のベクトル<span class="math notranslate nohighlight">\(\bar{\boldsymbol{x}}=(\bar{x}_1, ..., \bar{x}_D)^T\)</span>を引き算した行列を<span class="math notranslate nohighlight">\(\bar{\boldsymbol{X}}=(\boldsymbol{x}_1 - \bar{\boldsymbol{x}}, ..., \boldsymbol{x}_N - \bar{\boldsymbol{x}})^T\)</span>とおけば、共分散行列<span class="math notranslate nohighlight">\(\boldsymbol{\Sigma}\)</span>は</p>
 <div class="math notranslate nohighlight">
 \[
-\boldsymbol{\Sigma} = Var[\bar{\boldsymbol{X}}]
+\boldsymbol{\Sigma} = \operatorname{Var}[\bar{\boldsymbol{X}}]
 = \frac{1}{N} \bar{\boldsymbol{X}}^T \bar{\boldsymbol{X}}
 \]</div>
 <p>で定義される。</p>
-<p>係数ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a}_j = (a_{j1}, ..., a_{jd})^T (j=1, ..., d)\)</span>を用いて<span class="math notranslate nohighlight">\(\bar{\boldsymbol{X}}\)</span>を線形変換したものを<span class="math notranslate nohighlight">\(\boldsymbol{s}_j\)</span>とする。</p>
+<p>係数ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a}_j = (a_{j1}, ..., a_{jD})^T \ (j=1, ..., D)\)</span>を用いて<span class="math notranslate nohighlight">\(\bar{X}\)</span>を線形変換したベクトルを<span class="math notranslate nohighlight">\(\boldsymbol{s}_j\)</span>とする。</p>
 <div class="math notranslate nohighlight">
 \[
 \boldsymbol{s}_j = (s_{1j}, ..., s_{Nj})^T = \bar{\boldsymbol{X}} \boldsymbol{a}_j
@@ -945,21 +945,21 @@ document.write(`
 <p>このデータの分散は</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\begin{align}
-Var[\boldsymbol{s}_j]
-= \frac{1}{N} \boldsymbol{s}_j^T \boldsymbol{s}_j\\
-= \frac{1}{N} (\bar{\boldsymbol{X}} \boldsymbol{a}_j)^T \bar{\boldsymbol{X}} \boldsymbol{a}_j\\
-= \frac{1}{N} \boldsymbol{a}_j^T \bar{\boldsymbol{X}}^T \bar{\boldsymbol{X}} \boldsymbol{a}_j\\
-= \boldsymbol{a}_j^T Var[\bar{\boldsymbol{X}}] \boldsymbol{a}_j\\
-\end{align}
+\begin{aligned}
+\operatorname{Var}[\boldsymbol{s}_j]
+&amp;= \frac{1}{N} \boldsymbol{s}_j^T \boldsymbol{s}_j\\
+&amp;= \frac{1}{N} (\bar{\boldsymbol{X}} \boldsymbol{a}_j)^T \bar{\boldsymbol{X}} \boldsymbol{a}_j\\
+&amp;= \frac{1}{N} \boldsymbol{a}_j^T \bar{\boldsymbol{X}}^T \bar{\boldsymbol{X}} \boldsymbol{a}_j\\
+&amp;= \boldsymbol{a}_j^T \operatorname{Var}[\bar{\boldsymbol{X}}] \boldsymbol{a}_j\\
+\end{aligned}
 \end{split}\]</div>
 <p>となる。</p>
-<p>このまま<span class="math notranslate nohighlight">\(\max_{\boldsymbol{a}_j} Var[\boldsymbol{s}_j]\)</span>を解くと単に<span class="math notranslate nohighlight">\(\boldsymbol{a}_j=\infty\)</span>が解になってしまうので、係数ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a}_j\)</span>のノルム制約条件をかけた最大化問題を解くことにする。</p>
+<p>このまま<span class="math notranslate nohighlight">\(\max_{\boldsymbol{a}_j} \operatorname{Var}[\boldsymbol{s}_j]\)</span>を解くと単に<span class="math notranslate nohighlight">\(\boldsymbol{a}_j=\infty\)</span>が解になってしまうので、係数ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a}_j\)</span>のノルム制約条件をかけた最大化問題を解くことにする。</p>
 <div class="admonition- admonition">
 <p class="admonition-title">制約条件付き分散最大化問題</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\max_{\boldsymbol{a}_j} \ Var[\boldsymbol{s}_j]\\
+\max_{\boldsymbol{a}_j} \ \operatorname{Var}[\boldsymbol{s}_j]\\
 \text{subject to} \ ||\boldsymbol{a}_j||_2^2 = 1
 \end{split}\]</div>
 </div>
@@ -967,7 +967,7 @@ Var[\boldsymbol{s}_j]
 <div class="math notranslate nohighlight">
 \[
 L(\boldsymbol{a}_j) = 
-\boldsymbol{a}_j^T Var[\bar{\boldsymbol{X}}] \boldsymbol{a}_j
+\boldsymbol{a}_j^T \operatorname{Var}[\bar{\boldsymbol{X}}] \boldsymbol{a}_j
 - \lambda (\boldsymbol{a}_j^T \boldsymbol{a}_j - 1)
 \]</div>
 <p>を最大にする<span class="math notranslate nohighlight">\(\boldsymbol{a}_j\)</span>である。（<span class="math notranslate nohighlight">\(\lambda\)</span>はラグランジュ未定乗数）</p>
@@ -975,14 +975,14 @@ L(\boldsymbol{a}_j) =
 <div class="math notranslate nohighlight">
 \[
 \frac{\partial L(\boldsymbol{a}_j)}{\partial \boldsymbol{a}_j}
-= 2 Var[\bar{\boldsymbol{X}}] \boldsymbol{a}_j
+= 2 \operatorname{Var}[\bar{\boldsymbol{X}}] \boldsymbol{a}_j
 - 2 \lambda \boldsymbol{a}_j
 = 0
 \]</div>
 <p>より</p>
 <div class="math notranslate nohighlight">
 \[
-Var[\bar{\boldsymbol{X}}] \boldsymbol{a}_j = \lambda \boldsymbol{a}_j
+\operatorname{Var}[\bar{\boldsymbol{X}}] \boldsymbol{a}_j = \lambda \boldsymbol{a}_j
 \]</div>
 <p>となる。</p>
 <p>この<span class="math notranslate nohighlight">\(\lambda\)</span>と<span class="math notranslate nohighlight">\(\boldsymbol{a}_j\)</span>は固有値問題を解くことにより得られる。</p>
@@ -1021,7 +1021,7 @@ Var[\bar{\boldsymbol{X}}] \boldsymbol{a}_j = \lambda \boldsymbol{a}_j
 <p>データ行列<span class="math notranslate nohighlight">\(\boldsymbol{X} = (\boldsymbol{x}_1, ..., \boldsymbol{x}_N)^T\)</span>から平均ベクトルを引き算した行列を<span class="math notranslate nohighlight">\(\bar{\boldsymbol{X}}=(\boldsymbol{x}_1 - \bar{\boldsymbol{x}}, ..., \boldsymbol{x}_N - \bar{\boldsymbol{x}})^T\)</span>とおけば、共分散行列<span class="math notranslate nohighlight">\(\boldsymbol{\Sigma}\)</span>は</p>
 <div class="math notranslate nohighlight">
 \[
-\boldsymbol{\Sigma} = Var[\bar{\boldsymbol{X}}]
+\boldsymbol{\Sigma} = \operatorname{Var}[\bar{\boldsymbol{X}}]
 = \frac{1}{N} \bar{\boldsymbol{X}}^T \bar{\boldsymbol{X}}
 \]</div>
 <p>と推定できる</p>
@@ -1046,7 +1046,7 @@ Var[\bar{\boldsymbol{X}}] \boldsymbol{a}_j = \lambda \boldsymbol{a}_j
 <p>分散最大化問題の解は</p>
 <div class="math notranslate nohighlight">
 \[
-Var[\bar{\boldsymbol{X}}] \boldsymbol{a}_j = \lambda \boldsymbol{a}_j
+\operatorname{Var}[\bar{\boldsymbol{X}}] \boldsymbol{a}_j = \lambda \boldsymbol{a}_j
 \]</div>
 <p>であったので、固有値問題を解いて<span class="math notranslate nohighlight">\(\lambda\)</span>と<span class="math notranslate nohighlight">\(\boldsymbol{a}_j\)</span>を推定していく。</p>
 <div class="cell docutils container">
@@ -1144,12 +1144,15 @@ a2=[-0.464  0.886]
 <span class="n">pca</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
 <span class="c1"># 寄与率：主成分の分散（固有値）の割合</span>
-<span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span>
+<span class="n">pca</span><span class="o">.</span><span class="n">explained_</span>\<span class="n">operatorname</span><span class="p">{</span><span class="n">Var</span><span class="p">}</span><span class="n">iance_ratio_</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.7596663, 0.2403337])
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>  <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">line</span> <span class="mi">6</span>
+    <span class="n">pca</span><span class="o">.</span><span class="n">explained_</span>\<span class="n">operatorname</span><span class="p">{</span><span class="n">Var</span><span class="p">}</span><span class="n">iance_ratio_</span>
+                   <span class="o">^</span>
+<span class="ne">SyntaxError</span>: unexpected character after line continuation character
 </pre></div>
 </div>
 </div>
@@ -1161,9 +1164,9 @@ a2=[-0.464  0.886]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 2.28345887,  0.61668615],
-       [ 0.15906083, -0.49935839],
-       [ 0.77927075, -0.56227195]])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-2.28345887, -0.61668615],
+       [-0.15906083,  0.49935839],
+       [-0.77927075,  0.56227195]])
 </pre></div>
 </div>
 </div>
