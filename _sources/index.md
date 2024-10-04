@@ -37,6 +37,7 @@
 - [](statistics/asymptotic_theory/index)
 - [](statistics/bayes_statistics/index)
 - [](statistics/done_wrong)
+- [](statistics/visualization)
 :::
 
 :::{grid-item-card}

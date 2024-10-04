@@ -241,7 +241,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../eigenvalue/eigenvalue.html">固有値と固有ベクトル</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../eigenvalue/eigenvalue_and_covariance.html">固有値と共分散</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../eigenvalue/interpret_of_eigenvalue.html">固有値・固有ベクトルの解釈・意味</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../eigenvalue/diagonalization.html">対角化</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../diagonalization/index.html">対角化</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../diagonalization/diagonalization.html">対角化の概要</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../diagonalization/diagonalization_by_eigenvectors.html">固有ベクトルによる対角化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../diagonalization/diagonalization_by_orthogonal.html">対称行列の直交行列による対角化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../diagonalization/jordan_normal_form.html">ジョルダン標準形</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../geometry.html">2次元と3次元の簡単な幾何学</a></li>
@@ -364,6 +370,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../statistics/done_wrong.html">統計学の誤用や望ましい作法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../statistics/visualization.html">データの可視化</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">統計モデリング</span></p>
 <ul class="nav bd-sidenav">
@@ -1125,6 +1132,103 @@ S\left[\boldsymbol{v}_1, \cdots, \boldsymbol{v}_r\right]=S\left[\boldsymbol{a}_1
        [ 0.6,  0.4,  0.7]])
 </pre></div>
 </div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>異なる固有値に属する固有ベクトルと行列の列ベクトルは直交しているので<span class="math notranslate nohighlight">\(c\)</span>が0になる → それぞれの固有ベクトル<span class="math notranslate nohighlight">\(x\)</span>で<span class="math notranslate nohighlight">\(x/\|x\|\)</span>を求めればいい</p>
+<p>例：</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A =
+\begin{pmatrix}
+3 &amp; 2\\
+2 &amp; 3
+\end{pmatrix}
+\end{split}\]</div>
+<p>とする。固有値は<span class="math notranslate nohighlight">\(\lambda=1, 5\)</span>であり、それぞれの固有値に対応する固有空間<span class="math notranslate nohighlight">\(V(\lambda)\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+V(1) =\left\{\left.
+ c \begin{pmatrix} -1 \\ 1 \end{pmatrix}
+\right\rvert\, c \in \mathbb{R}\right\}
+\\
+V(5) =\left\{\left.
+ c \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+\right\rvert\, c \in \mathbb{R}\right\}
+\end{split}\]</div>
+<p>固有ベクトルとして</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+x_1 = \begin{pmatrix} -1 \\ 1 \end{pmatrix}
+, \quad
+x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+\end{split}\]</div>
+<p>を用いて正規直交化すると、まず<span class="math notranslate nohighlight">\(x_1\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+p_1 = \frac{x_1}{\| x_1 \|} = \frac{1}{\sqrt{2}}\begin{pmatrix} -1 \\ 1 \end{pmatrix}
+\end{split}\]</div>
+<p>と直交化される。</p>
+<p>また<span class="math notranslate nohighlight">\(A\)</span>の列ベクトルを<span class="math notranslate nohighlight">\(a_1, a_2\)</span>とおくと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+c &amp;= \langle a_2, p_1 \rangle\\
+  &amp;= 2 \cdot (-\frac{1}{\sqrt{2}}) + 3 \cdot \frac{1}{\sqrt{2}}\\
+  &amp;= -\frac{2}{\sqrt{2}} + \frac{3}{\sqrt{2}}\\
+  &amp;= \frac{1}{\sqrt{2}}\\
+\end{aligned}
+\end{split}\]</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sp</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="p">])</span>
+
+<span class="n">eig</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">eigenvects</span><span class="p">()</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">eig</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">eig</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">a1</span> <span class="o">=</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">a2</span> <span class="o">=</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="n">p1</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">/</span> <span class="n">x1</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+<span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">a2</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">p1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">c</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{\sqrt{2}}{2}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">P</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">GramSchmidt</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">]))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="n">P</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}-1 &amp; 1\\1 &amp; 1\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">P</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}- \frac{1}{2} &amp; \frac{1}{2}\\\frac{1}{2} &amp; \frac{1}{2}\end{matrix}\right]\end{split}\]</div>
 </div>
 </div>
 </section>
