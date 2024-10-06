@@ -87,6 +87,7 @@
 :columns: 6
 機械学習
 
+- [](machine_learning/statistical_learning_theory)
 - [](machine_learning/unsupervised_learning/index)
 - [](machine_learning/linear_models/index)
 - [](machine_learning/svm)
