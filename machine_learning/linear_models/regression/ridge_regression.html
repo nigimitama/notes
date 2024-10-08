@@ -976,7 +976,7 @@ y = \beta_0 + \beta_1 x_1 + \cdots + \beta_d x_d + \varepsilon
 <div class="math notranslate nohighlight">
 \[
 \newcommand{\argmin}{\mathop{\rm arg~min}\limits}
-\hat{\boldsymbol{\beta}}^{LS} = \argmin_{\boldsymbol{\beta}}
+\hat{\boldsymbol{\beta}}^{\text{LS}} = \argmin_{\boldsymbol{\beta}}
 \sum^n_{i=1} (y_i - \hat{y}_i)^2
 \]</div>
 <p>リッジ回帰はこれに「パラメータ<span class="math notranslate nohighlight">\(\beta_j\)</span>の二乗和がある値<span class="math notranslate nohighlight">\(R\)</span>以下である」という制約条件が付いた下でパラメータを推定する。</p>
@@ -984,15 +984,20 @@ y = \beta_0 + \beta_1 x_1 + \cdots + \beta_d x_d + \varepsilon
 \[\begin{split}
 \newcommand{\argmin}{\mathop{\rm arg~min}\limits}
 \begin{align}
-\hat{\boldsymbol{\beta}}^{ridge} = \text{ } 
+\hat{\boldsymbol{\beta}}^{\text{Ridge}} = \text{ } 
 &amp; \argmin_{\boldsymbol{\beta}} \sum^n_{i=1} (y_i - \hat{y}_i)^2
 \\
 &amp; \text{subject to } \sum^d_{i=1} \beta_j^2 \leq R
 \end{align}
 \end{split}\]</div>
 <p>この問題を解くために、<strong>ラグランジュの未定乗数法</strong>を利用する。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
+<div class="cell tag_hide-input tag_hide-output docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 二乗和が円になるイメージ</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -1010,12 +1015,19 @@ y = \beta_0 + \beta_1 x_1 + \cdots + \beta_d x_d + \varepsilon
 </pre></div>
 </div>
 </div>
+</details>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7fa3d594b670&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7fd600957670&gt;
 </pre></div>
 </div>
 <img alt="../../../_images/7d0f21611fb31071eaed59654437c1743f4b6f43692fbe9373602a6b8ff54479.png" src="../../../_images/7d0f21611fb31071eaed59654437c1743f4b6f43692fbe9373602a6b8ff54479.png" />
 </div>
+</details>
 </div>
 </section>
 <section id="id4">
@@ -1044,7 +1056,7 @@ J({\boldsymbol{\beta}})
 + \lambda \boldsymbol{\beta}^\top \boldsymbol{\beta}
 \end{align}
 \end{split}\]</div>
-<p>リッジ回帰の推定量<span class="math notranslate nohighlight">\(\hat{\boldsymbol{\beta}}^{ridge}\)</span>は解析的に解くことができ、</p>
+<p>リッジ回帰の推定量<span class="math notranslate nohighlight">\(\hat{\boldsymbol{\beta}}^{\text{Ridge}}\)</span>は解析的に解くことができ、</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
@@ -1088,7 +1100,7 @@ J(\boldsymbol{\beta})
 <p>となり、</p>
 <div class="math notranslate nohighlight">
 \[
-\hat{\boldsymbol{\beta}}^{ridge}
+\hat{\boldsymbol{\beta}}^{\text{Ridge}}
 = (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1}
 \boldsymbol{X}^\top \boldsymbol{y}
 \]</div>
@@ -1100,10 +1112,10 @@ J(\boldsymbol{\beta})
 <p>リッジ回帰は制約をかけたことにより通常の線形回帰（最小二乗法）とは異なる特徴をもっている。</p>
 <section id="id6">
 <h3>正則化<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
-<p>線形回帰の最小二乗推定量<span class="math notranslate nohighlight">\(\hat{\boldsymbol{\beta}}^{LS}\)</span>は次のようなものだった。</p>
+<p>線形回帰の最小二乗推定量<span class="math notranslate nohighlight">\(\hat{\boldsymbol{\beta}}^{\text{LS}}\)</span>は次のようなものだった。</p>
 <div class="math notranslate nohighlight">
 \[
-\hat{\boldsymbol{\beta}}^{LS}
+\hat{\boldsymbol{\beta}}^{\text{LS}}
 = (\boldsymbol{X}^\top \boldsymbol{X})^{-1}
 \boldsymbol{X}^\top \boldsymbol{y}
 \]</div>
@@ -1113,14 +1125,46 @@ J(\boldsymbol{\beta})
 <li><p>特徴量間の相関が非常に強い</p></li>
 </ol>
 <p>といった状況においては、<span class="math notranslate nohighlight">\(\boldsymbol{X}^\top \boldsymbol{X}\)</span>が正則でなくなって逆行列が計算できなくなったり、あるいは推定が不安定になることがある。</p>
-<p>そこでリッジ回帰の推定量<span class="math notranslate nohighlight">\(\hat{\boldsymbol{\beta}}^{ridge}\)</span>では</p>
+<p>そこでリッジ回帰の推定量<span class="math notranslate nohighlight">\(\hat{\boldsymbol{\beta}}^{\text{Ridge}}\)</span>では</p>
 <div class="math notranslate nohighlight">
 \[
-\hat{\boldsymbol{\beta}}^{ridge}
+\hat{\boldsymbol{\beta}}^{\text{Ridge}}
 = (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1}
 \boldsymbol{X}^\top \boldsymbol{y}
 \]</div>
 <p>と、<span class="math notranslate nohighlight">\(\boldsymbol{X}^\top \boldsymbol{X}\)</span>の対角成分に<span class="math notranslate nohighlight">\(\lambda\)</span>を足すことで尾根（ridge）を作り、正則にすることで逆行列が計算できるようにしている。</p>
+<div class="admonition- admonition">
+<p class="admonition-title">リッジ推定量が正則となる証明</p>
+<p><span class="math notranslate nohighlight">\(X\)</span>は<span class="math notranslate nohighlight">\(n\)</span>次の実行列とする。実対称行列<span class="math notranslate nohighlight">\(X^\top X\)</span>は非負値定符号行列であるため、</p>
+<div class="math notranslate nohighlight">
+\[
+X^\top X = P \Gamma P^\top
+\]</div>
+<p>と分解可能。ここで<span class="math notranslate nohighlight">\(P\)</span>は直交行列であり、<span class="math notranslate nohighlight">\(\gamma = \mathrm{diag}(\gamma_1, \cdots, \gamma_n)\)</span>は<span class="math notranslate nohighlight">\(X^\top X\)</span>の固有値（<span class="math notranslate nohighlight">\(\gamma_1 \geq \cdots \geq \gamma_n \geq 0\)</span>）を対角成分にもつ対角行列。</p>
+<p>もし<span class="math notranslate nohighlight">\(\gamma_n = 0\)</span>なら<span class="math notranslate nohighlight">\(X^\top X\)</span>の逆行列は存在せず、<span class="math notranslate nohighlight">\(\gamma_n &gt; 0\)</span>なら逆行列は存在し、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+(X^\top X)^{-1}
+&amp;= (P \Gamma P^\top)^{-1}\\
+&amp;= P \Gamma^{-1} P^\top \quad (\because (ABC)^{-1} = (C^{-1} B^{-1} A^{-1}) であり、 Pは直交行列なのでP^\top = P^{-1})\\
+&amp;= P \operatorname{diag}(1 / \Gamma_1, \ldots, 1 / \Gamma_p) P^\top
+\end{aligned}
+\end{split}\]</div>
+<p>となる。<span class="math notranslate nohighlight">\(X^\top X\)</span>の最小固有値が<span class="math notranslate nohighlight">\(\gamma_n \to 0\)</span>の場合、<span class="math notranslate nohighlight">\(1/\gamma_n \to \infty\)</span>になり逆行列が計算できない。</p>
+<p>一方、リッジ推定量のように<span class="math notranslate nohighlight">\(X^\top X + \lambda I\)</span>とする（<span class="math notranslate nohighlight">\(\lambda \in\mathbb{R}\)</span>）と、その逆行列は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+(X^\top X + \lambda I)^{-1}
+&amp;= (P \Gamma P^\top + \lambda I)^{-1}\\
+&amp;= \{ P (\Gamma + \lambda I) P^\top \}^{-1}\\
+&amp;= P (\Gamma + \lambda I)^{-1} P^\top\\
+&amp;= P \operatorname{diag}[1 / (\Gamma_1 + \lambda I), \ldots, 1 / (\Gamma_p + \lambda I)] P^\top
+\end{aligned}
+\end{split}\]</div>
+<p>となる。こちらは<span class="math notranslate nohighlight">\(\gamma_n \to 0\)</span>の場合であっても<span class="math notranslate nohighlight">\(1 / (\gamma_p + \lambda I)\)</span>は無限大に発散することがないため、<span class="math notranslate nohighlight">\(X^\top X + \lambda I\)</span>は正則となる。</p>
+</div>
 </section>
 <section id="id7">
 <h3>過学習の抑制<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
@@ -1136,9 +1180,17 @@ J(\beta)=
 </section>
 <section id="id8">
 <h2>推定量のバイアスとバリアンス<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
-<p>正則化しない通常の最小二乗法推定量はBLUE（最良線形不偏推定量：線形不偏推定量のなかでバリアンスが最小）だった。
-リッジ回帰やlassoの推定量は不偏ではない（バイアスがある）推定量であるが、最小二乗推定量よりも小さなバリアンスがありうる。そのため最小二乗推定を使用する線形回帰よりもリッジ回帰のほうが予測精度が良くなる可能性がある。</p>
-<p>TODO: 加筆する</p>
+<p>正則化しない通常の最小二乗推定量はBLUE（最良線形不偏推定量：線形不偏推定量のなかでバリアンスが最小）だった。
+リッジ回帰やlassoの推定量は不偏ではない（バイアスがある）推定量であるが、最小二乗推定量よりも小さなバリアンスとなる可能性がある。
+そのため、最小二乗推定法を使用する線形回帰よりもリッジ回帰のほうが予測の2乗誤差を小さくする可能性がある。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\operatorname{Var}(\hat{\beta}^{\text{Ridge}})
+&amp;= \sigma^2 (X^\top X + \lambda I)^{-1} X^\top X(X^\top X + \lambda I)^{-1}\\
+&amp;\leq \sigma^2 (X^\top X)^{-1} = \operatorname{Var}(\hat{\beta}^{\text{LS}})
+\end{aligned}
+\end{split}\]</div>
 <p><a class="reference external" href="https://www.math.arizona.edu/~hzhang/math574m/Read/RidgeRegressionBiasedEstimationForNonorthogonalProblems.pdf">Ridge Regression: Biased Estimation for Nonorthogonal Problems</a></p>
 <p><a class="reference external" href="https://hastie.su.domains/StatLearnSparsity_files/SLS.pdf">https://hastie.su.domains/StatLearnSparsity_files/SLS.pdf</a></p>
 </section>
@@ -1152,6 +1204,7 @@ J(\beta)=
 <li><p>ESLⅡ</p></li>
 <li><p><a class="reference external" href="https://stats.biopapyrus.jp/sparse-modeling/ridge.html">Ridge | L2 正則化を用いて多重共線性を回避してパラメーター推定を行う方法</a></p></li>
 <li><p><a class="reference external" href="http://ibisforest.org/index.php?%E3%83%AA%E3%83%83%E3%82%B8%E5%9B%9E%E5%B8%B0">リッジ回帰 - 機械学習の「朱鷺の杜Wiki」</a></p></li>
+<li><p>佐和隆光. (1979). 回帰分析.</p></li>
 </ul>
 </section>
 <section id="id11">
