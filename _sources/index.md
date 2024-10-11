@@ -19,6 +19,7 @@
 - [](mathematics/linear_algebra/index)
 - [](mathematics/calculus/index)
 - [](mathematics/mathematical_optimization/index)
+- [](mathematics/applied_math/index)
 :::
 
 :::{grid-item-card}
