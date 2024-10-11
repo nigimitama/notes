@@ -946,10 +946,9 @@ document.write(`
 <p class="admonition-title">p.12 例題1.7</p>
 <p>【例 1.7】 <span class="math notranslate nohighlight">\(N\)</span> 個のデータ <span class="math notranslate nohighlight">\(\left(x_1, y_1\right), \ldots,\left(x_N, y_N\right)\)</span> に <span class="math notranslate nohighlight">\(n\)</span> 次式を当てはめよ.</p>
 </div>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-（解）</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">（解）</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">当てはめる <span class="math notranslate nohighlight">\(n\)</span> 次式を <span class="math notranslate nohighlight">\(y=c_0 x^n+c_1 x^{n-1}+\cdots+c_n\)</span> とし,</p>
 <div class="math notranslate nohighlight">
 \[
@@ -995,7 +994,96 @@ c_n
 \end{split}\]</div>
 <p class="sd-card-text">これを解いて <span class="math notranslate nohighlight">\(c_0, \ldots, c_n\)</span> が定まる.</p>
 </div>
-</div>
+</details><p>当てはめる <span class="math notranslate nohighlight">\(n\)</span> 次式を <span class="math notranslate nohighlight">\(y=c_0 x^n+c_1 x^{n-1}+\cdots+c_n\)</span> とし,</p>
+<div class="math notranslate nohighlight">
+\[
+y_\alpha \approx c_0 x_\alpha^n+c_1 x_\alpha^{n-1}+\cdots+c_n, \quad \alpha=1, \ldots, N
+\]</div>
+<p>となる <span class="math notranslate nohighlight">\(c_1, \ldots, c_n\)</span> を最小二乗法</p>
+<div class="math notranslate nohighlight">
+\[
+J=\frac{1}{2} \sum_{\alpha=1}^N\left(y_\alpha-\left(c_0 x_\alpha^n+c_1 x_\alpha^{n-1}+\cdots+c_n\right)\right)^2 \rightarrow \min
+\]</div>
+<p>によって定める. それには</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial J}{\partial c_0}=0, \quad \frac{\partial J}{\partial c_1}=0, \quad \ldots, \quad \frac{\partial J}{\partial c_n}=0
+\]</div>
+<p>を解いて <span class="math notranslate nohighlight">\(c_0, \ldots, c_n\)</span> を定めればよい。</p>
+<div class="math notranslate nohighlight">
+\[
+J=\frac{1}{2} \sum_{\alpha=1}^N
+(y_\alpha- c_0 x_\alpha^n - \cdots-c_n)^2
+=\frac{1}{2} \sum_{\alpha=1}^N
+u^2
+\]</div>
+<p>とおくと、微分の線形性（和の各項ごとに微分の操作ができる）と合成微分の連鎖律より、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\frac{\partial J}{\partial c_k}
+= \frac{1}{2} \sum_{\alpha=1}^N \frac{\partial u^2}{\partial u}
+\frac{\partial u}{\partial c_k}\\
+\end{split}\]</div>
+<p>となり、<span class="math notranslate nohighlight">\(c_k\)</span>と積になっている値は<span class="math notranslate nohighlight">\(-x_\alpha^{n-k}\)</span>なので、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\frac{\partial u^2}{\partial u} &amp;= 2u = 2 (y_\alpha- c_0 x_\alpha^n - \cdots-c_n)
+\\
+\frac{\partial u}{\partial c_k} &amp;= - x_\alpha^{n-k}
+\end{aligned}
+\end{split}\]</div>
+<p>よって</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial J}{\partial c_k}
+= \frac{1}{2} \sum_{\alpha=1}^N 2 (y_\alpha- c_0 x_\alpha^n - \cdots-c_n)
+(- x_\alpha^{n-k})
+\]</div>
+<p>なので、式を <span class="math notranslate nohighlight">\(c_k\)</span> で偏微分すると次式を得る。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\frac{\partial J}{\partial c_k} &amp;=\sum_{\alpha=1}^N\left(y_\alpha-c_0 x_\alpha^n-c_1 x_\alpha^{n-1}-\cdots-c_n\right)\left(-x_\alpha^{n-k}\right) \\
+&amp; =c_0 \sum_{\alpha=1}^N x_\alpha^{2 n-k}+c_1 \sum_{\alpha=1}^N x_\alpha^{2 n-k-1}+\cdots+c_n \sum_{\alpha=1}^N x_\alpha^{n-k}-\sum_{\alpha=1}^N x_\alpha^{n-k} y_\alpha
+\end{aligned}
+\end{split}\]</div>
+<p>これを 0 と置いて <span class="math notranslate nohighlight">\(k=0,1, \ldots, n\)</span> に対する式を並べると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{cases}
+c_0 \sum_{\alpha=1}^N x_\alpha^{2 n}+c_1 \sum_{\alpha=1}^N x_\alpha^{2 n-1}+\cdots+c_n \sum_{\alpha=1}^N x_\alpha^{n}
+&amp;= \sum_{\alpha=1}^N x_\alpha^{n} y_\alpha
+\\
+c_0 \sum_{\alpha=1}^N x_\alpha^{2 n-1}+c_1 \sum_{\alpha=1}^N x_\alpha^{2 n-2}+\cdots+c_n \sum_{\alpha=1}^N x_\alpha^{n-k}
+&amp;= \sum_{\alpha=1}^N x_\alpha^{n-1} y_\alpha
+\\
+\quad \vdots\\
+c_0 \sum_{\alpha=1}^N x_\alpha^{n}+c_1 \sum_{\alpha=1}^N x_\alpha^{n-1}+\cdots+c_n \sum_{\alpha=1}^N 1
+&amp;= \sum_{\alpha=1}^N y_\alpha
+\end{cases}
+\end{split}\]</div>
+<p>よって次の正規方程式を得る.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left(\begin{array}{cccc}
+\sum_{\alpha=1}^N x_\alpha^{2 n} &amp; \sum_{\alpha=1}^N x_\alpha^{2 n-1} &amp; \cdots &amp; \sum_{\alpha=1}^N x_\alpha^n \\
+\sum_{\alpha=1}^N x_\alpha^{2 n-1} &amp; \sum_{\alpha=1}^N x_\alpha^{2 n-2} &amp; \cdots &amp; \sum_{\alpha=1}^N x_\alpha^{n-1} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\sum_{\alpha=1}^N x_\alpha^n &amp; \sum_{\alpha=1}^N x_\alpha^{n-1} &amp; \cdots &amp; \sum_{\alpha=1}^N 1
+\end{array}\right)\left(\begin{array}{c}
+c_0 \\
+c_1 \\
+\vdots \\
+c_n
+\end{array}\right)=\left(\begin{array}{c}
+\sum_{\alpha=1}^N x_\alpha^n y_\alpha \\
+\sum_{\alpha=1}^N x_\alpha^{n-1} y_\alpha \\
+\vdots \\
+\sum_{\alpha=1}^N y_\alpha
+\end{array}\right)
+\end{split}\]</div>
+<p>これを解いて <span class="math notranslate nohighlight">\(c_0, \ldots, c_n\)</span> が定まる.</p>
 <div class="admonition-p-24-1-11 admonition">
 <p class="admonition-title">p.24 例題1.11</p>
 <p>【例 1.11】ベクトル <span class="math notranslate nohighlight">\(\boldsymbol{a}\)</span> を <span class="math notranslate nohighlight">\(\sum_{k=1}^n c_k \boldsymbol{u}_k\)</span> の形に近似せよ.</p>
