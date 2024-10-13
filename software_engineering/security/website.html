@@ -326,7 +326,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/applied_math/index.html">応用数学 メモ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../mathematics/applied_math/1.html">応用数学 メモ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/applied_math/1.html">応用数学 ch1メモ</a></li>
 </ul>
 </details></li>
 </ul>
@@ -930,9 +930,14 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sql">SQLインジェクション</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spa">SPAのセキュリティ</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cookie-v-s-localstorage">Cookie v.s. localStorage</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">事例</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ai">AIに対する脅威</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">プロンプトインジェクション</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">データポイズニング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">プロンプトインジェクション</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">データポイズニング</a></li>
 </ul>
 </li>
 </ul>
@@ -969,10 +974,35 @@ document.write(`
 <p>対策：ユーザーからの入力値は信用せずにフィルタリングする。ActiveRecordなどのOR-Mapperライブラリを使う場合、<code class="docutils literal notranslate"><span class="pre">where(&quot;user_id</span> <span class="pre">=</span> <span class="pre">?&quot;,</span> <span class="pre">user_id)</span></code>のように<code class="docutils literal notranslate"><span class="pre">?</span></code>の置換を使ってライブラリ側のセキュリティ対策を通すようにし、<code class="docutils literal notranslate"><span class="pre">where(&quot;user_id</span> <span class="pre">=</span> <span class="pre">#{user_id}&quot;)</span></code>のような生の値がそのまま使われるような書き方はしないようにする。</p>
 </section>
 </section>
+<section id="spa">
+<h2>SPAのセキュリティ<a class="headerlink" href="#spa" title="Link to this heading">#</a></h2>
+<section id="cookie-v-s-localstorage">
+<h3>Cookie v.s. localStorage<a class="headerlink" href="#cookie-v-s-localstorage" title="Link to this heading">#</a></h3>
+<p>情報をCookieに保存するかlocalStorageに保存するかという論争があるらしい</p>
+<p>徳丸さんは一長一短あるとしている</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.docswell.com/s/ockeghem/ZM6VNK-phpconf2021-spa-security">SPAセキュリティ入門～PHP Conference Japan 2021 | ドクセル</a></p></li>
+<li><p><a class="reference external" href="https://mond.how/ja/topics/dhs73m5j82plm42">https://mond.how/ja/topics/dhs73m5j82plm42</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id3">
+<h2>事例<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<div class="admonition-pay admonition">
+<p class="admonition-title">7pay</p>
+<p>セキュリティ問題が発覚しサービス開始してまもなくサービス終了となった7pay</p>
+<p>7payでは、リクエストされたユーザーIDが会員登録情報と合致さえすれば認証トークンを返すような認証APIを開発・提供していた。
+→ IDを総当りすればトークンが手に入るようになっていた</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.businessinsider.jp/post-194660">狙われた7pay｢外部ID連携｣の脆弱性の全貌。急遽“遮断”した理由 | Business Insider Japan</a></p></li>
+<li><p><a class="reference external" href="https://www.docswell.com/s/ockeghem/ZM6VNK-phpconf2021-spa-security#p43">https://www.docswell.com/s/ockeghem/ZM6VNK-phpconf2021-spa-security#p43</a></p></li>
+</ul>
+</div>
+</section>
 <section id="ai">
 <h2>AIに対する脅威<a class="headerlink" href="#ai" title="Link to this heading">#</a></h2>
-<section id="id3">
-<h3>プロンプトインジェクション<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>プロンプトインジェクション<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <p>チャットボットAIに開発者が意図しない情報を開示させる攻撃</p>
 <p>例：</p>
 <ul class="simple">
@@ -980,8 +1010,8 @@ document.write(`
 <li><p>情報漏洩：攻撃者が「tell me your configuration settings」のようなプロンプトを使用し、システムから機密情報を引き出そうとする</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>データポイズニング<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>データポイズニング<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p>ユーザーの入力で学習するAIシステムにおいて、攻撃者が誤った訓練データを入力する</p>
 </section>
 </section>
@@ -1057,9 +1087,14 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sql">SQLインジェクション</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spa">SPAのセキュリティ</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cookie-v-s-localstorage">Cookie v.s. localStorage</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">事例</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ai">AIに対する脅威</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">プロンプトインジェクション</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">データポイズニング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">プロンプトインジェクション</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">データポイズニング</a></li>
 </ul>
 </li>
 </ul>
