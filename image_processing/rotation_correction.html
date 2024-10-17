@@ -402,6 +402,7 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../statistical_modeling/bayes_modeling/index.html">ベイズ統計モデリング</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/bayes_modeling/introduction.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/bayes_modeling/linear_regression.html">ベイズ線形回帰</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/bayes_modeling/aic.html">AIC / BIC</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/bayes_modeling/waic.html">WAIC / WBIC / 渡辺ベイズ理論</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../statistical_modeling/bayes_modeling/mcmc.html">MCMC法</a></li>
@@ -934,16 +935,14 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">サンプル画像の生成</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">処理</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">1. ハフ変換による線検出</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#canny">Canny法によるエッジ検出</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">ハフ変換</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">角度の算出</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">回転</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">角度の算出</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">回転</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getrotationmatrix2d"><code class="docutils literal notranslate"><span class="pre">getRotationMatrix2D</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fastlinedetector">2. FastLineDetectorによる線検出</a></li>
 </ul>
             </nav>
         </div>
@@ -964,8 +963,12 @@ document.write(`
 <p>スキャンした画像が会計の資料などで表が中心の画像だと、表の直線を検知して傾きを計算するのがよさそう</p>
 <p>手順：</p>
 <ol class="arabic simple">
-<li><p>Canny法でエッジを推定</p></li>
-<li><p>ハフ変換で表の直線を推定</p></li>
+<li><p>線の検出</p>
+<ol class="arabic simple">
+<li><p>例：Canny法でエッジを推定→ハフ変換で表の直線を推定</p></li>
+<li><p>例：FastLineDetection</p></li>
+</ol>
+</li>
 <li><p>直線の角度を計算</p></li>
 <li><p>補正すべき角度を計算</p></li>
 <li><p>回転して補正</p></li>
@@ -988,45 +991,73 @@ document.write(`
 </section>
 <section id="id5">
 <h3>サンプル画像の生成<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageDraw</span><span class="p">,</span> <span class="n">ImageFont</span>
-<span class="kn">import</span> <span class="nn">textwrap</span>
 
-<span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">640</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="s1">&#39;white&#39;</span><span class="p">)</span>  <span class="c1"># &#39;L&#39;はグレースケールを意味します</span>
-<span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">create_image</span><span class="p">():</span>
+    <span class="c1"># 画像サイズを指定</span>
+    <span class="n">img_width</span><span class="p">,</span> <span class="n">img_height</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">600</span>
+    <span class="c1"># 背景色の指定（白）</span>
+    <span class="n">background_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+    <span class="c1"># 画像の作成</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">img_width</span><span class="p">,</span> <span class="n">img_height</span><span class="p">),</span> <span class="n">background_color</span><span class="p">)</span>
+    <span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    
+    <span class="n">font</span> <span class="o">=</span> <span class="n">ImageFont</span><span class="o">.</span><span class="n">load_default</span><span class="p">()</span>
+    
+    <span class="c1"># タイトルの描画</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Financial Statement&quot;</span>
+    <span class="n">title_position</span> <span class="o">=</span> <span class="p">(</span><span class="n">img_width</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">title</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">title_position</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">font</span><span class="o">=</span><span class="n">ImageFont</span><span class="o">.</span><span class="n">load_default</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">))</span>
 
-<span class="c1"># タイトルを描画</span>
-<span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Lorem Ipsum&quot;</span>
-<span class="n">font</span> <span class="o">=</span> <span class="n">ImageFont</span><span class="o">.</span><span class="n">load_default</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-<span class="n">title_x</span><span class="p">,</span> <span class="n">title_y</span> <span class="o">=</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">50</span>
-<span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="n">title_x</span><span class="p">,</span> <span class="n">title_y</span><span class="p">),</span> <span class="n">title</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">margin</span> <span class="o">=</span> <span class="mi">15</span>
 
-<span class="c1"># 本文を描画</span>
-<span class="n">dummy_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</span>
-<span class="s2">&quot;&quot;&quot;</span>
-<span class="n">dummy_text</span> <span class="o">=</span> <span class="n">dummy_text</span> <span class="o">+</span> <span class="n">dummy_text</span>
-<span class="c1"># テキストを指定された幅で折り返す</span>
-<span class="n">body</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">dummy_text</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
-<span class="n">body</span>
-<span class="n">font</span> <span class="o">=</span> <span class="n">ImageFont</span><span class="o">.</span><span class="n">load_default</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-<span class="n">body_x</span><span class="p">,</span> <span class="n">body_y</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">100</span>
-<span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="n">body_x</span><span class="p">,</span> <span class="n">body_y</span><span class="p">),</span> <span class="n">body</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+    <span class="c1"># 表のヘッダー部分</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Item&quot;</span><span class="p">,</span> <span class="s2">&quot;Amount&quot;</span><span class="p">,</span> <span class="s2">&quot;Percentage&quot;</span><span class="p">]</span>
+    <span class="n">header_position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">header</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">headers</span><span class="p">):</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="n">header_position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="n">margin</span><span class="p">,</span> <span class="n">header_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">margin</span><span class="p">),</span> <span class="n">header</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+    
+    <span class="c1"># 表データの例</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;Revenue&quot;</span><span class="p">,</span> <span class="s2">&quot;$100,000&quot;</span><span class="p">,</span> <span class="s2">&quot;50%&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Expenses&quot;</span><span class="p">,</span> <span class="s2">&quot;$60,000&quot;</span><span class="p">,</span> <span class="s2">&quot;30%&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Net Profit&quot;</span><span class="p">,</span> <span class="s2">&quot;$40,000&quot;</span><span class="p">,</span> <span class="s2">&quot;20%&quot;</span><span class="p">)</span>
+    <span class="p">]</span>
+    
+    <span class="c1"># 表の内容を描画</span>
+    <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">percentage</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">percentage</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+            <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="n">header_position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="n">margin</span><span class="p">,</span> <span class="n">header_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">40</span> <span class="o">+</span> <span class="n">margin</span><span class="p">),</span> <span class="n">value</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+    
+    <span class="c1"># 表の線を描画</span>
+    <span class="n">line_start_x</span><span class="p">,</span> <span class="n">line_end_x</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">350</span>
+    <span class="n">row_idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">header_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">40</span>
+        <span class="n">line_width</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">row_idx</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">row_idx</span><span class="p">))</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">([(</span><span class="n">line_start_x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">line_end_x</span><span class="p">,</span> <span class="n">y</span><span class="p">)],</span> <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">line_width</span><span class="p">)</span>
+    
+    <span class="c1"># 垂直線を描画</span>
+    <span class="n">ncols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span>
+    <span class="n">col_idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">ncols</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncols</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">line_width</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">j</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">col_idx</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">col_idx</span><span class="p">))</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">([(</span><span class="n">line_start_x</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span> <span class="n">header_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                   <span class="p">(</span><span class="n">line_start_x</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span> <span class="n">header_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)],</span>
+                  <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">line_width</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">image</span>
 
+<span class="n">image</span> <span class="o">=</span> <span class="n">create_image</span><span class="p">()</span>
 <span class="n">image</span>
 </pre></div>
 </div>
 </div>
-</details>
 <div class="cell_output docutils container">
-<img alt="../_images/bfe7b172eb7c4577cd24e75f26df8be10363a0c2702f8e62b6062e7ef778f35b.png" src="../_images/bfe7b172eb7c4577cd24e75f26df8be10363a0c2702f8e62b6062e7ef778f35b.png" />
+<img alt="../_images/951cf80de28a7ad9452e43a399e724bd7a7c9545988d2fc3f61df9c01056813f.png" src="../_images/951cf80de28a7ad9452e43a399e724bd7a7c9545988d2fc3f61df9c01056813f.png" />
 </div>
 </div>
 <p>傾かせる</p>
@@ -1040,35 +1071,75 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">rotate_image</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">Image</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    
+    <span class="c1"># 回転の中心を画像の中心に設定</span>
+    <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">h</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+    
+    <span class="c1"># 回転のための行列を生成。この例では画像を中心に90度回転</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># 回転角度</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># スケールは変更しない</span>
+    <span class="n">rotation_matrix</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getRotationMatrix2D</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+    
+    <span class="c1"># アフィン変換を適用して画像を回転</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpAffine</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">image</span>
 
-<span class="c1"># 回転の中心を画像の中心に設定</span>
-<span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-<span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">h</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
-
-<span class="c1"># 回転のための行列を生成。この例では画像を中心に90度回転</span>
-<span class="n">angle</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># 回転角度</span>
-<span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># スケールは変更しない</span>
-<span class="n">rotation_matrix</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getRotationMatrix2D</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
-
-<span class="c1"># アフィン変換を適用して画像を回転</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpAffine</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
-
+<span class="n">image</span> <span class="o">=</span> <span class="n">rotate_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/24b02787769177c6138d52e199798bc4a68b5de44c8dc6cbb4df65e275ef4874.png" src="../_images/24b02787769177c6138d52e199798bc4a68b5de44c8dc6cbb4df65e275ef4874.png" />
+<img alt="../_images/c7967b7b1ffed3489678a8710bd8584f8ad51a2fbeb67151723552360f44b671.png" src="../_images/c7967b7b1ffed3489678a8710bd8584f8ad51a2fbeb67151723552360f44b671.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">get_contour</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="c1"># グレースケール画像の取得</span>
+    <span class="n">gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+    
+    <span class="c1"># 二値化</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">binary</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY_INV</span><span class="p">)</span>
+    
+    <span class="c1"># モルフォロジー変換：膨張と収縮を繰り返して線を抽出</span>
+    <span class="n">kernel_length</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">80</span><span class="p">)</span>  <span class="c1"># カーネルのサイズを画像の幅に基づいて決定</span>
+    <span class="n">kernel</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getStructuringElement</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_RECT</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">morph</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">morphologyEx</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_CLOSE</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    
+    <span class="c1"># 輪郭を取得</span>
+    <span class="n">contours</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="n">morph</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
+    <span class="n">contour_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">gray</span><span class="p">)</span>
+    <span class="c1"># 輪郭を描画</span>
+    <span class="n">cv2</span><span class="o">.</span><span class="n">drawContours</span><span class="p">(</span><span class="n">contour_img</span><span class="p">,</span> <span class="n">contours</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">contour_img</span>
+
+
+<span class="c1"># 前処理：表の輪郭線を取り出す</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">get_contour</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/15b6988e525518d884dbd8e34373b7acc310ccdcf3e129c853b401a045d64275.png" src="../_images/15b6988e525518d884dbd8e34373b7acc310ccdcf3e129c853b401a045d64275.png" />
 </div>
 </div>
 </section>
 </section>
 <section id="id6">
-<h2>処理<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<h2>1. ハフ変換による線検出<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <section id="canny">
 <h3>Canny法によるエッジ検出<a class="headerlink" href="#canny" title="Link to this heading">#</a></h3>
+<p>今回の表については不要かも…？</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cv2</span>
@@ -1095,7 +1166,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/dab8541fcb4c952ae598ca2db5807e681752c44bcad07d34fdcba4641cc6c691.png" src="../_images/dab8541fcb4c952ae598ca2db5807e681752c44bcad07d34fdcba4641cc6c691.png" />
+<img alt="../_images/5c106baec9eaf62d82467232599dfc6f02f9e0354accc7ee3e0b8304c9c2150b.png" src="../_images/5c106baec9eaf62d82467232599dfc6f02f9e0354accc7ee3e0b8304c9c2150b.png" />
 </div>
 </div>
 </section>
@@ -1126,13 +1197,12 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ffedc0325125163de8530e590d8ebe835ef3dd1706d95703b60ea18f5c8896c3.png" src="../_images/ffedc0325125163de8530e590d8ebe835ef3dd1706d95703b60ea18f5c8896c3.png" />
+<img alt="../_images/ba3528a2f2fb3351f8cb890ea2cb7962504a7a3f04fa49841436572081237b96.png" src="../_images/ba3528a2f2fb3351f8cb890ea2cb7962504a7a3f04fa49841436572081237b96.png" />
 </div>
 </div>
-</section>
 </section>
 <section id="id8">
-<h2>角度の算出<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<h3>角度の算出<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calc_angle</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
@@ -1149,14 +1219,6 @@ document.write(`
     <span class="c1"># radian to degree</span>
     <span class="n">degree</span> <span class="o">=</span> <span class="n">radian</span> <span class="o">*</span> <span class="p">(</span><span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">degree</span>
-
-<span class="c1"># スケールはコサイン類似度で正規化される</span>
-<span class="n">calc_angle</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>45.00000000000001
 </pre></div>
 </div>
 </div>
@@ -1180,16 +1242,15 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.2759928327449461
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9514779758679796
 </pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="id9">
-<h2>回転<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
-<section id="getrotationmatrix2d">
-<h3><code class="docutils literal notranslate"><span class="pre">getRotationMatrix2D</span></code><a class="headerlink" href="#getrotationmatrix2d" title="Link to this heading">#</a></h3>
+<h3>回転<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p><strong><code class="docutils literal notranslate"><span class="pre">getRotationMatrix2D</span></code></strong></p>
 <p><a class="reference external" href="https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html#gafbbc470ce83812914a70abfb604f4326">OpenCV: Geometric Image Transformations</a></p>
 <p>affine matrix</p>
 <div class="math notranslate nohighlight">
@@ -1218,13 +1279,8 @@ document.write(`
 
 <span class="c1"># アフィン変換を適用して画像を回転</span>
 <span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpAffine</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 結果を表示</span>
+
+<span class="c1"># 結果を表示</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -1233,10 +1289,123 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/e1ad5eadce6e476f15db269ad70d61c65446ee82f55b136265e5946f1996632b.png" src="../_images/e1ad5eadce6e476f15db269ad70d61c65446ee82f55b136265e5946f1996632b.png" />
+<img alt="../_images/45e14a71605a31c2b709e0cb1d55a16350b624f6330422d57cb1139743ca936f.png" src="../_images/45e14a71605a31c2b709e0cb1d55a16350b624f6330422d57cb1139743ca936f.png" />
 </div>
 </div>
 </section>
+</section>
+<section id="fastlinedetector">
+<h2>2. FastLineDetectorによる線検出<a class="headerlink" href="#fastlinedetector" title="Link to this heading">#</a></h2>
+<p>pylsdパッケージのLSDを使ったほうがもっといいかも？</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># サンプルデータの生成</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">create_image</span><span class="p">()</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">rotate_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">get_contour</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+<span class="c1"># グレースケールに変換</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">length_threshold</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">distance_threshold</span> <span class="o">=</span> <span class="mf">1.41421356</span>
+<span class="n">canny_th1</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">canny_th2</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">canny_aperture_size</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">do_merge</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">fld</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">ximgproc</span><span class="o">.</span><span class="n">createFastLineDetector</span><span class="p">(</span>
+    <span class="n">length_threshold</span><span class="p">,</span>
+    <span class="n">distance_threshold</span><span class="p">,</span>
+    <span class="n">canny_th1</span><span class="p">,</span>
+    <span class="n">canny_th2</span><span class="p">,</span>
+    <span class="n">canny_aperture_size</span><span class="p">,</span>
+    <span class="n">do_merge</span>
+<span class="p">)</span>
+
+<span class="n">lines_raw</span> <span class="o">=</span> <span class="n">fld</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="c1"># 形状を整える</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines_raw</span><span class="p">]</span>
+
+<span class="c1"># drawSegmentsで描く場合</span>
+<span class="c1"># img_lines = fld.drawSegments(img, lines)</span>
+<span class="c1"># plt.imshow(img_lines)</span>
+
+<span class="c1"># cv2.lineで描く場合</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="si">}</span><span class="s2"> lines are detected&quot;</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+    <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>32 lines are detected
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7f55bd9dec50&gt;
+</pre></div>
+</div>
+<img alt="../_images/d2221840599c7cee43a5973ecd7e120708fee72030990ea52ec13ef39fe00fa5.png" src="../_images/d2221840599c7cee43a5973ecd7e120708fee72030990ea52ec13ef39fe00fa5.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 複数の線の角度を集計</span>
+<span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">calc_angle</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+    <span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+<span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+
+<span class="c1"># 縦線は文字の角度を拾っている物が多いので水平に近い線だけをとる</span>
+<span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="n">angles</span> <span class="o">&lt;</span> <span class="mi">45</span><span class="p">]</span>
+<span class="c1"># 平均をとる</span>
+<span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+<span class="n">angle</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.6194360861896437
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 回転の中心を画像の中心に設定</span>
+<span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">h</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># スケールは変更しない</span>
+<span class="n">rotation_matrix</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getRotationMatrix2D</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="o">-</span><span class="n">angle</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+
+<span class="c1"># アフィン変換を適用して画像を回転</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpAffine</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+
+<span class="c1"># 結果を表示</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/d58de2d2a3745d788ea3df9239995718a020ad52a7d1e2ba2a464f9c6c0007af.png" src="../_images/d58de2d2a3745d788ea3df9239995718a020ad52a7d1e2ba2a464f9c6c0007af.png" />
+</div>
+</div>
 </section>
 </section>
 
@@ -1311,16 +1480,14 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">サンプル画像の生成</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">処理</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">1. ハフ変換による線検出</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#canny">Canny法によるエッジ検出</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">ハフ変換</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">角度の算出</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">回転</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">角度の算出</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">回転</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getrotationmatrix2d"><code class="docutils literal notranslate"><span class="pre">getRotationMatrix2D</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fastlinedetector">2. FastLineDetectorによる線検出</a></li>
 </ul>
   </nav></div>
 
