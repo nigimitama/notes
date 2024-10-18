@@ -55,6 +55,7 @@
 - [](statistical_modeling/time_series_analysis/index)
 - [](statistical_modeling/symbolic_data_analysis)
 - [](statistical_modeling/semiparametric/index)
+- [](statistical_modeling/evaluation/index)
 :::
 
 :::{grid-item-card}
@@ -167,6 +168,14 @@
 
 :::{grid-item-card}
 :columns: 6
+データ分析のビジネス応用
+
+- [](applied_data_science/data_management)
+- [](applied_data_science/type_of_applications)
+:::
+
+:::{grid-item-card}
+:columns: 6
 ビジネス関連知識
 
 - [](business/revenue_structure)
@@ -185,13 +194,6 @@
 - [](soft_skills/harvard_negotiation)
 - [](soft_skills/leadership)
 - [](soft_skills/writing)
-:::
-
-:::{grid-item-card}
-:columns: 6
-データマネジメント
-
-- [](data_management/introduction)
 :::
 
 :::{grid-item-card}
