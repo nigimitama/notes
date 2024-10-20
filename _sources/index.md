@@ -82,6 +82,7 @@
 - [](econometrics/causal_machine_learning/index)
 - [](econometrics/causal_discovery)
 - [](econometrics/uplift_modeling)
+- [](econometrics/sensitivity_analysis)
 - [](econometrics/literatures)
 :::
 
@@ -140,7 +141,7 @@
 - [](natural_language_processing/embedding)
 - [](natural_language_processing/rnn)
 - [](natural_language_processing/latent_dirichlet_allocation)
-- [](natural_language_processing/document_understanding)
+- [](natural_language_processing/task/index)
 - [](natural_language_processing/large_language_models/index)
 :::
 

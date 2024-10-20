@@ -483,6 +483,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../econometrics/causal_discovery.html">統計的因果探索</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../econometrics/uplift_modeling.html">Uplift Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../econometrics/sensitivity_analysis.html">感度分析</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../econometrics/literatures.html">よさそうな文献・サイト</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">機械学習</span></p>
@@ -599,7 +600,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../natural_language_processing/embedding.html">単語の埋め込み</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../natural_language_processing/rnn.html">言語モデルとRNN</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../natural_language_processing/latent_dirichlet_allocation.html">Latent Dirichlet Allocation (LDA)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../natural_language_processing/document_understanding.html">Document Understanding</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../natural_language_processing/large_language_models/index.html">Large Language Models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../natural_language_processing/large_language_models/introduction.html">Large Language Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../natural_language_processing/large_language_models/emergent_abilities.html">Emergent Abilities（創発的能力）</a></li>
@@ -938,10 +938,13 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">内積空間（計量ベクトル空間）</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">内積の存在</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">ノルム</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">直交</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">コーシー・シュワルツの不等式</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">三角不等式</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">ベクトルのなす角</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">直交</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">直交補空間</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">直交補空間</a></li>
 </ul>
             </nav>
         </div>
@@ -1004,6 +1007,39 @@ a_1 b_2 + \cdots + a_n b_n =
 <p>(4) <span class="math notranslate nohighlight">\(\langle \boldsymbol{a}, \boldsymbol{a} \rangle \geqq 0\)</span> で，<span class="math notranslate nohighlight">\(\langle \boldsymbol{a}, \boldsymbol{a} \rangle = 0 \Longleftrightarrow \boldsymbol{a} = \mathbf{0}\)</span></p>
 <p>内積の定義されたベクトル空間を <strong>計量ベクトル空間</strong> 、または <strong>内積空間</strong> という。</p>
 </div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+公理を満たす内積の例 (1)</div>
+<p class="sd-card-text">内積は</p>
+<div class="math notranslate nohighlight">
+\[
+\langle \boldsymbol{a}, \boldsymbol{b} \rangle = \boldsymbol{a}^\top \boldsymbol{b} = \sum_{i=1}^n a_i b_i
+\]</div>
+<p class="sd-card-text">ノルムは</p>
+<div class="math notranslate nohighlight">
+\[
+\|\boldsymbol{a}\|=\sqrt{\sum_{i=1}^n a_i^2}
+\]</div>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+公理を満たす内積の例 (2)</div>
+<p class="sd-card-text">区間<span class="math notranslate nohighlight">\([a, b]\)</span>上の連続関数<span class="math notranslate nohighlight">\(f(x), g(x)\)</span> に対して</p>
+<div class="math notranslate nohighlight">
+\[
+\langle f, g \rangle
+=\int_a^b f(x) g(x) \mathrm{d} x
+\]</div>
+<p class="sd-card-text">ノルムは</p>
+<div class="math notranslate nohighlight">
+\[
+\|f\|=\sqrt{\int_a^b f(x)^2 \mathrm{~d} x}
+\]</div>
+</div>
+</div>
 <section id="id5">
 <h3>内積の存在<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p>一般のベクトル空間には、内積が（複数）存在する。</p>
@@ -1047,7 +1083,189 @@ a_1 b_2 + \cdots + a_n b_n =
 <p>である。</p>
 </section>
 <section id="id7">
-<h3>直交<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<h3>コーシー・シュワルツの不等式<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<div class="admonition- admonition">
+<p class="admonition-title">定理（コーシー・シュワルツの不等式）</p>
+<p>計量ベクトル空間<span class="math notranslate nohighlight">\(V\)</span>の元<span class="math notranslate nohighlight">\(\boldsymbol{a}, \boldsymbol{b} \in V\)</span>に対し、</p>
+<div class="math notranslate nohighlight">
+\[
+\langle \boldsymbol{a}, \boldsymbol{b} \rangle ^2
+\leq
+\| \boldsymbol{a} \|^2 \cdot \| \boldsymbol{b} \|^2
+\]</div>
+<p>が成立する。等号になるのは <span class="math notranslate nohighlight">\(\boldsymbol{a} = 0\)</span> または <span class="math notranslate nohighlight">\(\boldsymbol{a} = c \boldsymbol{b} (c \in \mathbb{R})\)</span> のとき（1次独立でないとき）に限る</p>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[
+f(t) = \| \boldsymbol{a} - t \boldsymbol{b} \|^2
+\]</div>
+<p class="sd-card-text">とおくと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+f(t)
+&amp;= \langle \boldsymbol{a} - t \boldsymbol{b}, \boldsymbol{a} - t \boldsymbol{b} \rangle
+\quad (\because 
+\|\boldsymbol{a}\|^2=
+\langle \boldsymbol{a}, \boldsymbol{a}\rangle
+)
+\\
+&amp;= \langle \boldsymbol{a}, \boldsymbol{a} - t \boldsymbol{b} \rangle
+- \langle t \boldsymbol{b}, \boldsymbol{a} - t \boldsymbol{b} \rangle \\
+&amp;= \langle \boldsymbol{a}, \boldsymbol{a} \rangle
+- \langle \boldsymbol{a}, t \boldsymbol{b} \rangle
+- \langle t \boldsymbol{b}, \boldsymbol{a}\rangle
++ \langle t \boldsymbol{b}, t \boldsymbol{b} \rangle
+\quad (\because 線形性により)
+\\
+&amp;= \langle \boldsymbol{a}, \boldsymbol{a} \rangle
+- 2 \langle \boldsymbol{a}, t \boldsymbol{b} \rangle
++ \langle t \boldsymbol{b}, t \boldsymbol{b} \rangle
+\quad (\because 対称性により
+\langle \boldsymbol{a}, t \boldsymbol{b} \rangle
+= \langle t \boldsymbol{b}, \boldsymbol{a}\rangle
+) \\
+&amp;= \| \boldsymbol{a} \|^2
+- 2 \langle \boldsymbol{a}, \boldsymbol{b} \rangle t
++ t^2 \| \boldsymbol{b} \|^2
+\\
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(\boldsymbol{b} \neq 0\)</span>なら、これは<span class="math notranslate nohighlight">\(t\)</span>の2次方程式</p>
+<div class="math notranslate nohighlight">
+\[
+f(t) = \| \boldsymbol{b} \|^2 t^2
+- 2 \langle \boldsymbol{a}, \boldsymbol{b} \rangle t
++ \| \boldsymbol{a} \|^2
+\]</div>
+<p class="sd-card-text">であるから、<span class="math notranslate nohighlight">\(f(t) \geq 0\)</span>となる必要十分条件は2次方程式<span class="math notranslate nohighlight">\(f(t) = 0\)</span>が実数解を持たないか、1つの重解をもつこと。
+すなわち、判別式<span class="math notranslate nohighlight">\(D\)</span>が0または負となること</p>
+<p class="sd-card-text">2次方程式<span class="math notranslate nohighlight">\(a x^2 + bx + c\)</span>の判別式は<span class="math notranslate nohighlight">\(D=b^2 - 4ac\)</span>のため、</p>
+<div class="math notranslate nohighlight">
+\[
+D = 4 \langle \boldsymbol{a}, \boldsymbol{b} \rangle ^2
+    - 4 \|\boldsymbol{a}\|^2 \cdot \|\boldsymbol{b}\|^2 \leq 0
+\]</div>
+<p class="sd-card-text">を満たす必要がある。移項して整理すれば</p>
+<div class="math notranslate nohighlight">
+\[
+\langle \boldsymbol{a}, \boldsymbol{b} \rangle ^2
+\leq \|\boldsymbol{a}\|^2 \cdot \|\boldsymbol{b}\|^2
+\]</div>
+</div>
+</details><p>コーシー・シュワルツの不等式はいろいろな形がある。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[
+\langle \boldsymbol{a}, \boldsymbol{b} \rangle ^2
+\leq
+\| \boldsymbol{a} \|^2 \cdot \| \boldsymbol{b} \|^2
+\]</div>
+<p class="sd-card-text">の平方根の</p>
+<div class="math notranslate nohighlight">
+\[
+| \langle \boldsymbol{a}, \boldsymbol{b} \rangle|
+\leq
+\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|
+\]</div>
+<p class="sd-card-text">それを変形して</p>
+<div class="math notranslate nohighlight">
+\[
+- \| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|
+\leq
+\langle \boldsymbol{a}, \boldsymbol{b} \rangle
+\leq
+\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|
+\]</div>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+応用例：相関係数の導出</div>
+<p class="sd-card-text">コーシー・シュワルツの不等式を応用すると、</p>
+<div class="math notranslate nohighlight">
+\[
+|E[A B]|^2 \leq E[A^2] E[B^2]
+\]</div>
+<p class="sd-card-text">が成り立つ。</p>
+<div class="math notranslate nohighlight">
+\[
+A = (E[X - E[X]]),\quad
+B = (E[Y - E[Y]])
+\]</div>
+<p class="sd-card-text">とおくと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\big| E[(E[X - E[X]]) (E[Y - E[Y]])] \big|^2
+\leq E[(E[X - E[X]])^2] E[(E[Y - E[Y]])^2]\\
+\iff
+| \operatorname{Cov}(X, Y) |^2
+\leq \operatorname{Var}(X) \operatorname{Var}(Y)
+\\
+\iff
+-1 \leq
+\frac{ \operatorname{Cov}(X, Y) }{ \sqrt{ \operatorname{Var}(X) } \sqrt{ \operatorname{Var}(Y) } }
+\leq 1
+\end{aligned}
+\end{split}\]</div>
+</div>
+</div>
+</section>
+<section id="id8">
+<h3>三角不等式<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<div class="admonition- admonition">
+<p class="admonition-title">定理（三角不等式）</p>
+<p>計量ベクトル空間<span class="math notranslate nohighlight">\(V\)</span>の元<span class="math notranslate nohighlight">\(\boldsymbol{a}, \boldsymbol{b} \in V\)</span>に対し、</p>
+<div class="math notranslate nohighlight">
+\[
+\| \boldsymbol{a} + \boldsymbol{b} \| ^2
+\leq
+\| \boldsymbol{a} \|^2 + \| \boldsymbol{b} \|^2
+\]</div>
+<p>が成立する。</p>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">コーシー・シュワルツの不等式 <span class="math notranslate nohighlight">\(| \langle \boldsymbol{a}, \boldsymbol{b} \rangle| \leq \| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|\)</span> より、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\|\boldsymbol{a}+\boldsymbol{b}\|^2
+&amp;= \langle \boldsymbol{a}+\boldsymbol{b}, \boldsymbol{a}+\boldsymbol{b} \rangle \\
+&amp;= \langle \boldsymbol{a}, \boldsymbol{a} \rangle + 2 \langle \boldsymbol{a}, \boldsymbol{b} \rangle +  \langle \boldsymbol{b}, \boldsymbol{b} \rangle \\
+&amp; \leq\|\boldsymbol{a}\|^2+2\|\boldsymbol{a}\| \cdot\|\boldsymbol{b}\|+\|\boldsymbol{b}\|^2=(\|\boldsymbol{a}\|+\|\boldsymbol{b}\|)^2
+\end{aligned}
+\end{split}\]</div>
+</div>
+</details></section>
+<section id="id9">
+<h3>ベクトルのなす角<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(V\)</span>を計量ベクトル空間とする。<span class="math notranslate nohighlight">\(\boldsymbol{a}, \boldsymbol{b} \in V\)</span>がどちらもゼロベクトルでないなら、コーシー・シュワルツの不等式より</p>
+<div class="math notranslate nohighlight">
+\[
+-1 \leq
+\frac{\langle \boldsymbol{a}, \boldsymbol{b} \rangle}
+{\| \boldsymbol{a} \| \| \boldsymbol{b} \|}
+\leq 1
+\]</div>
+<p>が成り立つ。これに基づき、</p>
+<div class="math notranslate nohighlight">
+\[
+\cos \theta =
+\frac{\langle \boldsymbol{a}, \boldsymbol{b} \rangle}
+{\| \boldsymbol{a} \| \| \boldsymbol{b} \|}
+\]</div>
+<p>となる<span class="math notranslate nohighlight">\(\theta\)</span>を2つのベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a}, \boldsymbol{b}\)</span>のなす角と呼ぶ。</p>
+</section>
+<section id="id10">
+<h3>直交<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(V\)</span>を計量ベクトル空間とする。<span class="math notranslate nohighlight">\(\boldsymbol{a}, \boldsymbol{b} \in V\)</span>について、<span class="math notranslate nohighlight">\(\langle \boldsymbol{a}, \boldsymbol{b} \rangle = 0\)</span>を満たすとき、<span class="math notranslate nohighlight">\(\boldsymbol{a}, \boldsymbol{b}\)</span>は <strong>直交する</strong> といい、</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1056,8 +1274,8 @@ a_1 b_2 + \cdots + a_n b_n =
 <p>で表す</p>
 </section>
 </section>
-<section id="id8">
-<h2>直交補空間<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id11">
+<h2>直交補空間<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
 <div class="admonition- admonition">
 <p class="admonition-title">定義</p>
 <p>内積空間 <span class="math notranslate nohighlight">\(V\)</span> の部分空間 <span class="math notranslate nohighlight">\(W\)</span> に対して、 <span class="math notranslate nohighlight">\(W\)</span>のすべてのベクトルと直交するような<span class="math notranslate nohighlight">\(V\)</span>のベクトル全体</p>
@@ -1188,10 +1406,13 @@ V=W \oplus W^{\perp}
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">内積空間（計量ベクトル空間）</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">内積の存在</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">ノルム</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">直交</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">コーシー・シュワルツの不等式</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">三角不等式</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">ベクトルのなす角</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">直交</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">直交補空間</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">直交補空間</a></li>
 </ul>
   </nav></div>
 

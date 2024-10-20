@@ -483,6 +483,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/causal_discovery.html">統計的因果探索</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/uplift_modeling.html">Uplift Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../econometrics/sensitivity_analysis.html">感度分析</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/literatures.html">よさそうな文献・サイト</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">機械学習</span></p>
@@ -599,7 +600,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../natural_language_processing/embedding.html">単語の埋め込み</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../natural_language_processing/rnn.html">言語モデルとRNN</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../natural_language_processing/latent_dirichlet_allocation.html">Latent Dirichlet Allocation (LDA)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../natural_language_processing/document_understanding.html">Document Understanding</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../natural_language_processing/large_language_models/index.html">Large Language Models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../natural_language_processing/large_language_models/introduction.html">Large Language Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../natural_language_processing/large_language_models/emergent_abilities.html">Emergent Abilities（創発的能力）</a></li>
@@ -947,6 +947,8 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#calmar-ratio">Calmar Ratio</a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sharpe-loss">Sharpe Loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cara-utility-loss">CARA utility loss</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#information-ratio-ir">Information Ratio (IR)</a></li>
 </ul>
 </li>
@@ -1093,6 +1095,41 @@ ROE &amp;= 売上高純利益率 \times 総資産回転率 \times 財務レバ�
 <p><a class="reference external" href="https://qiita.com/NT1123/items/3c2c529b965a88c62f2b">Calmar Ratio(カルマーレシオ)とは #Python - Qiita</a></p>
 </section>
 </section>
+<section id="sharpe-loss">
+<h3>Sharpe Loss<a class="headerlink" href="#sharpe-loss" title="Link to this heading">#</a></h3>
+<p>sharpe ratioの符号を負にしたもの。</p>
+<div class="admonition-sharpe-loss admonition">
+<p class="admonition-title">Sharpe Loss</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\tilde{R}_t^{\boldsymbol{\theta}} &amp; =\sum_{i=1}^{N_S} \tilde{w}_{i ; t}^{\boldsymbol{\theta}} r_{i ; t, t+1} \\
+\tilde{\mu}_{\Omega}^{\boldsymbol{\theta}} &amp; =\frac{1}{|\Omega|} \sum_{t \in \Omega} \tilde{R}_t^{\boldsymbol{\theta}} \\
+\tilde{\sigma}_{\Omega}^{\boldsymbol{\theta}} &amp; =\sqrt{\frac{1}{|\Omega|-1} \sum_{t \in \Omega}\left[\left(\tilde{R}_t^{\boldsymbol{\theta}}\right)^2-\left(\tilde{\mu}_{\Omega}^{\boldsymbol{\theta}}\right)^2\right]} \\
+\tilde{\mathcal{L}}_{\text {Sharpe }}(\Omega ; \boldsymbol{\theta}) &amp; :=-\frac{\tilde{\mu}_{\Omega}^{\boldsymbol{\theta}}}{\tilde{\sigma}_{\Omega}^{\boldsymbol{\theta}}}
+\end{aligned}
+\end{split}\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(r_{i, t, t+1}\)</span>：銘柄 <span class="math notranslate nohighlight">\(i\)</span> の <span class="math notranslate nohighlight">\(t\)</span> から <span class="math notranslate nohighlight">\(t+1\)</span> にかけてのリターン</p></li>
+<li><p><span class="math notranslate nohighlight">\(\boldsymbol{X}_{i, t} \in \mathbb{R}^{N_f}\)</span> ：時刻 <span class="math notranslate nohighlight">\(t\)</span> における銘柄 <span class="math notranslate nohighlight">\(i\)</span> の特徵量</p></li>
+<li><p><span class="math notranslate nohighlight">\(f_{\boldsymbol{\theta}}: \mathbb{R}^{N_f} \rightarrow \mathbb{R}^{N_S}\)</span> ：パラメータ <span class="math notranslate nohighlight">\(\boldsymbol{\theta} \in \mathbb{R}^{N_o}, N_\theta \in \mathbb{Z}\)</span> で特徵付けられるニューラルネットワークのモデル</p></li>
+<li><p><span class="math notranslate nohighlight">\(\left\{\tilde{w}_{i, t}^\theta\right\}_{i \in\left\{1, \ldots, N_s\right\}}:=f_{\boldsymbol{\theta}}\left(\boldsymbol{X}_{i, t}\right)\)</span>：NN の出力であるポートフォリオの重み</p></li>
+<li><p><span class="math notranslate nohighlight">\(\Omega\)</span>：サンプルの時刻の集合</p></li>
+</ul>
+</div>
+<p><a class="reference external" href="https://www.jstage.jst.go.jp/article/jsaisigtwo/2024/FIN-033/2024_169/_article/-char/ja">久保 &amp; 中川 (2024)</a>は Sharpe lossは ミニバッチにおいて不偏推定量にならずバイアスをもつことを報告し、CARA utility lossを提案した。</p>
+</section>
+<section id="cara-utility-loss">
+<h3>CARA utility loss<a class="headerlink" href="#cara-utility-loss" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://www.jstage.jst.go.jp/article/jsaisigtwo/2024/FIN-033/2024_169/_article/-char/ja">リスク回避型効用関数を用いた深層学習によるポートフォリオ最適化</a></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\tilde{\mathcal{L}}_{\mathrm{CARA}}(\Omega, \theta)= \begin{cases}\frac{1}{\gamma} \frac{1}{|\Omega|} \sum_{t \in \Omega} \exp \left(-\gamma \tilde{R}_t^\theta\right) &amp; (\gamma&gt;0) \\ -\frac{1}{|\Omega|} \sum_{t \in \Omega} \tilde{R}_t^\theta &amp; (\gamma=0)\end{cases}
+\end{split}\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\gamma \geq 0\)</span>：リスク回避度。<span class="math notranslate nohighlight">\(\gamma = 0\)</span>でリスク中立</p></li>
+</ul>
+</section>
 <section id="information-ratio-ir">
 <h3>Information Ratio (IR)<a class="headerlink" href="#information-ratio-ir" title="Link to this heading">#</a></h3>
 <blockquote>
@@ -1217,6 +1254,8 @@ ROE &amp;= 売上高純利益率 \times 総資産回転率 \times 財務レバ�
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#calmar-ratio">Calmar Ratio</a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sharpe-loss">Sharpe Loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cara-utility-loss">CARA utility loss</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#information-ratio-ir">Information Ratio (IR)</a></li>
 </ul>
 </li>
