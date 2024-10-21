@@ -45,6 +45,7 @@
 :columns: 6
 統計モデリング
 
+- [](statistical_modeling/lowess)
 - [](statistical_modeling/factor_analysis)
 - [](statistical_modeling/gaussian_process)
 - [](statistical_modeling/quantile_regression)
