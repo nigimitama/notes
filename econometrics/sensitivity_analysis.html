@@ -931,13 +931,19 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#e-value">E-value</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">部分決定係数</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実装</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#e-value">E-value</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">機械学習</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semiparametric">semiparametric</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#veitch-zaveri-2020">機械学習を利用した感度分析1：Veitch &amp; Zaveri (2020)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chernozhukov-et-al-2022">機械学習を利用した感度分析2：Chernozhukov, et al. (2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semiparametric">Semiparametric</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">企業での利用例</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uber">Uber</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spotify">Spotify</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -953,6 +959,53 @@ document.write(`
 <h1>感度分析<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <p>感度分析（sensitivity analysis）はモデルにさまざまなデータを入力し、推定した因果効果についての妥当性を評価する方法。</p>
 <p>入力を変化させたときの出力の変化の「方向（正負）」と「度合い（強さ）」を測る。</p>
+<section id="e-value">
+<h2>E-value<a class="headerlink" href="#e-value" title="Link to this heading">#</a></h2>
+<p>E-Valueは未観測の交絡因子の影響の強さを簡単に測る方法。</p>
+<div class="math notranslate nohighlight">
+\[
+\text { E-Value }= \text{RR} +\sqrt{ \text{RR} \times( \text{RR} -1)}
+\]</div>
+<p><span class="math notranslate nohighlight">\(\text{RR}\)</span>は相対リスク（relative risk）で、例えば「キャンペーンの有無」が「商品の購入の有無」に与える効果を調べたい場合だと</p>
+<div class="math notranslate nohighlight">
+\[
+\text{RR} =
+\frac{ 処置群での購入の割合 }{ 対照群での購入の割合 }
+\]</div>
+<p>となる。これはRRが1より大きい場合で、もしRRが1より小さくなるなら逆数を用いる。</p>
+<p>E-valueが大きいほど、観測された結果と処置の関係は因果関係に近い（ロバストである）と解釈される。</p>
+<p>例えばRRが1.5（処置で1.5倍改善）だとE-valueは2.37になる。これは、もし未観測の交絡因子でこの推定結果を説明するには、未観測の交絡因子が結果変数と処置変数の両方と2.37倍の相対リスクで関連している必要があることを示す。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 例</span>
+<span class="n">p_treatment</span> <span class="o">=</span> <span class="mf">0.15</span> <span class="c1"># 処置群での購入割合</span>
+<span class="n">p_control</span> <span class="o">=</span> <span class="mf">0.10</span> <span class="c1"># 対照群での購入割合</span>
+
+<span class="n">RR</span> <span class="o">=</span> <span class="n">p_treatment</span> <span class="o">/</span> <span class="n">p_control</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">RR</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">RR</span> <span class="o">*</span> <span class="p">(</span><span class="n">RR</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E-value: </span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s2">.3g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E-value: 2.37
+</pre></div>
+</div>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考文献</div>
+<ul class="simple">
+<li><p class="sd-card-text"><a class="reference external" href="https://www.acpjournals.org/doi/pdf/10.7326/m16-2607?casa_token=eV2YvvqK_ZgAAAAA:VR_9M5eLezZrikd03IZXew8fJjBcPIW3E7QT_ZYrHh6M-shVOxEwmZVWDWGFFWuNH3B9w7inywr6">VanderWeele, T. J., &amp; Ding, P. (2017). Sensitivity analysis in observational research: introducing the E-value. Annals of internal medicine, 167(4), 268-274.</a></p></li>
+<li><p class="sd-card-text"><a class="reference external" href="https://www.degruyter.com/document/doi/10.1515/jci-2018-0007/html">VanderWeele, T. J., Ding, P., &amp; Mathur, M. (2019). Technical considerations in the use of the E-value. Journal of Causal Inference, 7(2), 20180007.</a></p></li>
+</ul>
+</div>
+</div>
+</section>
 <section id="id2">
 <h2>部分決定係数<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>Imbens (2003)が提案した、未観測の交絡因子の強さを把握する手法。</p>
@@ -973,14 +1026,14 @@ T_i \mid X_i, U_i \stackrel{\text { ind }}{\sim} \operatorname{Bern}\left(\opera
 Y_i \mid X_i, T_i, U_i \stackrel{\text { ind }}{\sim} \operatorname{Norm}\left(\tau T_i+\beta X_i+\delta U_i, \sigma^2\right)
 \]</div>
 <p><span class="math notranslate nohighlight">\(U\)</span>は観測できていないが、<span class="math notranslate nohighlight">\(U\)</span>の係数<span class="math notranslate nohighlight">\(a, \delta\)</span>を使って<span class="math notranslate nohighlight">\(U\)</span>の影響を判断できる</p>
-<p><span class="math notranslate nohighlight">\(Y\)</span>の部分決定係数<span class="math notranslate nohighlight">\(R^2(Y, par)\)</span>は</p>
+<p><span class="math notranslate nohighlight">\(Y\)</span>の部分決定係数<span class="math notranslate nohighlight">\(R^2_{Y, par}(\alpha, \delta)\)</span>は</p>
 <div class="math notranslate nohighlight">
 \[
-R^2(Y, par)
+R^2_{Y, par}(\alpha, \delta)
 = 1 - \frac{RSS_{full}}{RSS_{reduced}}
 \]</div>
 <p>ここで<span class="math notranslate nohighlight">\(RSS_{full}\)</span>は<span class="math notranslate nohighlight">\(U\)</span>を含むという意味でfullのモデルの残差平方和。<span class="math notranslate nohighlight">\(RSS_{reduced}\)</span>は観測した変数のみのモデルの残差平方和。</p>
-<p>未観測の交絡因子<span class="math notranslate nohighlight">\(U\)</span>の影響が少ない場合、<span class="math notranslate nohighlight">\(RSS_{full} \approx RSS_{reduced}\)</span>になり<span class="math notranslate nohighlight">\(R^2(Y, par)\)</span>は0に近づく。</p>
+<p>未観測の交絡因子<span class="math notranslate nohighlight">\(U\)</span>の影響が少ない場合、<span class="math notranslate nohighlight">\(RSS_{full} \approx RSS_{reduced}\)</span>になり<span class="math notranslate nohighlight">\(R^2_{Y, par}(\alpha, \delta)\)</span>は0に近づく。</p>
 <section id="id3">
 <h3>実装<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <p>PySensemakrパッケージが便利。</p>
@@ -1103,50 +1156,91 @@ Bounds on omitted variable bias:
 <img alt="../_images/be5f6ee7e36972ba966af13ec002849867bd04fdbf44195e26d66425989d80d8.png" src="../_images/be5f6ee7e36972ba966af13ec002849867bd04fdbf44195e26d66425989d80d8.png" />
 </div>
 </div>
-</section>
-</section>
-<section id="e-value">
-<h2>E-value<a class="headerlink" href="#e-value" title="Link to this heading">#</a></h2>
-<div class="math notranslate nohighlight">
-\[
-\text { E-Value }= \text{RR} +\sqrt{ \text{RR} \times( \text{RR} -1)}
-\]</div>
-<p><span class="math notranslate nohighlight">\(\text{RR}\)</span>は相対リスク（relative risk）で、例えば「キャンペーンの有無」が「商品の購入の有無」に与える効果を調べたい場合だと</p>
-<div class="math notranslate nohighlight">
-\[
-\text{RR} =
-\frac{ 処置群での購入の割合 }{ 対照群での購入の割合 }
-\]</div>
-<p>となる。これはRRが1より大きい場合で、もしRRが1より小さくなるなら逆数を用いる。</p>
-<p>E-valueが大きいほど、観測された結果と処置の関係は因果関係に近い（ロバストである）と解釈される。</p>
-<p>例えばRRが1.5（処置で1.5倍改善）だとE-valueは2.37になる。これは、もし未観測の交絡因子でこの推定結果を説明するには、未観測の交絡因子が結果変数と処置変数の両方と2.37倍の相対リスクで関連している必要があることを示す。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 例</span>
-<span class="n">p_treatment</span> <span class="o">=</span> <span class="mf">0.15</span> <span class="c1"># 処置群での購入割合</span>
-<span class="n">p_control</span> <span class="o">=</span> <span class="mf">0.10</span> <span class="c1"># 対照群での購入割合</span>
-
-<span class="n">RR</span> <span class="o">=</span> <span class="n">p_treatment</span> <span class="o">/</span> <span class="n">p_control</span>
-
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="n">E</span> <span class="o">=</span> <span class="n">RR</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">RR</span> <span class="o">*</span> <span class="p">(</span><span class="n">RR</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E-value: </span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s2">.3g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E-value: 2.37
-</pre></div>
-</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考文献</div>
+<ul class="simple">
+<li><p class="sd-card-text"><a class="reference external" href="https://scholar.harvard.edu/imbens/files/sensitivity_to_exogeneity_assumptions_in_program_evaluation.pdf">Imbens, G. W. (2003). Sensitivity to exogeneity assumptions in program evaluation. American Economic Review, 93(2), 126-132.</a></p></li>
+</ul>
 </div>
 </div>
 </section>
-<section id="id4">
-<h2>機械学習<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+</section>
+<section id="veitch-zaveri-2020">
+<h2>機械学習を利用した感度分析1：Veitch &amp; Zaveri (2020)<a class="headerlink" href="#veitch-zaveri-2020" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://proceedings.neurips.cc/paper/2020/hash/7d265aa7147bd3913fb84c7963a209d1-Abstract.html">Veitch &amp; Zaveri (2020)</a>は機械学習を用いた感度分析を提案した</p>
+<p>長所は</p>
+<ol class="arabic simple">
+<li><p>未観測の交絡因子が1つでも複数でも対応可能</p></li>
+<li><p>非線形モデルにも対応可能</p></li>
+</ol>
+<p>短所は</p>
+<ol class="arabic simple">
+<li><p>大体の傾向しか出せない</p></li>
+<li><p>サンプル数が小さいと精度が低い</p></li>
+</ol>
+<p>実装</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/anishazaveri/austen_plots">anishazaveri/austen_plots</a></p></li>
+</ul>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考文献</div>
+<ul class="simple">
+<li><p class="sd-card-text"><a class="reference external" href="https://proceedings.neurips.cc/paper/2020/hash/7d265aa7147bd3913fb84c7963a209d1-Abstract.html">Veitch, V., &amp; Zaveri, A. (2020). Sense and sensitivity analysis: Simple post-hoc analysis of bias due to unobserved confounding. Advances in neural information processing systems, 33, 10999-11009.</a></p></li>
+<li><p class="sd-card-text"><a class="reference external" href="https://saltcooky.hatenablog.com/entry/2021/08/06/021526">&lt;論文要約&gt; Sense and Sensitivity Analysis: Simple Post-Hoc Analysis of Bias Due to Unobserved Confounding (NeurIPS2020) - 名前はまだない</a></p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="chernozhukov-et-al-2022">
+<h2>機械学習を利用した感度分析2：Chernozhukov, et al. (2022)<a class="headerlink" href="#chernozhukov-et-al-2022" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://www.nber.org/papers/w30302">Chernozhukov, et al. (2022)</a>は部分線形モデル（DML）の感度分析を提案</p>
+<p><a class="reference external" href="https://www.pywhy.org/dowhy/v0.11.1/example_notebooks/sensitivity_analysis_nonparametric_estimators.html">DoWhy documentation</a> が概要の解説と実装の両面で参考になる</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考文献</div>
+<ul class="simple">
+<li><p class="sd-card-text"><a class="reference external" href="https://www.nber.org/papers/w30302">Chernozhukov, V., Cinelli, C., Newey, W., Sharma, A., &amp; Syrgkanis, V. (2022). Long story short: Omitted variable bias in causal machine learning (No. w30302). National Bureau of Economic Research.</a></p></li>
+<li><p class="sd-card-text"><a class="reference external" href="https://www.pywhy.org/dowhy/v0.11.1/example_notebooks/sensitivity_analysis_nonparametric_estimators.html">Sensitivity analysis for non-parametric causal estimators — DoWhy documentation</a></p></li>
+</ul>
+</div>
+</div>
 </section>
 <section id="semiparametric">
-<h2>semiparametric<a class="headerlink" href="#semiparametric" title="Link to this heading">#</a></h2>
+<h2>Semiparametric<a class="headerlink" href="#semiparametric" title="Link to this heading">#</a></h2>
 <p><a class="reference external" href="https://academic.oup.com/biometrics/article/80/4/ujae106/7821107">Semiparametric sensitivity analysis: unmeasured confounding in observational studies | Biometrics | Oxford Academic</a></p>
+</section>
+<section id="id4">
+<h2>企業での利用例<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<section id="uber">
+<h3>Uber<a class="headerlink" href="#uber" title="Link to this heading">#</a></h3>
+<p>Uberの因果推論フレームワークCeViChEにおいて感度分析を行っている</p>
+<p>主に</p>
+<ul class="simple">
+<li><p>プラセボテスト</p></li>
+<li><p>関係のない交絡因子の追加・置換</p></li>
+<li><p>サブセットデータを用いた検証</p></li>
+<li><p>選択バイアスの検証</p></li>
+</ul>
+<p>を行って多角的に感度分析している</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考文献</div>
+<p class="sd-card-text"><a class="reference external" href="https://docs.google.com/presentation/d/1FvRtis2fm4c2R7XmRKWMTtZaZjUObW1fGxpNmapmjKI/edit#slide=id.ge6ef5be800_0_478">(Share) KDD2021 Case Study #1 Causal Impact Analysis - CeViChE - Google スライド</a></p>
+</div>
+</div>
+</section>
+<section id="spotify">
+<h3>Spotify<a class="headerlink" href="#spotify" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://proceedings.mlr.press/v213/zeitler23a.html">Zeitler, J., Vlontzos, A., &amp; Gilligan-Lee, C. M. (2023, August). Non-parametric identifiability and sensitivity analysis of synthetic control models. In Conference on Causal Learning and Reasoning (pp. 850-865). PMLR.</a></p>
+<p>タイトルの通り、Synthetic Controlの感度分析</p>
+<p>著者のうちのVlontzosはSpotifyの人</p>
+</section>
 </section>
 </section>
 
@@ -1214,13 +1308,19 @@ Bounds on omitted variable bias:
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#e-value">E-value</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">部分決定係数</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実装</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#e-value">E-value</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">機械学習</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semiparametric">semiparametric</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#veitch-zaveri-2020">機械学習を利用した感度分析1：Veitch &amp; Zaveri (2020)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chernozhukov-et-al-2022">機械学習を利用した感度分析2：Chernozhukov, et al. (2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semiparametric">Semiparametric</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">企業での利用例</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uber">Uber</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spotify">Spotify</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
