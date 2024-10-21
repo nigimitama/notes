@@ -932,10 +932,17 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">古典的なLOWESSのアルゴリズム</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">最近のアルゴリズム？</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">実装</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">LOWESSのアルゴリズム</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#r">1. 重みの計算と<span class="math notranslate nohighlight">\(r\)</span>個の最近傍サンプルの取得</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2. 多項式回帰のフィッティング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#delta">3. ロバスト性重み<span class="math notranslate nohighlight">\(\delta\)</span>の計算</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">4. <span class="math notranslate nohighlight">\(\delta\)</span>で重み付け回帰を行う</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">5. 繰り返す</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">最近のLOWESSアルゴリズム</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">実装</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statsmodels">statsmodelsの実装</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#numpy">numpyのみでの実装</a></li>
 </ul>
@@ -985,7 +992,7 @@ document.write(`
 </div>
 </div>
 <section id="id1">
-<h2>古典的なLOWESSのアルゴリズム<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<h2>LOWESSのアルゴリズム<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p><a class="reference external" href="https://sites.oxy.edu/lengyel/m150/other/Robust%20Locally%20Weighted%20Regression%20and%20Smoothing%20Scatterplots_JASA1997_Cleveland.pdf">Cleveland, W. S. (1979).</a> に記されたアルゴリズムは以下の通り。</p>
 <p><span class="math notranslate nohighlight">\(i\)</span>番目のサンプルの目的変数<span class="math notranslate nohighlight">\(y_i\)</span>を特徴量<span class="math notranslate nohighlight">\(x_i\)</span>とノンパラメトリックの平滑化関数<span class="math notranslate nohighlight">\(g(x_i)\)</span>で近似することを考える。</p>
 <div class="math notranslate nohighlight">
@@ -993,7 +1000,8 @@ document.write(`
 y_i = g(x_i) + \epsilon_i
 \]</div>
 <p>ここで<span class="math notranslate nohighlight">\(\epsilon_i\)</span>は平均0で分散が一定の確率変数である。</p>
-<p><strong>重みの計算：</strong></p>
+<section id="r">
+<h3>1. 重みの計算と<span class="math notranslate nohighlight">\(r\)</span>個の最近傍サンプルの取得<a class="headerlink" href="#r" title="Link to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(x_i\)</span>について、<span class="math notranslate nohighlight">\(j=1,\dots,n\)</span>にわたって<span class="math notranslate nohighlight">\(|x_i - x_j|\)</span>で距離を測り、<span class="math notranslate nohighlight">\(r\)</span>番目に近いサンプルとの距離を<span class="math notranslate nohighlight">\(h_i\)</span>とする。</p>
 <p>重み関数<span class="math notranslate nohighlight">\(W(\cdot)\)</span>を用いて、<span class="math notranslate nohighlight">\(k=1,\dots,n\)</span>について</p>
 <div class="math notranslate nohighlight">
@@ -1001,58 +1009,52 @@ y_i = g(x_i) + \epsilon_i
 w_k(x_i) = W(h_i^{-1}(x_k - x_i))
 \]</div>
 <p>を計算する</p>
-<p>重み関数<span class="math notranslate nohighlight">\(W(\cdot)\)</span>は以下の性質を満たすものとする</p>
+<p>ここで重み関数<span class="math notranslate nohighlight">\(W(\cdot)\)</span>は以下の性質を満たすものとする</p>
 <ol class="arabic simple">
 <li><p><span class="math notranslate nohighlight">\(|x| &lt; 1\)</span>について <span class="math notranslate nohighlight">\(W(x) &gt; 0\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(W(-x)=W(x)\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(W(x)\)</span> は <span class="math notranslate nohighlight">\(x \geq 0\)</span>について 非増加関数</p></li>
 <li><p><span class="math notranslate nohighlight">\(|x| \geq 1\)</span>について<span class="math notranslate nohighlight">\(W(x)=0\)</span></p></li>
 </ol>
+<p><span class="math notranslate nohighlight">\(h_i^{-1}(x_k - x_i)\)</span>は分子の<span class="math notranslate nohighlight">\(x_k - x_i\)</span>の絶対値が分母の<span class="math notranslate nohighlight">\(h_i\)</span>より大きければ<span class="math notranslate nohighlight">\(|h_i^{-1}(x_k - x_i)| \geq 1\)</span>になるので重みが0になる。つまり、サンプルとして回帰に使用されなくなる。
+なので重み関数は近傍の<span class="math notranslate nohighlight">\(r\)</span>個のサンプルを取り出しつつ、<span class="math notranslate nohighlight">\(r\)</span>個のサンプルにも距離に応じた重みをかける操作となる。</p>
 <p><span class="math notranslate nohighlight">\(W\)</span>の例として tricube functionが考えられる</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\begin{aligned}
-W(x) &amp;= \left(1-|x|^3\right)^3, \text { for } \quad|x|&lt;1 \\
-     &amp;= 0, \quad \text { for } \quad|x| \geqslant 1
-\end{aligned}
+W(x) =
+\begin{cases}
+(1-|x|^3)^3 &amp; \text { for } \quad|x|&lt;1 \\
+0 \quad &amp; \text { for } \quad|x| \geqslant 1
+\end{cases}
 \end{split}\]</div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">w</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tricube</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span>
     <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span> <span class="p">)</span><span class="o">**</span><span class="mi">3</span>
 
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-<span class="n">w_</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span><span class="p">(</span><span class="n">x_i</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="p">[</span><span class="n">tricube</span><span class="p">(</span><span class="n">x_i</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
 
 <span class="c1"># 別のやり方</span>
 <span class="c1"># w = (1 - np.abs(x)**3)**3</span>
 <span class="c1"># w[np.abs(x) &gt;= 1] = 0</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w_</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;tricube weight function&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;W(x)&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x7f0698a27400&gt;]
-</pre></div>
-</div>
-<img alt="../_images/6b2e146e3091a6095e85adb0405eafa6c40c24d769183066ef5212362c0e6445.png" src="../_images/6b2e146e3091a6095e85adb0405eafa6c40c24d769183066ef5212362c0e6445.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x7f0698abded0&gt;]
-</pre></div>
-</div>
-<img alt="../_images/7c635a8802916b11a39d4dcac9afe8daa638084587c5b9629f599624d365dea1.png" src="../_images/7c635a8802916b11a39d4dcac9afe8daa638084587c5b9629f599624d365dea1.png" />
+<img alt="../_images/b7fd119e530fa1a4f6c669c2b959b8569c80ed3405f76128cc4a52ad752ef3f1.png" src="../_images/b7fd119e530fa1a4f6c669c2b959b8569c80ed3405f76128cc4a52ad752ef3f1.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1071,24 +1073,49 @@ W(x) &amp;= \left(1-|x|^3\right)^3, \text { for } \quad|x|&lt;1 \\
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
-<span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.        , 0.11111111, 0.22222222])
-</pre></div>
-</div>
-</div>
-</div>
 </section>
 <section id="id2">
-<h2>最近のアルゴリズム？<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>Wikipediaなどを参考にしたもの：</p>
+<h3>2. 多項式回帰のフィッティング<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>非線形回帰として<span class="math notranslate nohighlight">\(d\)</span>次の多項式回帰を行う</p>
+<div class="math notranslate nohighlight">
+\[
+\min_{\beta_0,\dots,\beta_d} ~ \sum_{k=1}^n w_k\left(x_i\right)\left(y_k-\beta_0-\beta_1 x_k-\ldots-\beta_d x_k^d\right)^2
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\hat{y}_i=\sum_{j=0}^d \hat{\beta}_j\left(x_i\right) x_i^j
+\]</div>
+</section>
+<section id="delta">
+<h3>3. ロバスト性重み<span class="math notranslate nohighlight">\(\delta\)</span>の計算<a class="headerlink" href="#delta" title="Link to this heading">#</a></h3>
+<p>bisquare weight function <span class="math notranslate nohighlight">\(B(\cdot)\)</span>を以下のように定義する</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+B(x) =
+\begin{cases}
+(1 - x^2)^2 &amp; \text { for } \quad|x| &lt; 1 \\
+0 \quad &amp; \text { for } \quad|x| \geqslant 1
+\end{cases}
+\end{split}\]</div>
+<p>残差<span class="math notranslate nohighlight">\(e_i = y_i - \hat{y}_i\)</span>の絶対値<span class="math notranslate nohighlight">\(|e_i|\)</span>の中央値を<span class="math notranslate nohighlight">\(s\)</span>とする。ロバスト性重み（robustness weights）を</p>
+<div class="math notranslate nohighlight">
+\[
+\delta_k = B(e_k / 6s)
+\]</div>
+<p>と定義する。</p>
+</section>
+<section id="id3">
+<h3>4. <span class="math notranslate nohighlight">\(\delta\)</span>で重み付け回帰を行う<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>また<span class="math notranslate nohighlight">\(d\)</span>次多項式回帰を行い、新たな推定値<span class="math notranslate nohighlight">\(\hat{y}_i\)</span>を得る。このとき、重みは<span class="math notranslate nohighlight">\(\delta_k w_k (x_i)\)</span>を使う。</p>
+</section>
+<section id="id4">
+<h3>5. 繰り返す<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>3.と4.のステップを<span class="math notranslate nohighlight">\(t\)</span>回繰り返す。</p>
+</section>
+</section>
+<section id="id5">
+<h2>最近のLOWESSアルゴリズム<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<p>Wikipediaなどを参考にしたもので、重み関数がtricubeではなくGaussianを使うものになっている</p>
 <p>LOWESSは重み付き線形回帰の一般化で、あるデータ点<span class="math notranslate nohighlight">\((x_i, y_i)\)</span>について、<span class="math notranslate nohighlight">\(x\)</span>によって変化する重み<span class="math notranslate nohighlight">\(w(x)\)</span>を用いた重み付き回帰を行う</p>
 <p>2つのデータ点の特徴量ベクトル<span class="math notranslate nohighlight">\(x, x' \in \mathbb{R}^m\)</span>（<span class="math notranslate nohighlight">\(m\)</span>は特徴量の次元数）の距離を使って重みとし、局所回帰を実現する</p>
 <p>重みには標準的にはGaussian weight function</p>
@@ -1111,15 +1138,15 @@ w(x, x', \alpha)=\exp \left(-\frac{\|x-x'\|^2}{2 \alpha^2}\right)
 \boldsymbol{\beta} = (\boldsymbol{X}^\top W \boldsymbol{X})^{-1} \boldsymbol{X}^\top W \boldsymbol{y}
 \]</div>
 </section>
-<section id="id3">
-<h2>参考<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h2>参考<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Local_regression">Local regression - Wikipedia</a></p></li>
 <li><p>Cleveland, W. S. (1979). <a class="reference external" href="https://sites.oxy.edu/lengyel/m150/other/Robust%20Locally%20Weighted%20Regression%20and%20Smoothing%20Scatterplots_JASA1997_Cleveland.pdf">Robust locally weighted regression and smoothing scatterplots.</a> Journal of the American statistical association, 74(368), 829-836.</p></li>
 </ul>
 </section>
-<section id="id4">
-<h2>実装<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h2>実装<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <section id="statsmodels">
 <h3>statsmodelsの実装<a class="headerlink" href="#statsmodels" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://www.statsmodels.org/stable/examples/notebooks/generated/lowess.html">LOWESS Smoother - statsmodels 0.14.4</a></p>
@@ -1362,10 +1389,17 @@ w(x, x', \alpha)=\exp \left(-\frac{\|x-x'\|^2}{2 \alpha^2}\right)
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">古典的なLOWESSのアルゴリズム</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">最近のアルゴリズム？</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">実装</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">LOWESSのアルゴリズム</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#r">1. 重みの計算と<span class="math notranslate nohighlight">\(r\)</span>個の最近傍サンプルの取得</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2. 多項式回帰のフィッティング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#delta">3. ロバスト性重み<span class="math notranslate nohighlight">\(\delta\)</span>の計算</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">4. <span class="math notranslate nohighlight">\(\delta\)</span>で重み付け回帰を行う</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">5. 繰り返す</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">最近のLOWESSアルゴリズム</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">実装</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statsmodels">statsmodelsの実装</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#numpy">numpyのみでの実装</a></li>
 </ul>
