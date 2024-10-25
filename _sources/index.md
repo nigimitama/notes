@@ -20,6 +20,7 @@
 - [](mathematics/calculus/index)
 - [](mathematics/mathematical_optimization/index)
 - [](mathematics/applied_math/index)
+- [](mathematics/applied_math/exercise/index)
 :::
 
 :::{grid-item-card}
