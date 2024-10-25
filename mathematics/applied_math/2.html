@@ -16,17 +16,19 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
@@ -36,10 +38,11 @@
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
@@ -79,6 +82,7 @@
     <link rel="prev" title="応用数学 ch1メモ（最小二乗法）" href="1.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -94,19 +98,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -114,7 +107,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -122,8 +114,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -139,7 +131,8 @@
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -169,15 +162,11 @@
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
@@ -891,24 +880,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -940,12 +921,11 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">例（フーリエ級数）</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">例題</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">計量空間</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">公理を満たす内積の例</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">コーシー・シュワルツの不等式</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">例題</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">例2.6</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">例2.24</a></li>
 </ul>
 </li>
 </ul>
@@ -1196,8 +1176,11 @@ f(x)=\frac{4}{\pi} \sin x+\frac{4}{3 \pi} \sin 3 x+\frac{4}{5 \pi} \sin 5 x+\fra
 </div>
 </section>
 </section>
+</section>
 <section id="id7">
-<h3>例題<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<h2>例題<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<section id="id8">
+<h3>例2.6<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
@@ -1327,78 +1310,114 @@ b_k = \frac
 \end{aligned}
 \end{split}\]</div>
 </section>
-</section>
-<section id="id8">
-<h2>計量空間<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
-<p>集合<span class="math notranslate nohighlight">\(\mathcal{L}\)</span>の元に加減算と定数倍が定義されているとき、これを線形空間（またはベクトル空間）と呼ぶ。</p>
-<p>線形空間<span class="math notranslate nohighlight">\(\mathcal{L}\)</span>には零元と呼ばれる元<span class="math notranslate nohighlight">\(\boldsymbol{0}\)</span>が存在し、<span class="math notranslate nohighlight">\(\forall\boldsymbol{u}\in \mathcal{L}, \boldsymbol{u} + \boldsymbol{0} = \boldsymbol{u}\)</span>が成り立つ</p>
-<p>線形空間 <span class="math notranslate nohighlight">\(\mathcal{L}\)</span> の元 <span class="math notranslate nohighlight">\(\boldsymbol{u}, \boldsymbol{v}\)</span> に対して実数 <span class="math notranslate nohighlight">\((\boldsymbol{u}, \boldsymbol{v})\)</span> を何らかの方法で定義したとき, これは次の性質を満たすなら <span class="math notranslate nohighlight">\((\boldsymbol{u}, \boldsymbol{v})\)</span> を <span class="math notranslate nohighlight">\(\boldsymbol{u}, \boldsymbol{v}\)</span> の <strong>内積</strong> と呼ぶ。</p>
-<ol class="arabic simple">
-<li><p>任意の <span class="math notranslate nohighlight">\(\boldsymbol{u} \in \mathcal{L}\)</span> に対して <span class="math notranslate nohighlight">\((\boldsymbol{u}, \boldsymbol{u}) \geq 0\)</span>. 等号が成り立つのは <span class="math notranslate nohighlight">\(\boldsymbol{u}=\mathbf{0}\)</span> のときのみ (正値性)。</p></li>
-<li><p>任意の <span class="math notranslate nohighlight">\(u, v \in \mathcal{L}\)</span> に対して <span class="math notranslate nohighlight">\((u, v)=(v, u)\)</span> （対称性）。</p></li>
-<li><p>任意の実数 <span class="math notranslate nohighlight">\(c_1, c_2\)</span> と任意の <span class="math notranslate nohighlight">\(\boldsymbol{u}_1, \boldsymbol{u}_2, \boldsymbol{v} \in \mathcal{L}\)</span> に対して <span class="math notranslate nohighlight">\(\left(c_1 \boldsymbol{u}_1+c_2 \boldsymbol{u}_2, \boldsymbol{v}\right)=\)</span> <span class="math notranslate nohighlight">\(c_1\left(\boldsymbol{u}_1, \boldsymbol{v}\right)+c_2\left(\boldsymbol{u}_2, \boldsymbol{v}\right)\)</span> (線形性).</p></li>
-</ol>
-<p>これを内積の公理と呼ぶ. 内積が定義されるとき, 元 <span class="math notranslate nohighlight">\(\boldsymbol{u} \in \mathcal{L}\)</span> のノルムを次のように定義する。</p>
-<div class="math notranslate nohighlight">
-\[
-\|u\|=\sqrt{(\boldsymbol{u}, \boldsymbol{u})}
-\]</div>
-<p>このような内積とノルムが定義されているとき、線形空間 <span class="math notranslate nohighlight">\(\mathcal{L}\)</span> は <strong>計量（線形）空間</strong> であるという。計量空間の元 <span class="math notranslate nohighlight">\(\boldsymbol{u}, \boldsymbol{v}\)</span> は <span class="math notranslate nohighlight">\((\boldsymbol{u}, \boldsymbol{v})=0\)</span> のとき互いに <strong>直交する</strong> という。</p>
 <section id="id9">
-<h3>公理を満たす内積の例<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<h3>例2.24<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+例2.24</div>
+<p class="sd-card-text">近似の尺度として最小二乗法</p>
+<div class="math notranslate nohighlight">
+\[
+J=\frac{1}{2}\left\|\boldsymbol{u}-\left(c_1 \boldsymbol{e}_1+c_2 \boldsymbol{e}_2+\cdots+c_n \boldsymbol{e}_n\right)\right\|^2 \rightarrow \min
+\]</div>
+<p class="sd-card-text">を用いると, 各係数 <span class="math notranslate nohighlight">\(c_i\)</span> は</p>
+<div class="math notranslate nohighlight">
+\[
+c_i=\frac{\left(\boldsymbol{u}, \boldsymbol{e}_i\right)}{\left\|\boldsymbol{e}_i\right\|^2}, \quad i=1, \ldots, n
+\]</div>
+<p class="sd-card-text">となり, 特に <span class="math notranslate nohighlight">\(\left\{e_i\right\}\)</span> が正規直交系のときは</p>
+<div class="math notranslate nohighlight">
+\[
+c_i=\left(\boldsymbol{u}, \boldsymbol{e}_i\right), \quad i=1, \ldots, n
+\]</div>
+<p class="sd-card-text">となることを示せ.</p>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+書籍の回答例</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(J\)</span>を <span class="math notranslate nohighlight">\(c_i\)</span> で偏微分すると次のようになる。</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-n \text { 次元列ベクトル } \boldsymbol{a}=\left(\begin{array}{c}
-a_1 \\
-a_2 \\
-\vdots \\
-a_n
-\end{array}\right), \boldsymbol{b}=\left(\begin{array}{c}
-b_1 \\
-b_2 \\
-\vdots \\
-b_n
-\end{array}\right) \text { に対して }
+\begin{aligned}
+\frac{\partial J}{\partial c_i}
+&amp;=\frac{1}{2} \frac{\partial}{\partial c_i}\left(\boldsymbol{u}-\sum_{j=1}^n c_j \boldsymbol{e}_j, \boldsymbol{u}-\sum_{k=1}^n c_k \boldsymbol{e}_k\right) \\
+&amp; =\frac{1}{2}\left(-\boldsymbol{e}_i, \boldsymbol{u}-\sum_{j=1}^n c_j \boldsymbol{e}_j\right)+\frac{1}{2}\left(\boldsymbol{u}-\sum_{j=1}^n c_j \boldsymbol{e}_j,-\boldsymbol{e}_i\right) \\
+&amp; =\left(\boldsymbol{u}-\sum_{j=1}^n c_j \boldsymbol{e}_j,-\boldsymbol{e}_i\right)\\
+&amp;=\sum_{j=1}^n c_j\left(\boldsymbol{e}_j, \boldsymbol{e}_i\right)-\left(\boldsymbol{u}, \boldsymbol{e}_i\right) \\
+&amp; =\sum_{j=1}^n c_j \delta_{i j}\left\|\boldsymbol{e}_j\right\|^2-\left(\boldsymbol{u}, \boldsymbol{e}_i\right) \\
+&amp;=c_i\left\|\boldsymbol{e}_i\right\|^2-\left(\boldsymbol{u}, \boldsymbol{e}_i\right)
+\end{aligned}
 \end{split}\]</div>
-<p class="sd-card-text">内積は</p>
+<p class="sd-card-text">これを0とおいて解くと求まる</p>
 <div class="math notranslate nohighlight">
-\[
-(\boldsymbol{a}, \boldsymbol{b})=\sum_{i=1}^n a_i b_i
-\]</div>
-<p class="sd-card-text">ノルムは</p>
-<div class="math notranslate nohighlight">
-\[
-\|\boldsymbol{a}\|=\sqrt{\sum_{i=1}^n a_i^2}
-\]</div>
+\[\begin{split}
+c_i \|\boldsymbol{e}_i\|^2 - (\boldsymbol{u}, \boldsymbol{e}_i) = 0 \\
+\iff c_i \|\boldsymbol{e}_i\|^2 = (\boldsymbol{u}, \boldsymbol{e}_i)\\
+\iff c_i = \frac{ (\boldsymbol{u}, \boldsymbol{e}_i) }{ \|\boldsymbol{e}_i\|^2 }\\
+\end{split}\]</div>
 </div>
 </div>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<p class="sd-card-text">区間<span class="math notranslate nohighlight">\([a, b]\)</span>上の連続関数<span class="math notranslate nohighlight">\(f(x), g(x)\)</span> に対して</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+J &amp;= \frac{1}{2}
+\left\|\boldsymbol{u}-\left(c_1 \boldsymbol{e}_1+c_2 \boldsymbol{e}_2+\cdots+c_n \boldsymbol{e}_n\right)\right\|^2
+\\
+&amp;= \frac{1}{2}
+\left\|\boldsymbol{u}- \sum^n_{j=1} c_j \boldsymbol{e}_j \right\|^2
+\\
+&amp;= \frac{1}{2}
+\left ( \boldsymbol{u}- \sum^n_{j=1} c_j \boldsymbol{e}_j, \boldsymbol{u}- \sum^n_{j=1} c_j \boldsymbol{e}_j  \right)
+\end{aligned}
+\end{split}\]</div>
+<p>内積の微分は</p>
 <div class="math notranslate nohighlight">
 \[
-(f, g)=\int_a^b f(x) g(x) \mathrm{d} x
+\frac{d}{d x} \langle \boldsymbol{f}(x), \boldsymbol{g}(x) \rangle
+= \left \langle \frac{d \boldsymbol{f}(x)}{d x}, \boldsymbol{g}(x) \right \rangle
++\left \langle \boldsymbol{f}(x), \frac{d \boldsymbol{g}(x)}{d x}\right \rangle
 \]</div>
-<p class="sd-card-text">ノルムは</p>
+<p>となるため、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\frac{\partial J}{\partial c_i}
+&amp;=\frac{1}{2} \frac{\partial}{\partial c_i}\left(\boldsymbol{u}-\sum_{j=1}^n c_j \boldsymbol{e}_j, \boldsymbol{u}-\sum_{k=1}^n c_k \boldsymbol{e}_k\right) \\
+&amp;=\frac{1}{2}\left(-\boldsymbol{e}_i, \boldsymbol{u}-\sum_{j=1}^n c_j \boldsymbol{e}_j\right)
++\frac{1}{2}\left(\boldsymbol{u}-\sum_{j=1}^n c_j \boldsymbol{e}_j,-\boldsymbol{e}_i\right) \\
+&amp;=\left(\boldsymbol{u}-\sum_{j=1}^n c_j \boldsymbol{e}_j,-\boldsymbol{e}_i\right) \quad (\because 内積の対称性)\\
+\end{aligned}
+\end{split}\]</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">参考：内積の微分</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">内積の微分は</p>
 <div class="math notranslate nohighlight">
 \[
-\|f\|=\sqrt{\int_a^b f(x)^2 \mathrm{~d} x}
+\boldsymbol{f}(x) = (f_1(x), \cdots, f_n(x))
+\boldsymbol{g}(x) = (g_1(x), \cdots, g_n(x))
 \]</div>
-</div>
-</div>
-</section>
-<section id="id10">
-<h3>コーシー・シュワルツの不等式<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
-<div class="admonition- admonition">
-<p class="admonition-title">コーシー・シュワルツの不等式</p>
+<p class="sd-card-text">とすると</p>
 <div class="math notranslate nohighlight">
-\[
--\|\boldsymbol{u}\| \cdot\|\boldsymbol{v}\| \leq(\boldsymbol{u}, \boldsymbol{v}) \leq\|\boldsymbol{u}\| \cdot\|\boldsymbol{v}\|
-\]</div>
+\[\begin{split}
+\begin{aligned}
+\frac{d}{d x} \langle \boldsymbol{f}(x), \boldsymbol{g}(x) \rangle
+&amp;= \frac{d}{d x} \left( \sum_{i=1}^n f_i(x) g_i(x)  \right)\\
+&amp;= \sum_{i=1}^n \frac{d}{d x} \left(  f_i(x) g_i(x)  \right)\\
+&amp;= \sum_{i=1}^n \left( \frac{d f_i(x)}{d x} g_i(x) + f_i(x) \frac{d g_i(x)}{d x} \right) \quad (積の微分公式) \\
+&amp;= \sum_{i=1}^n \frac{d f_i(x)}{d x} g_i(x)
++ \sum_{i=1}^n f_i(x) \frac{d g_i(x)}{d x} \\
+&amp;= \left \langle \frac{d \boldsymbol{f}(x)}{d x}, \boldsymbol{g}(x) \right \rangle
++\left \langle \boldsymbol{f}(x), \frac{d \boldsymbol{g}(x)}{d x}\right \rangle
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">となる</p>
+<p class="sd-card-text"><a class="reference external" href="https://diracphysics.com/portfolio/physicalmath/S3/pdiffvec.html">大学物理のフットノート|物理数学|ベクトルの微分公式(基本編)</a></p>
 </div>
-</section>
+</details></section>
 </section>
 </section>
 
@@ -1457,7 +1476,8 @@ b_n
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -1474,12 +1494,11 @@ b_n
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">例（フーリエ級数）</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">例題</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">計量空間</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">公理を満たす内積の例</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">コーシー・シュワルツの不等式</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">例題</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">例2.6</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">例2.24</a></li>
 </ul>
 </li>
 </ul>
@@ -1530,8 +1549,8 @@ By mitama
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
 
   <footer class="bd-footer">
   </footer>

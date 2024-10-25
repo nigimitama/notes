@@ -16,17 +16,19 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
@@ -36,10 +38,11 @@
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
@@ -79,6 +82,7 @@
     <link rel="prev" title="最適ポートフォリオ" href="optimal_portfolio.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -94,19 +98,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../search.html"
       method="get">
@@ -114,7 +107,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -122,8 +114,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -139,7 +131,8 @@
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -169,15 +162,11 @@
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
@@ -891,24 +880,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -1621,31 +1602,31 @@ u_R(\pi_0, \boldsymbol{\pi})
   <tbody>
     <tr>
       <th>2016-01-04 00:00:00+00:00</th>
-      <td>94.887993</td>
+      <td>94.887962</td>
       <td>2012.660034</td>
       <td>2.245</td>
     </tr>
     <tr>
       <th>2016-01-05 00:00:00+00:00</th>
-      <td>96.195305</td>
+      <td>96.195312</td>
       <td>2016.709961</td>
       <td>2.248</td>
     </tr>
     <tr>
       <th>2016-01-06 00:00:00+00:00</th>
-      <td>95.549721</td>
+      <td>95.549713</td>
       <td>1990.260010</td>
       <td>2.177</td>
     </tr>
     <tr>
       <th>2016-01-07 00:00:00+00:00</th>
-      <td>93.338501</td>
+      <td>93.338509</td>
       <td>1943.089966</td>
       <td>2.153</td>
     </tr>
     <tr>
       <th>2016-01-08 00:00:00+00:00</th>
-      <td>93.193260</td>
+      <td>93.193253</td>
       <td>1922.030029</td>
       <td>2.130</td>
     </tr>
@@ -1654,24 +1635,6 @@ u_R(\pi_0, \boldsymbol{\pi})
       <td>...</td>
       <td>...</td>
       <td>...</td>
-    </tr>
-    <tr>
-      <th>2024-10-15 00:00:00+00:00</th>
-      <td>313.339996</td>
-      <td>5815.259766</td>
-      <td>4.038</td>
-    </tr>
-    <tr>
-      <th>2024-10-16 00:00:00+00:00</th>
-      <td>312.920013</td>
-      <td>5842.470215</td>
-      <td>4.016</td>
-    </tr>
-    <tr>
-      <th>2024-10-17 00:00:00+00:00</th>
-      <td>314.700012</td>
-      <td>5841.470215</td>
-      <td>4.096</td>
     </tr>
     <tr>
       <th>2024-10-18 00:00:00+00:00</th>
@@ -1685,9 +1648,27 @@ u_R(\pi_0, \boldsymbol{\pi})
       <td>5853.979980</td>
       <td>4.182</td>
     </tr>
+    <tr>
+      <th>2024-10-22 00:00:00+00:00</th>
+      <td>314.690002</td>
+      <td>5851.200195</td>
+      <td>4.204</td>
+    </tr>
+    <tr>
+      <th>2024-10-23 00:00:00+00:00</th>
+      <td>298.570007</td>
+      <td>5797.419922</td>
+      <td>4.242</td>
+    </tr>
+    <tr>
+      <th>2024-10-24 00:00:00+00:00</th>
+      <td>301.579987</td>
+      <td>5809.859863</td>
+      <td>4.200</td>
+    </tr>
   </tbody>
 </table>
-<p>2215 rows × 3 columns</p>
+<p>2218 rows × 3 columns</p>
 </div></div></div>
 </div>
 <div class="cell docutils container">
@@ -1742,7 +1723,7 @@ u_R(\pi_0, \boldsymbol{\pi})
     <tr>
       <th>2016-01-05 00:00:00+00:00</th>
       <td>0.002012</td>
-      <td>0.013777</td>
+      <td>0.013778</td>
       <td>2.248</td>
     </tr>
     <tr>
@@ -1770,24 +1751,6 @@ u_R(\pi_0, \boldsymbol{\pi})
       <td>...</td>
     </tr>
     <tr>
-      <th>2024-10-15 00:00:00+00:00</th>
-      <td>-0.007609</td>
-      <td>0.011296</td>
-      <td>4.038</td>
-    </tr>
-    <tr>
-      <th>2024-10-16 00:00:00+00:00</th>
-      <td>0.004679</td>
-      <td>-0.001340</td>
-      <td>4.016</td>
-    </tr>
-    <tr>
-      <th>2024-10-17 00:00:00+00:00</th>
-      <td>-0.000171</td>
-      <td>0.005688</td>
-      <td>4.096</td>
-    </tr>
-    <tr>
       <th>2024-10-18 00:00:00+00:00</th>
       <td>0.003972</td>
       <td>0.005910</td>
@@ -1799,9 +1762,27 @@ u_R(\pi_0, \boldsymbol{\pi})
       <td>-0.005275</td>
       <td>4.182</td>
     </tr>
+    <tr>
+      <th>2024-10-22 00:00:00+00:00</th>
+      <td>-0.000475</td>
+      <td>-0.000635</td>
+      <td>4.204</td>
+    </tr>
+    <tr>
+      <th>2024-10-23 00:00:00+00:00</th>
+      <td>-0.009191</td>
+      <td>-0.051225</td>
+      <td>4.242</td>
+    </tr>
+    <tr>
+      <th>2024-10-24 00:00:00+00:00</th>
+      <td>0.002146</td>
+      <td>0.010081</td>
+      <td>4.200</td>
+    </tr>
   </tbody>
 </table>
-<p>2215 rows × 3 columns</p>
+<p>2218 rows × 3 columns</p>
 </div></div></div>
 </div>
 <div class="cell docutils container">
@@ -1848,7 +1829,7 @@ u_R(\pi_0, \boldsymbol{\pi})
     <tr>
       <th>2016-01-05 00:00:00+00:00</th>
       <td>0.001924</td>
-      <td>0.013689</td>
+      <td>0.013690</td>
     </tr>
     <tr>
       <th>2016-01-06 00:00:00+00:00</th>
@@ -1858,7 +1839,7 @@ u_R(\pi_0, \boldsymbol{\pi})
     <tr>
       <th>2016-01-07 00:00:00+00:00</th>
       <td>-0.023785</td>
-      <td>-0.023227</td>
+      <td>-0.023226</td>
     </tr>
     <tr>
       <th>2016-01-08 00:00:00+00:00</th>
@@ -1876,21 +1857,6 @@ u_R(\pi_0, \boldsymbol{\pi})
       <td>...</td>
     </tr>
     <tr>
-      <th>2024-10-15 00:00:00+00:00</th>
-      <td>-0.007768</td>
-      <td>0.011138</td>
-    </tr>
-    <tr>
-      <th>2024-10-16 00:00:00+00:00</th>
-      <td>0.004522</td>
-      <td>-0.001498</td>
-    </tr>
-    <tr>
-      <th>2024-10-17 00:00:00+00:00</th>
-      <td>-0.000332</td>
-      <td>0.005528</td>
-    </tr>
-    <tr>
       <th>2024-10-18 00:00:00+00:00</th>
       <td>0.003812</td>
       <td>0.005751</td>
@@ -1900,9 +1866,24 @@ u_R(\pi_0, \boldsymbol{\pi})
       <td>-0.001987</td>
       <td>-0.005439</td>
     </tr>
+    <tr>
+      <th>2024-10-22 00:00:00+00:00</th>
+      <td>-0.000640</td>
+      <td>-0.000800</td>
+    </tr>
+    <tr>
+      <th>2024-10-23 00:00:00+00:00</th>
+      <td>-0.009358</td>
+      <td>-0.051391</td>
+    </tr>
+    <tr>
+      <th>2024-10-24 00:00:00+00:00</th>
+      <td>0.001981</td>
+      <td>0.009917</td>
+    </tr>
   </tbody>
 </table>
-<p>2213 rows × 2 columns</p>
+<p>2216 rows × 2 columns</p>
 </div></div></div>
 </div>
 <div class="cell docutils container">
@@ -1913,7 +1894,7 @@ u_R(\pi_0, \boldsymbol{\pi})
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f9957d55cb37bccb00037b68e990b5246c3366962cc6f1865b3a6617e860e7e8.png" src="../_images/f9957d55cb37bccb00037b68e990b5246c3366962cc6f1865b3a6617e860e7e8.png" />
+<img alt="../_images/578ecc462585c10d7a9dea91f15c0e6f15d43bad8729e8690ade61194227bec3.png" src="../_images/578ecc462585c10d7a9dea91f15c0e6f15d43bad8729e8690ade61194227bec3.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1944,7 +1925,7 @@ u_R(\pi_0, \boldsymbol{\pi})
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>α=0.000321, β=0.708
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>α=0.000307, β=0.709
 </pre></div>
 </div>
 </div>
@@ -1959,7 +1940,7 @@ u_R(\pi_0, \boldsymbol{\pi})
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/108df06cf85768370e819336b5d8c219a3f6bb9449820f72d84a3886f8b14990.png" src="../_images/108df06cf85768370e819336b5d8c219a3f6bb9449820f72d84a3886f8b14990.png" />
+<img alt="../_images/922a8d7d421b7009ae079c45187776bec32df67c40007fce07b8572b0ed459a0.png" src="../_images/922a8d7d421b7009ae079c45187776bec32df67c40007fce07b8572b0ed459a0.png" />
 </div>
 </div>
 <p>なおHold-out誤差は次のようになった。</p>
@@ -1990,7 +1971,7 @@ u_R(\pi_0, \boldsymbol{\pi})
   warnings.warn(
 </pre></div>
 </div>
-<img alt="../_images/1742ca0ec1cb2f331f1f6cf49b76e16a11cb8e200cea2574d540e253787e931e.png" src="../_images/1742ca0ec1cb2f331f1f6cf49b76e16a11cb8e200cea2574d540e253787e931e.png" />
+<img alt="../_images/9c261d72a866ee41bf31090b839b12b7ca1c8ad53be1c2f2e07a071224099272.png" src="../_images/9c261d72a866ee41bf31090b839b12b7ca1c8ad53be1c2f2e07a071224099272.png" />
 </div>
 </div>
 </section>
@@ -2044,7 +2025,7 @@ u_R(\pi_0, \boldsymbol{\pi})
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_6786/2611206003.py:23: FutureWarning: The default fill_method=&#39;pad&#39; in DataFrame.pct_change is deprecated and will be removed in a future version. Either fill in any non-leading NA values prior to calling pct_change or specify &#39;fill_method=None&#39; to not fill NA values.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_6787/2611206003.py:23: FutureWarning: The default fill_method=&#39;pad&#39; in DataFrame.pct_change is deprecated and will be removed in a future version. Either fill in any non-leading NA values prior to calling pct_change or specify &#39;fill_method=None&#39; to not fill NA values.
   df_rate = df_price[[symbol_M, symbol_m]].pct_change(1)
 </pre></div>
 </div>
@@ -2093,7 +2074,7 @@ u_R(\pi_0, \boldsymbol{\pi})
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>α=0.000321, β=0.708
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>α=0.000307, β=0.709
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Axes: xlabel=&#39;^N225&#39;, ylabel=&#39;9983.T&#39;&gt;
@@ -2206,7 +2187,8 @@ u_R(\pi_0, \boldsymbol{\pi})
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -2301,8 +2283,8 @@ By mitama
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
 
   <footer class="bd-footer">
   </footer>
