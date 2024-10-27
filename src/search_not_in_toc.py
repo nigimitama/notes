@@ -13,7 +13,6 @@ with open(book_dir / "_toc.yml", "r") as f:
 
 
 for part in toc["parts"]:
-    print(part["caption"], "-"*10)
 
     files = []
     for chapter in part["chapters"]:
@@ -35,7 +34,8 @@ for part in toc["parts"]:
                       for path in parent_dir.glob("*/*.ipynb") if valid_path(path)]
 
     files_not_in = set(detected_files) - set(files)
-
-    print(f"{len(files_not_in)} files are detected")
-    for file in files_not_in:
-        print(file)
+    if len(files_not_in) != 0:
+        print(part["caption"], "-"*10)
+        print(f"{len(files_not_in)} files are detected")
+        for file in files_not_in:
+            print(file)
