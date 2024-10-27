@@ -20,7 +20,7 @@
 - [](mathematics/calculus/index)
 - [](mathematics/mathematical_optimization/index)
 - [](mathematics/applied_math/index)
-- [](mathematics/applied_math/exercise/index)
+- [](mathematics/probability_theory/index)
 :::
 
 :::{grid-item-card}
@@ -97,6 +97,7 @@
 - [](machine_learning/linear_models/index)
 - [](machine_learning/svm)
 - [](machine_learning/trees/index)
+- [](machine_learning/boosting)
 - [](machine_learning/naive_bayes)
 - [](machine_learning/bayesian_network)
 - [](machine_learning/imbalanced_data)
