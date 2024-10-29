@@ -19,6 +19,9 @@
 - [](mathematics/linear_algebra/index)
 - [](mathematics/calculus/index)
 - [](mathematics/mathematical_optimization/index)
+- [](mathematics/applied_math/index)
+- [](mathematics/applied_math/exercise/index)
+- [](mathematics/probability_theory/index)
 :::
 
 :::{grid-item-card}
@@ -37,12 +40,14 @@
 - [](statistics/asymptotic_theory/index)
 - [](statistics/bayes_statistics/index)
 - [](statistics/done_wrong)
+- [](statistics/visualization)
 :::
 
 :::{grid-item-card}
 :columns: 6
 統計モデリング
 
+- [](statistical_modeling/lowess)
 - [](statistical_modeling/factor_analysis)
 - [](statistical_modeling/gaussian_process)
 - [](statistical_modeling/quantile_regression)
@@ -53,6 +58,7 @@
 - [](statistical_modeling/time_series_analysis/index)
 - [](statistical_modeling/symbolic_data_analysis)
 - [](statistical_modeling/semiparametric/index)
+- [](statistical_modeling/evaluation/index)
 :::
 
 :::{grid-item-card}
@@ -79,6 +85,7 @@
 - [](econometrics/causal_machine_learning/index)
 - [](econometrics/causal_discovery)
 - [](econometrics/uplift_modeling)
+- [](econometrics/sensitivity_analysis)
 - [](econometrics/literatures)
 :::
 
@@ -86,6 +93,7 @@
 :columns: 6
 機械学習
 
+- [](machine_learning/statistical_learning_theory/index)
 - [](machine_learning/unsupervised_learning/index)
 - [](machine_learning/linear_models/index)
 - [](machine_learning/svm)
@@ -136,7 +144,7 @@
 - [](natural_language_processing/embedding)
 - [](natural_language_processing/rnn)
 - [](natural_language_processing/latent_dirichlet_allocation)
-- [](natural_language_processing/document_understanding)
+- [](natural_language_processing/task/index)
 - [](natural_language_processing/large_language_models/index)
 :::
 
@@ -164,6 +172,14 @@
 
 :::{grid-item-card}
 :columns: 6
+データ分析のビジネス応用
+
+- [](applied_data_science/data_management)
+- [](applied_data_science/type_of_applications)
+:::
+
+:::{grid-item-card}
+:columns: 6
 ビジネス関連知識
 
 - [](business/revenue_structure)
@@ -171,6 +187,7 @@
 - [](business/product_management/index)
 - [](business/project_management/index)
 - [](business/business_administration/index)
+- [](business/document_management)
 :::
 
 :::{grid-item-card}
@@ -179,15 +196,9 @@
 
 - [](soft_skills/logic/index)
 - [](soft_skills/negotiation)
+- [](soft_skills/harvard_negotiation)
 - [](soft_skills/leadership)
 - [](soft_skills/writing)
-:::
-
-:::{grid-item-card}
-:columns: 6
-データマネジメント
-
-- [](data_management/introduction)
 :::
 
 :::{grid-item-card}
