@@ -20,6 +20,7 @@
 - [](mathematics/calculus/index)
 - [](mathematics/mathematical_optimization/index)
 - [](mathematics/applied_math/index)
+- [](mathematics/applied_math/exercise/index)
 - [](mathematics/probability_theory/index)
 :::
 
@@ -92,12 +93,11 @@
 :columns: 6
 機械学習
 
-- [](machine_learning/statistical_learning_theory)
+- [](machine_learning/statistical_learning_theory/index)
 - [](machine_learning/unsupervised_learning/index)
 - [](machine_learning/linear_models/index)
 - [](machine_learning/svm)
 - [](machine_learning/trees/index)
-- [](machine_learning/boosting)
 - [](machine_learning/naive_bayes)
 - [](machine_learning/bayesian_network)
 - [](machine_learning/imbalanced_data)
@@ -187,6 +187,7 @@
 - [](business/product_management/index)
 - [](business/project_management/index)
 - [](business/business_administration/index)
+- [](business/document_management)
 :::
 
 :::{grid-item-card}
