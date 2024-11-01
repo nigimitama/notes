@@ -98,6 +98,7 @@
 - [](machine_learning/linear_models/index)
 - [](machine_learning/svm)
 - [](machine_learning/trees/index)
+- [](machine_learning/knn)
 - [](machine_learning/naive_bayes)
 - [](machine_learning/bayesian_network)
 - [](machine_learning/imbalanced_data)

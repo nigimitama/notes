@@ -73,6 +73,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'deep_learning/theory';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -521,6 +523,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/tabular_data_and_trees.html">なぜTree-based modelはDeep Learningよりテーブルデータに強いのか</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning/knn.html">kNN（k最近傍法）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../machine_learning/naive_bayes.html">ナイーブベイズ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../machine_learning/bayesian_network.html">ベイジアンネットワーク</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../machine_learning/imbalanced_data.html">不均衡データ</a></li>
@@ -924,7 +927,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">万能近似能力</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">普遍近似性</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deep">Deepは不連続な関数も近似できる</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
 </ul>
@@ -942,11 +945,31 @@
 <h1>深層学習の理論<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <p>深層学習はなぜうまくいくのか？についての理論的な考察のまとめ</p>
 <section id="id2">
-<h2>万能近似能力<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>普遍近似性<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>80年代に普遍近似性 (Universal Approximation Property, or Universality)という性質があることが示された</p>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <p class="sd-card-text">無限のデータと素子があれば、2層のニューラルネットワークは任意の関数を任意の精度で近似できる</p>
 <p class="sd-card-text">[Hecht-Nielsen,1987][Cybenko,1989]</p>
+</div>
+</div>
+<p>以下のSNNなどはわかりやすいが、関数の和で関数近似するFourier変換などと似た構造</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+浅いニューラルネット (shallow newral network:SNN)</div>
+<ul class="simple">
+<li><p class="sd-card-text">緩増加超関数（”活性化関数”） <span class="math notranslate nohighlight">\(\sigma: \mathbb{R} \rightarrow \mathbb{C}\)</span> を固定する.</p>
+<ul>
+<li><p class="sd-card-text">例えば<span class="math notranslate nohighlight">\(\exp \left(-t^2 / 2\right), \tanh (t), \max \{0, t\}\)</span>(=”ReLU”)</p></li>
+</ul>
+</li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{SNN}(\boldsymbol{x} ; \boldsymbol{\theta}):=\sum_{i=1}^p c_i \sigma\left(\boldsymbol{a}_i \cdot \boldsymbol{x}-b_i\right), \quad \boldsymbol{x} \in \mathbb{R}^m
+\]</div>
+<p class="sd-card-text">ここで <span class="math notranslate nohighlight">\(\boldsymbol{\theta}=\left\{\left(\boldsymbol{a}_i, b_i, \boldsymbol{c}_i\right)\right\}_{i=1}^p \subset \mathbb{R}^m \times \mathbb{R} \times \mathbb{R}\)</span> はパラメータ</p>
 </div>
 </div>
 </section>
@@ -960,6 +983,7 @@
 <ul class="simple">
 <li><p><a class="reference external" href="https://ibis.t.u-tokyo.ac.jp/suzuki/lecture/2023/TohokuUniv/%E6%9D%B1%E5%8C%97%E5%A4%A7%E5%AD%A62023.pdf">鈴木 (2023) 深層学習の数理</a>（スライド）</p></li>
 <li><p><a class="reference external" href="https://www.amazon.co.jp/dp/B09FPBQM9C">今泉允聡. (2021). 深層学習の原理に迫る　数学の挑戦. 岩波書店.</a></p></li>
+<li><p><a class="reference external" href="https://www.youtube.com/watch?v=z8TXubu3Uko&amp;amp;ab_channel=OCAMI_math">積分表現でニューラルネットを理解する（園田 翔 氏、FD研修会「人工知能と数学」） - YouTube</a></p></li>
 </ul>
 </section>
 </section>
@@ -1011,7 +1035,7 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">万能近似能力</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">普遍近似性</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deep">Deepは不連続な関数も近似できる</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
 </ul>
@@ -1038,7 +1062,7 @@ By mitama
 
   <p class="copyright">
     
-      © Copyright 2023.
+      © Copyright 2024.
       <br/>
     
   </p>
