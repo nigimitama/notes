@@ -576,6 +576,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../deep_learning/rnn/rnn.html">RNN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../deep_learning/rnn/lstm.html">LSTM</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../deep_learning/rnn/gru.html">GRU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deep_learning/rnn/rnn_derivatives.html">RNNの派生手法</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../deep_learning/transformer/index.html">Transformer</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -671,10 +672,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../soft_skills/logic/fallacy.html">誤謬論</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../soft_skills/writing.html">文章作成</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../soft_skills/presentation.html">プレゼンテーション</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../soft_skills/negotiation.html">交渉 / 人を巻き込む</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../soft_skills/harvard_negotiation.html">『ハーバード流交渉術』</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../soft_skills/leadership.html">リーダーシップ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../soft_skills/writing.html">文章作成</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ソフトウェア工学</span></p>
 <ul class="nav bd-sidenav">
@@ -763,6 +765,7 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../financial_economics/investment_strategies/index.html">投資戦略</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../financial_economics/investment_strategies/dogs_of_dow.html">「ダウの犬」戦略</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/investment_strategies/performance_based_investment.html">業績ベースの投資</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../financial_economics/libraries.html">金融系ライブラリ</a></li>
@@ -1279,7 +1282,22 @@ R(h_S) - R(h_0)
 </section>
 <section id="id14">
 <h2>正則化<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
-<p><strong>正則化 (regularization)</strong> は適切な大きさの仮説集合を学習するための代表的な方法。</p>
+<p><strong>正則化 (regularization)</strong> は適切な大きさの仮説集合を学習するための代表的な方法。小さな仮説集合で対応できるデータに対して、大きな仮説集合から仮説を選ぶことに対してペナルティを掛ける。</p>
+<p>複数の仮説集合 <span class="math notranslate nohighlight">\(\mathcal{H}_1 \subset \cdots \subset \mathcal{H}_M\)</span> を用いて学習を行うとする。仮説 <span class="math notranslate nohighlight">\(h\)</span> に対するペナルティ <span class="math notranslate nohighlight">\(\Phi: \mathcal{H}_M \rightarrow \mathbb{R}_{\geq 0}\)</span> として、 <span class="math notranslate nohighlight">\(m_1&lt;m_2\)</span> に対して</p>
+<div class="math notranslate nohighlight">
+\[
+h \in \mathcal{H}_{m_1}, \quad h^{\prime} \in \mathcal{H}_{m_2} \backslash \mathcal{H}_{m_1} \Longrightarrow \Phi(h) \leq \Phi\left(h^{\prime}\right)
+\]</div>
+<p>を満たすような関数 <span class="math notranslate nohighlight">\(\Phi\)</span> を考えると、 大きな仮説集合に含まれるほうがより大きなペナルティが課されることになる。</p>
+<p>仮説の探索範囲は経験損失<span class="math notranslate nohighlight">\(\hat{R}(h)\)</span>を小さくするように学習する</p>
+<div class="math notranslate nohighlight">
+\[
+\min_{h \in \mathcal{H}_M}
+\hat{R}(h) + \lambda \cdot \Phi(h)
+\]</div>
+<p>正則化パラメータ<span class="math notranslate nohighlight">\(\lambda \geq 0\)</span>を求める方法は様々なものが提案されている。</p>
+<p>「データ数が十分大きいときは、大きな仮説集合を用いても予測誤差があまり大きくならない」という性質があるため、正則化パラメータをデータ数に依存するように定義して適切なオーダーで$\lambda \to 0 ~ (n \to \infty)とする方法が提案されている。この方法は予測誤差を理論的に評価しやすいという利点がある。</p>
+<p>しかし実用上は交差検証法（Cross-Validation）を用いて決める方法が有用である。</p>
 </section>
 </section>
 
