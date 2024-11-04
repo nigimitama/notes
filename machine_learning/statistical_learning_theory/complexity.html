@@ -446,7 +446,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/ols_robust_standard_error.html">OLSのロバスト標準誤差</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/log_transformation.html">対数変換</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/omitted_variable_bias.html">欠落変数バイアス</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/fwl.html">FWL定理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/fwl_theorem.html">FWL定理</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/propensity_score.html">傾向スコア</a></li>
@@ -931,11 +931,15 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vc">VC次元</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">サウアーの補題</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">VC次元と予測誤差の関係</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-function">例：step function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#intervals">例：intervals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">例：3点</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">サウアーの補題</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">VC次元と予測誤差の関係</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pac">PAC学習との関係</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -966,8 +970,8 @@
 \[
 \Pi_{\mathcal{H}}(x_1, \ldots, x_n) = |\{(h(x_1), \ldots, h(x_n)) \in \mathcal{Y}^n \mid h \in \mathcal{H}\}|
 \]</div>
-<p>とおく。
-定義より</p>
+<p>とおく（英語だとGrowth Functionと呼ばれる様子）。</p>
+<p>定義より</p>
 <div class="math notranslate nohighlight">
 \[
 \Pi_{\mathcal{H}}(x_1, \ldots, x_n) \leq 2^n
@@ -988,8 +992,100 @@ n \in \mathbb{N} \left| ~ \max _{x_1, \ldots, x_n \in \mathcal{X}} \Pi_{\mathcal
 \]</div>
 <p>と定義される。また、任意の <span class="math notranslate nohighlight">\(n \in \mathbb{N}\)</span> に対して <span class="math notranslate nohighlight">\(x_1, \ldots, x_n \in \mathcal{X}\)</span> が存在して <span class="math notranslate nohighlight">\(\Pi_{\mathcal{H}}\left(x_1, \ldots, x_n\right)=2^n\)</span> が成り立つときは <span class="math notranslate nohighlight">\(\operatorname{VCdim}(\mathcal{H})=\infty\)</span> と定義する。</p>
 <p>VC次元は言葉で説明すると「仮説集合<span class="math notranslate nohighlight">\(\mathcal{H}\)</span>のもとで、ラベルのすべての組み合わせを網羅できる（どんなラベル付けにも対応可能な仮説が存在する）データ数の最大値」となる。</p>
+<section id="step-function">
+<h3>例：step function<a class="headerlink" href="#step-function" title="Link to this heading">#</a></h3>
+<p>1直線上に並ぶ点で、step functionのようにラベルが変化する（positive raysと呼ばれる？）なら、1つの点で分離できる。</p>
+<p><span class="math notranslate nohighlight">\(\mathcal{H}\)</span> が <span class="math notranslate nohighlight">\(h: \mathbb{R} \to \{0, 1\}\)</span>なる関数、具体的には <span class="math notranslate nohighlight">\(h(x) = \mathbb{1}(x \geq a)\)</span> をすべて含むとする。</p>
+<p><span class="math notranslate nohighlight">\(n\)</span>個のデータ点を2つの領域に分類するとき、<span class="math notranslate nohighlight">\(n+1\)</span>個のパターンがある。</p>
+<p>Growth functionは<span class="math notranslate nohighlight">\(\Pi_{\mathcal{H}}(x_1, \ldots, x_n) = n + 1\)</span>となり、<span class="math notranslate nohighlight">\(n=0,1\)</span>のときのみ<span class="math notranslate nohighlight">\(\Pi_{\mathcal{H}}(x_1, \ldots, x_n) = 2^n\)</span>なので、<span class="math notranslate nohighlight">\(\operatorname{VCdim}(\mathcal{H})=1\)</span>となる。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">])</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mf">4.5</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">a</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">head_width</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">head_length</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">y_</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">y_</span> <span class="o">==</span> <span class="n">y</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">]),</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;h(x)=</span><span class="si">{</span><span class="n">y_</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticklabels</span><span class="o">=</span><span class="p">[],</span> <span class="n">xticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">xticklabels</span><span class="o">=</span><span class="p">[],</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;positive rays&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/2364fe7821c85646122819ae3e96c84b2c308df90dc485929f832d1cf9acc9b4.png" src="../../_images/2364fe7821c85646122819ae3e96c84b2c308df90dc485929f832d1cf9acc9b4.png" />
+</div>
+</div>
+</section>
+<section id="intervals">
+<h3>例：intervals<a class="headerlink" href="#intervals" title="Link to this heading">#</a></h3>
+<p>1直線上で、ある区間だけ<span class="math notranslate nohighlight">\(y=1\)</span>、他が<span class="math notranslate nohighlight">\(y=0\)</span>となる場合。</p>
+<p>Growth functionは</p>
+<div class="math notranslate nohighlight">
+\[
+\Pi_{\mathcal{H}}(x_1, \ldots, x_n) = \binom{n+1}{2}+1=\frac{1}{2} n^2+\frac{1}{2} n+1
+\]</div>
+<p>となり、<span class="math notranslate nohighlight">\(n=0,1,2\)</span>のときのみ<span class="math notranslate nohighlight">\(\Pi_{\mathcal{H}}(x_1, \ldots, x_n) = 2^n\)</span>なので、<span class="math notranslate nohighlight">\(\operatorname{VCdim}(\mathcal{H})=2\)</span>となる。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;=</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">head_width</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">head_length</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">y_</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">y_</span> <span class="o">==</span> <span class="n">y</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">]),</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;h(x)=</span><span class="si">{</span><span class="n">y_</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticklabels</span><span class="o">=</span><span class="p">[],</span> <span class="n">xticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">xticklabels</span><span class="o">=</span><span class="p">[],</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;positive intervals&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/272722f9c24c065d9b71e4c8f0b490c78481ee58c8cf8ccedf5165e9f86401bb.png" src="../../_images/272722f9c24c065d9b71e4c8f0b490c78481ee58c8cf8ccedf5165e9f86401bb.png" />
+</div>
+</div>
+</section>
 <section id="id2">
-<h3>サウアーの補題<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<h3>例：3点<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>一直線上にない3点までなら、1つの直線でグループを2つに分けられる。4点になると分けられないものが出てくる（線形分離不可能問題）</p>
+<p><a class="reference external" href="https://mathwords.net/vcjigen#google_vignette">VC次元の意味と例 - 具体例で学ぶ数学</a></p>
+</section>
+<section id="id3">
+<h3>サウアーの補題<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(\mathcal{H}\)</span>のVC次元を<span class="math notranslate nohighlight">\(d\)</span>とおくと、<span class="math notranslate nohighlight">\(d\leq n\)</span>なら<span class="math notranslate nohighlight">\(\Pi_{\mathcal{H}}(x_1, \ldots, x_n)\)</span>は高々<span class="math notranslate nohighlight">\(d\)</span>次の多項式オーダー<span class="math notranslate nohighlight">\(O(n^d)\)</span>となる。</p>
 <div class="admonition-sauer-s-lemma admonition">
 <p class="admonition-title">サウアーの補題（Sauer’s lemma）</p>
@@ -1001,8 +1097,8 @@ n \in \mathbb{N} \left| ~ \max _{x_1, \ldots, x_n \in \mathcal{X}} \Pi_{\mathcal
 <p>が成り立つ。 ここで <span class="math notranslate nohighlight">\(e\)</span> はネイピア数 <span class="math notranslate nohighlight">\((2.718 \cdots)\)</span>である。</p>
 </div>
 </section>
-<section id="id3">
-<h3>VC次元と予測誤差の関係<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>VC次元と予測誤差の関係<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <div class="admonition- admonition">
 <p class="admonition-title">定理</p>
 <p>2 値ラベルに値をとる仮説集合 <span class="math notranslate nohighlight">\(\mathcal{H} \subset\{h: \mathcal{X} \rightarrow\{+1,-1\}\}\)</span> の VC次元を <span class="math notranslate nohighlight">\(d&lt;\infty\)</span> とする。
@@ -1044,11 +1140,16 @@ R(h_S) \leq R(h_0) + O_p \left(\sqrt{\frac{\log(n/d)}{n/d}} \right)
 \]</div>
 <p>となり、予測誤差はデータ数とVC次元の比<span class="math notranslate nohighlight">\(n/d\)</span>と関連していることがわかる。</p>
 </section>
+<section id="pac">
+<h3>PAC学習との関係<a class="headerlink" href="#pac" title="Link to this heading">#</a></h3>
+<p>VC次元は、PAC学習の理論を仮説集合が有限でない場合にも拡張する際に登場する指標らしい（<a class="reference external" href="https://mathwords.net/vcjigen">VC次元の意味と例 - 具体例で学ぶ数学</a>）</p>
 </section>
-<section id="id4">
-<h2>参考<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+</section>
+<section id="id5">
+<h2>参考<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.mathematik.uni-muenchen.de/~deckert/teaching/SS17/ATML/media/VC_dimension.pdf">https://www.mathematik.uni-muenchen.de/~deckert/teaching/SS17/ATML/media/VC_dimension.pdf</a></p></li>
+<li><p><a class="reference external" href="https://speakerdeck.com/kmatsui/tong-ji-de-xue-xi-li-lun-du-mi-chapter-2?slide=10">統計的学習理論読み Chapter 2 - Speaker Deck</a></p></li>
 </ul>
 </section>
 </section>
@@ -1101,11 +1202,15 @@ R(h_S) \leq R(h_0) + O_p \left(\sqrt{\frac{\log(n/d)}{n/d}} \right)
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vc">VC次元</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">サウアーの補題</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">VC次元と予測誤差の関係</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-function">例：step function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#intervals">例：intervals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">例：3点</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">サウアーの補題</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">VC次元と予測誤差の関係</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pac">PAC学習との関係</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
 </ul>
   </nav></div>
 
