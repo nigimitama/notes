@@ -30,7 +30,7 @@ data = {"root": "index", "parts": []}
 part_dirs = get_dirs(book_dir)
 part_dirs = [part_dir for part_dir in part_dirs if part_dir.stem == "mathematics"]
 for part_dir in part_dirs:
-    # get caption name
+    # get caption name: _config.ymlに name: 数学 など名前を入れてる想定
     config_path = part_dir / "_config.yml"
     if not config_path.exists():
         continue
