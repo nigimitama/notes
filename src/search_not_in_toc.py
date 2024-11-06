@@ -30,8 +30,8 @@ for part in toc["parts"]:
             and ("_build" not in str(path))
 
     parent_dir = Path(part["chapters"][0]["file"]).parent
-    detected_files = [str(path).replace(".ipynb", "")
-                      for path in parent_dir.glob("*/*.ipynb") if valid_path(path)]
+    notebooks = list(parent_dir.glob("*.ipynb")) + list(parent_dir.glob("*/*.ipynb"))
+    detected_files = [str(path).replace(".ipynb", "") for path in notebooks if valid_path(path)]
 
     files_not_in = set(detected_files) - set(files)
     if len(files_not_in) != 0:
