@@ -117,6 +117,10 @@
 深層学習
 
 - [](deep_learning/history)
+- [](deep_learning/theory)
+- [](deep_learning/intro_with_keras)
+- [](deep_learning/rola)
+- [](deep_learning/neural_network)
 - [](deep_learning/dl_and_tabular_data)
 - [](deep_learning/dnn/index)
 - [](deep_learning/cnn/index)
@@ -157,6 +161,7 @@
 - [](image_processing/rotation_correction)
 - [](image_processing/distortion_correction)
 - [](image_processing/similarity_and_hashing)
+- [](image_processing/sample_images)
 :::
 
 :::{grid-item-card}
