@@ -483,6 +483,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/causal_discovery.html">統計的因果探索</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/uplift_modeling.html">Uplift Modeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/sensitivity_analysis.html">感度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../econometrics/causal_clustering.html">Causal Clustering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../econometrics/literatures.html">よさそうな文献・サイト</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">機械学習</span></p>
@@ -1172,19 +1173,27 @@ Prediction: programs
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 0.6617,  0.3486, -1.0331, -0.4739,  1.0661,  0.6050, -0.3340, -1.5774,
-          0.2446,  1.1877,  1.5565, -1.1076, -1.0994, -0.5197,  0.8741, -2.2575,
-          1.2637, -0.9492,  1.1355, -0.6868, -1.3970, -0.8384,  0.5177,  0.6525,
-          0.1057, -0.0345, -0.9758,  0.8287,  0.4829,  1.3485,  0.9290,  0.2239,
-          0.6299, -0.4877, -0.7850,  0.7878,  0.2627, -0.8264, -0.1958,  1.1148,
-         -0.0519,  0.7540,  0.6878, -0.5800,  0.3497,  0.5044, -1.6414,  0.1578,
-          0.5194, -0.7740, -0.1487,  1.9909,  0.8621, -0.8284,  0.2999,  0.1978,
-          2.5347,  0.5927,  0.9665, -1.2093, -0.1924,  0.0213,  0.4572, -0.1203,
-         -0.8613,  0.0189,  1.3262, -0.5439,  0.1381,  2.0210,  1.1735, -0.8791,
-         -0.3794, -0.3829, -2.6915,  1.1597, -0.6064,  1.2954, -0.6558,  1.2598,
-          1.5076, -0.1998,  1.6459, -0.7582, -0.7402,  2.1884,  0.5242,  0.5815,
-         -0.1514, -1.2157,  0.9075, -0.4046,  0.4471,  0.8983, -1.2008, -0.2771,
-          1.4165,  1.4747, -1.6253, -0.4317]], grad_fn=&lt;ViewBackward0&gt;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 3.9881e-01,  6.2452e-01, -1.1084e+00, -1.1200e+00, -6.0422e-02,
+         -7.3747e-01, -9.0984e-01, -1.9576e+00,  1.0139e+00, -8.0440e-01,
+         -5.8349e-01, -4.4556e-01,  3.0589e-01,  3.9945e-01, -9.9356e-01,
+         -1.4832e+00,  1.0197e+00, -1.8413e-01, -6.6105e-01, -9.9198e-01,
+          3.7945e-01,  2.1215e-01, -3.0102e-01,  2.3588e+00,  1.1667e+00,
+          8.9651e-01,  7.2925e-01, -3.9957e-01,  1.2020e+00, -8.4370e-01,
+         -2.6627e-01,  1.1234e-01,  7.9007e-02, -1.0174e+00,  1.1468e+00,
+          1.0775e+00,  1.0263e+00,  3.2388e-01,  6.4612e-01,  4.2239e-01,
+          2.7894e-01,  1.4703e+00,  9.7504e-01,  6.7296e-01,  1.3700e+00,
+          7.2614e-01, -5.5298e-02,  8.5175e-01, -6.2324e-03,  1.0030e+00,
+         -8.0524e-01, -3.9967e-01, -1.9434e+00, -1.3882e+00, -1.0538e+00,
+          4.6147e-01,  6.4435e-01,  2.4107e+00,  5.4749e-01, -1.7069e-02,
+         -7.4553e-01, -6.3741e-01,  1.0989e+00,  4.6856e-01, -2.5754e-03,
+          1.6284e-01, -1.3788e-01, -4.6672e-03,  5.7847e-01,  8.6319e-01,
+          1.1051e+00, -6.2413e-01,  2.1603e-01, -6.1904e-01, -2.6393e-01,
+         -6.0829e-01, -2.9117e-01, -1.0159e+00, -6.2219e-01, -1.5158e-01,
+          4.1306e-01, -7.6565e-01,  5.4166e-01,  4.1450e-01, -3.4743e-01,
+         -1.7211e-01,  1.5668e+00,  7.7914e-01, -3.9597e-01,  1.3677e-01,
+         -2.2437e-01,  1.5965e+00,  1.0070e-03,  1.0328e+00,  4.1281e-01,
+         -3.6563e-01, -7.7755e-01, -8.9329e-01,  9.0462e-01,  2.8331e-01]],
+       grad_fn=&lt;ViewBackward0&gt;)
 </pre></div>
 </div>
 </div>
@@ -1288,9 +1297,9 @@ p(w_O|w_I) = \frac{\exp( v_{w_O}^T v_{w_I} )}{\sum^W_{w=1} \exp( v_{w}^T v_{w_I}
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ruler: -0.0263
-male: -0.0251
 female: -0.0395
 queen: 0.00656
+male: -0.0251
 </pre></div>
 </div>
 </div>

@@ -73,6 +73,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'mathematics/applied_math/fourier_analysis';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -481,6 +483,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/causal_discovery.html">統計的因果探索</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/uplift_modeling.html">Uplift Modeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/sensitivity_analysis.html">感度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/causal_clustering.html">Causal Clustering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/literatures.html">よさそうな文献・サイト</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">機械学習</span></p>
@@ -912,7 +915,9 @@
 <button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
 </button>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -928,6 +933,16 @@
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">フーリエ級数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">複素数の指数関数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">フーリエ級数の複素表示</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -939,7 +954,150 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>フーリエ解析<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<p>フーリエ解析（Fourier analysis）</p>
+<p>フーリエ解析（Fourier analysis）：信号を異なる周波数の正弦波（sin）の重ね合わせとして表現すること</p>
+<p>例えば画像を周波数の表現にして、周波数をフーリエ解析で分解したりする。</p>
+<section id="id2">
+<h2>フーリエ級数<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>幅<span class="math notranslate nohighlight">\(T\)</span>の区間<span class="math notranslate nohighlight">\([-T/2, T/2]\)</span>における連続関数<span class="math notranslate nohighlight">\(f(t)\)</span>はフーリエ級数に展開できる</p>
+<div class="math notranslate nohighlight">
+\[
+f(t)=\frac{a_0}{2}+\sum_{k=1}^{\infty}\left(a_k \cos k \omega_o t+b_k \sin k \omega_o t\right), \quad-\frac{T}{2} \leq t \leq \frac{T}{2}
+\]</div>
+<p>フーリエ係数は</p>
+<div class="math notranslate nohighlight">
+\[
+a_k=\frac{2}{T} \int_{-T / 2}^{T / 2} f(t) \cos k \omega_o t \mathrm{~d} t, \quad b_k=\frac{2}{T} \int_{-T / 2}^{T / 2} f(t) \sin k \omega_o t \mathrm{~d} t
+\]</div>
+<p>である。
+ここで</p>
+<div class="math notranslate nohighlight">
+\[
+\omega_o=\frac{2 \pi}{T}
+\]</div>
+<p>である。これを <strong>基本周波数</strong> といい、フーリエ級数は関数<span class="math notranslate nohighlight">\(f(t)\)</span>を<span class="math notranslate nohighlight">\(\omega_o\)</span>の整数倍の周波数の正弦波の重ね合わせとして表現する。</p>
+<p><span class="math notranslate nohighlight">\(a_0/2\)</span>を <strong>直流成分</strong> と呼び、<span class="math notranslate nohighlight">\(\omega_o\)</span>の<span class="math notranslate nohighlight">\(k\)</span>倍の周波数の振動を第<span class="math notranslate nohighlight">\(k\)</span> <strong>高調波</strong> と呼ぶ。以下では<span class="math notranslate nohighlight">\(t\)</span>を「時刻」とみなし、<span class="math notranslate nohighlight">\(f(t)\)</span>を「信号」と呼ぶ。</p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>周波数は振動数（ヘルツ Hz：1秒間における振動数）ではない</p>
+<p>波の数を数えるとき、1周期を1個とするのではなく、<span class="math notranslate nohighlight">\(2\pi\)</span>と数える（単位はラジアン）。波を数える角度を <strong>位相（角）</strong> と呼ぶ</p>
+</aside>
+</section>
+<section id="id3">
+<h2>複素数の指数関数<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>指数部が虚数の指数関数 <span class="math notranslate nohighlight">\(e^{i \theta}\)</span> を次の複素数と定義する。</p>
+<div class="math notranslate nohighlight">
+\[
+e^{i \theta}=\cos \theta+i \sin \theta
+\]</div>
+<p>これは <strong>オイラーの式</strong> と呼ばれる式で、複素平面の単位円上の実軸から角度<span class="math notranslate nohighlight">\(\theta\)</span>の点を表す。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+定理</div>
+<div class="math notranslate nohighlight">
+\[
+e^{i \theta} e^{i \phi}=e^{i(\theta+\phi)}
+\]</div>
+<p class="sd-card-text">が成り立つ。</p>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">定義より次のように変形できる</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+e^{i \theta} e^{i \phi} &amp; =(\cos \theta+i \sin \theta)(\cos \phi+i \sin \phi) \\
+&amp; =(\cos \theta \cos \phi-\sin \theta \sin \phi)+i(\cos \theta \sin \phi+\sin \theta \cos \phi)\\
+e^{i(\theta+\phi)} &amp;=\cos (\theta+\phi)+i \sin (\theta+\phi)\\
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">両者が等しいことは、三角関数の加法定理</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\cos (\theta+\phi) &amp;=\cos \theta \cos \phi-\sin \theta \sin \phi\\
+\sin (\theta+\phi) &amp;=\cos \theta \sin \phi+\sin \theta \cos \phi
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">よりわかる</p>
+</div>
+</details><div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+定理</div>
+<div class="math notranslate nohighlight">
+\[
+\cos \theta=\frac{e^{i \theta}+e^{-i \theta}}{2}
+, \quad
+\sin \theta=\frac{e^{i \theta}-e^{-i \theta}}{2 i}
+\]</div>
+<p class="sd-card-text">が成り立つ。</p>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">オイラーの式 およびその式の <span class="math notranslate nohighlight">\(\theta\)</span> を <span class="math notranslate nohighlight">\(-\theta\)</span> に置き換えた式</p>
+<div class="math notranslate nohighlight">
+\[
+e^{i \theta}=\cos \theta+i \sin \theta
+, \quad
+e^{-i \theta}=\cos \theta-i \sin \theta
+\]</div>
+<p class="sd-card-text">を使うと、</p>
+<div class="math notranslate nohighlight">
+\[
+e^{i \theta} + e^{-i \theta}
+= \cos \theta + i \sin \theta + \cos \theta-i \sin \theta
+= 2 \cos \theta
+\]</div>
+<p class="sd-card-text">より</p>
+<div class="math notranslate nohighlight">
+\[
+\cos \theta=\frac{e^{i \theta}+e^{-i \theta}}{2}
+\]</div>
+<p class="sd-card-text">が得られる。また</p>
+<div class="math notranslate nohighlight">
+\[
+e^{i \theta} - e^{-i \theta}
+= \cos \theta + i \sin \theta - \cos \theta + i \sin \theta
+= 2i \sin \theta
+\]</div>
+<p class="sd-card-text">より</p>
+<div class="math notranslate nohighlight">
+\[
+\sin \theta=\frac{e^{i \theta}-e^{-i \theta}}{2 i}
+\]</div>
+<p class="sd-card-text">が得られる。</p>
+</div>
+</details></section>
+<section id="id4">
+<h2>フーリエ級数の複素表示<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+\cos \theta=\frac{e^{i \theta}+e^{-i \theta}}{2}, \quad \sin \theta=\frac{e^{i \theta}-e^{-i \theta}}{2 i}
+\]</div>
+<p>を使うと、フーリエ級数は以下のように表すことができる。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+f(t) &amp; =\frac{a_0}{2}+\sum_{k=1}^{\infty}\left(a_k \frac{e^{i k \omega_o t}+e^{-i k \omega_o t}}{2}+b_k \frac{e^{i k \omega_o t}-e^{-i k \omega_o t}}{2 i}\right) \\
+&amp; =\frac{a_0}{2}+\frac{1}{2} \sum_{k=1}^{\infty}\left(\left(a_k-i b_k\right) e^{i k \omega_o t}+\left(a_k+i b_k\right) e^{-i k \omega_o t}\right)=\sum_{k=-\infty}^{\infty} C_k e^{i k \omega_o t}
+\end{aligned}
+\end{split}\]</div>
+<p>ただし</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+C_k=\left\{\begin{array}{cc}
+\left(a_k-i b_k\right) / 2 &amp; k&gt;0 \\
+a_0 / 2 &amp; k=0 \\
+\left(a_{-k}+i b_{-k}\right) / 2 &amp; k&lt;0
+\end{array}\right.
+\end{split}\]</div>
+<p>である</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -996,6 +1154,24 @@
             </div>
             
             
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">フーリエ級数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">複素数の指数関数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">フーリエ級数の複素表示</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

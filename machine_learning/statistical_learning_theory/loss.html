@@ -483,6 +483,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/causal_discovery.html">統計的因果探索</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/uplift_modeling.html">Uplift Modeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/sensitivity_analysis.html">感度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/causal_clustering.html">Causal Clustering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/literatures.html">よさそうな文献・サイト</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">機械学習</span></p>
@@ -941,23 +942,24 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">予測損失</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">経験損失</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">経験損失は予測損失の不偏推定量</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">経験損失は予測損失の一致推定量</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">ベイズ規則</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">0-1損失のベイズ規則</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">二乗損失のベイズ規則</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">ベイズ規則</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">0-1損失のベイズ規則</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">二乗損失のベイズ規則</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">アルゴリズムの評価</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">期待予測損失</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">統計的一致性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">アルゴリズムの評価</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">期待予測損失</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">統計的一致性</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">有限な仮説集合を用いた学習</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">近似誤差と推定誤差のトレードオフ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">有限な仮説集合を用いた学習</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">近似誤差と推定誤差のトレードオフ</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">正則化</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">正則化</a></li>
 </ul>
             </nav>
         </div>
@@ -1014,9 +1016,30 @@ R(h) := E_{(X,Y) \sim D}[\ell(h(X), Y)]
 \]</div>
 <p>となる。したがって経験損失は予測損失の不偏推定量である。</p>
 </section>
-</section>
 <section id="id6">
-<h2>ベイズ規則<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<h3>経験損失は予測損失の一致推定量<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>観測データが独立に同一の分布<span class="math notranslate nohighlight">\(D\)</span>に従うとき、<span class="math notranslate nohighlight">\(\hat{R}(h)\)</span>は<span class="math notranslate nohighlight">\(R(h)\)</span>に確率収束する。分布<span class="math notranslate nohighlight">\(D^n\)</span>のもとで任意の<span class="math notranslate nohighlight">\(\varepsilon &gt; 0\)</span>に対して</p>
+<div class="math notranslate nohighlight">
+\[
+\lim _{n \rightarrow \infty} \operatorname{Pr}_{D^n}
+\left(\left| \widehat{R}(h)-R(h)\right| &gt; \varepsilon \right) = 0
+\]</div>
+<p>が成り立つ。ここで<span class="math notranslate nohighlight">\(\operatorname{Pr}_{D^n}\)</span>は<span class="math notranslate nohighlight">\(D^n\)</span>のもとでの確率。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text">標準的な問題設定ではテストデータと訓練データの分布は同一だが、実応用においては両者の分布が異なることもある。</p>
+<p class="sd-card-text">例えば特徴量の分布が異なるという <strong>共変量シフト（covariate shift）</strong> では、分布の違いを比として誤差関数に重みをつける推定方法がある。</p>
+<p class="sd-card-text">参考：</p>
+<ul class="simple">
+<li><p class="sd-card-text"><a class="reference external" href="https://www.ms.k.u-tokyo.ac.jp/sugi/2006/covariate-shift-jp.pdf">杉山将. (2006). 共変量シフト下での教師付き学習. 日本神経回路学会誌, 13(3), 111-118.</a></p></li>
+<li><p class="sd-card-text"><a class="reference external" href="https://arxiv.org/abs/1602.05352">[1602.05352] Recommendations as Treatments: Debiasing Learning and Evaluation</a></p></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="id7">
+<h2>ベイズ規則<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <div class="admonition- admonition">
 <p class="admonition-title">定義</p>
 <p>損失関数 <span class="math notranslate nohighlight">\(\ell\)</span> を定めたとき、任意の可測関数 <span class="math notranslate nohighlight">\(h: \mathcal{X} \rightarrow \mathcal{Y}\)</span> のもとでの予測損失の下限</p>
@@ -1045,8 +1068,8 @@ R(h)=\mathbb{E}_X [\mathbb{E}_Y[\ell(h(X), Y) \mid X]]
 = \int \ell(\hat{y}, y) ~ d P(y)
 \]</div>
 <p>を最小にする<span class="math notranslate nohighlight">\(\hat{y} \in \mathcal{Y}\)</span>を求める問題を考える</p>
-<section id="id7">
-<h3>0-1損失のベイズ規則<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>0-1損失のベイズ規則<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <p>損失関数として0-1損失 <span class="math notranslate nohighlight">\(\ell(\hat{y}, y) = \mathbf{1}[\hat{y} \neq y]\)</span>を利用するとき、</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1067,9 +1090,16 @@ R(h)=\mathbb{E}_X [\mathbb{E}_Y[\ell(h(X), Y) \mid X]]
 h_0(x) = \mathop{\rm arg~max}\limits_{y\in\mathcal{Y}} P(Y = y | x)
 \]</div>
 <p>となる。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO: 確率の話も含める。PRML</span>
+</pre></div>
+</div>
+</div>
+</div>
 </section>
-<section id="id8">
-<h3>二乗損失のベイズ規則<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>二乗損失のベイズ規則<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <p>損失関数として二乗損失 <span class="math notranslate nohighlight">\(\ell(\hat{y}, y) = (\hat{y} - y)^2\)</span>を利用するとき、</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1111,15 +1141,15 @@ R^* = R\left(h_0\right)
 <p>となる。条件付き分散<span class="math notranslate nohighlight">\(V[Y|x]\)</span>が入力によらず一定の値<span class="math notranslate nohighlight">\(\sigma^2\)</span>をとるとき、ベイズ誤差は<span class="math notranslate nohighlight">\(\sigma^2\)</span>となる。</p>
 </section>
 </section>
-<section id="id9">
-<h2>アルゴリズムの評価<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
-<p>観測したサンプル<span class="math notranslate nohighlight">\(S=\{(X_1, Y_1), \dots, (X_n, Y_n)\}\)</span>から得られる仮説を<span class="math notranslate nohighlight">\(h_S\)</span>とする。</p>
 <section id="id10">
-<h3>期待予測損失<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<h2>アルゴリズムの評価<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<p>観測したサンプル<span class="math notranslate nohighlight">\(S=\{(X_1, Y_1), \dots, (X_n, Y_n)\}\)</span>から得られる仮説を<span class="math notranslate nohighlight">\(h_S\)</span>とする。</p>
+<section id="id11">
+<h3>期待予測損失<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <p>学習された仮説<span class="math notranslate nohighlight">\(h_S\)</span>の評価尺度の1つとして、観測データ<span class="math notranslate nohighlight">\(S\)</span>の分布<span class="math notranslate nohighlight">\(D^n\)</span>に関する予測損失の期待値<span class="math notranslate nohighlight">\(\mathbb{E}_{S \sim D^n}[R(h_S)]\)</span>が考えられる。これは <strong>期待予測損失</strong> と呼ばれる。</p>
 </section>
-<section id="id11">
-<h3>統計的一致性<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>統計的一致性<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <p>別の評価尺度として、<span class="math notranslate nohighlight">\(R(h_S)\)</span>の分布に着目する方法もある。ベイズ誤差<span class="math notranslate nohighlight">\(R^* = \inf_h R(h)\)</span>と<span class="math notranslate nohighlight">\(\delta\in(0,1)\)</span>と<span class="math notranslate nohighlight">\(\varepsilon&gt;0\)</span>に対して</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1138,8 +1168,8 @@ R^* = R\left(h_0\right)
 </div>
 </section>
 </section>
-<section id="id12">
-<h2>有限な仮説集合を用いた学習<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+<section id="id13">
+<h2>有限な仮説集合を用いた学習<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
 <p>仮説集合が有限集合の場合の予測損失の評価について。2値判別問題で考え、入力空間<span class="math notranslate nohighlight">\(\mathcal{X}\)</span>から2値ラベル<span class="math notranslate nohighlight">\(\{+1,-1\}\)</span>への関数<span class="math notranslate nohighlight">\(h\)</span>の有限な仮説集合</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1243,8 +1273,8 @@ R(h_S) = R(h_0) + O_P\left( \sqrt{\frac{\log |\mathcal{H}|}{n} } \right)
 </ul>
 </div>
 </div>
-<section id="id13">
-<h3>近似誤差と推定誤差のトレードオフ<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>近似誤差と推定誤差のトレードオフ<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <p>一般には仮説集合<span class="math notranslate nohighlight">\(\mathcal{H}\)</span>にベイズ規則<span class="math notranslate nohighlight">\(h_0\)</span>が含まれるとは仮定できず、</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1287,8 +1317,8 @@ R(h_S) - R(h_0)
 実用的な方法として正則化法がある。</p>
 </section>
 </section>
-<section id="id14">
-<h2>正則化<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<section id="id15">
+<h2>正則化<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
 <p><strong>正則化 (regularization)</strong> は適切な大きさの仮説集合を学習するための代表的な方法。小さな仮説集合で対応できるデータに対して、大きな仮説集合から仮説を選ぶことに対してペナルティを掛ける。</p>
 <p>複数の仮説集合 <span class="math notranslate nohighlight">\(\mathcal{H}_1 \subset \cdots \subset \mathcal{H}_M\)</span> を用いて学習を行うとする。仮説 <span class="math notranslate nohighlight">\(h\)</span> に対するペナルティ <span class="math notranslate nohighlight">\(\Phi: \mathcal{H}_M \rightarrow \mathbb{R}_{\geq 0}\)</span> として、 <span class="math notranslate nohighlight">\(m_1&lt;m_2\)</span> に対して</p>
 <div class="math notranslate nohighlight">
@@ -1377,23 +1407,24 @@ h \in \mathcal{H}_{m_1}, \quad h^{\prime} \in \mathcal{H}_{m_2} \backslash \math
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">予測損失</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">経験損失</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">経験損失は予測損失の不偏推定量</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">経験損失は予測損失の一致推定量</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">ベイズ規則</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">0-1損失のベイズ規則</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">二乗損失のベイズ規則</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">ベイズ規則</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">0-1損失のベイズ規則</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">二乗損失のベイズ規則</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">アルゴリズムの評価</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">期待予測損失</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">統計的一致性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">アルゴリズムの評価</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">期待予測損失</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">統計的一致性</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">有限な仮説集合を用いた学習</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">近似誤差と推定誤差のトレードオフ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">有限な仮説集合を用いた学習</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">近似誤差と推定誤差のトレードオフ</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">正則化</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">正則化</a></li>
 </ul>
   </nav></div>
 

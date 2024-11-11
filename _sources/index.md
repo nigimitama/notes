@@ -86,6 +86,7 @@
 - [](econometrics/causal_discovery)
 - [](econometrics/uplift_modeling)
 - [](econometrics/sensitivity_analysis)
+- [](econometrics/causal_clustering)
 - [](econometrics/literatures)
 :::
 
