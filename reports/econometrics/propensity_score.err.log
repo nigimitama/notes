@@ -1,0 +1,113 @@
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 1314, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/usr/local/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+  File "/usr/local/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+import numpy as np
+n = 100
+np.random.seed(0)
+x = np.random.normal(loc=10, size=n)
+
+s = x - x.mean()
+s = (s - s.min()) / (s.max() - s.min())
+
+z = np.random.binomial(n=1, p=s)
+tau = 1
+y = z * tau + x + np.random.normal(loc=0, size=n)
+
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots(figsize=[4.5,3])
+ax.scatter(x[z == 0], y[z == 0], label="z == 0", alpha=0.5)
+ax.scatter(x[z == 1], y[z == 1], label="z == 1", alpha=0.5)
+ax.set(xlabel="x", ylabel="y")
+ax.legend()
+
+import statsmodels.api as sm
+logit_res = sm.Logit(z, sm.add_constant(x)).fit(disp=0)
+x_range = np.linspace(x.min(), x.max(), 10)
+p_hat = logit_res.predict(sm.add_constant(x_range))
+
+ax2 = ax.twinx()
+ax2.plot(x_range, p_hat)
+ax2.set(ylabel="p_hat(z|x)")
+
+fig.show()
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
+Cell [0;32mIn[1], line 20[0m
+[1;32m     17[0m ax[38;5;241m.[39mset(xlabel[38;5;241m=[39m[38;5;124m"[39m[38;5;124mx[39m[38;5;124m"[39m, ylabel[38;5;241m=[39m[38;5;124m"[39m[38;5;124my[39m[38;5;124m"[39m)
+[1;32m     18[0m ax[38;5;241m.[39mlegend()
+[0;32m---> 20[0m [38;5;28;01mimport[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mapi[39;00m [38;5;28;01mas[39;00m [38;5;21;01msm[39;00m
+[1;32m     21[0m logit_res [38;5;241m=[39m sm[38;5;241m.[39mLogit(z, sm[38;5;241m.[39madd_constant(x))[38;5;241m.[39mfit(disp[38;5;241m=[39m[38;5;241m0[39m)
+[1;32m     22[0m x_range [38;5;241m=[39m np[38;5;241m.[39mlinspace(x[38;5;241m.[39mmin(), x[38;5;241m.[39mmax(), [38;5;241m10[39m)
+
+File [0;32m/usr/local/lib/python3.10/site-packages/statsmodels/__init__.py:1[0m
+[0;32m----> 1[0m [38;5;28;01mfrom[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcompat[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpatsy[39;00m [38;5;28;01mimport[39;00m monkey_patch_cat_dtype
+[1;32m      3[0m [38;5;28;01mfrom[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01m_version[39;00m [38;5;28;01mimport[39;00m __version__, __version_tuple__
+[1;32m      5[0m __version_info__ [38;5;241m=[39m __version_tuple__
+
+File [0;32m/usr/local/lib/python3.10/site-packages/statsmodels/compat/patsy.py:4[0m
+[1;32m      1[0m [38;5;28;01mfrom[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcompat[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpandas[39;00m [38;5;28;01mimport[39;00m PD_LT_2
+[1;32m      3[0m [38;5;28;01mimport[39;00m [38;5;21;01mpandas[39;00m [38;5;28;01mas[39;00m [38;5;21;01mpd[39;00m
+[0;32m----> 4[0m [38;5;28;01mimport[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m
+[1;32m      7[0m [38;5;28;01mdef[39;00m [38;5;21m_safe_is_pandas_categorical_dtype[39m(dt):
+[1;32m      8[0m     [38;5;28;01mif[39;00m PD_LT_2:
+
+File [0;32m/usr/local/lib/python3.10/site-packages/patsy/__init__.py:87[0m
+[1;32m     82[0m         [38;5;28mglobals[39m()[var] [38;5;241m=[39m [38;5;28mgetattr[39m(mod, var)
+[1;32m     85[0m [38;5;66;03m# This used to have less copy-paste, but explicit import statements make[39;00m
+[1;32m     86[0m [38;5;66;03m# packaging tools like py2exe and py2app happier. Sigh.[39;00m
+[0;32m---> 87[0m [38;5;28;01mimport[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mhighlevel[39;00m
+[1;32m     89[0m _reexport(patsy[38;5;241m.[39mhighlevel)
+[1;32m     91[0m [38;5;28;01mimport[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mbuild[39;00m
+
+File [0;32m/usr/local/lib/python3.10/site-packages/patsy/highlevel.py:18[0m
+[1;32m     15[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumpy[39;00m [38;5;28;01mas[39;00m [38;5;21;01mnp[39;00m
+[1;32m     17[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m [38;5;28;01mimport[39;00m PatsyError
+[0;32m---> 18[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdesign_info[39;00m [38;5;28;01mimport[39;00m DesignMatrix, DesignInfo
+[1;32m     19[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01meval[39;00m [38;5;28;01mimport[39;00m EvalEnvironment
+[1;32m     20[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdesc[39;00m [38;5;28;01mimport[39;00m ModelDesc
+
+File [0;32m/usr/local/lib/python3.10/site-packages/patsy/design_info.py:39[0m
+[1;32m     37[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mconstraint[39;00m [38;5;28;01mimport[39;00m linear_constraint
+[1;32m     38[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcontrasts[39;00m [38;5;28;01mimport[39;00m ContrastMatrix
+[0;32m---> 39[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdesc[39;00m [38;5;28;01mimport[39;00m ModelDesc, Term
+[1;32m     42[0m [38;5;28;01mclass[39;00m [38;5;21;01mFactorInfo[39;00m:
+[1;32m     43[0m [38;5;250m    [39m[38;5;124;03m"""A FactorInfo object is a simple class that provides some metadata about[39;00m
+[1;32m     44[0m [38;5;124;03m    the role of a factor within a model. :attr:`DesignInfo.factor_infos` is[39;00m
+[1;32m     45[0m [38;5;124;03m    a dictionary which maps factor objects to FactorInfo objects for each[39;00m
+[0;32m   (...)[0m
+[1;32m     76[0m [38;5;124;03m       ``None``.[39;00m
+[1;32m     77[0m [38;5;124;03m    """[39;00m
+
+File [0;32m/usr/local/lib/python3.10/site-packages/patsy/desc.py:11[0m
+[1;32m      9[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m [38;5;28;01mimport[39;00m PatsyError
+[1;32m     10[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mparse_formula[39;00m [38;5;28;01mimport[39;00m ParseNode, Token, parse_formula
+[0;32m---> 11[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01meval[39;00m [38;5;28;01mimport[39;00m EvalEnvironment, EvalFactor
+[1;32m     12[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m [38;5;28;01mimport[39;00m uniqueify_list
+[1;32m     13[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m [38;5;28;01mimport[39;00m repr_pretty_delegate, repr_pretty_impl
+
+File [0;32m/usr/local/lib/python3.10/site-packages/patsy/eval.py:21[0m
+[1;32m     19[0m [38;5;28;01mimport[39;00m [38;5;21;01mast[39;00m
+[1;32m     20[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumbers[39;00m
+[0;32m---> 21[0m [38;5;28;01mimport[39;00m [38;5;21;01mpytest[39;00m
+[1;32m     22[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m [38;5;28;01mimport[39;00m PatsyError
+[1;32m     23[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m [38;5;28;01mimport[39;00m PushbackAdapter, no_pickling, assert_no_pickling
+
+[0;31mModuleNotFoundError[0m: No module named 'pytest'
+

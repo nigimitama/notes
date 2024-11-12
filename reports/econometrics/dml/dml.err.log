@@ -15,36 +15,166 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-# 実装のイメージ（簡単のためサンプル分割なし）
-from lightgbm import LGBMRegressor
-from sklearn.model_selection import KFold
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
-kf = KFold(n_splits=5)
-kf.get_n_splits(X)
-thetas = []
-for i, (train_idx, test_idx) in enumerate(kf.split(X)):
-    # 局外関数の推定
-    m = LGBMRegressor(max_depth=4, verbose=-1).fit(X[train_idx], D[train_idx])
-    l = LGBMRegressor(max_depth=4, verbose=-1).fit(X[train_idx], Y[train_idx])
-    # 残差の計算
-    V_hat = D[test_idx] - m.predict(X[test_idx])
-    Y_res = Y[test_idx] - l.predict(X[test_idx])
-    # θの推定
-    theta_hat = np.mean(V_hat * V_hat) ** (-1) * np.mean(V_hat * Y_res)
-    thetas.append(theta_hat)
-np.mean(thetas)
+import numpy as np
+from doubleml.datasets import make_plr_CCDDHNR2018
+np.random.seed(1234)
+n_rep = 1000
+n_obs = 500
+n_vars = 20
+alpha = 0.5
+data = list()
+for i_rep in range(n_rep):
+    (x, y, d) = make_plr_CCDDHNR2018(alpha=alpha, n_obs=n_obs, dim_x=n_vars, return_type='array')
+    data.append((x, y, d))
+
+def non_orth_score(y, d, l_hat, m_hat, g_hat, smpls):
+    u_hat = y - g_hat
+    psi_a = -np.multiply(d, d)
+    psi_b = np.multiply(d, u_hat)
+    return psi_a, psi_b
+
+from doubleml import DoubleMLData
+from doubleml import DoubleMLPLR
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.base import clone
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+import seaborn as sns
+face_colors = sns.color_palette('pastel')
+edge_colors = sns.color_palette('dark')
+np.random.seed(1111)
+ml_l = RandomForestRegressor(n_estimators=132, max_features=12, max_depth=5, min_samples_leaf=1)
+ml_m = RandomForestRegressor(n_estimators=378, max_features=20, max_depth=3, min_samples_leaf=6)
+ml_g = clone(ml_l)
+
+# シミュレーションに時間がかかるので結果を保存する
+import json
+from pathlib import Path
+result_json_path = Path('./dml_simulation_results.json')
+use_cache = True
+
+# 実験1: ネイマン直交条件を満たさない場合
+if use_cache and result_json_path.exists():
+    with open(result_json_path, "r") as f:
+        simulation_results = json.load(f)
+        simulation_results = {k: np.array(v) for k,v in simulation_results.items()}
+    theta_nonorth = simulation_results["theta_nonorth"]
+    se_nonorth = simulation_results["se_nonorth"]
+else:
+    theta_nonorth = np.zeros(n_rep)
+    se_nonorth = np.zeros(n_rep)
+    for i_rep in range(n_rep):
+        (x, y, d) = data[i_rep]
+        obj_dml_data = DoubleMLData.from_arrays(x, y, d)
+        obj_dml_plr_nonorth = DoubleMLPLR(obj_dml_data,
+                                          ml_l, ml_m, ml_g,
+                                          n_folds=2,
+                                          apply_cross_fitting=False,
+                                          score=non_orth_score)
+        obj_dml_plr_nonorth.fit()
+        this_theta = obj_dml_plr_nonorth.coef[0]
+        this_se = obj_dml_plr_nonorth.se[0]
+        theta_nonorth[i_rep] = this_theta
+        se_nonorth[i_rep] = this_se
+
+    simulation_results = {}
+    simulation_results["theta_nonorth"] = theta_nonorth
+    simulation_results["se_nonorth"] = se_nonorth
+# plot
+plt.figure(constrained_layout=True)
+ax = sns.histplot((theta_nonorth - alpha)/se_nonorth,
+                  color=face_colors[0], edgecolor=edge_colors[0],
+                  stat='density', bins=30, label='Non-orthogonal ML')
+ax.axvline(0., color='k')
+xx = np.arange(-5, +5, 0.001)
+yy = stats.norm.pdf(xx)
+ax.plot(xx, yy, color='k', label='$\\mathcal{N}(0, 1)$')
+ax.legend(loc='upper right', bbox_to_anchor=(1.2, 1.0))
+ax.set_xlim([-6., 6.])
+ax.set_xlabel('$(\hat{\\theta}_0 - \\theta_0)/\hat{\sigma}$')
+plt.show()
 ------------------
 
 
 [0;31m---------------------------------------------------------------------------[0m
-[0;31mNameError[0m                                 Traceback (most recent call last)
-Cell [0;32mIn[4], line 6[0m
-[1;32m      3[0m [38;5;28;01mfrom[39;00m [38;5;21;01msklearn[39;00m[38;5;21;01m.[39;00m[38;5;21;01mmodel_selection[39;00m [38;5;28;01mimport[39;00m KFold
-[1;32m      5[0m kf [38;5;241m=[39m KFold(n_splits[38;5;241m=[39m[38;5;241m5[39m)
-[0;32m----> 6[0m kf[38;5;241m.[39mget_n_splits([43mX[49m)
-[1;32m      7[0m thetas [38;5;241m=[39m []
-[1;32m      8[0m [38;5;28;01mfor[39;00m i, (train_idx, test_idx) [38;5;129;01min[39;00m [38;5;28menumerate[39m(kf[38;5;241m.[39msplit(X)):
-[1;32m      9[0m     [38;5;66;03m# 局外関数の推定[39;00m
+[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
+Cell [0;32mIn[1], line 5[0m
+[1;32m      2[0m warnings[38;5;241m.[39mfilterwarnings([38;5;124m"[39m[38;5;124mignore[39m[38;5;124m"[39m, category[38;5;241m=[39m[38;5;167;01mUserWarning[39;00m)
+[1;32m      4[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumpy[39;00m [38;5;28;01mas[39;00m [38;5;21;01mnp[39;00m
+[0;32m----> 5[0m [38;5;28;01mfrom[39;00m [38;5;21;01mdoubleml[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdatasets[39;00m [38;5;28;01mimport[39;00m make_plr_CCDDHNR2018
+[1;32m      6[0m np[38;5;241m.[39mrandom[38;5;241m.[39mseed([38;5;241m1234[39m)
+[1;32m      7[0m n_rep [38;5;241m=[39m [38;5;241m1000[39m
 
-[0;31mNameError[0m: name 'X' is not defined
+File [0;32m/usr/local/lib/python3.10/site-packages/doubleml/__init__.py:3[0m
+[1;32m      1[0m [38;5;28;01mimport[39;00m [38;5;21;01mimportlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mmetadata[39;00m
+[0;32m----> 3[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mdouble_ml_framework[39;00m [38;5;28;01mimport[39;00m concat
+[1;32m      4[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mdouble_ml_framework[39;00m [38;5;28;01mimport[39;00m DoubleMLFramework
+[1;32m      5[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mplm[39;00m[38;5;21;01m.[39;00m[38;5;21;01mplr[39;00m [38;5;28;01mimport[39;00m DoubleMLPLR
+
+File [0;32m/usr/local/lib/python3.10/site-packages/doubleml/double_ml_framework.py:7[0m
+[1;32m      5[0m [38;5;28;01mfrom[39;00m [38;5;21;01mscipy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mstats[39;00m [38;5;28;01mimport[39;00m norm
+[1;32m      6[0m [38;5;28;01mfrom[39;00m [38;5;21;01mscipy[39;00m[38;5;21;01m.[39;00m[38;5;21;01moptimize[39;00m [38;5;28;01mimport[39;00m minimize_scalar
+[0;32m----> 7[0m [38;5;28;01mfrom[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mstats[39;00m[38;5;21;01m.[39;00m[38;5;21;01mmultitest[39;00m [38;5;28;01mimport[39;00m multipletests
+[1;32m      9[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mutils[39;00m[38;5;21;01m.[39;00m[38;5;21;01m_estimation[39;00m [38;5;28;01mimport[39;00m _draw_weights, _aggregate_coefs_and_ses, _var_est
+[1;32m     10[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mutils[39;00m[38;5;21;01m.[39;00m[38;5;21;01m_checks[39;00m [38;5;28;01mimport[39;00m _check_bootstrap, _check_framework_compatibility, _check_in_zero_one, \
+[1;32m     11[0m     _check_float, _check_integer, _check_bool, _check_benchmarks
+
+File [0;32m/usr/local/lib/python3.10/site-packages/statsmodels/__init__.py:1[0m
+[0;32m----> 1[0m [38;5;28;01mfrom[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcompat[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpatsy[39;00m [38;5;28;01mimport[39;00m monkey_patch_cat_dtype
+[1;32m      3[0m [38;5;28;01mfrom[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01m_version[39;00m [38;5;28;01mimport[39;00m __version__, __version_tuple__
+[1;32m      5[0m __version_info__ [38;5;241m=[39m __version_tuple__
+
+File [0;32m/usr/local/lib/python3.10/site-packages/statsmodels/compat/patsy.py:4[0m
+[1;32m      1[0m [38;5;28;01mfrom[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcompat[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpandas[39;00m [38;5;28;01mimport[39;00m PD_LT_2
+[1;32m      3[0m [38;5;28;01mimport[39;00m [38;5;21;01mpandas[39;00m [38;5;28;01mas[39;00m [38;5;21;01mpd[39;00m
+[0;32m----> 4[0m [38;5;28;01mimport[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m
+[1;32m      7[0m [38;5;28;01mdef[39;00m [38;5;21m_safe_is_pandas_categorical_dtype[39m(dt):
+[1;32m      8[0m     [38;5;28;01mif[39;00m PD_LT_2:
+
+File [0;32m/usr/local/lib/python3.10/site-packages/patsy/__init__.py:87[0m
+[1;32m     82[0m         [38;5;28mglobals[39m()[var] [38;5;241m=[39m [38;5;28mgetattr[39m(mod, var)
+[1;32m     85[0m [38;5;66;03m# This used to have less copy-paste, but explicit import statements make[39;00m
+[1;32m     86[0m [38;5;66;03m# packaging tools like py2exe and py2app happier. Sigh.[39;00m
+[0;32m---> 87[0m [38;5;28;01mimport[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mhighlevel[39;00m
+[1;32m     89[0m _reexport(patsy[38;5;241m.[39mhighlevel)
+[1;32m     91[0m [38;5;28;01mimport[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mbuild[39;00m
+
+File [0;32m/usr/local/lib/python3.10/site-packages/patsy/highlevel.py:18[0m
+[1;32m     15[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumpy[39;00m [38;5;28;01mas[39;00m [38;5;21;01mnp[39;00m
+[1;32m     17[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m [38;5;28;01mimport[39;00m PatsyError
+[0;32m---> 18[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdesign_info[39;00m [38;5;28;01mimport[39;00m DesignMatrix, DesignInfo
+[1;32m     19[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01meval[39;00m [38;5;28;01mimport[39;00m EvalEnvironment
+[1;32m     20[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdesc[39;00m [38;5;28;01mimport[39;00m ModelDesc
+
+File [0;32m/usr/local/lib/python3.10/site-packages/patsy/design_info.py:39[0m
+[1;32m     37[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mconstraint[39;00m [38;5;28;01mimport[39;00m linear_constraint
+[1;32m     38[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcontrasts[39;00m [38;5;28;01mimport[39;00m ContrastMatrix
+[0;32m---> 39[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdesc[39;00m [38;5;28;01mimport[39;00m ModelDesc, Term
+[1;32m     42[0m [38;5;28;01mclass[39;00m [38;5;21;01mFactorInfo[39;00m:
+[1;32m     43[0m [38;5;250m    [39m[38;5;124;03m"""A FactorInfo object is a simple class that provides some metadata about[39;00m
+[1;32m     44[0m [38;5;124;03m    the role of a factor within a model. :attr:`DesignInfo.factor_infos` is[39;00m
+[1;32m     45[0m [38;5;124;03m    a dictionary which maps factor objects to FactorInfo objects for each[39;00m
+[0;32m   (...)[0m
+[1;32m     76[0m [38;5;124;03m       ``None``.[39;00m
+[1;32m     77[0m [38;5;124;03m    """[39;00m
+
+File [0;32m/usr/local/lib/python3.10/site-packages/patsy/desc.py:11[0m
+[1;32m      9[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m [38;5;28;01mimport[39;00m PatsyError
+[1;32m     10[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mparse_formula[39;00m [38;5;28;01mimport[39;00m ParseNode, Token, parse_formula
+[0;32m---> 11[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01meval[39;00m [38;5;28;01mimport[39;00m EvalEnvironment, EvalFactor
+[1;32m     12[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m [38;5;28;01mimport[39;00m uniqueify_list
+[1;32m     13[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m [38;5;28;01mimport[39;00m repr_pretty_delegate, repr_pretty_impl
+
+File [0;32m/usr/local/lib/python3.10/site-packages/patsy/eval.py:21[0m
+[1;32m     19[0m [38;5;28;01mimport[39;00m [38;5;21;01mast[39;00m
+[1;32m     20[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumbers[39;00m
+[0;32m---> 21[0m [38;5;28;01mimport[39;00m [38;5;21;01mpytest[39;00m
+[1;32m     22[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m [38;5;28;01mimport[39;00m PatsyError
+[1;32m     23[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m [38;5;28;01mimport[39;00m PushbackAdapter, no_pickling, assert_no_pickling
+
+[0;31mModuleNotFoundError[0m: No module named 'pytest'
 
