@@ -15,94 +15,31 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import statsmodels.api as sm
-import statsmodels.formula.api as smf
+cps = sm.datasets.get_rdataset("CPS1985", "AER").data.assign(log_wage = np.log(cps["wage"]))
+
+fig, axes = plt.subplots(ncols=2, figsize=[8, 4])
+
+reg = smf.ols('wage ~ education', data=cps).fit()
+axes[0].scatter(cps["education"], cps["wage"], color="black", alpha=0.5
+)axes[0].set(xlabel="education", ylabel="wage")
+axes[0].plot(cps["education"], reg.predict(cps),
+             label=f"wage = {reg.params['Intercept']:.3f} + {reg.params['education']:.3f} education")
+axes[0].legend()
 
 
-# 真のデータ生成過程
-n = 100
-np.random.seed(0)
-x = np.random.uniform(1, 100, size=n)
-x = np.sort(x)
-e = np.random.normal(loc=0, scale=15, size=n)
-beta0 = 100
-beta1 = 3
-y = beta0 + beta1 * x + e
-
-df = pd.DataFrame({"y": y, "x": x})
-plt.scatter(x, y)
-plt.xlabel("x")
-plt.ylabel("y")
-plt.title(f"y = {beta0} + {beta1} * x + e")
-plt.show()
+reg = smf.ols('log_wage ~ education', data=cps).fit()
+axes[1].scatter(cps["education"], cps["log_wage"], color="black", alpha=0.5)
+axes[1].set(xlabel="education", ylabel="log_wage")
+axes[1].plot(cps["education"], reg.predict(cps),
+             label=f"log_wage = {reg.params['Intercept']:.3f} + {reg.params['education']:.3f} education")
+axes[1].legend()
 ------------------
 
 
-[0;31m---------------------------------------------------------------------------[0m
-[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
-Cell [0;32mIn[1], line 5[0m
-[1;32m      3[0m [38;5;28;01mimport[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpyplot[39;00m [38;5;28;01mas[39;00m [38;5;21;01mplt[39;00m
-[1;32m      4[0m [38;5;28;01mimport[39;00m [38;5;21;01mseaborn[39;00m [38;5;28;01mas[39;00m [38;5;21;01msns[39;00m
-[0;32m----> 5[0m [38;5;28;01mimport[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mapi[39;00m [38;5;28;01mas[39;00m [38;5;21;01msm[39;00m
-[1;32m      6[0m [38;5;28;01mimport[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mformula[39;00m[38;5;21;01m.[39;00m[38;5;21;01mapi[39;00m [38;5;28;01mas[39;00m [38;5;21;01msmf[39;00m
-[1;32m      9[0m [38;5;66;03m# 真のデータ生成過程[39;00m
+[0;36m  Cell [0;32mIn[12], line 8[0;36m[0m
+[0;31m    )axes[0].set(xlabel="education", ylabel="wage")[0m
+[0m     ^[0m
+[0;31mSyntaxError[0m[0;31m:[0m invalid syntax
 
-File [0;32m/usr/local/lib/python3.10/site-packages/statsmodels/__init__.py:1[0m
-[0;32m----> 1[0m [38;5;28;01mfrom[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcompat[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpatsy[39;00m [38;5;28;01mimport[39;00m monkey_patch_cat_dtype
-[1;32m      3[0m [38;5;28;01mfrom[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01m_version[39;00m [38;5;28;01mimport[39;00m __version__, __version_tuple__
-[1;32m      5[0m __version_info__ [38;5;241m=[39m __version_tuple__
-
-File [0;32m/usr/local/lib/python3.10/site-packages/statsmodels/compat/patsy.py:4[0m
-[1;32m      1[0m [38;5;28;01mfrom[39;00m [38;5;21;01mstatsmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcompat[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpandas[39;00m [38;5;28;01mimport[39;00m PD_LT_2
-[1;32m      3[0m [38;5;28;01mimport[39;00m [38;5;21;01mpandas[39;00m [38;5;28;01mas[39;00m [38;5;21;01mpd[39;00m
-[0;32m----> 4[0m [38;5;28;01mimport[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m
-[1;32m      7[0m [38;5;28;01mdef[39;00m [38;5;21m_safe_is_pandas_categorical_dtype[39m(dt):
-[1;32m      8[0m     [38;5;28;01mif[39;00m PD_LT_2:
-
-File [0;32m/usr/local/lib/python3.10/site-packages/patsy/__init__.py:87[0m
-[1;32m     82[0m         [38;5;28mglobals[39m()[var] [38;5;241m=[39m [38;5;28mgetattr[39m(mod, var)
-[1;32m     85[0m [38;5;66;03m# This used to have less copy-paste, but explicit import statements make[39;00m
-[1;32m     86[0m [38;5;66;03m# packaging tools like py2exe and py2app happier. Sigh.[39;00m
-[0;32m---> 87[0m [38;5;28;01mimport[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mhighlevel[39;00m
-[1;32m     89[0m _reexport(patsy[38;5;241m.[39mhighlevel)
-[1;32m     91[0m [38;5;28;01mimport[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mbuild[39;00m
-
-File [0;32m/usr/local/lib/python3.10/site-packages/patsy/highlevel.py:18[0m
-[1;32m     15[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumpy[39;00m [38;5;28;01mas[39;00m [38;5;21;01mnp[39;00m
-[1;32m     17[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m [38;5;28;01mimport[39;00m PatsyError
-[0;32m---> 18[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdesign_info[39;00m [38;5;28;01mimport[39;00m DesignMatrix, DesignInfo
-[1;32m     19[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01meval[39;00m [38;5;28;01mimport[39;00m EvalEnvironment
-[1;32m     20[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdesc[39;00m [38;5;28;01mimport[39;00m ModelDesc
-
-File [0;32m/usr/local/lib/python3.10/site-packages/patsy/design_info.py:39[0m
-[1;32m     37[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mconstraint[39;00m [38;5;28;01mimport[39;00m linear_constraint
-[1;32m     38[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcontrasts[39;00m [38;5;28;01mimport[39;00m ContrastMatrix
-[0;32m---> 39[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdesc[39;00m [38;5;28;01mimport[39;00m ModelDesc, Term
-[1;32m     42[0m [38;5;28;01mclass[39;00m [38;5;21;01mFactorInfo[39;00m:
-[1;32m     43[0m [38;5;250m    [39m[38;5;124;03m"""A FactorInfo object is a simple class that provides some metadata about[39;00m
-[1;32m     44[0m [38;5;124;03m    the role of a factor within a model. :attr:`DesignInfo.factor_infos` is[39;00m
-[1;32m     45[0m [38;5;124;03m    a dictionary which maps factor objects to FactorInfo objects for each[39;00m
-[0;32m   (...)[0m
-[1;32m     76[0m [38;5;124;03m       ``None``.[39;00m
-[1;32m     77[0m [38;5;124;03m    """[39;00m
-
-File [0;32m/usr/local/lib/python3.10/site-packages/patsy/desc.py:11[0m
-[1;32m      9[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m [38;5;28;01mimport[39;00m PatsyError
-[1;32m     10[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mparse_formula[39;00m [38;5;28;01mimport[39;00m ParseNode, Token, parse_formula
-[0;32m---> 11[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01meval[39;00m [38;5;28;01mimport[39;00m EvalEnvironment, EvalFactor
-[1;32m     12[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m [38;5;28;01mimport[39;00m uniqueify_list
-[1;32m     13[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m [38;5;28;01mimport[39;00m repr_pretty_delegate, repr_pretty_impl
-
-File [0;32m/usr/local/lib/python3.10/site-packages/patsy/eval.py:21[0m
-[1;32m     19[0m [38;5;28;01mimport[39;00m [38;5;21;01mast[39;00m
-[1;32m     20[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumbers[39;00m
-[0;32m---> 21[0m [38;5;28;01mimport[39;00m [38;5;21;01mpytest[39;00m
-[1;32m     22[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m [38;5;28;01mimport[39;00m PatsyError
-[1;32m     23[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpatsy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m [38;5;28;01mimport[39;00m PushbackAdapter, no_pickling, assert_no_pickling
-
-[0;31mModuleNotFoundError[0m: No module named 'pytest'
 
