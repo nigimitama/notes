@@ -976,10 +976,8 @@
 <section id="id2">
 <h2>損失関数<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>損失関数を<span class="math notranslate nohighlight">\(\ell(\hat{y}, y)\)</span>とする。</p>
-<ul class="simple">
-<li><p>二乗損失 <span class="math notranslate nohighlight">\(\ell(\hat{y}, y) = (\hat{y} - y)^2\)</span></p></li>
-<li><p>0-1損失 <span class="math notranslate nohighlight">\(\ell(\hat{y}, y) = \mathbf{1}[\hat{y} \neq y]\)</span></p></li>
-</ul>
+<p>例えば、分類問題での代表的な損失関数は <strong>0-1損失 (0-1 loss)</strong> <span class="math notranslate nohighlight">\(\ell(\hat{y}, y) = \mathbf{1}[\hat{y} \neq y]\)</span> である。</p>
+<p>また回帰問題で使われる代表的な損失関数は <strong>二乗損失 (squared loss)</strong> <span class="math notranslate nohighlight">\(\ell(\hat{y}, y) = (\hat{y} - y)^2\)</span> である。</p>
 <section id="id3">
 <h3>予測損失<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <p>仮説<span class="math notranslate nohighlight">\(h\)</span>の <strong>予測損失（predictive loss）</strong> <span class="math notranslate nohighlight">\(R(h)\)</span>を、予測値<span class="math notranslate nohighlight">\(h(X)\)</span>の損失のテストデータ<span class="math notranslate nohighlight">\((X,Y)\)</span>の分布上の期待値</p>
@@ -1029,9 +1027,11 @@ R(h) := E_{(X,Y) \sim D}[\ell(h(X), Y)]
 <div class="sd-card-body docutils">
 <p class="sd-card-text">標準的な問題設定ではテストデータと訓練データの分布は同一だが、実応用においては両者の分布が異なることもある。</p>
 <p class="sd-card-text">例えば特徴量の分布が異なるという <strong>共変量シフト（covariate shift）</strong> では、分布の違いを比として誤差関数に重みをつける推定方法がある。</p>
+<p class="sd-card-text">またログデータを用いた推薦システムの学習（Off-Policy Learning）においても、ログデータ（訓練データ）が「従来の推薦モデルのもとでの観測データ」であり、実運用時のデータ（テストデータ）とは分布が異なるという似た問題がある。</p>
 <p class="sd-card-text">参考：</p>
 <ul class="simple">
 <li><p class="sd-card-text"><a class="reference external" href="https://www.ms.k.u-tokyo.ac.jp/sugi/2006/covariate-shift-jp.pdf">杉山将. (2006). 共変量シフト下での教師付き学習. 日本神経回路学会誌, 13(3), 111-118.</a></p></li>
+<li><p class="sd-card-text"><a class="reference external" href="https://techblog.zozo.com/entry/openbanditproject">Off-Policy Evaluationの基礎とZOZOTOWN大規模公開実データおよびパッケージ紹介 - ZOZO TECH BLOG</a></p></li>
 <li><p class="sd-card-text"><a class="reference external" href="https://arxiv.org/abs/1602.05352">[1602.05352] Recommendations as Treatments: Debiasing Learning and Evaluation</a></p></li>
 </ul>
 </div>
@@ -1131,6 +1131,33 @@ h_0(x) = \mathop{\rm arg~max}\limits_{y\in\mathcal{Y}} P(Y = y | x)
 h_0(x) = \mathbb{E}[Y|x]
 \]</div>
 <p>によって与えられる。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+別の導出</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+(Y-\hat{y})^2 = ~&amp; ((Y-\mathbb{E}[Y \mid X])+(\mathbb{E}[Y \mid X]-\hat{y}))^2 \\
+= ~&amp; (Y-\mathbb{E}[Y \mid X])^2\\
+&amp; + 2(\mathbb{E}[Y \mid X]-\hat{y}) (Y-\mathbb{E}[Y \mid X]) \\
+&amp; + (\mathbb{E}[Y \mid X]-\hat{y})^2
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">第1項は<span class="math notranslate nohighlight">\(\hat{y}\)</span>が含まれないため、最適化には関係がない。</p>
+<p class="sd-card-text">第2項は最終的に<span class="math notranslate nohighlight">\((Y-\hat{y})^2\)</span>の期待値をとって<span class="math notranslate nohighlight">\(\mathbb{E}[(Y-\hat{y})^2\mid X]\)</span>にしたとき、<span class="math notranslate nohighlight">\(Y-\mathbb{E}[Y \mid X]\)</span>が</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp;\mathbb{E}[Y-\mathbb{E}[Y \mid X] \mid X]\\
+&amp;= \mathbb{E}[Y \mid X] - \mathbb{E}[Y \mid X]\\
+&amp;= 0
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">となり0になる。</p>
+<p class="sd-card-text">第3項の<span class="math notranslate nohighlight">\(\mathbb{E}[Y \mid X]-\hat{y}\)</span> は <span class="math notranslate nohighlight">\(\hat{y} = \mathbb{E}[Y \mid X]\)</span>のとき0になり予測誤差が最小化される。よって二乗損失のベイズ規則は条件付き期待値<span class="math notranslate nohighlight">\(\mathbb{E}[Y \mid X]\)</span>となる。</p>
+</div>
+</div>
 <p>ベイズ誤差<span class="math notranslate nohighlight">\(R^*\)</span>は</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1333,8 +1360,17 @@ h \in \mathcal{H}_{m_1}, \quad h^{\prime} \in \mathcal{H}_{m_2} \backslash \math
 \hat{R}(h) + \lambda \cdot \Phi(h)
 \]</div>
 <p>正則化パラメータ<span class="math notranslate nohighlight">\(\lambda \geq 0\)</span>を求める方法は様々なものが提案されている。</p>
-<p>「データ数が十分大きいときは、大きな仮説集合を用いても予測誤差があまり大きくならない」という性質があるため、正則化パラメータをデータ数に依存するように定義して適切なオーダーで$\lambda \to 0 ~ (n \to \infty)とする方法が提案されている。この方法は予測誤差を理論的に評価しやすいという利点がある。</p>
+<p>「データ数が十分大きいときは、大きな仮説集合を用いても予測誤差があまり大きくならない」という性質があるため、正則化パラメータをデータ数に依存するように定義して適切なオーダーで<span class="math notranslate nohighlight">\(\lambda \to 0 ~ (n \to \infty)\)</span> とする方法が提案されている。この方法は予測誤差を理論的に評価しやすいという利点がある。</p>
 <p>しかし実用上は交差検証法（Cross-Validation）を用いて決める方法が有用である。</p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>regularizationは問題設定の歪みを直すみたいな意味があるらしい。</p>
+<blockquote>
+<div><p>不良設定問題を解いたり過学習を防いだりするために、情報を追加する手法</p>
+<p><a class="reference external" href="https://ja.wikipedia.org/wiki/%E6%AD%A3%E5%89%87%E5%8C%96">正則化 - Wikipedia</a></p>
+</div></blockquote>
+<p>線形モデルにおける正則化（Ridge回帰）は行列<span class="math notranslate nohighlight">\((X^\top X)\)</span>を正則化して逆行列の存在を保証するが、そこからきた名称ではない様子</p>
+</aside>
 </section>
 </section>
 
