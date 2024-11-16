@@ -1102,7 +1102,164 @@ E\big[ \rho_{\tau}(y_i - q(X_i)) \big]
 <img alt="../_images/19bfcbd7aec818ac55a3641db87537d429a136a30d8a3fc04c3a89e5019359e4.png" src="../_images/19bfcbd7aec818ac55a3641db87537d429a136a30d8a3fc04c3a89e5019359e4.png" />
 </div>
 </div>
-<section id="id2">
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">絶対誤差の最適解</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">誤差関数<span class="math notranslate nohighlight">\(\ell(y, \hat{y})\)</span>を絶対誤差<span class="math notranslate nohighlight">\(|y - \hat{y}|\)</span>とする。予測損失（期待予測誤差）は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+R(\hat{y}) &amp;= \mathbb{E}_Y[\ell(y, \hat{y})]\\
+&amp;= \int_{-\infty}^{\infty} |y - \hat{y}| f(y) dy\\
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">絶対値の中身の符号で場合分けすると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+R(\hat{y}) &amp;= \int_{-\infty}^{\infty} |y - \hat{y}| f(y) dy\\
+&amp;= \int_{\hat{y}}^{\infty} (y - \hat{y}) f(y) dy
++ \int_{-\infty}^{\hat{y}} (\hat{y} - y) f(y) dy
+\quad (絶対値を符号ごとに場合分けした)\\
+&amp;= \int_{\hat{y}}^{\infty} y f(y) dy
+- \hat{y} \int_{\hat{y}}^{\infty} f(y) dy
++ \hat{y} \int_{-\infty}^{\hat{y}} f(y) dy
+- \int_{-\infty}^{\hat{y}} y f(y) dy
+\quad (\because 積分の線形性)
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">予測損失を微分するとそれぞれの項は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\frac{d}{d \hat{y}} \int_{\hat{y}}^{\infty} y f(y) dy &amp;= - \hat{y} f(\hat{y})
+\\
+\frac{d}{d \hat{y}} \left( - \hat{y} \cdot \int_{\hat{y}}^{\infty} f(y) dy \right)
+&amp;= \frac{d}{d \hat{y}} \left( - \hat{y} \right) \int_{\hat{y}}^{\infty} f(y) dy 
++ (- \hat{y}) \frac{d}{d \hat{y}} \left( \int_{\hat{y}}^{\infty} f(y) dy \right)
+\quad (積の微分)\\
+&amp;= -1 \cdot \int_{\hat{y}}^{\infty} f(y) dy - \hat{y} \cdot - f(\hat{y})\\
+&amp;= -\int_{\hat{y}}^{\infty} f(y) dy + \hat{y} f(\hat{y})
+\\
+\frac{d}{d \hat{y}} \left( \hat{y} \cdot \int_{-\infty}^{\hat{y}} f(y) dy \right)
+&amp;= \frac{d}{d \hat{y}} \hat{y} \cdot \int_{-\infty}^{\hat{y}} f(y) dy
++ \hat{y} \cdot \frac{d}{d \hat{y}} \int_{-\infty}^{\hat{y}} f(y) dy \quad (積の微分)\\
+&amp;= \int_{-\infty}^{\hat{y}} f(y) dy + \hat{y} \cdot f(\hat{y})
+\\
+\frac{d}{d \hat{y}} \left( - \int_{-\infty}^{\hat{y}} y f(y) dy \right) &amp;= - \hat{y} f(\hat{y})
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">よって</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\frac{d R(\hat{y})}{d \hat{y}}
+&amp;= - \hat{y} f(\hat{y})
+-\int_{\hat{y}}^{\infty} f(y) dy + \hat{y} f(\hat{y})
++ \int_{-\infty}^{\hat{y}} f(y) dy + \hat{y} f(\hat{y})
+- \hat{y} f(\hat{y})\\
+&amp;= -\int_{\hat{y}}^{\infty} f(y) dy + \int_{-\infty}^{\hat{y}} f(y) dy
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">となる。<span class="math notranslate nohighlight">\(\frac{d R(\hat{y})}{d \hat{y}}=0\)</span>とおいて整理すれば</p>
+<div class="math notranslate nohighlight">
+\[
+\int_{\hat{y}}^{\infty} f(y) dy = \int_{-\infty}^{\hat{y}} f(y) dy
+\]</div>
+<p class="sd-card-text">となる点が予測損失を極小化することがわかる。これは<span class="math notranslate nohighlight">\(\hat{y}\)</span>が中央値となるときである。</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(f(y)\)</span>は確率密度関数なので、<span class="math notranslate nohighlight">\(\int_{-\infty}^{\infty} f(y) dy=1\)</span>になる。<span class="math notranslate nohighlight">\(-\infty\)</span>から<span class="math notranslate nohighlight">\(\hat{y}\)</span>への積分と<span class="math notranslate nohighlight">\(\hat{y}\)</span>から<span class="math notranslate nohighlight">\(\infty\)</span>への積分が等しくなるのはその半分、すなわち</p>
+<div class="math notranslate nohighlight">
+\[
+\int_{-\infty}^{\hat{y}} f(y) dy = \frac{1}{2}
+\]</div>
+<p class="sd-card-text">である。なお、これは累積分布関数<span class="math notranslate nohighlight">\(\mathrm{P}(\hat{y})\)</span>に等しい。よって<span class="math notranslate nohighlight">\(\hat{y}\)</span>は中央値である。</p>
+<p class="sd-card-text">なお、中央値の定義には、以下の式を満たす<span class="math notranslate nohighlight">\(m\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+\int_{-\infty}^m \mathrm{~d} F(x) \geq \frac{1}{2} \text { and } \int_m^{\infty} \mathrm{d} F(x) \geq \frac{1}{2}
+\]</div>
+<p class="sd-card-text">というものもある。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考：定積分の微分</div>
+<p class="sd-card-text">定積分の定義</p>
+<div class="math notranslate nohighlight">
+\[
+\int_a^x f(t) d t=F(x)-F(a)
+\]</div>
+<p class="sd-card-text">より、この導関数は</p>
+<div class="math notranslate nohighlight">
+\[
+F'(x)-0 = f(x)
+\]</div>
+</div>
+</div>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Pinball lossの最適解</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Pinball Loss</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\rho_{\tau} (x) =
+\begin{cases}
+(\tau - 1) x &amp; \text{ if } x \leq 0\\
+\tau x &amp; \text{ if } x &gt; 0\\
+\end{cases}
+\end{split}\]</div>
+<p class="sd-card-text">の場合、絶対誤差の場合分けした項に<span class="math notranslate nohighlight">\(\tau, (\tau-1)\)</span>を掛けた形になる</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+R(\hat{y})
+&amp;= \tau \int_{\hat{y}}^{\infty} (y - \hat{y}) f(y) dy
++ (\tau - 1) \int_{-\infty}^{\hat{y}} (\hat{y} - y) f(y) dy \\
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">絶対誤差の場合と同様に導関数は</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+\frac{d R(\hat{y})}{d \hat{y}}
+&amp;= - \tau \int_{\hat{y}}^{\infty} f(y) dy + (\tau - 1)\int_{-\infty}^{\hat{y}} f(y) dy
+\end{aligned}
+\]</div>
+<p class="sd-card-text">となる。ここで</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+1 - F(\hat{y}) := \int_{\hat{y}}^{\infty} f(y) dy\\
+F(\hat{y}) := \int_{-\infty}^{\hat{y}} f(y) dy
+\end{split}\]</div>
+<p class="sd-card-text">とおき、導関数を0とおく。</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+\frac{d R(\hat{y})}{d \hat{y}}
+&amp;= - \tau (1 - F(\hat{y})) + (\tau - 1) F(\hat{y})
+= 0
+\end{aligned}
+\]</div>
+<p class="sd-card-text">これを整理すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\tau (1 - F(\hat{y})) &amp;= (\tau - 1) F(\hat{y})\\
+\tau - \tau F(\hat{y}) &amp;=  (\tau - 1) F(\hat{y}))\\
+\tau &amp;= \tau F(\hat{y}) + (\tau - 1) F(\hat{y}))\\
+\tau &amp;= F(\hat{y}) (\tau + (\tau - 1))\\
+\tau &amp;= F(\hat{y}) (2 \tau - 1)\\
+\frac{\tau}{2 \tau - 1} &amp;= F(\hat{y})\\
+\end{aligned}
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{y} &amp;= F^{-1}\left( \frac{\tau}{2 \tau - 1} \right)\\
+\end{aligned}
+\end{split}\]</div>
+</div>
+</details><section id="id2">
 <h2>モデルの評価<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <section id="d2-pinball-score">
 <h3>D2 pinball score<a class="headerlink" href="#d2-pinball-score" title="Link to this heading">#</a></h3>

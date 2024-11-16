@@ -948,18 +948,20 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">ベイズ規則</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">0-1損失のベイズ規則</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">二乗損失のベイズ規則</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">絶対誤差のベイズ規則</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">アルゴリズムの評価</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">期待予測損失</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">統計的一致性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">アルゴリズムの評価</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">期待予測損失</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">統計的一致性</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">有限な仮説集合を用いた学習</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">近似誤差と推定誤差のトレードオフ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">有限な仮説集合を用いた学習</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">近似誤差と推定誤差のトレードオフ</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">二乗損失のバイアス・バリアンス分解</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">正則化</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">正則化</a></li>
 </ul>
             </nav>
         </div>
@@ -1070,26 +1072,37 @@ R(h)=\mathbb{E}_X [\mathbb{E}_Y[\ell(h(X), Y) \mid X]]
 <p>を最小にする<span class="math notranslate nohighlight">\(\hat{y} \in \mathcal{Y}\)</span>を求める問題を考える</p>
 <section id="id8">
 <h3>0-1損失のベイズ規則<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
-<p>損失関数として0-1損失 <span class="math notranslate nohighlight">\(\ell(\hat{y}, y) = \mathbf{1}[\hat{y} \neq y]\)</span>を利用するとき、</p>
+<p>損失関数として0-1損失 <span class="math notranslate nohighlight">\(\ell(\hat{y}, y) = \mathbf{1}[\hat{y} \neq y]\)</span>を想定する。</p>
+<p>予測損失<span class="math notranslate nohighlight">\(R(h)\)</span>は繰り返し期待値の法則により</p>
+<div class="math notranslate nohighlight">
+\[
+R(h) = \mathbb{E}_X \big[ \mathbb{E}_Y[\ell(y, h(X)) \mid X] \big]
+\]</div>
+<p>と変形できるので、入力<span class="math notranslate nohighlight">\(X=x\)</span>における条件付き期待値<span class="math notranslate nohighlight">\(\mathbb{E}_Y[\ell(y, h(x)) \mid X=x]\)</span>で考える。
+<span class="math notranslate nohighlight">\(Y\)</span>が離散型確率変数とすると</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
-\mathbb{E}_Y[\ell(\hat{y}, Y)]
-&amp;= \sum_{y\in\mathcal{Y}} \ell(\hat{y}, y) P(Y=y)\\
-&amp;= 1 - \underbrace{ P(Y = \hat{y}) }_{正答率}
+\mathbb{E}_Y[\ell(y, h(x)) \mid X=x]
+&amp;= \sum_{y\in\mathcal{Y}} \ell(y, \hat{y}) P(Y=y \mid x)\\
 \end{aligned}
 \end{split}\]</div>
-<p>となるため、<span class="math notranslate nohighlight">\(P(Y = \hat{y})\)</span>を最大化するような<span class="math notranslate nohighlight">\(\hat{y}\)</span>、つまり</p>
+<p>となる。
+また、0-1損失の期待値は誤って予測した割合（誤答率）に相当するため、<code class="docutils literal notranslate"><span class="pre">1-正答率</span></code> の形に整理できる。</p>
 <div class="math notranslate nohighlight">
-\[
-\hat{y} = \mathop{\rm arg~max}\limits_{y\in\mathcal{Y}} P(Y = y)
-\]</div>
-<p>が予測誤差を最小とする。条件付き期待値に戻って考えると、ベイズ規則<span class="math notranslate nohighlight">\(h_0(x)\)</span>は</p>
+\[\begin{split}
+\begin{aligned}
+\mathbb{E}_Y[\ell(y, h(x)) \mid X=x]
+&amp;= \sum_{y\in\mathcal{Y}} \ell(y, \hat{y}) P(Y=y \mid x)\\
+&amp;= 1 - \underbrace{ P(Y = h(x)) }_{正答率}
+\end{aligned}
+\end{split}\]</div>
+<p>そのため、<span class="math notranslate nohighlight">\(P(Y = h(x))\)</span>を最大化するような<span class="math notranslate nohighlight">\(h(x)\in\mathcal{Y}\)</span>、つまり</p>
 <div class="math notranslate nohighlight">
 \[
 h_0(x) = \mathop{\rm arg~max}\limits_{y\in\mathcal{Y}} P(Y = y | x)
 \]</div>
-<p>となる。</p>
+<p>が予測誤差を最小とする。これが0-1損失におけるベイズ規則になる。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO: 確率の話も含める。PRML</span>
@@ -1167,16 +1180,113 @@ R^* = R\left(h_0\right)
 \]</div>
 <p>となる。条件付き分散<span class="math notranslate nohighlight">\(V[Y|x]\)</span>が入力によらず一定の値<span class="math notranslate nohighlight">\(\sigma^2\)</span>をとるとき、ベイズ誤差は<span class="math notranslate nohighlight">\(\sigma^2\)</span>となる。</p>
 </section>
-</section>
 <section id="id10">
-<h2>アルゴリズムの評価<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
-<p>観測したサンプル<span class="math notranslate nohighlight">\(S=\{(X_1, Y_1), \dots, (X_n, Y_n)\}\)</span>から得られる仮説を<span class="math notranslate nohighlight">\(h_S\)</span>とする。</p>
+<h3>絶対誤差のベイズ規則<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>損失関数<span class="math notranslate nohighlight">\(\ell(y, \hat{y})\)</span>を絶対誤差<span class="math notranslate nohighlight">\(|y - \hat{y}|\)</span>とするとき、ベイズ規則は条件付き中央値</p>
+<div class="math notranslate nohighlight">
+\[
+h_0(x) = \operatorname{median}(Y|X=x)
+\]</div>
+<p>になる</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">絶対誤差の最適解</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">誤差関数<span class="math notranslate nohighlight">\(\ell(y, \hat{y})\)</span>を絶対誤差<span class="math notranslate nohighlight">\(|y - \hat{y}|\)</span>とする。予測損失（期待予測誤差）は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+R(\hat{y}) &amp;= \mathbb{E}_Y[\ell(y, \hat{y})]\\
+&amp;= \int_{-\infty}^{\infty} |y - \hat{y}| f(y) dy\\
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">絶対値の中身の符号で場合分けすると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+R(\hat{y}) &amp;= \int_{-\infty}^{\infty} |y - \hat{y}| f(y) dy\\
+&amp;= \int_{\hat{y}}^{\infty} (y - \hat{y}) f(y) dy
++ \int_{-\infty}^{\hat{y}} (\hat{y} - y) f(y) dy
+\quad (絶対値を符号ごとに場合分けした)\\
+&amp;= \int_{\hat{y}}^{\infty} y f(y) dy
+- \hat{y} \int_{\hat{y}}^{\infty} f(y) dy
++ \hat{y} \int_{-\infty}^{\hat{y}} f(y) dy
+- \int_{-\infty}^{\hat{y}} y f(y) dy
+\quad (\because 積分の線形性)
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">予測損失を微分するとそれぞれの項は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\frac{d}{d \hat{y}} \int_{\hat{y}}^{\infty} y f(y) dy &amp;= - \hat{y} f(\hat{y})
+\\
+\frac{d}{d \hat{y}} \left( - \hat{y} \cdot \int_{\hat{y}}^{\infty} f(y) dy \right)
+&amp;= \frac{d}{d \hat{y}} \left( - \hat{y} \right) \int_{\hat{y}}^{\infty} f(y) dy 
++ (- \hat{y}) \frac{d}{d \hat{y}} \left( \int_{\hat{y}}^{\infty} f(y) dy \right)
+\quad (積の微分)\\
+&amp;= -1 \cdot \int_{\hat{y}}^{\infty} f(y) dy - \hat{y} \cdot - f(\hat{y})\\
+&amp;= -\int_{\hat{y}}^{\infty} f(y) dy + \hat{y} f(\hat{y})
+\\
+\frac{d}{d \hat{y}} \left( \hat{y} \cdot \int_{-\infty}^{\hat{y}} f(y) dy \right)
+&amp;= \frac{d}{d \hat{y}} \hat{y} \cdot \int_{-\infty}^{\hat{y}} f(y) dy
++ \hat{y} \cdot \frac{d}{d \hat{y}} \int_{-\infty}^{\hat{y}} f(y) dy \quad (積の微分)\\
+&amp;= \int_{-\infty}^{\hat{y}} f(y) dy + \hat{y} \cdot f(\hat{y})
+\\
+\frac{d}{d \hat{y}} \left( - \int_{-\infty}^{\hat{y}} y f(y) dy \right) &amp;= - \hat{y} f(\hat{y})
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">よって</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\frac{d R(\hat{y})}{d \hat{y}}
+&amp;= - \hat{y} f(\hat{y})
+-\int_{\hat{y}}^{\infty} f(y) dy + \hat{y} f(\hat{y})
++ \int_{-\infty}^{\hat{y}} f(y) dy + \hat{y} f(\hat{y})
+- \hat{y} f(\hat{y})\\
+&amp;= -\int_{\hat{y}}^{\infty} f(y) dy + \int_{-\infty}^{\hat{y}} f(y) dy
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">となる。<span class="math notranslate nohighlight">\(\frac{d R(\hat{y})}{d \hat{y}}=0\)</span>とおいて整理すれば</p>
+<div class="math notranslate nohighlight">
+\[
+\int_{\hat{y}}^{\infty} f(y) dy = \int_{-\infty}^{\hat{y}} f(y) dy
+\]</div>
+<p class="sd-card-text">となる点が予測損失を極小化することがわかる。これは<span class="math notranslate nohighlight">\(\hat{y}\)</span>が中央値となるときである。</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(f(y)\)</span>は確率密度関数なので、<span class="math notranslate nohighlight">\(\int_{-\infty}^{\infty} f(y) dy=1\)</span>になる。<span class="math notranslate nohighlight">\(-\infty\)</span>から<span class="math notranslate nohighlight">\(\hat{y}\)</span>への積分と<span class="math notranslate nohighlight">\(\hat{y}\)</span>から<span class="math notranslate nohighlight">\(\infty\)</span>への積分が等しくなるのはその半分、すなわち</p>
+<div class="math notranslate nohighlight">
+\[
+\int_{-\infty}^{\hat{y}} f(y) dy = \frac{1}{2}
+\]</div>
+<p class="sd-card-text">である。これは累積分布関数<span class="math notranslate nohighlight">\(\mathrm{P}(\hat{y})\)</span>に等しい。よって<span class="math notranslate nohighlight">\(\hat{y}\)</span>は中央値である。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考：定積分の微分</div>
+<p class="sd-card-text">定積分の定義</p>
+<div class="math notranslate nohighlight">
+\[
+\int_a^x f(t) d t=F(x)-F(a)
+\]</div>
+<p class="sd-card-text">より、この導関数は</p>
+<div class="math notranslate nohighlight">
+\[
+F'(x)-0 = f(x)
+\]</div>
+</div>
+</div>
+</div>
+</details></section>
+</section>
 <section id="id11">
-<h3>期待予測損失<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<h2>アルゴリズムの評価<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<p>観測したサンプル<span class="math notranslate nohighlight">\(S=\{(X_1, Y_1), \dots, (X_n, Y_n)\}\)</span>から得られる仮説を<span class="math notranslate nohighlight">\(h_S\)</span>とする。</p>
+<section id="id12">
+<h3>期待予測損失<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <p>学習された仮説<span class="math notranslate nohighlight">\(h_S\)</span>の評価尺度の1つとして、観測データ<span class="math notranslate nohighlight">\(S\)</span>の分布<span class="math notranslate nohighlight">\(D^n\)</span>に関する予測損失の期待値<span class="math notranslate nohighlight">\(\mathbb{E}_{S \sim D^n}[R(h_S)]\)</span>が考えられる。これは <strong>期待予測損失</strong> と呼ばれる。</p>
 </section>
-<section id="id12">
-<h3>統計的一致性<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>統計的一致性<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <p>別の評価尺度として、<span class="math notranslate nohighlight">\(R(h_S)\)</span>の分布に着目する方法もある。ベイズ誤差<span class="math notranslate nohighlight">\(R^* = \inf_h R(h)\)</span>と<span class="math notranslate nohighlight">\(\delta\in(0,1)\)</span>と<span class="math notranslate nohighlight">\(\varepsilon&gt;0\)</span>に対して</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1195,8 +1305,8 @@ R^* = R\left(h_0\right)
 </div>
 </section>
 </section>
-<section id="id13">
-<h2>有限な仮説集合を用いた学習<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<section id="id14">
+<h2>有限な仮説集合を用いた学習<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
 <p>仮説集合が有限集合の場合の予測損失の評価について。2値判別問題で考え、入力空間<span class="math notranslate nohighlight">\(\mathcal{X}\)</span>から2値ラベル<span class="math notranslate nohighlight">\(\{+1,-1\}\)</span>への関数<span class="math notranslate nohighlight">\(h\)</span>の有限な仮説集合</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1300,8 +1410,8 @@ R(h_S) = R(h_0) + O_P\left( \sqrt{\frac{\log |\mathcal{H}|}{n} } \right)
 </ul>
 </div>
 </div>
-<section id="id14">
-<h3>近似誤差と推定誤差のトレードオフ<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<section id="id15">
+<h3>近似誤差と推定誤差のトレードオフ<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
 <p>一般には仮説集合<span class="math notranslate nohighlight">\(\mathcal{H}\)</span>にベイズ規則<span class="math notranslate nohighlight">\(h_0\)</span>が含まれるとは仮定できず、</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1343,9 +1453,41 @@ R(h_S) - R(h_0)
 <p>適切な仮説集合はデータの分布やデータ数などによって変わる。推定誤差は<span class="math notranslate nohighlight">\(\sqrt{\frac{1}{n}}\)</span>が含まれるためデータ数<span class="math notranslate nohighlight">\(n\)</span>が大きくなれば小さくなる。データ数が少ないときは近似誤差と推定誤差のバランスを考えて仮説集合のサイズを決める必要がある。
 実用的な方法として正則化法がある。</p>
 </section>
+<section id="id16">
+<h3>二乗損失のバイアス・バリアンス分解<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<p>入力変数<span class="math notranslate nohighlight">\(X\)</span>と出力変数<span class="math notranslate nohighlight">\(Y\)</span>の関係が、関数<span class="math notranslate nohighlight">\(f(X)\)</span>と説明しきれなかった誤差<span class="math notranslate nohighlight">\(\varepsilon\)</span>に分かれる、つまり</p>
+<div class="math notranslate nohighlight">
+\[
+Y=f(X)+\varepsilon
+\]</div>
+<p>から成るとする。</p>
+<p>データ点<span class="math notranslate nohighlight">\(X=x_0\)</span>における予測損失</p>
+<div class="math notranslate nohighlight">
+\[
+E\left[\{Y-\hat{f}(X)\}^2 \mid X=x_0\right]
+\]</div>
+<p>を考える。二乗損失は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\{Y-\hat{f}(X)\}^2= &amp; \{f(X)+\varepsilon-E[\hat{f}(X)]+E[\hat{f}(X)]-\hat{f}(X)\}^2 \\
+= &amp; \{f(X)-E[\hat{f}(X)]\}^2 + \varepsilon^2 + \{E[\hat{f}(X)] - \hat{f}(X)\}^2 \\
+&amp; +2 \varepsilon\{f(X)-E[\hat{f}(X)]\}+2 \varepsilon\{E[\hat{f}(X)]-\hat{f}(X)\} \\
+&amp; +2\{f(X)-E[\hat{f}(X)]\}\{E[\hat{f}(X)]-\hat{f}(X)\}
+\end{aligned}
+\end{split}\]</div>
+<p>と展開できる。</p>
+<p>これに対して<span class="math notranslate nohighlight">\(X=x_0\)</span>における条件付き期待値をとると</p>
+<p>第1項 <span class="math notranslate nohighlight">\(\{f(X)-E[\hat{f}(X)]\}^2\)</span> は確率変数ではないため期待値の外に出せて <span class="math notranslate nohighlight">\(\{f(x_0)-E[\hat{f}(x_0)]\}^2\)</span> となる</p>
+<p>参考：</p>
+<ul class="simple">
+<li><p>カステラ本</p></li>
+<li><p><a class="reference external" href="https://www.gakujutsu.co.jp/text/isbn978-4-7806-0715-4/file/sec3-3_hosoku_20240830.pdf">『データサイエンス応用基礎』 3.3 節「機械学習の基礎と展望」 補足資料</a></p></li>
+</ul>
 </section>
-<section id="id15">
-<h2>正則化<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
+</section>
+<section id="id17">
+<h2>正則化<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
 <p><strong>正則化 (regularization)</strong> は適切な大きさの仮説集合を学習するための代表的な方法。小さな仮説集合で対応できるデータに対して、大きな仮説集合から仮説を選ぶことに対してペナルティを掛ける。</p>
 <p>複数の仮説集合 <span class="math notranslate nohighlight">\(\mathcal{H}_1 \subset \cdots \subset \mathcal{H}_M\)</span> を用いて学習を行うとする。仮説 <span class="math notranslate nohighlight">\(h\)</span> に対するペナルティ <span class="math notranslate nohighlight">\(\Phi: \mathcal{H}_M \rightarrow \mathbb{R}_{\geq 0}\)</span> として、 <span class="math notranslate nohighlight">\(m_1&lt;m_2\)</span> に対して</p>
 <div class="math notranslate nohighlight">
@@ -1449,18 +1591,20 @@ h \in \mathcal{H}_{m_1}, \quad h^{\prime} \in \mathcal{H}_{m_2} \backslash \math
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">ベイズ規則</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">0-1損失のベイズ規則</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">二乗損失のベイズ規則</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">絶対誤差のベイズ規則</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">アルゴリズムの評価</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">期待予測損失</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">統計的一致性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">アルゴリズムの評価</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">期待予測損失</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">統計的一致性</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">有限な仮説集合を用いた学習</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">近似誤差と推定誤差のトレードオフ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">有限な仮説集合を用いた学習</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">近似誤差と推定誤差のトレードオフ</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">二乗損失のバイアス・バリアンス分解</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">正則化</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">正則化</a></li>
 </ul>
   </nav></div>
 
