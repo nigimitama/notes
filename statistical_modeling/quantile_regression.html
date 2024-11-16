@@ -1199,22 +1199,22 @@ F'(x)-0 = f(x)
 </details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">Pinball lossの最適解</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">Pinball Loss</p>
+<p class="sd-card-text">Pinball Lossを少し表現を変えて</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \rho_{\tau} (x) =
 \begin{cases}
-(\tau - 1) x &amp; \text{ if } x \leq 0\\
-\tau x &amp; \text{ if } x &gt; 0\\
+\tau |x| &amp; \text{ if } x &gt; 0\\
+(1 - \tau) |x| &amp; \text{ if } x \leq 0\\
 \end{cases}
 \end{split}\]</div>
-<p class="sd-card-text">の場合、絶対誤差の場合分けした項に<span class="math notranslate nohighlight">\(\tau, (\tau-1)\)</span>を掛けた形になる</p>
+<p class="sd-card-text">と表すと、さきほどの絶対誤差の場合分けした項に<span class="math notranslate nohighlight">\(\tau, (1 - \tau)\)</span>を掛けた形になる</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
 R(\hat{y})
 &amp;= \tau \int_{\hat{y}}^{\infty} (y - \hat{y}) f(y) dy
-+ (\tau - 1) \int_{-\infty}^{\hat{y}} (\hat{y} - y) f(y) dy \\
++ (1 - \tau) \int_{-\infty}^{\hat{y}} (\hat{y} - y) f(y) dy \\
 \end{aligned}
 \end{split}\]</div>
 <p class="sd-card-text">絶対誤差の場合と同様に導関数は</p>
@@ -1222,21 +1222,21 @@ R(\hat{y})
 \[
 \begin{aligned}
 \frac{d R(\hat{y})}{d \hat{y}}
-&amp;= - \tau \int_{\hat{y}}^{\infty} f(y) dy + (\tau - 1)\int_{-\infty}^{\hat{y}} f(y) dy
+&amp;= - \tau \int_{\hat{y}}^{\infty} f(y) dy + (1 - \tau)\int_{-\infty}^{\hat{y}} f(y) dy
 \end{aligned}
 \]</div>
-<p class="sd-card-text">となる。ここで</p>
+<p class="sd-card-text">となる。ここで累積分布関数<span class="math notranslate nohighlight">\(F(\hat{y})\)</span>と補累積分布関数をそれぞれ</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
+F(\hat{y}) := \int_{-\infty}^{\hat{y}} f(y) dy\\
 1 - F(\hat{y}) := \int_{\hat{y}}^{\infty} f(y) dy\\
-F(\hat{y}) := \int_{-\infty}^{\hat{y}} f(y) dy
 \end{split}\]</div>
 <p class="sd-card-text">とおき、導関数を0とおく。</p>
 <div class="math notranslate nohighlight">
 \[
 \begin{aligned}
 \frac{d R(\hat{y})}{d \hat{y}}
-&amp;= - \tau (1 - F(\hat{y})) + (\tau - 1) F(\hat{y})
+&amp;= - \tau (1 - F(\hat{y})) + (1 - \tau) F(\hat{y})
 = 0
 \end{aligned}
 \]</div>
@@ -1244,20 +1244,20 @@ F(\hat{y}) := \int_{-\infty}^{\hat{y}} f(y) dy
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
-\tau (1 - F(\hat{y})) &amp;= (\tau - 1) F(\hat{y})\\
-\tau - \tau F(\hat{y}) &amp;=  (\tau - 1) F(\hat{y}))\\
-\tau &amp;= \tau F(\hat{y}) + (\tau - 1) F(\hat{y}))\\
-\tau &amp;= F(\hat{y}) (\tau + (\tau - 1))\\
-\tau &amp;= F(\hat{y}) (2 \tau - 1)\\
-\frac{\tau}{2 \tau - 1} &amp;= F(\hat{y})\\
+\tau (1 - F(\hat{y})) &amp;= (1 - \tau) F(\hat{y})\\
+\tau - \tau F(\hat{y})) &amp;= (1 - \tau) F(\hat{y})\\
+\tau &amp;= \tau F(\hat{y})) + (1 - \tau) F(\hat{y})\\
+\tau &amp;= (\tau + (1 - \tau)) F(\hat{y})\\
+\tau &amp;= F(\hat{y})\\
 \end{aligned}
 \end{split}\]</div>
+<p class="sd-card-text">となり、累積分布<span class="math notranslate nohighlight">\(F(\hat{y})\)</span>で表される確率（分布のうち<span class="math notranslate nohighlight">\(Y\)</span>が<span class="math notranslate nohighlight">\(-\infty\)</span> から <span class="math notranslate nohighlight">\(\hat{y}\)</span>までの面積）が<span class="math notranslate nohighlight">\(\tau\)</span>になることがわかる。
+逆関数をとると</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\begin{aligned}
-\hat{y} &amp;= F^{-1}\left( \frac{\tau}{2 \tau - 1} \right)\\
-\end{aligned}
+\hat{y} = F^{-1}(\tau)\\
 \end{split}\]</div>
+<p class="sd-card-text">となる。累積分布関数の逆関数は分位点なので、<span class="math notranslate nohighlight">\(\hat{y}\)</span>は確率<span class="math notranslate nohighlight">\(\tau\)</span>に対応する分位点である。</p>
 </div>
 </details><section id="id2">
 <h2>モデルの評価<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
