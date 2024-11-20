@@ -211,6 +211,14 @@
 
 :::{grid-item-card}
 :columns: 6
+英語
+
+- [](english/vocabulary/index)
+- [](english/grammar)
+:::
+
+:::{grid-item-card}
+:columns: 6
 ソフトウェア工学
 
 - [](software_engineering/programming)
