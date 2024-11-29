@@ -22,6 +22,7 @@
 - [](mathematics/applied_math/index)
 - [](mathematics/applied_math/exercise/index)
 - [](mathematics/probability_theory/index)
+- [](mathematics/discrete_mathematics/index)
 :::
 
 :::{grid-item-card}
