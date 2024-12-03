@@ -179,12 +179,12 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../mathematics/introduction.html">数学の初歩</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../mathematics/set_theory.html">集合論</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../mathematics/factorization.html">因数分解</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/algebra/index.html">代数学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../mathematics/algebra/group_theory.html">群論</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../mathematics/algebra/ring_theory.html">環論</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../mathematics/algebra/field_theory.html">体論</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../mathematics/algebra/number_theory.html">数論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/algebra/factorization.html">因数分解</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/linear_algebra/index.html">線形代数学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -949,7 +949,14 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">評判</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial">Tutorial / 解説</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概念</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loader">loader</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#action">action</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#outlet">Outlet</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">評判</a></li>
 </ul>
             </nav>
         </div>
@@ -965,11 +972,54 @@
 <h1>Remix<a class="headerlink" href="#remix" title="Link to this heading">#</a></h1>
 <p>RemixはWebフレームワークで、PESPA（Progressively Enhanced SPA) と呼ばれるタイプの、バックエンドとフロントエンドの両方を扱うアーキテクチャになっている。</p>
 <p><a class="reference external" href="https://remix.run/">Remix - Build Better Websites</a></p>
-<p>outlet</p>
-<p>loader</p>
-<p><a class="reference external" href="https://speakerdeck.com/takagimeow/yasasikuhazimeruremixtoweb">やさしくはじめるRemixとWeb - Speaker Deck</a></p>
+<section id="tutorial">
+<h2>Tutorial / 解説<a class="headerlink" href="#tutorial" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://zenn.dev/ak/articles/cef68c1b67a314">Remix入門【はじめからそうやって教えてくれればいいのに！】</a></p></li>
+<li><p><a class="reference external" href="https://speakerdeck.com/takagimeow/yasasikuhazimeruremixtoweb">やさしくはじめるRemixとWeb - Speaker Deck</a></p></li>
+<li><p>公式の短いTutorial: <a class="reference external" href="https://remix.run/docs/en/main/start/quickstart">Quick Start (5m) | Remix</a></p></li>
+<li><p>公式のTutorial: <a class="reference external" href="https://remix.run/docs/en/main/start/tutorial">Tutorial (30m) | Remix</a></p></li>
+</ul>
+</section>
 <section id="id1">
-<h2>評判<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<h2>概念<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="loader">
+<h3>loader<a class="headerlink" href="#loader" title="Link to this heading">#</a></h3>
+<p>レンダリング時にデータを取得する（GETする）ための関数。</p>
+<p><strong>サーバ側で実行される</strong> ので、SPAでありがちな「クライアント側からデータ取得のためAPIを叩くときにAPI-keyをどう秘匿するか」みたいな問題が解決される。</p>
+<p>ページごとに定義して使う。例えば、一覧ページ（例えば<code class="docutils literal notranslate"><span class="pre">posts.tsx</span></code>）では配列<code class="docutils literal notranslate"><span class="pre">Post[]</span></code>を返す<code class="docutils literal notranslate"><span class="pre">loader()</span></code>を定義し、詳細ページ（<code class="docutils literal notranslate"><span class="pre">posts.$postId.tsx</span></code>)では1つの要素（<code class="docutils literal notranslate"><span class="pre">Post</span></code>）を返す<code class="docutils literal notranslate"><span class="pre">loader()</span></code>を定義し、自分のcomponentの中で使う</p>
+<div class="highlight-tsx notranslate"><div class="highlight"><pre><span></span>// loaderの例
+import { json } from &quot;@remix-run/node&quot;;
+
+export const loader = async () =&gt; {
+  const response = await fetch(&quot;https://jsonplaceholder.typicode.com/posts?_limit=5&quot;);
+  const posts = await response.json();
+  return json({ posts });
+};
+
+export default function App() {
+  const { posts } = useLoaderData&lt;typeof loader&gt;()
+</pre></div>
+</div>
+</section>
+<section id="action">
+<h3>action<a class="headerlink" href="#action" title="Link to this heading">#</a></h3>
+<p>データを更新する（POST, DELETE, PUT, PATCH）ときに使う関数</p>
+</section>
+<section id="outlet">
+<h3>Outlet<a class="headerlink" href="#outlet" title="Link to this heading">#</a></h3>
+<p>親ルート内において、子ルートがレンダリングされる場所を示すために使われるコンポーネント</p>
+<div class="highlight-tsx notranslate"><div class="highlight"><pre><span></span>import { Outlet } from &quot;@remix-run/react&quot;
+
+export default function App() {
+  return &lt;Outlet /&gt;
+}
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id2">
+<h2>評判<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://x.com/kenn/status/1816500405150609717">https://x.com/kenn/status/1816500405150609717</a></p>
 <ul>
@@ -1045,7 +1095,14 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">評判</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial">Tutorial / 解説</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概念</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loader">loader</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#action">action</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#outlet">Outlet</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">評判</a></li>
 </ul>
   </nav></div>
 

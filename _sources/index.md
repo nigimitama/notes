@@ -14,7 +14,6 @@
 
 - [](mathematics/introduction)
 - [](mathematics/set_theory)
-- [](mathematics/factorization)
 - [](mathematics/algebra/index)
 - [](mathematics/linear_algebra/index)
 - [](mathematics/calculus/index)
