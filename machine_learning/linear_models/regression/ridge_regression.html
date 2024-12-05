@@ -962,7 +962,10 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">過学習の抑制</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">推定量のバイアスとバリアンス</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">推定量のバイアスとバリアンス</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLS推定量との関係</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">モンテカルロ・シミュレーション</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考文献</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">リッジ回帰</a></li>
@@ -982,6 +985,11 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="ridge">
 <h1>Ridge回帰<a class="headerlink" href="#ridge" title="Link to this heading">#</a></h1>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text">論文：<a class="reference external" href="https://homepages.math.uic.edu/~lreyzin/papers/ridge.pdf">Hoerl, A. E., &amp; Kennard, R. W. (1970). Ridge regression: Biased estimation for nonorthogonal problems. Technometrics, 12(1), 55-67.</a></p>
+</div>
+</div>
 <section id="id1">
 <h2>モデル<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p><strong>リッジ回帰</strong>（ridge regression）は誤差関数に正則化項を追加した線形回帰モデルである。</p>
@@ -1020,6 +1028,7 @@ y = \beta_0 + \beta_1 x_1 + \cdots + \beta_d x_d + \varepsilon
 &amp; \text{subject to } \sum^d_{i=1} \beta_j^2 \leq R
 \end{align}
 \end{split}\]</div>
+<p>この制約条件は円の方程式と呼ばれるもので、2次元で描くと円の形になる。円の範囲内で誤差を最小化するパラメータを選ぶという条件付き最適化問題を解くことになる。</p>
 <p>この問題を解くために、<strong>ラグランジュの未定乗数法</strong>を利用する。</p>
 <div class="cell tag_hide-input tag_hide-output docutils container">
 <details class="hide above-input">
@@ -1034,14 +1043,18 @@ y = \beta_0 + \beta_1 x_1 + \cdots + \beta_d x_d + \varepsilon
 <span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="n">R</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="n">b1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">b2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="n">b2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">)))</span>
 <span class="n">is_in_R</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">b</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">R</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="o">~</span><span class="n">is_in_R</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="o">~</span><span class="n">is_in_R</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="n">is_in_R</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">is_in_R</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="n">is_in_R</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">is_in_R</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\beta_1^2 + \beta_2^2 \leq 0.5$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\beta_1$&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\beta_2$&quot;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1052,10 +1065,7 @@ y = \beta_0 + \beta_1 x_1 + \cdots + \beta_d x_d + \varepsilon
 <span class="expanded">Hide code cell output</span>
 </summary>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7ff264642da0&gt;
-</pre></div>
-</div>
-<img alt="../../../_images/42f8ffcb6fcce05370fcb61d06ac61c69aa34f406d0ec0ba95dcb00b08fd0d98.png" src="../../../_images/42f8ffcb6fcce05370fcb61d06ac61c69aa34f406d0ec0ba95dcb00b08fd0d98.png" />
+<img alt="../../../_images/810afd1286415f833743392daea608cdea2ce1b57f82055dbe36150f53ae3aeb.png" src="../../../_images/810afd1286415f833743392daea608cdea2ce1b57f82055dbe36150f53ae3aeb.png" />
 </div>
 </details>
 </div>
@@ -1221,8 +1231,66 @@ J(\beta)=
 &amp;\leq \sigma^2 (X^\top X)^{-1} = \operatorname{Var}(\hat{\beta}^{\text{LS}})
 \end{aligned}
 \end{split}\]</div>
-<p><a class="reference external" href="https://www.math.arizona.edu/~hzhang/math574m/Read/RidgeRegressionBiasedEstimationForNonorthogonalProblems.pdf">Ridge Regression: Biased Estimation for Nonorthogonal Problems</a></p>
 <p><a class="reference external" href="https://hastie.su.domains/StatLearnSparsity_files/SLS.pdf">https://hastie.su.domains/StatLearnSparsity_files/SLS.pdf</a></p>
+<section id="ols">
+<h3>OLS推定量との関係<a class="headerlink" href="#ols" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(\boldsymbol{A}:=\boldsymbol{X}^\top \boldsymbol{X}\)</span>とおくと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{\boldsymbol{\beta}}^{\text{Ridge}}
+&amp;= (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1}
+\boldsymbol{X}^\top \boldsymbol{y}\\
+&amp;= (\boldsymbol{A} + \lambda \boldsymbol{I})^{-1}
+\boldsymbol{X}^\top \boldsymbol{y}\\
+\end{aligned}
+\end{split}\]</div>
+<p>となる。このとき</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{A} + \lambda \boldsymbol{I}
+= \boldsymbol{A} (\boldsymbol{I} + \lambda \boldsymbol{A}^{-1})
+\]</div>
+<p>であり、この逆行列をとると<span class="math notranslate nohighlight">\((AB)^{-1}=B^{-1}A^{-1}\)</span>より</p>
+<div class="math notranslate nohighlight">
+\[
+(\boldsymbol{A} + \lambda \boldsymbol{I})^{-1}
+= [\boldsymbol{A} (\boldsymbol{I} + \lambda \boldsymbol{A}^{-1})]^{-1}
+= (\boldsymbol{I} + \lambda \boldsymbol{A}^{-1})^{-1} \boldsymbol{A}^{-1}
+\]</div>
+<p>よって</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{\boldsymbol{\beta}}^{\text{Ridge}}
+&amp;= (\boldsymbol{I} + \lambda \boldsymbol{A}^{-1})^{-1} \boldsymbol{A}^{-1}
+\boldsymbol{X}^\top \boldsymbol{y}
+\\
+&amp;= [\boldsymbol{I} + \lambda (\boldsymbol{X}^\top \boldsymbol{X})^{-1}]^{-1} (\boldsymbol{X}^\top \boldsymbol{X})^{-1}
+\boldsymbol{X}^\top \boldsymbol{y}
+\\
+&amp;= [\boldsymbol{I} + \lambda (\boldsymbol{X}^\top \boldsymbol{X})^{-1}]^{-1} \hat{\boldsymbol{\beta}}^{\text{OLS}}
+\\
+&amp;= \boldsymbol{Z} \hat{\boldsymbol{\beta}}^{\text{OLS}}
+\end{aligned}
+\end{split}\]</div>
+<p>と変形することができる。ここで</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{Z} := [\boldsymbol{I} + \lambda (\boldsymbol{X}^\top \boldsymbol{X})^{-1}]^{-1}
+\]</div>
+<p>とおいた。つまりRidge推定量はOLS推定量を<span class="math notranslate nohighlight">\(Z\)</span>で変換したもの。</p>
+<p>なお<span class="math notranslate nohighlight">\(\lambda=0\)</span>のときにRidge推定量とOLS推定量が一致することは以下のようにわかる。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{\boldsymbol{\beta}}^{\text{Ridge}}
+&amp;= [\boldsymbol{I} + \underbrace{ \lambda (\boldsymbol{X}^\top \boldsymbol{X})^{-1} }_{=0} ]^{-1} \hat{\boldsymbol{\beta}}^{\text{OLS}} \\
+&amp;= \boldsymbol{I}^{-1} \hat{\boldsymbol{\beta}}^{\text{OLS}} \\
+&amp;= \hat{\boldsymbol{\beta}}^{\text{OLS}} \quad (\because I^{-1} = I)\\
+\end{aligned}
+\end{split}\]</div>
+</section>
 </section>
 <section id="id9">
 <h2>モンテカルロ・シミュレーション<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
@@ -1251,7 +1319,7 @@ y = \beta_0 + \beta_1 x + \beta_2 x^2 + u
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7ff2645491e0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7f105ea67f40&gt;
 </pre></div>
 </div>
 <img alt="../../../_images/c885dcecbff495a07f5e71405b2acae9e301b3eb019f7cbc62ad55148e048dc0.png" src="../../../_images/c885dcecbff495a07f5e71405b2acae9e301b3eb019f7cbc62ad55148e048dc0.png" />
@@ -1481,7 +1549,10 @@ variance:
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">過学習の抑制</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">推定量のバイアスとバリアンス</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">推定量のバイアスとバリアンス</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLS推定量との関係</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">モンテカルロ・シミュレーション</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考文献</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">リッジ回帰</a></li>
