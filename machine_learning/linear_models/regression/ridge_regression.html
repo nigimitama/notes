@@ -964,14 +964,11 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLS推定量との関係</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">推定量のバイアスとバリアンス</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">OLS推定量のバリアンス</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">モンテカルロ・シミュレーション</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考文献</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">リッジ回帰</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">ラグランジュの未定乗数法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">推定量のバイアスとバリアンス</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">モンテカルロ・シミュレーション</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考文献</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">リッジ回帰</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">ラグランジュの未定乗数法</a></li>
 </ul>
 </li>
 </ul>
@@ -1346,140 +1343,41 @@ N(\beta, \sigma^2 (X^\top X)^{-1})
 </div>
 </details><div class="admonition-ridge admonition">
 <p class="admonition-title">Ridge推定量のバリアンス</p>
+<p>（導出部分は書籍を参考にしたのではなくChatGPTと会話しながら考えたので誤ってる可能性あり）</p>
 <p>線形回帰モデル<span class="math notranslate nohighlight">\(\boldsymbol{y} = \boldsymbol{X} \boldsymbol{\beta} + \boldsymbol{u}\)</span>をRidge推定量に代入して変形すると</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
 \hat{\boldsymbol{\beta}}^{\text{Ridge}}
-&amp;= \boldsymbol{Z} \hat{\boldsymbol{\beta}}^{\text{OLS}}\\
-&amp;= \boldsymbol{Z} \boldsymbol{\beta} + \boldsymbol{Z} (\boldsymbol{X}^\top 
-\boldsymbol{X})^{-1} \boldsymbol{X}^\top \boldsymbol{u}\\
+&amp;= (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^\top \boldsymbol{y}\\
+&amp;= (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^\top (\boldsymbol{X} \boldsymbol{\beta} + \boldsymbol{u})\\
+&amp;= (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^\top \boldsymbol{X} \boldsymbol{\beta}
++ (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^\top \boldsymbol{u}\\
 \end{aligned}
 \end{split}\]</div>
-<p>誤差項の <span class="math notranslate nohighlight">\(u\sim N(0, \sigma^2 I)\)</span> の仮定と前述の定理 <span class="math notranslate nohighlight">\(u \sim N(\mu, \Sigma) \implies Cu + b \sim N(C\mu + b, C\Sigma C^\top)\)</span> を用いると、</p>
-<p><span class="math notranslate nohighlight">\(\boldsymbol{C} := \boldsymbol{Z} (\boldsymbol{X}^\top \boldsymbol{X})^{-1} \boldsymbol{X}^\top\)</span> とおく。
-なお転置は <span class="math notranslate nohighlight">\(\boldsymbol{C}^\top = \boldsymbol{X} (\boldsymbol{X}^\top \boldsymbol{X})^{-1} \boldsymbol{Z}^\top\)</span> となる（<span class="math notranslate nohighlight">\((ABC)^\top=C^\top B^\top A^\top\)</span>より）</p>
+<p>第1項は標本分布によるばらつきがないバイアス項なので第2項だけが関わる。つまり、</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}
-\hat{\boldsymbol{\beta}}^{\text{Ridge}}
-= \boldsymbol{Z} \boldsymbol{\beta} +  \boldsymbol{u}\\
-\end{split}\]</div>
-<p>したがって <span class="math notranslate nohighlight">\(\operatorname{Var}[\hat{\beta}^{Ridge}] = \sigma^2 (X^\top X)^{-1}\)</span> となる</p>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sp</span>
-<span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">m</span> <span class="o">=</span> <span class="mi">5</span>
-
-<span class="n">X</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">MatrixSymbol</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
-<span class="n">Z</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">MatrixSymbol</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
-
-<span class="n">C</span> <span class="o">=</span> <span class="n">Z</span> <span class="o">@</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">@</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span>
-<span class="n">C</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">@</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">Z</span><span class="o">.</span><span class="n">T</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NonSquareMatrixError</span><span class="g g-Whitespace">                      </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">9</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="n">Z</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">MatrixSymbol</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="n">C</span> <span class="o">=</span> <span class="n">Z</span> <span class="o">@</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">@</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span>
-<span class="ne">----&gt; </span><span class="mi">9</span> <span class="n">C</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">@</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">Z</span><span class="o">.</span><span class="n">T</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/sympy/matrices/expressions/matexpr.py:276,</span> in <span class="ni">MatrixExpr.inv</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">275</span> <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">276</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
-
-<span class="nn">File /usr/local/lib/python3.10/site-packages/sympy/matrices/expressions/matexpr.py:272,</span> in <span class="ni">MatrixExpr.inverse</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">270</span> <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">271</span>     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_square</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">272</span>         <span class="k">raise</span> <span class="n">NonSquareMatrixError</span><span class="p">(</span><span class="s1">&#39;Inverse of non-square matrix&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">273</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_inverse</span><span class="p">()</span>
-
-<span class="ne">NonSquareMatrixError</span>: Inverse of non-square matrix
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">@</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">Z</span><span class="o">.</span><span class="n">T</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \left(X^{T} X\right)^{-1} X^{T}\]</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Z</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(5, 5)
-</pre></div>
-</div>
-</div>
-</div>
-<section id="id9">
-<h3>OLS推定量のバリアンス<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
-<p>線形回帰モデル<span class="math notranslate nohighlight">\(y = X\beta + u\)</span>をOLS推定量<span class="math notranslate nohighlight">\(\hat{\beta}^{OLS} = (X^\top X)^{-1} X^\top y\)</span>に代入して変形すると</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-\hat{\beta}^{OLS}
-&amp;= (X^\top X)^{-1} X^\top y\\
-&amp;= (X^\top X)^{-1} X^\top (X\beta + u)\\
-&amp;= (X^\top X)^{-1} X^\top X\beta + (X^\top X)^{-1} X^\top u\\
-&amp;= \beta + (X^\top X)^{-1} X^\top u\\
-\end{align}
-\end{split}\]</div>
-<p><span class="math notranslate nohighlight">\(\hat{\beta}^{OLS} = \beta + (X^\top X)^{-1} X^\top u\)</span> は <span class="math notranslate nohighlight">\(u\sim N(0, \sigma^2 I)\)</span>の仮定より、<span class="math notranslate nohighlight">\(\hat{\beta}^{OLS} \sim N(\beta, \sigma^2 (X^\top X)^{-1})\)</span>となる。</p>
-<p>よって <span class="math notranslate nohighlight">\(\operatorname{Var}[\hat{\beta}^{OLS}] = \sigma^2 (X^\top X)^{-1}\)</span> となる</p>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-定理</div>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(u\)</span>を確率変数ベクトルとし、<span class="math notranslate nohighlight">\(\mu\in\mathbb{R}^n\)</span>、<span class="math notranslate nohighlight">\(b\in\mathbb{R}^p\)</span>、<span class="math notranslate nohighlight">\(C\in\mathbb{R}^{p\times n}\)</span>、<span class="math notranslate nohighlight">\(\operatorname{rank} C = p\)</span>とする。</p>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(u \sim N(\mu, \Sigma)\)</span> のとき、<span class="math notranslate nohighlight">\(Cu + b \sim N(C\mu + b, C\Sigma C^\top)\)</span></p>
-</div>
-</div>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(C := (X^\top X)^{-1} X^\top\)</span>とおけば</p>
+\[
+\operatorname{Var}[\hat{\boldsymbol{\beta}}^{\text{Ridge}}]
+= \operatorname{Var}[ (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^\top \boldsymbol{u} ]
+\]</div>
+<p>である。</p>
+<p>分散には行列<span class="math notranslate nohighlight">\(A\)</span>と確率変数ベクトル<span class="math notranslate nohighlight">\(u\)</span>について、<span class="math notranslate nohighlight">\(\operatorname{Var}[Au]= A\operatorname{Var}[u]A^\top\)</span>となる定理があるので利用すると、<span class="math notranslate nohighlight">\(\boldsymbol{A} :=(\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^\top\)</span>と考えると</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
-C^\top = [(X^\top X)^{-1} X^\top]^\top
-&amp;= X [(X^\top X)^{-1}]^\top \quad (\because (AB)^\top = B^\top A^\top) \\
-&amp;= X [(X^\top X)^\top]^{-1} \quad (\because (A^{-1})^\top = (A^\top)^{-1} ) \\
-&amp;= X (X^\top X)^{-1} \quad (\because (X^\top X)^\top=X^\top X ) \\
+\operatorname{Var}[\hat{\boldsymbol{\beta}}^{\text{Ridge}}]
+&amp;= \operatorname{Var}[ (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^\top \boldsymbol{u} ]\\
+&amp;= \operatorname{Var}[ \boldsymbol{A} \boldsymbol{u} ]\\
+&amp;= \boldsymbol{A} \operatorname{Var}[\boldsymbol{u}] \boldsymbol{A}^\top \\
+&amp;= (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^\top \operatorname{Var}[\boldsymbol{u}] [(\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^\top]^\top \\
+&amp;= (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^\top \operatorname{Var}[\boldsymbol{u}] \boldsymbol{X} (\boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1}  \\
 \end{aligned}
 \end{split}\]</div>
-<p class="sd-card-text">であるため、<span class="math notranslate nohighlight">\(u\sim N(0, \sigma^2 I)\)</span> の仮定が満たされるとき、</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
-&amp;\beta + C u \sim N(\beta, \sigma^2 CC^\top)\\
-&amp;= \beta + (X^\top X)^{-1} X^\top u \sim 
-N(\beta, \sigma^2 (X^\top X)^{-1} X^\top X (X^\top X)^{-1} )\\
-&amp;= \beta + (X^\top X)^{-1} X^\top u \sim 
-N(\beta, \sigma^2 (X^\top X)^{-1})
-\end{aligned}
-\end{split}\]</div>
-<div class="docutils">
 </div>
-</div>
-</details></section>
 </section>
-<section id="id10">
-<h2>モンテカルロ・シミュレーション<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<section id="id9">
+<h2>モンテカルロ・シミュレーション<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
 <p>多項式をつかったデータに、多項式回帰をfittingしてみる</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1505,10 +1403,10 @@ y = \beta_0 + \beta_1 x + \beta_2 x^2 + u
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7f897cf99840&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7f4960f5fe80&gt;
 </pre></div>
 </div>
-<img alt="../../../_images/8a806fd3c1abee893cafa74c0b27b844733ed924debdf344a72841bd7e25dcf5.png" src="../../../_images/8a806fd3c1abee893cafa74c0b27b844733ed924debdf344a72841bd7e25dcf5.png" />
+<img alt="../../../_images/c885dcecbff495a07f5e71405b2acae9e301b3eb019f7cbc62ad55148e048dc0.png" src="../../../_images/c885dcecbff495a07f5e71405b2acae9e301b3eb019f7cbc62ad55148e048dc0.png" />
 </div>
 </div>
 <div class="cell tag_hide-input docutils container">
@@ -1613,7 +1511,7 @@ variance:
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../../_images/dec8ac6a40f716c5c18132fb7d6c4cf1137d59cfb8be5b87a07b2c563a462bc6.png" src="../../../_images/dec8ac6a40f716c5c18132fb7d6c4cf1137d59cfb8be5b87a07b2c563a462bc6.png" />
+<img alt="../../../_images/4c6190261ad17ebffa7030f05b5dacb27bbafc05c313a5e746e3161631ce6a3b.png" src="../../../_images/4c6190261ad17ebffa7030f05b5dacb27bbafc05c313a5e746e3161631ce6a3b.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1630,14 +1528,14 @@ variance:
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../../_images/d2fc24fdf0e9911a29b99e849694f837724b6813a01ce1cacea215c58b4b404f.png" src="../../../_images/d2fc24fdf0e9911a29b99e849694f837724b6813a01ce1cacea215c58b4b404f.png" />
+<img alt="../../../_images/4ba80fb10fab949596f2a076836431ffb0ad487d310ce83981870cf63f57629f.png" src="../../../_images/4ba80fb10fab949596f2a076836431ffb0ad487d310ce83981870cf63f57629f.png" />
 </div>
 </div>
 </section>
+<section id="id10">
+<h2>参考文献<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
 <section id="id11">
-<h2>参考文献<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
-<section id="id12">
-<h3>リッジ回帰<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<h3>リッジ回帰<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>杉山将『イラストで学ぶ機械学習』</p></li>
 <li><p>スパース推定</p></li>
@@ -1647,8 +1545,8 @@ variance:
 <li><p>佐和隆光. (1979). 回帰分析.</p></li>
 </ul>
 </section>
-<section id="id13">
-<h3>ラグランジュの未定乗数法<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>ラグランジュの未定乗数法<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="http://tomomi.my.coocan.jp/text/relax1.pdf">ラグランジュ緩和と双対問題</a></p></li>
 <li><p>『言語処理のための機械学習入門』pp.14-19</p></li>
@@ -1736,14 +1634,11 @@ variance:
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLS推定量との関係</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">推定量のバイアスとバリアンス</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">OLS推定量のバリアンス</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">モンテカルロ・シミュレーション</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考文献</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">リッジ回帰</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">ラグランジュの未定乗数法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">推定量のバイアスとバリアンス</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">モンテカルロ・シミュレーション</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考文献</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">リッジ回帰</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">ラグランジュの未定乗数法</a></li>
 </ul>
 </li>
 </ul>
