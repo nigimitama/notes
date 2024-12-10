@@ -519,6 +519,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../machine_learning/svm.html">Support Vector Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../machine_learning/ensemble.html">アンサンブル学習</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/trees/index.html">Tree-based Algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/decision_tree.html">決定木</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/gbdt.html">勾配ブースティング決定木</a></li>
@@ -658,6 +659,10 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../business/revenue_structure.html">売上構造やKPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../business/accounting.html">会計</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../business/people_management/index.html">People Management</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../business/people_management/1on1.html">1on1</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../business/product_management/index.html">プロダクトマネジメント</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../business/product_management/prd.html">PRD（Product Requirements Document）</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../business/product_management/ml_pdm.html">Machine Learning Product Management（MLPdM）</a></li>
@@ -788,6 +793,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../financial_economics/investment_strategies/index.html">投資戦略</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../financial_economics/investment_strategies/dogs_of_dow.html">「ダウの犬」戦略</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../financial_economics/investment_strategies/performance_based_investment.html">業績ベースの投資</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/investment_strategies/performance_prediction.html">業績予想</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../financial_economics/libraries.html">金融系ライブラリ</a></li>
@@ -1656,12 +1662,18 @@ f(t) * g(t)=\int_{-\infty}^{\infty} f(s) g(t-s) \mathrm{d} s
 <span class="k">def</span> <span class="nf">gaussian_smoothing</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">std_dev</span><span class="p">):</span>
     <span class="c1"># ガウス窓を作成</span>
     <span class="n">gauss_window</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span><span class="n">window_size</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">std_dev</span><span class="p">)</span>
-    <span class="c1"># gauss_window /= gauss_window.sum()  # 窓の正規化</span>
+    <span class="n">gauss_window</span> <span class="o">/=</span> <span class="n">gauss_window</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># 窓の正規化</span>
     <span class="c1"># 畳み込み</span>
     <span class="k">return</span> <span class="n">fftconvolve</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">gauss_window</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>  <span class="c1"># 同じ長さを保つ</span>
 
-<span class="n">smoothed_signal</span> <span class="o">=</span> <span class="n">gaussian_smoothing</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">std_dev</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">smoothed_signal</span> <span class="o">=</span> <span class="n">gaussian_smoothing</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">std_dev</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">smoothed_signal</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\tilde</span><span class="si">{f}</span><span class="s2">(t)$&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="c1"># scipy</span>
+<span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="kn">import</span> <span class="n">gaussian_filter1d</span>
+<span class="n">smoothed_signal</span> <span class="o">=</span> <span class="n">gaussian_filter1d</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">smoothed_signal</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\tilde</span><span class="si">{f}</span><span class="s2">(t)$ (scipy gaussian_filter1d)&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -1669,7 +1681,7 @@ f(t) * g(t)=\int_{-\infty}^{\infty} f(s) g(t-s) \mathrm{d} s
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/fa53a16fc860716db6689a2b8e3784302930db37153850e2ef5eeffa982b8d13.png" src="../../_images/fa53a16fc860716db6689a2b8e3784302930db37153850e2ef5eeffa982b8d13.png" />
+<img alt="../../_images/64aba48be40f89fc063ffeaabe4033e89f863e4244db136fb026d51ef15fa8de.png" src="../../_images/64aba48be40f89fc063ffeaabe4033e89f863e4244db136fb026d51ef15fa8de.png" />
 </div>
 </div>
 <div class="admonition- admonition">
@@ -1757,11 +1769,11 @@ P(\omega) = |F(\omega)|^2
 <span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 画像にしたがうまくいかなかった</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># うまくいかなかった</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="n">sampling_rate</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">sampling_rate</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="n">duration</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sampling_rate</span> <span class="o">*</span> <span class="n">duration</span><span class="p">)</span>
 
@@ -1791,57 +1803,7 @@ P(\omega) = |F(\omega)|^2
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/e6586fcf2d228f0a09eb3f474796ba352a07facf8dd57bc56da1fb1b0ba1f378.png" src="../../_images/e6586fcf2d228f0a09eb3f474796ba352a07facf8dd57bc56da1fb1b0ba1f378.png" />
-</div>
-</div>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 画像にしたがうまくいかなかった</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
-<span class="n">sampling_rate</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">duration</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sampling_rate</span> <span class="o">*</span> <span class="n">duration</span><span class="p">)</span>
-
-<span class="c1"># Time</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="c1"># frequencies</span>
-<span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">frequency</span> <span class="ow">in</span> <span class="n">w</span><span class="p">:</span>
-    <span class="n">amp</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">frequency</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1</span>
-    <span class="n">signal</span> <span class="o">+=</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">frequency</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
-
-<span class="c1"># Perform the Fourier Transform</span>
-<span class="n">fft_result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
-<span class="n">frequencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sampling_rate</span><span class="p">)</span>
-
-<span class="c1"># Compute the power spectrum (magnitude squared of FFT)</span>
-<span class="n">power_spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">fft_result</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
-<span class="c1"># power_spectrum = power_spectrum / (N / 2) # 正規化</span>
-
-<span class="c1"># 結果をプロット</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">signal</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Signal $f(t)$&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$t$&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;f(t)&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">frequencies</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">frequencies</span><span class="p">)],</span> <span class="n">power_spectrum</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">frequencies</span><span class="p">)])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Power Spectrum $P(\omega)$&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Frequency $ω$&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Power Spectrum $P(ω)$&#39;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/65d6fbdfead9e64952132c3de5c7fc216aa2406fe8039b30e70acd99edef57f8.png" src="../../_images/65d6fbdfead9e64952132c3de5c7fc216aa2406fe8039b30e70acd99edef57f8.png" />
+<img alt="../../_images/efff299e57ec45264e5fe11d51fbae7276eb3736db15bfc14e058f5822358414.png" src="../../_images/efff299e57ec45264e5fe11d51fbae7276eb3736db15bfc14e058f5822358414.png" />
 </div>
 </div>
 <section id="id13">
@@ -1934,7 +1896,7 @@ R(\tau)=\int_{-\infty}^{\infty} f(t) \overline{f(t-\tau)} ~\mathrm{d} t
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/3d99d6b5c97c3c4f4e64322f4a02e5975861194d4c8a9a7c9345868c83d51eaa.png" src="../../_images/3d99d6b5c97c3c4f4e64322f4a02e5975861194d4c8a9a7c9345868c83d51eaa.png" />
+<img alt="../../_images/c241d7caff220a28db00f82d4310f5d3217c693f0b2d8134a9449569637f01fd.png" src="../../_images/c241d7caff220a28db00f82d4310f5d3217c693f0b2d8134a9449569637f01fd.png" />
 </div>
 </div>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
@@ -1996,12 +1958,12 @@ P(\omega)=\int_{-\infty}^{\infty} R(\tau) e^{-i \omega \tau} \mathrm{~d} \tau
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
 <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">sig</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">sig</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
 
 <span class="n">autocorr</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">sig</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;White noise $f(t)$&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$t$&quot;</span><span class="p">)</span>
 
@@ -2022,7 +1984,7 @@ P(\omega)=\int_{-\infty}^{\infty} R(\tau) e^{-i \omega \tau} \mathrm{~d} \tau
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/5532488782a7eff5785743308de6ab47fb395c4bb749cdf0d984f2e9dc04b9f3.png" src="../../_images/5532488782a7eff5785743308de6ab47fb395c4bb749cdf0d984f2e9dc04b9f3.png" />
+<img alt="../../_images/80682ed73c4b970636acaae831b1946ca282d34ecf326381fbca8127f1d3638c.png" src="../../_images/80682ed73c4b970636acaae831b1946ca282d34ecf326381fbca8127f1d3638c.png" />
 </div>
 </div>
 <div class="cell tag_hide-input docutils container">
@@ -2032,14 +1994,9 @@ P(\omega)=\int_{-\infty}^{\infty} R(\tau) e^{-i \omega \tau} \mathrm{~d} \tau
 <span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span><span class="p">,</span> <span class="n">fft</span>
-<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">sig</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">autocorr</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">sig</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">)</span>
-
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span><span class="p">,</span> <span class="n">fft</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;White noise $f(t)$&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$t$&quot;</span><span class="p">)</span>
 
@@ -2049,9 +2006,9 @@ P(\omega)=\int_{-\infty}^{\infty} R(\tau) e^{-i \omega \tau} \mathrm{~d} \tau
 <span class="n">omega</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">T</span><span class="p">)[:</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span>
 <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">F</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
 
-<span class="c1"># Power spectrum</span>
+<span class="c1"># Power spectrum from F(ω)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Power spectrum $P(\omega)$&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\omega$&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Power spectrum $P(\omega)$ from $F(\omega)$&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\omega$&quot;</span><span class="p">)</span>
 
 <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -2060,7 +2017,7 @@ P(\omega)=\int_{-\infty}^{\infty} R(\tau) e^{-i \omega \tau} \mathrm{~d} \tau
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/eee183aa11c906c65b815a91a142ed64e6c3a8905ab348e8e09c2f6a24659c4c.png" src="../../_images/eee183aa11c906c65b815a91a142ed64e6c3a8905ab348e8e09c2f6a24659c4c.png" />
+<img alt="../../_images/eab1d27630f2b7ec093ad5ccf28e12d911bbd3920f54b80eeffaf00bad22ca9d.png" src="../../_images/eab1d27630f2b7ec093ad5ccf28e12d911bbd3920f54b80eeffaf00bad22ca9d.png" />
 </div>
 </div>
 <p>それっぽいやつやってみたがうまくPが一致しない</p>

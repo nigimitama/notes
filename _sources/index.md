@@ -98,6 +98,7 @@
 - [](machine_learning/unsupervised_learning/index)
 - [](machine_learning/linear_models/index)
 - [](machine_learning/svm)
+- [](machine_learning/ensemble)
 - [](machine_learning/trees/index)
 - [](machine_learning/knn)
 - [](machine_learning/naive_bayes)
@@ -191,6 +192,7 @@
 
 - [](business/revenue_structure)
 - [](business/accounting)
+- [](business/people_management/index)
 - [](business/product_management/index)
 - [](business/project_management/index)
 - [](business/business_administration/index)
