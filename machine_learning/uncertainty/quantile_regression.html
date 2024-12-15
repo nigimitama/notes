@@ -80,7 +80,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Conformal Regression" href="conformal_regression.html" />
-    <link rel="prev" title="予測の不確実性" href="index.html" />
+    <link rel="prev" title="区間予測の評価指標" href="metrics.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -564,9 +564,10 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">予測の不確実性</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">区間予測の評価指標</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">分位点回帰</a></li>
 <li class="toctree-l2"><a class="reference internal" href="conformal_regression.html">Conformal Regression</a></li>
-<li class="toctree-l2"><a class="reference internal" href="metrics.html">区間予測の評価指標</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distribution_prediction.html">条件付き分布予測</a></li>
 </ul>
 </details></li>
 </ul>
@@ -959,12 +960,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">メモ：誤差と最適解</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">二乗誤差の場合</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">絶対誤差の場合</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">分位点回帰モデルの実践</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">分位点回帰モデルの実践</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lightgbmquantile-regression">LightGBMでのquantile regression</a></li>
 </ul>
             </nav>
@@ -1081,7 +1077,7 @@ E\big[ \rho_{\tau}(y_i - q(X_i)) \big]
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/282a29781b52d00c9fc38691f19c605eb6a12d59f6ea2ff871a0f021994b8a26.png" src="../../_images/282a29781b52d00c9fc38691f19c605eb6a12d59f6ea2ff871a0f021994b8a26.png" />
+<img alt="../../_images/d09fe32646da8486f5767d5accc65b938b3b496cec8e66714f6d573e68156d40.png" src="../../_images/d09fe32646da8486f5767d5accc65b938b3b496cec8e66714f6d573e68156d40.png" />
 </div>
 </div>
 <p>なお、pinball lossは<span class="math notranslate nohighlight">\(\tau=0.5\)</span>のとき</p>
@@ -1128,42 +1124,11 @@ E\big[ \rho_{\tau}(y_i - q(X_i)) \big]
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/312da35ad09f32dbfe98e8a682794124291c6172c53bb742379b901a0fc7f62e.png" src="../../_images/312da35ad09f32dbfe98e8a682794124291c6172c53bb742379b901a0fc7f62e.png" />
+<img alt="../../_images/5e827788cdf172b2c53f8b7bb91730c208b93055ebe0c5654277f496fa14b414.png" src="../../_images/5e827788cdf172b2c53f8b7bb91730c208b93055ebe0c5654277f496fa14b414.png" />
 </div>
 </div>
 <section id="id2">
-<h2>メモ：誤差と最適解<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<section id="id3">
-<h3>二乗誤差の場合<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
-<p>二乗誤差</p>
-<div class="math notranslate nohighlight">
-\[
-L(x) = (y_i - f(x))^2
-\]</div>
-<p>の場合、</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align}
-\big(y_i - f(x)\big)^2
-&amp;= \big\{ \big(y_i - E(y|x) \big) + \big(E(y|x) - f(x) \big) \big\}^2\\
-&amp;= \big(y_i - E(y|x) \big)^2 + \big(E(y|x) - f(x) \big)^2
-+ 2 \big(y_i - E(y|x) \big) \big(E(y|x) - f(x) \big)\\
-\end{align}
-\end{split}\]</div>
-<p>と変形すると、<span class="math notranslate nohighlight">\(E(y|x) = f(x)\)</span>のときに最小化され、予測値<span class="math notranslate nohighlight">\(f(x)\)</span>を含まない第1項のみが残ることがわかる</p>
-</section>
-<section id="id4">
-<h3>絶対誤差の場合<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
-<p>絶対誤差</p>
-<div class="math notranslate nohighlight">
-\[
-L(x) = |y_i - f(x)|
-\]</div>
-<p><a class="reference external" href="https://scikit-learn.org/stable/modules/model_evaluation.html#pinball-loss">3.3. Metrics and scoring: quantifying the quality of predictions — scikit-learn 1.4.1 documentation</a></p>
-</section>
-</section>
-<section id="id5">
-<h2>分位点回帰モデルの実践<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<h2>分位点回帰モデルの実践<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 </section>
 <section id="lightgbmquantile-regression">
 <h2>LightGBMでのquantile regression<a class="headerlink" href="#lightgbmquantile-regression" title="Link to this heading">#</a></h2>
@@ -1207,7 +1172,7 @@ L(x) = |y_i - f(x)|
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/c4cb9f121f147421a2b58185718b091f401ef1b4ba1d3e86c6cd7c7a72bdddfb.png" src="../../_images/c4cb9f121f147421a2b58185718b091f401ef1b4ba1d3e86c6cd7c7a72bdddfb.png" />
+<img alt="../../_images/9752020faf1749a183a15d7fa60d6504edc08cf00678b0099c6999ee82d04a77.png" src="../../_images/9752020faf1749a183a15d7fa60d6504edc08cf00678b0099c6999ee82d04a77.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1258,12 +1223,12 @@ L(x) = |y_i - f(x)|
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="index.html"
+       href="metrics.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">予測の不確実性</p>
+        <p class="prev-next-title">区間予測の評価指標</p>
       </div>
     </a>
     <a class="right-next"
@@ -1292,12 +1257,7 @@ L(x) = |y_i - f(x)|
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">メモ：誤差と最適解</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">二乗誤差の場合</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">絶対誤差の場合</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">分位点回帰モデルの実践</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">分位点回帰モデルの実践</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lightgbmquantile-regression">LightGBMでのquantile regression</a></li>
 </ul>
   </nav></div>

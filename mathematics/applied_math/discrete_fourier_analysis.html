@@ -74,8 +74,6 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'mathematics/applied_math/discrete_fourier_analysis';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -564,9 +562,10 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/uncertainty/index.html">予測の不確実性</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/uncertainty/metrics.html">区間予測の評価指標</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/uncertainty/quantile_regression.html">分位点回帰</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/uncertainty/conformal_regression.html">Conformal Regression</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/uncertainty/metrics.html">区間予測の評価指標</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/uncertainty/distribution_prediction.html">条件付き分布予測</a></li>
 </ul>
 </details></li>
 </ul>
@@ -936,9 +935,7 @@
 <button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
 </button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
+
 </div></div>
       
     </div>
@@ -954,14 +951,6 @@
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">サンプリング定理</a></li>
-</ul>
-            </nav>
         </div>
     </div>
 </div>
@@ -973,218 +962,6 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>離散フーリエ変換<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<section id="id2">
-<h2>サンプリング定理<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>信号 <span class="math notranslate nohighlight">\(f(t)\)</span> の離散的な点 <span class="math notranslate nohighlight">\(\left\{t_k\right\}, k=0, \pm 1, \pm 2, \pm 3, \ldots\)</span> での値 <span class="math notranslate nohighlight">\(\left\{f_k\right\}\)</span> を <strong>サンプル点</strong> <span class="math notranslate nohighlight">\(\left\{t_k\right\}\)</span> での <strong>サンプル値</strong> と呼ぶ。
-サンプル点 <span class="math notranslate nohighlight">\(\left\{t_k\right\}\)</span> の間隔 <span class="math notranslate nohighlight">\(\tau\)</span> を  <strong>サンプル間隔</strong> と呼ぶ。サンプル値 <span class="math notranslate nohighlight">\(\left\{f_k\right\}\)</span> のみから連続関数を再現することを <strong>補間</strong> という。</p>
-<p>次の性質を持つ関数 <span class="math notranslate nohighlight">\(\phi(t)\)</span> をサンプル間隔 <span class="math notranslate nohighlight">\(\tau\)</span> の <strong>補間関数</strong> と呼ぶ</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\phi(t)= \begin{cases}1 &amp; t=0 \\ 0 &amp; t= \pm \tau, \pm 2 \tau, \pm 3 \tau, \ldots\end{cases}
-\end{split}\]</div>
-<p>補間関数の例は<span class="math notranslate nohighlight">\(\operatorname{sinc}\)</span>（cardinal sine）関数</p>
-<div class="math notranslate nohighlight">
-\[
-\operatorname{sinc}(x) =\frac{\sin \pi x}{\pi x}
-\]</div>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
-<span class="k">def</span> <span class="nf">sinc</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sinc</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;sinc(x)&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;sinc(x)&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/e8f02b899ec285d9b7691f7d985a597d893fbb7604f0987e7fe0b1fb6b1beb4c.png" src="../../_images/e8f02b899ec285d9b7691f7d985a597d893fbb7604f0987e7fe0b1fb6b1beb4c.png" />
-</div>
-</div>
-<div class="math notranslate nohighlight">
-\[
-\hat{f}(t)=\sum_{k=-\infty}^{\infty} f_k \phi\left(t-t_k\right)
-\]</div>
-<p>はすべてのサンプル点<span class="math notranslate nohighlight">\(t_i\)</span>でサンプルの値<span class="math notranslate nohighlight">\(f_i\)</span>をとる</p>
-<div class="admonition- admonition">
-<p class="admonition-title">定義：帯域制限</p>
-<p>信号<span class="math notranslate nohighlight">\(f(t)\)</span>のフーリエ変換を<span class="math notranslate nohighlight">\(F(\omega)\)</span>とするとき、</p>
-<div class="math notranslate nohighlight">
-\[
-|\omega| \geq W \implies F(\omega)=0
-\]</div>
-<p>であれば、信号<span class="math notranslate nohighlight">\(f(t)\)</span>は <strong>帯域幅</strong> <span class="math notranslate nohighlight">\(W\)</span> に <strong>帯域制限</strong> されているという</p>
-</div>
-<p>サンプリング間隔<span class="math notranslate nohighlight">\(\tau\)</span>を半周期（波1つ分。sinなら<span class="math notranslate nohighlight">\(\pi\)</span>の幅）とする振動は各周波数<span class="math notranslate nohighlight">\(W=\pi/\tau\)</span>を持つ</p>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;sin(x)&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;sin(x)&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkorange&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkorange&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;$\tau$&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkorange&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/b322f8563dd63c6be32b663934b2c0c35b868805772790977c6cdbb920540e4f.png" src="../../_images/b322f8563dd63c6be32b663934b2c0c35b868805772790977c6cdbb920540e4f.png" />
-</div>
-</div>
-<div class="admonition- admonition">
-<p class="admonition-title">サンプリング定理</p>
-<p>帯域幅 <span class="math notranslate nohighlight">\(W\)</span> に帯域制限された信号 <span class="math notranslate nohighlight">\(f(t)\)</span> はサンプル間隔</p>
-<div class="math notranslate nohighlight">
-\[
-\tau=\frac{\pi}{W}
-\]</div>
-<p>のサンプル点 <span class="math notranslate nohighlight">\(\left\{t_k\right\}\)</span> でのサンプル値 <span class="math notranslate nohighlight">\(\left\{f_k\right\}\)</span> のみから次のように再現される</p>
-<div class="math notranslate nohighlight">
-\[
-f(t)=\sum_{k=-\infty}^{\infty} f_k \operatorname{sinc} \frac{t-t_k}{\tau}
-\]</div>
-</div>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">信号<span class="math notranslate nohighlight">\(f(t)\)</span>のフーリエ変換は</p>
-<div class="math notranslate nohighlight">
-\[
-f(t)=\frac{1}{2 \pi} \int_{-\infty}^{\infty} F(\omega) e^{i \omega t} \mathrm{~d} \omega, \quad F(\omega)=\int_{-\infty}^{\infty} f(t) e^{-i \omega t} \mathrm{~d} t
-\]</div>
-<p class="sd-card-text">となる。<span class="math notranslate nohighlight">\(F(\omega)\)</span>は区間<span class="math notranslate nohighlight">\([-W,W]\)</span>でフーリエ級数に展開できる</p>
-<div class="math notranslate nohighlight">
-\[
-F(\omega)=\sum_{k=-\infty}^{\infty} C_k e^{i \pi k \omega / W}, \quad C_k=\frac{1}{2 W} \int_{-W}^W F(\omega) e^{-i \pi k \omega / W} \mathrm{~d} \omega
-\]</div>
-<p class="sd-card-text">区間 <span class="math notranslate nohighlight">\([-W, W]\)</span> の外では <span class="math notranslate nohighlight">\(F(\omega)=0\)</span> であるから、 <span class="math notranslate nohighlight">\(C_k\)</span> は次のように計算できる。</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
-C_k &amp; =\frac{1}{2 W} \int_{-\infty}^{\infty} F(\omega) e^{-i \pi k \omega / W} \mathrm{~d} \omega\\
-&amp;=\frac{\pi}{W} \frac{1}{2 \pi} \int_{-\infty}^{\infty} F(\omega) e^{i \omega(-\pi k / W)} \mathrm{d} \omega \\
-&amp; =\frac{\pi}{W} f\left(-\frac{\pi k}{W}\right)=\tau f(-k \tau)=\tau f_{-k}
-\end{aligned}
-\end{split}\]</div>
-<p class="sd-card-text">よって<span class="math notranslate nohighlight">\(F(\omega)\)</span>は区間<span class="math notranslate nohighlight">\([-W,W]\)</span>で</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
-F(\omega) &amp; =\sum_{k=-\infty}^{\infty} \tau f_{-k} e^{i \pi k \omega / W}=\tau \sum_{k=-\infty}^{\infty} f_k e^{-i \pi k \omega / W} \\
-&amp; =\tau \sum_{k=-\infty}^{\infty} f_k e^{-i k \tau \omega}=\tau \sum_{k=-\infty}^{\infty} f_k e^{-i t_k \omega}
-\end{aligned}
-\end{split}\]</div>
-<p class="sd-card-text">となる。</p>
-<p class="sd-card-text">まとめると、</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
-f(t) &amp; =\frac{1}{2 \pi} \int_{-W}^W F(\omega) e^{i \omega t} \mathrm{~d} \omega\\
-&amp; =\frac{1}{2 \pi} \int_{-W}^W\left(\tau \sum_{k=-\infty}^{\infty} f_k e^{-i t_k \omega}\right) e^{i \omega t} \mathrm{~d} \omega \\
-&amp; =\frac{\tau}{2 \pi} \sum_{k=-\infty}^{\infty} f_k \int_{-W}^W e^{i\left(t-t_k\right) \omega} \mathrm{d} \omega \\
-&amp; =\frac{\tau}{2 \pi} \sum_{k=-\infty}^{\infty} f_k \int_{-W}^W\left(\cos \left(t-t_k\right) \omega+i \sin \left(t-t_k\right) \omega\right) \mathrm{d} \omega \\
-&amp; =\frac{\tau}{\pi} \sum_{k=-\infty}^{\infty} f_k \int_0^W \cos \left(t-t_k\right) \omega \mathrm{d} \omega \\
-&amp; =\frac{1}{W} \sum_{k=-\infty}^{\infty} f_k \int_0^W \cos \left(t-t_k\right) \omega \mathrm{d} \omega
-    \quad (\because \tau = \pi/W) \\
-&amp; =\frac{1}{W} \sum_{k=-\infty}^{\infty} f_k\left[\frac{\sin \left(t-t_k\right) \omega}{\left(t-t_k\right)}\right]_0^W\\
-&amp; =\sum_{k=-\infty}^{\infty} f_k \frac{\sin W\left(t-t_k\right)}{W\left(t-t_k\right)} \\
-&amp; =\sum_{k=-\infty}^{\infty} f_k \operatorname{sinc} \frac{W\left(t-t_k\right)}{\pi}\\
-&amp; =\sum_{k=-\infty}^{\infty} f_k \operatorname{sinc} \frac{t-t_k}{\tau}
-\end{aligned}
-\end{split}\]</div>
-</div>
-</details><aside class="margin sidebar">
-<p class="sidebar-title"></p>
-<p>サンプリング定理を導いたのは情報理論の創始者であるシャノン（Claude E. Shannon: 1916-2001）</p>
-</aside>
-<p>間隔<span class="math notranslate nohighlight">\(\tau\)</span>でサンプリングすると<span class="math notranslate nohighlight">\(W=\pi/\tau\)</span>以上の周波数の信号は捉えられない。<span class="math notranslate nohighlight">\(W=\pi/\tau\)</span>をサンプリング間隔<span class="math notranslate nohighlight">\(\tau\)</span>に対する <strong>ナイキスト周波数</strong> とよぶ。</p>
-<p>一定の条件を満たす間隔で得られたサンプルと、一定の条件を満たす信号は、 <strong>離散的なサンプルからもとの連続的な信号を再現できる</strong> というのがサンプリング定理。</p>
-<p>音声などの信号に限らず、デジタル画像などアナログ（連続値）なものをデジタル（離散値）にサンプリングする分野で広く応用されている。</p>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
-<span class="k">def</span> <span class="nf">approx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
-    <span class="c1"># tau: サンプリング周期</span>
-    <span class="c1"># 間隔を指定してのサンプリングが難しかったのでarangeで生成</span>
-    <span class="n">x_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
-    <span class="n">y_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x_samples</span><span class="p">)</span>
-    
-    <span class="n">y_hat</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
-        <span class="n">y_hat_i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_samples</span><span class="p">)):</span>
-            <span class="n">y_hat_i</span> <span class="o">+=</span> <span class="n">y_samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinc</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">x_samples</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">/</span> <span class="n">tau</span><span class="p">)</span>
-        <span class="n">y_hat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_hat_i</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">x_samples</span><span class="p">,</span> <span class="n">y_samples</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_hat</span><span class="p">)</span>
-
-<span class="n">taus</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s2">&quot;\pi&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">&quot;\pi/1.1&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">1.1</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">&quot;\pi/2&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span>
-<span class="p">]</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">taus</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
-    <span class="c1"># true signal</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;true signal $f(t)$&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
-
-    <span class="c1"># approximate</span>
-    <span class="n">tau_str</span><span class="p">,</span> <span class="n">tau</span> <span class="o">=</span> <span class="n">taus</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="n">x_samples</span><span class="p">,</span> <span class="n">y_samples</span><span class="p">,</span> <span class="n">y_hat</span> <span class="o">=</span> <span class="n">approx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="n">tau</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_samples</span><span class="p">,</span> <span class="n">y_samples</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;samples&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">rf</span><span class="s2">&quot;approximation ($\tau = </span><span class="si">{</span><span class="n">tau_str</span><span class="si">}</span><span class="s2">$)&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$t$&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">rf</span><span class="s2">&quot;Approximation ($\tau = </span><span class="si">{</span><span class="n">tau_str</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">tau</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">$)&quot;</span><span class="p">)</span><span class="c1">#, ylim=(-1.2, 3.2))</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$f(t)$&quot;</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/7d46c3a96934a133ef5301be4179177a8125e7878376f8f3582a8370dbec2381.png" src="../../_images/7d46c3a96934a133ef5301be4179177a8125e7878376f8f3582a8370dbec2381.png" />
-</div>
-</div>
-<p>周期<span class="math notranslate nohighlight">\(T\)</span>が<span class="math notranslate nohighlight">\(T=2\tau\)</span>なら、周波数が<span class="math notranslate nohighlight">\(\omega=2\pi/T=\pi/\tau=W\)</span></p>
-<p>1周期が<span class="math notranslate nohighlight">\(T = 2\tau = 2\pi\)</span>のsinに対してサンプリング間隔が<span class="math notranslate nohighlight">\(\tau = \pi\)</span>だとナイキスト周波数であり、もとの信号が復元できない様子。<span class="math notranslate nohighlight">\(\omega = 2\pi/T =  2\pi/2\pi = 1\)</span>…？</p>
-</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1241,22 +1018,6 @@ f(t) &amp; =\frac{1}{2 \pi} \int_{-W}^W F(\omega) e^{i \omega t} \mathrm{~d} \om
             </div>
             
             
-              
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">サンプリング定理</a></li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>
