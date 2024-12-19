@@ -1024,7 +1024,76 @@
 &amp;= \text{Bias}^2 + \text{Variance}\\
 \end{aligned}
 \end{split}\]</div>
-</section>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">もっと丁寧に書くと…</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">目的変数<span class="math notranslate nohighlight">\(Y\)</span>が真の関数（信号成分）<span class="math notranslate nohighlight">\(f(X)\)</span>とノイズ<span class="math notranslate nohighlight">\(\varepsilon\)</span>から成るとする。</p>
+<div class="math notranslate nohighlight">
+\[
+Y = f(X) + \varepsilon
+\]</div>
+<p class="sd-card-text">訓練データ<span class="math notranslate nohighlight">\(\mathcal{D} = \{(X_i, Y_i)\}^N_{i=0}\)</span>で学習した予測モデルを<span class="math notranslate nohighlight">\(\hat{f}(X)\)</span>とおく。また、データの分布に沿って期待値をとる、つまり、訓練データを取得し直したたびにばらつく分について期待値をとることを<span class="math notranslate nohighlight">\(\mathrm{E}_{\mathcal{D}}[\cdot ]\)</span> で表すとする。</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(f(X)\)</span>と<span class="math notranslate nohighlight">\(\hat{f}(X)\)</span>の二乗誤差<span class="math notranslate nohighlight">\(\{ f(X) - \hat{f}(X)\}^2\)</span>は以下のように整理できる。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\{ f(X) - \hat{f}(X)\}^2
+= &amp; \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)]
+    + \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\}^2\\
+= &amp; \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \}^2 \\
+&amp;- 2 \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \}
+    \{ \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\} \\
+&amp;+ \{\mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\}^2
+\\
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">これについて期待値をとると、第2項は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; 2 \mathrm{E}_{\mathcal{D}}[ 
+    \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \}
+    \{ \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\} ]
+    \\
+&amp;= 2 \mathrm{E}_{\mathcal{D}}\left[ 
+    f(X) \cdot \mathrm{E}_{\mathcal{D}}[\hat{f}(X)]
+    - f(X) \cdot \hat{f}(X)
+    - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)]^2
+    + \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \cdot \hat{f}(X)
+\right]\\
+&amp;= 2 \left(
+\mathrm{E}_{\mathcal{D}}[ f(X) \cdot \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] ]
+- \mathrm{E}_{\mathcal{D}}[f(X) \cdot \hat{f}(X)]
+- \mathrm{E}_{\mathcal{D}}[\mathrm{E}_{\mathcal{D}}[\hat{f}(X)]^2]
++ \mathrm{E}_{\mathcal{D}}[ \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \cdot \hat{f}(X) ]\right) \\
+&amp;= 2 \left(
+\mathrm{E}_{\mathcal{D}}[ f(X) ] \cdot \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] 
+- \mathrm{E}_{\mathcal{D}}[f(X)] \cdot \mathrm{E}_{\mathcal{D}}[\hat{f}(X)]
+- \mathrm{E}_{\mathcal{D}}[\hat{f}(X)]^2
++ \mathrm{E}_{\mathcal{D}}[\hat{f}(X)]^2
+\right) \\
+&amp;= 0
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">となるので、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\mathrm{E}_{\mathcal{D}}[\{ f(X) - \hat{f}(X)\}^2]
+= &amp; \mathrm{E}_{\mathcal{D}}[ \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \}^2 ] \\
+&amp;- 2 \mathrm{E}_{\mathcal{D}}[ 
+    \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \}
+    \{ \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\} ]\\
+&amp;+ \mathrm{E}_{\mathcal{D}}[ \{\mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\}^2 ]
+\\
+= &amp; \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \}^2
+  + \mathrm{E}_{\mathcal{D}}[ \{\mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\}^2 ] \\
+= &amp; \mathrm{Bias}^2  + \mathrm{Variance}
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">となる。</p>
+</div>
+</details></section>
 <section id="id2">
 <h2>二乗誤差のベイズ規則<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>実測値<span class="math notranslate nohighlight">\(\mathbb{E}[y]\)</span>について引いて足す場合。</p>
