@@ -1027,73 +1027,117 @@
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">もっと丁寧に書くと…</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">目的変数<span class="math notranslate nohighlight">\(Y\)</span>が真の関数（信号成分）<span class="math notranslate nohighlight">\(f(X)\)</span>とノイズ<span class="math notranslate nohighlight">\(\varepsilon\)</span>から成るとする。</p>
-<div class="math notranslate nohighlight">
-\[
-Y = f(X) + \varepsilon
-\]</div>
-<p class="sd-card-text">訓練データ<span class="math notranslate nohighlight">\(\mathcal{D} = \{(X_i, Y_i)\}^N_{i=0}\)</span>で学習した予測モデルを<span class="math notranslate nohighlight">\(\hat{f}(X)\)</span>とおく。また、データの分布に沿って期待値をとる、つまり、訓練データを取得し直したたびにばらつく分について期待値をとることを<span class="math notranslate nohighlight">\(\mathrm{E}_{\mathcal{D}}[\cdot ]\)</span> で表すとする。</p>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(f(X)\)</span>と<span class="math notranslate nohighlight">\(\hat{f}(X)\)</span>の二乗誤差<span class="math notranslate nohighlight">\(\{ f(X) - \hat{f}(X)\}^2\)</span>は以下のように整理できる。</p>
+<p class="sd-card-text">目的変数<span class="math notranslate nohighlight">\(Y\)</span>が真の関数（信号成分）<span class="math notranslate nohighlight">\(f(X)\)</span>とノイズ<span class="math notranslate nohighlight">\(\varepsilon\)</span>の和 <span class="math notranslate nohighlight">\(Y = f(X) + \varepsilon\)</span> で構成されるとする。
+また、データの分布について期待値をとる、つまり、訓練データを取得し直して推定するたびにばらつく分について期待値をとることを<span class="math notranslate nohighlight">\(\mathrm{E}_D[\cdot ]\)</span> で表すとする。</p>
+<p class="sd-card-text">あるデータ点<span class="math notranslate nohighlight">\(X=x\)</span>についての真の関数<span class="math notranslate nohighlight">\(f(x)\)</span>と予測モデル<span class="math notranslate nohighlight">\(\hat{f}(x)\)</span>の二乗誤差<span class="math notranslate nohighlight">\(\{ f(x) - \hat{f}(x)\}^2\)</span>は<span class="math notranslate nohighlight">\(\mathrm{E}_D[\hat{f}(x)]\)</span>を足して引いて展開すると以下のように整理できる。</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
-\{ f(X) - \hat{f}(X)\}^2
-= &amp; \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)]
-    + \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\}^2\\
-= &amp; \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \}^2 \\
-&amp;- 2 \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \}
-    \{ \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\} \\
-&amp;+ \{\mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\}^2
+\{ f(x) - \hat{f}(x)\}^2
+= &amp; \{ f(x) - \mathrm{E}_D[\hat{f}(x)]
+    + \mathrm{E}_D[\hat{f}(x)] - \hat{f}(x)\}^2\\
+= &amp; \{ f(x) - \mathrm{E}_D[\hat{f}(x)] \}^2 \\
+&amp;+2 \{ f(x) - \mathrm{E}_D[\hat{f}(x)] \}
+    \{ \mathrm{E}_D[\hat{f}(x)] - \hat{f}(x)\} \\
+&amp;+ \{\mathrm{E}_D[\hat{f}(x)] - \hat{f}(x)\}^2
 \\
 \end{aligned}
 \end{split}\]</div>
-<p class="sd-card-text">これについて期待値をとると、第2項は</p>
+<p class="sd-card-text">これについて期待値をとった<span class="math notranslate nohighlight">\(\mathrm{E}_D[\{ f(x) - \hat{f}(x)\}^2]\)</span>について考えるとき、第2項は</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
-&amp; 2 \mathrm{E}_{\mathcal{D}}[ 
-    \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \}
-    \{ \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\} ]
+&amp; 2 \mathrm{E}_D[ 
+    \{ f(x) - \mathrm{E}_D[\hat{f}(x)] \}
+    \{ \mathrm{E}_D[\hat{f}(x)] - \hat{f}(x)\} ]
     \\
-&amp;= 2 \mathrm{E}_{\mathcal{D}}\left[ 
-    f(X) \cdot \mathrm{E}_{\mathcal{D}}[\hat{f}(X)]
-    - f(X) \cdot \hat{f}(X)
-    - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)]^2
-    + \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \cdot \hat{f}(X)
+&amp;= 2 \mathrm{E}_D\left[ 
+    f(x) \cdot \mathrm{E}_D[\hat{f}(x)]
+    - f(x) \cdot \hat{f}(x)
+    - \mathrm{E}_D[\hat{f}(x)]^2
+    + \mathrm{E}_D[\hat{f}(x)] \cdot \hat{f}(x)
 \right]\\
 &amp;= 2 \left(
-\mathrm{E}_{\mathcal{D}}[ f(X) \cdot \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] ]
-- \mathrm{E}_{\mathcal{D}}[f(X) \cdot \hat{f}(X)]
-- \mathrm{E}_{\mathcal{D}}[\mathrm{E}_{\mathcal{D}}[\hat{f}(X)]^2]
-+ \mathrm{E}_{\mathcal{D}}[ \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \cdot \hat{f}(X) ]\right) \\
+\mathrm{E}_D[ f(x) \cdot \mathrm{E}_D[\hat{f}(x)] ]
+- \mathrm{E}_D[f(x) \cdot \hat{f}(x)]
+- \mathrm{E}_D[\mathrm{E}_D[\hat{f}(x)]^2]
++ \mathrm{E}_D[ \mathrm{E}_D[\hat{f}(x)] \cdot \hat{f}(x) ]\right) \\
 &amp;= 2 \left(
-\mathrm{E}_{\mathcal{D}}[ f(X) ] \cdot \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] 
-- \mathrm{E}_{\mathcal{D}}[f(X)] \cdot \mathrm{E}_{\mathcal{D}}[\hat{f}(X)]
-- \mathrm{E}_{\mathcal{D}}[\hat{f}(X)]^2
-+ \mathrm{E}_{\mathcal{D}}[\hat{f}(X)]^2
+\mathrm{E}_D[ f(x) ] \cdot \mathrm{E}_D[\hat{f}(x)] 
+- \mathrm{E}_D[f(x)] \cdot \mathrm{E}_D[\hat{f}(x)]
+- \mathrm{E}_D[\hat{f}(x)]^2
++ \mathrm{E}_D[\hat{f}(x)]^2
 \right) \\
 &amp;= 0
 \end{aligned}
 \end{split}\]</div>
-<p class="sd-card-text">となるので、</p>
+<p class="sd-card-text">と消失するので、</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
-\mathrm{E}_{\mathcal{D}}[\{ f(X) - \hat{f}(X)\}^2]
-= &amp; \mathrm{E}_{\mathcal{D}}[ \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \}^2 ] \\
-&amp;- 2 \mathrm{E}_{\mathcal{D}}[ 
-    \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \}
-    \{ \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\} ]\\
-&amp;+ \mathrm{E}_{\mathcal{D}}[ \{\mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\}^2 ]
+\mathrm{E}_D[\{ f(x) - \hat{f}(x)\}^2]
+= &amp; \mathrm{E}_D[ \{ f(x) - \mathrm{E}_D[\hat{f}(x)] \}^2 ] \\
+&amp;+ 2 \mathrm{E}_D[ 
+    \{ f(x) - \mathrm{E}_D[\hat{f}(x)] \}
+    \{ \mathrm{E}_D[\hat{f}(x)] - \hat{f}(x)\} ]\\
+&amp;+ \mathrm{E}_D[ \{\mathrm{E}_D[\hat{f}(x)] - \hat{f}(x)\}^2 ]
 \\
-= &amp; \{ f(X) - \mathrm{E}_{\mathcal{D}}[\hat{f}(X)] \}^2
-  + \mathrm{E}_{\mathcal{D}}[ \{\mathrm{E}_{\mathcal{D}}[\hat{f}(X)] - \hat{f}(X)\}^2 ] \\
+= &amp; \{ f(x) - \mathrm{E}_D[\hat{f}(x)] \}^2
+  + \mathrm{E}_D[ \{\mathrm{E}_D[\hat{f}(x)] - \hat{f}(x)\}^2 ] \\
 = &amp; \mathrm{Bias}^2  + \mathrm{Variance}
 \end{aligned}
 \end{split}\]</div>
-<p class="sd-card-text">となる。</p>
+<p class="sd-card-text">参考：はじパタ</p>
 </div>
-</details></section>
+</details><div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 二乗誤差の期待値とBias^2 + Varianceが一致するか</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># データを取り直して予測値を出し直したと仮定</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">y_true</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;y_hat&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">y_true</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)})</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_true</span> <span class="c1"># ある一点の実測値</span>
+<span class="c1"># display(df.tail(3))</span>
+
+<span class="n">bias</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y_hat&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">variance</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y_hat&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">var</span><span class="p">()</span>
+<span class="n">epe</span> <span class="o">=</span> <span class="p">((</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y_hat&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">bias: </span><span class="si">{</span><span class="n">bias</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
+<span class="s2">variance: </span><span class="si">{</span><span class="n">variance</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
+
+<span class="s2">二乗誤差の期待値とBias^2 + Varianceが一致するか</span>
+<span class="s2">EPE: </span><span class="si">{</span><span class="n">epe</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
+<span class="s2">bias^2 + variance: </span><span class="si">{</span><span class="n">bias</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">variance</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
+<span class="s2">差分（EPE - bias^2 + variance）: </span><span class="si">{</span><span class="n">epe</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">bias</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">variance</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>bias: 0.025
+variance: 0.998
+
+二乗誤差の期待値とBias^2 + Varianceが一致するか
+EPE: 0.997
+bias^2 + variance: 0.999
+差分（EPE - bias^2 + variance）: -0.002
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 <section id="id2">
 <h2>二乗誤差のベイズ規則<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>実測値<span class="math notranslate nohighlight">\(\mathbb{E}[y]\)</span>について引いて足す場合。</p>

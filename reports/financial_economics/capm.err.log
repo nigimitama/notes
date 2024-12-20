@@ -1,0 +1,118 @@
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 1319, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/usr/local/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+  File "/usr/local/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import yfinance as yf
+
+start = "2016-01-01"
+symbol_0 = "^TNX" # 米国10年もの国債
+symbol_M = "^GSPC" # S&P500
+symbol_m = "MCD" # マクドナルド
+
+symbols = [symbol_0, symbol_M, symbol_m]
+df_price = yf.download(symbols, start=start)["Adj Close"]
+df_price
+------------------
+
+----- stderr -----
+[                       0%                       ]
+----- stderr -----
+[**********************67%*******                ]  2 of 3 completed
+----- stderr -----
+[*********************100%***********************]  3 of 3 completed
+----- stderr -----
+
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mKeyError[0m                                  Traceback (most recent call last)
+File [0;32m/usr/local/lib/python3.10/site-packages/pandas/core/indexes/base.py:3805[0m, in [0;36mIndex.get_loc[0;34m(self, key)[0m
+[1;32m   3804[0m [38;5;28;01mtry[39;00m:
+[0;32m-> 3805[0m     [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[38;5;241;43m.[39;49m[43m_engine[49m[38;5;241;43m.[39;49m[43mget_loc[49m[43m([49m[43mcasted_key[49m[43m)[49m
+[1;32m   3806[0m [38;5;28;01mexcept[39;00m [38;5;167;01mKeyError[39;00m [38;5;28;01mas[39;00m err:
+
+File [0;32mindex.pyx:167[0m, in [0;36mpandas._libs.index.IndexEngine.get_loc[0;34m()[0m
+
+File [0;32mindex.pyx:196[0m, in [0;36mpandas._libs.index.IndexEngine.get_loc[0;34m()[0m
+
+File [0;32mpandas/_libs/hashtable_class_helper.pxi:7081[0m, in [0;36mpandas._libs.hashtable.PyObjectHashTable.get_item[0;34m()[0m
+
+File [0;32mpandas/_libs/hashtable_class_helper.pxi:7089[0m, in [0;36mpandas._libs.hashtable.PyObjectHashTable.get_item[0;34m()[0m
+
+[0;31mKeyError[0m: 'Adj Close'
+
+The above exception was the direct cause of the following exception:
+
+[0;31mKeyError[0m                                  Traceback (most recent call last)
+Cell [0;32mIn[6], line 12[0m
+[1;32m      9[0m symbol_m [38;5;241m=[39m [38;5;124m"[39m[38;5;124mMCD[39m[38;5;124m"[39m [38;5;66;03m# マクドナルド[39;00m
+[1;32m     11[0m symbols [38;5;241m=[39m [symbol_0, symbol_M, symbol_m]
+[0;32m---> 12[0m df_price [38;5;241m=[39m [43myf[49m[38;5;241;43m.[39;49m[43mdownload[49m[43m([49m[43msymbols[49m[43m,[49m[43m [49m[43mstart[49m[38;5;241;43m=[39;49m[43mstart[49m[43m)[49m[43m[[49m[38;5;124;43m"[39;49m[38;5;124;43mAdj Close[39;49m[38;5;124;43m"[39;49m[43m][49m
+[1;32m     13[0m df_price
+
+File [0;32m/usr/local/lib/python3.10/site-packages/pandas/core/frame.py:4101[0m, in [0;36mDataFrame.__getitem__[0;34m(self, key)[0m
+[1;32m   4099[0m [38;5;28;01mif[39;00m is_single_key:
+[1;32m   4100[0m     [38;5;28;01mif[39;00m [38;5;28mself[39m[38;5;241m.[39mcolumns[38;5;241m.[39mnlevels [38;5;241m>[39m [38;5;241m1[39m:
+[0;32m-> 4101[0m         [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[38;5;241;43m.[39;49m[43m_getitem_multilevel[49m[43m([49m[43mkey[49m[43m)[49m
+[1;32m   4102[0m     indexer [38;5;241m=[39m [38;5;28mself[39m[38;5;241m.[39mcolumns[38;5;241m.[39mget_loc(key)
+[1;32m   4103[0m     [38;5;28;01mif[39;00m is_integer(indexer):
+
+File [0;32m/usr/local/lib/python3.10/site-packages/pandas/core/frame.py:4159[0m, in [0;36mDataFrame._getitem_multilevel[0;34m(self, key)[0m
+[1;32m   4157[0m [38;5;28;01mdef[39;00m [38;5;21m_getitem_multilevel[39m([38;5;28mself[39m, key):
+[1;32m   4158[0m     [38;5;66;03m# self.columns is a MultiIndex[39;00m
+[0;32m-> 4159[0m     loc [38;5;241m=[39m [38;5;28;43mself[39;49m[38;5;241;43m.[39;49m[43mcolumns[49m[38;5;241;43m.[39;49m[43mget_loc[49m[43m([49m[43mkey[49m[43m)[49m
+[1;32m   4160[0m     [38;5;28;01mif[39;00m [38;5;28misinstance[39m(loc, ([38;5;28mslice[39m, np[38;5;241m.[39mndarray)):
+[1;32m   4161[0m         new_columns [38;5;241m=[39m [38;5;28mself[39m[38;5;241m.[39mcolumns[loc]
+
+File [0;32m/usr/local/lib/python3.10/site-packages/pandas/core/indexes/multi.py:3040[0m, in [0;36mMultiIndex.get_loc[0;34m(self, key)[0m
+[1;32m   3037[0m     [38;5;28;01mreturn[39;00m mask
+[1;32m   3039[0m [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m [38;5;28misinstance[39m(key, [38;5;28mtuple[39m):
+[0;32m-> 3040[0m     loc [38;5;241m=[39m [38;5;28;43mself[39;49m[38;5;241;43m.[39;49m[43m_get_level_indexer[49m[43m([49m[43mkey[49m[43m,[49m[43m [49m[43mlevel[49m[38;5;241;43m=[39;49m[38;5;241;43m0[39;49m[43m)[49m
+[1;32m   3041[0m     [38;5;28;01mreturn[39;00m _maybe_to_slice(loc)
+[1;32m   3043[0m keylen [38;5;241m=[39m [38;5;28mlen[39m(key)
+
+File [0;32m/usr/local/lib/python3.10/site-packages/pandas/core/indexes/multi.py:3391[0m, in [0;36mMultiIndex._get_level_indexer[0;34m(self, key, level, indexer)[0m
+[1;32m   3388[0m         [38;5;28;01mreturn[39;00m [38;5;28mslice[39m(i, j, step)
+[1;32m   3390[0m [38;5;28;01melse[39;00m:
+[0;32m-> 3391[0m     idx [38;5;241m=[39m [38;5;28;43mself[39;49m[38;5;241;43m.[39;49m[43m_get_loc_single_level_index[49m[43m([49m[43mlevel_index[49m[43m,[49m[43m [49m[43mkey[49m[43m)[49m
+[1;32m   3393[0m     [38;5;28;01mif[39;00m level [38;5;241m>[39m [38;5;241m0[39m [38;5;129;01mor[39;00m [38;5;28mself[39m[38;5;241m.[39m_lexsort_depth [38;5;241m==[39m [38;5;241m0[39m:
+[1;32m   3394[0m         [38;5;66;03m# Desired level is not sorted[39;00m
+[1;32m   3395[0m         [38;5;28;01mif[39;00m [38;5;28misinstance[39m(idx, [38;5;28mslice[39m):
+[1;32m   3396[0m             [38;5;66;03m# test_get_loc_partial_timestamp_multiindex[39;00m
+
+File [0;32m/usr/local/lib/python3.10/site-packages/pandas/core/indexes/multi.py:2980[0m, in [0;36mMultiIndex._get_loc_single_level_index[0;34m(self, level_index, key)[0m
+[1;32m   2978[0m     [38;5;28;01mreturn[39;00m [38;5;241m-[39m[38;5;241m1[39m
+[1;32m   2979[0m [38;5;28;01melse[39;00m:
+[0;32m-> 2980[0m     [38;5;28;01mreturn[39;00m [43mlevel_index[49m[38;5;241;43m.[39;49m[43mget_loc[49m[43m([49m[43mkey[49m[43m)[49m
+
+File [0;32m/usr/local/lib/python3.10/site-packages/pandas/core/indexes/base.py:3812[0m, in [0;36mIndex.get_loc[0;34m(self, key)[0m
+[1;32m   3807[0m     [38;5;28;01mif[39;00m [38;5;28misinstance[39m(casted_key, [38;5;28mslice[39m) [38;5;129;01mor[39;00m (
+[1;32m   3808[0m         [38;5;28misinstance[39m(casted_key, abc[38;5;241m.[39mIterable)
+[1;32m   3809[0m         [38;5;129;01mand[39;00m [38;5;28many[39m([38;5;28misinstance[39m(x, [38;5;28mslice[39m) [38;5;28;01mfor[39;00m x [38;5;129;01min[39;00m casted_key)
+[1;32m   3810[0m     ):
+[1;32m   3811[0m         [38;5;28;01mraise[39;00m InvalidIndexError(key)
+[0;32m-> 3812[0m     [38;5;28;01mraise[39;00m [38;5;167;01mKeyError[39;00m(key) [38;5;28;01mfrom[39;00m [38;5;21;01merr[39;00m
+[1;32m   3813[0m [38;5;28;01mexcept[39;00m [38;5;167;01mTypeError[39;00m:
+[1;32m   3814[0m     [38;5;66;03m# If we have a listlike key, _check_indexing_error will raise[39;00m
+[1;32m   3815[0m     [38;5;66;03m#  InvalidIndexError. Otherwise we fall through and re-raise[39;00m
+[1;32m   3816[0m     [38;5;66;03m#  the TypeError.[39;00m
+[1;32m   3817[0m     [38;5;28mself[39m[38;5;241m.[39m_check_indexing_error(key)
+
+[0;31mKeyError[0m: 'Adj Close'
+
