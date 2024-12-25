@@ -969,8 +969,11 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bias-variance">二乗誤差のBias-Variance分解</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">二乗誤差のベイズ規則</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bias-variance">二乗誤差のBias-Variance分解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実際に等式が成り立つのか実証的に確認</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">二乗誤差のベイズ規則</a></li>
 </ul>
             </nav>
         </div>
@@ -1092,7 +1095,9 @@
 \end{split}\]</div>
 <p class="sd-card-text">参考：はじパタ 第1章、PRML上3.2</p>
 </div>
-</details><div class="cell tag_hide-input docutils container">
+</details><section id="id2">
+<h3>実際に等式が成り立つのか実証的に確認<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
 <span class="collapsed">Show code cell source</span>
@@ -1104,8 +1109,9 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># データを取り直して予測値を出し直したと仮定</span>
-<span class="n">n</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="n">y_true</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="c1"># 正規分布に従ってばらついたと仮定（実際も中心極限定理により正規分布に従うはず）</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;y_hat&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">y_true</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)})</span>
 <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_true</span> <span class="c1"># ある一点の実測値</span>
@@ -1116,33 +1122,34 @@
 <span class="n">epe</span> <span class="o">=</span> <span class="p">((</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y_hat&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">bias: </span><span class="si">{</span><span class="n">bias</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
-<span class="s2">variance: </span><span class="si">{</span><span class="n">variance</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
+<span class="s2">- bias: </span><span class="si">{</span><span class="n">bias</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
+<span class="s2">- variance: </span><span class="si">{</span><span class="n">variance</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
 
 <span class="s2">二乗誤差の期待値とBias^2 + Varianceが一致するか</span>
-<span class="s2">EPE: </span><span class="si">{</span><span class="n">epe</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
-<span class="s2">bias^2 + variance: </span><span class="si">{</span><span class="n">bias</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">variance</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
-<span class="s2">差分（EPE - bias^2 + variance）: </span><span class="si">{</span><span class="n">epe</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">bias</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">variance</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
+<span class="s2">- 二乗誤差の期待値 EPE: </span><span class="si">{</span><span class="n">epe</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
+<span class="s2">- Bias^2 + variance: </span><span class="si">{</span><span class="n">bias</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">variance</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
+<span class="s2">- 差分（EPE - bias^2 + variance）: </span><span class="si">{</span><span class="n">epe</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">bias</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">variance</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </details>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>bias: 0.025
-variance: 0.998
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>- bias: 0.045
+- variance: 0.975
 
 二乗誤差の期待値とBias^2 + Varianceが一致するか
-EPE: 0.997
-bias^2 + variance: 0.999
-差分（EPE - bias^2 + variance）: -0.002
+- 二乗誤差の期待値 EPE: 0.976
+- Bias^2 + variance: 0.977
+- 差分（EPE - bias^2 + variance）: -0.001
 </pre></div>
 </div>
 </div>
 </div>
 </section>
-<section id="id2">
-<h2>二乗誤差のベイズ規則<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+</section>
+<section id="id3">
+<h2>二乗誤差のベイズ規則<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>実測値<span class="math notranslate nohighlight">\(\mathbb{E}[y]\)</span>について引いて足す場合。</p>
 <p>損失関数として二乗損失 <span class="math notranslate nohighlight">\(\ell(\hat{y}, y) = (\hat{y} - y)^2\)</span>を利用するとき、</p>
 <div class="math notranslate nohighlight">
@@ -1243,8 +1250,11 @@ h_0(X) = \mathbb{E}[Y|X]
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bias-variance">二乗誤差のBias-Variance分解</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">二乗誤差のベイズ規則</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bias-variance">二乗誤差のBias-Variance分解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実際に等式が成り立つのか実証的に確認</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">二乗誤差のベイズ規則</a></li>
 </ul>
   </nav></div>
 
