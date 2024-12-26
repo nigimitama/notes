@@ -232,6 +232,7 @@
 - [](software_engineering/pseudorandom_numbers/index)
 - [](software_engineering/web_optimization)
 - [](software_engineering/linux)
+- [](software_engineering/ui_design/index)
 :::
 
 :::{grid-item-card}
