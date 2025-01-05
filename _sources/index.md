@@ -197,6 +197,7 @@
 - [](business/product_management/index)
 - [](business/project_management/index)
 - [](business/business_administration/index)
+- [](business/business_administration/competitive_strategy/index)
 - [](business/document_management)
 :::
 
