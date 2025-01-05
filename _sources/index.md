@@ -176,6 +176,7 @@
 - [](recommender_system/factorization_machines)
 - [](recommender_system/bayesian_personalized_ranking)
 - [](recommender_system/two_tower)
+- [](recommender_system/causal_inference_in_recommendation)
 :::
 
 :::{grid-item-card}
