@@ -30,7 +30,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -739,6 +739,8 @@
 <li class="toctree-l2"><a class="reference internal" href="webapp_framework.html">Web Application Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="platform_engineering.html">Platform Engineering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_tenants_saas.html">マルチテナントSaaS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="local_stack.html">LocalStack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="twelve_factor_app.html">Twelve-Factor App</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../data_store/index.html">データストア（ストレージ・RDB）</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1021,17 +1023,17 @@
 <p>レンダリング時にデータを取得する（GETする）ための関数。</p>
 <p><strong>サーバ側で実行される</strong> ので、SPAでありがちな「クライアント側からデータ取得のためAPIを叩くときにAPI-keyをどう秘匿するか」みたいな問題が解決される。</p>
 <p>ページごとに定義して使う。例えば、一覧ページ（例えば<code class="docutils literal notranslate"><span class="pre">posts.tsx</span></code>）では配列<code class="docutils literal notranslate"><span class="pre">Post[]</span></code>を返す<code class="docutils literal notranslate"><span class="pre">loader()</span></code>を定義し、詳細ページ（<code class="docutils literal notranslate"><span class="pre">posts.$postId.tsx</span></code>)では1つの要素（<code class="docutils literal notranslate"><span class="pre">Post</span></code>）を返す<code class="docutils literal notranslate"><span class="pre">loader()</span></code>を定義し、自分のcomponentの中で使う</p>
-<div class="highlight-tsx notranslate"><div class="highlight"><pre><span></span>// loaderの例
-import { json } from &quot;@remix-run/node&quot;;
+<div class="highlight-tsx notranslate"><div class="highlight"><pre><span></span><span class="c1">// loaderの例</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">json</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@remix-run/node&quot;</span><span class="p">;</span>
 
-export const loader = async () =&gt; {
-  const response = await fetch(&quot;https://jsonplaceholder.typicode.com/posts?_limit=5&quot;);
-  const posts = await response.json();
-  return json({ posts });
-};
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">loader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s2">&quot;https://jsonplaceholder.typicode.com/posts?_limit=5&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">posts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">posts</span><span class="w"> </span><span class="p">});</span>
+<span class="p">};</span>
 
-export default function App() {
-  const { posts } = useLoaderData&lt;typeof loader&gt;()
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">App</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">posts</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useLoaderData</span><span class="p">&lt;</span><span class="nt">typeof</span><span class="w"> </span><span class="na">loader</span><span class="p">&gt;()</span>
 </pre></div>
 </div>
 </section>
@@ -1042,11 +1044,11 @@ export default function App() {
 <section id="outlet">
 <h3>Outlet<a class="headerlink" href="#outlet" title="Link to this heading">#</a></h3>
 <p>親ルート内において、子ルートがレンダリングされる場所を示すために使われるコンポーネント</p>
-<div class="highlight-tsx notranslate"><div class="highlight"><pre><span></span>import { Outlet } from &quot;@remix-run/react&quot;
+<div class="highlight-tsx notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Outlet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@remix-run/react&quot;</span>
 
-export default function App() {
-  return &lt;Outlet /&gt;
-}
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">App</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">Outlet</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

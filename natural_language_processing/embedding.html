@@ -30,7 +30,7 @@
   <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -741,6 +741,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/webapp_framework.html">Web Application Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/platform_engineering.html">Platform Engineering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/multi_tenants_saas.html">マルチテナントSaaS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/local_stack.html">LocalStack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/twelve_factor_app.html">Twelve-Factor App</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../software_engineering/data_store/index.html">データストア（ストレージ・RDB）</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1079,7 +1081,7 @@ PyTorchのEmbeddingレイヤってなんなの</div>
 <p class="sd-card-text"><a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Embedding.html">Embedding — PyTorch 2.0 documentation</a></p>
 <p class="sd-card-text">one-hot表現のコンテキスト（例えば<span class="math notranslate nohighlight">\(c=(0, 1, 0, 0)\)</span>）と重み行列との全結合層は、結局のところkey-valueからの取り出しのようなもの。</p>
 <p class="sd-card-text">計算の高速化のために専用のlook-up tableだけの層を作ったほうがいい → Embeddingレイヤになった（ゼロから作るDeep Learning (2) 135ページ）</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># 全結合層による変換のイメージ</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -1138,15 +1140,15 @@ PyTorchのEmbeddingレイヤってなんなの</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
 
-<span class="k">def</span> <span class="nf">make_context_vector</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">word_to_ix</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_context_vector</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">word_to_ix</span><span class="p">):</span>
     <span class="n">idxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">word_to_ix</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">context</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">idxs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">CBOW</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CBOW</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="c1"># out: 1 x emdedding_dim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
@@ -1156,7 +1158,7 @@ PyTorchのEmbeddingレイヤってなんなの</div>
         <span class="bp">self</span><span class="o">.</span><span class="n">linear2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">activation_function2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LogSoftmax</span><span class="p">(</span><span class="n">dim</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="n">embeds</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embeddings</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">embeds</span><span class="p">)</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation_function1</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
@@ -1164,7 +1166,7 @@ PyTorchのEmbeddingレイヤってなんなの</div>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation_function2</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">out</span>
 
-    <span class="k">def</span> <span class="nf">get_word_emdedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_word_emdedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
         <span class="n">word</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">word_to_ix</span><span class="p">[</span><span class="n">word</span><span class="p">]])</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">embeddings</span><span class="p">(</span><span class="n">word</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     
@@ -1219,27 +1221,19 @@ Prediction: programs
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[-1.8867e-02,  1.0707e+00, -6.9427e-01, -6.3962e-01, -1.0745e-01,
-          4.1079e-01, -5.7389e-01,  1.7041e+00,  1.4541e+00, -6.2346e-01,
-         -1.3944e-01,  9.3236e-01, -3.2741e-01, -1.1047e-01, -1.9280e-01,
-          2.3582e-01,  6.5000e-01, -1.1946e+00, -3.2675e-01,  5.0626e-01,
-         -7.6895e-01,  4.5267e-02, -1.2079e+00, -2.2793e+00,  9.1653e-01,
-         -2.3984e+00, -6.0386e-01,  7.0257e-01,  3.1647e-01, -7.3644e-02,
-         -2.9131e+00,  4.9073e-01, -1.6302e+00,  3.1632e-01, -9.5595e-01,
-          3.7401e-01,  7.4720e-01,  4.3608e-01,  5.5460e-01,  3.5917e-01,
-          1.7973e-02, -1.6891e+00,  4.2151e-01,  3.9180e-02, -4.1297e-01,
-         -1.0944e+00,  1.7800e-01, -8.7346e-02,  2.6176e-01, -6.2523e-01,
-          3.4358e-01,  2.0801e-01,  3.6850e-01,  1.5449e+00, -1.7001e-01,
-          3.9144e-01, -1.0533e+00,  2.7207e-01, -1.0334e+00, -1.2053e+00,
-         -1.1309e+00, -3.9869e-01, -1.0369e+00, -2.1404e-01,  6.1532e-02,
-         -1.4500e+00,  7.6784e-01,  2.1853e-01,  2.1551e-01, -2.9451e-01,
-         -2.4959e-01, -5.4865e-01, -2.2836e-03,  7.7546e-01,  5.0781e-01,
-         -1.0414e+00, -1.6561e+00, -4.8244e-02, -6.2325e-01,  1.4103e-01,
-         -3.4344e-02,  3.9044e-01,  8.1634e-02,  7.5757e-01,  4.4517e-01,
-          5.9700e-01, -4.2004e-01,  4.8037e-01,  1.5516e+00, -2.3365e+00,
-         -2.6600e-01, -1.4728e-01,  5.1974e-01, -5.0717e-01, -9.7959e-01,
-          1.1790e-01,  1.4604e+00, -7.8114e-01,  2.2782e-01, -6.1364e-02]],
-       grad_fn=&lt;ViewBackward0&gt;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[-0.3371, -0.9229, -0.3228, -0.2142,  0.7971,  0.2340, -0.3885,  1.3829,
+          0.6171, -2.1040, -1.5547,  0.2760,  1.5623,  0.2813,  0.9818, -0.9921,
+         -0.7330, -0.0616, -1.1888,  0.6572,  0.6589, -0.1007, -1.0387,  0.1887,
+          0.3711,  0.8509, -1.6674,  0.0472, -0.4488, -0.4981,  0.8275,  0.9974,
+         -1.3470,  0.3768,  1.3986, -0.2701,  0.1458,  1.3190, -0.6942, -0.8608,
+          1.2651, -0.8373, -1.4160,  3.2274, -0.0996,  0.7569, -0.7408,  0.2636,
+          0.0886, -0.8447,  1.9550, -1.5641,  0.0224,  0.0759,  1.4285,  0.1800,
+         -0.5061,  0.0647, -0.0234, -0.4086, -0.1445, -2.4500, -0.4057, -0.4358,
+          0.9474,  0.7481,  0.5175, -0.5550, -1.0695,  2.2062, -1.3288,  0.2072,
+         -0.3527,  0.0647, -0.0513,  2.1252,  0.1664,  1.1662, -0.3904,  2.9673,
+         -0.8389,  1.2232, -1.2793,  1.0590,  0.1058,  0.7181, -1.4318,  0.6445,
+         -1.2534,  0.8508,  0.8810,  1.5493,  0.2205,  0.5421, -1.5260,  0.3486,
+          0.7986,  0.9406,  1.1517, -0.0988]], grad_fn=&lt;ViewBackward0&gt;)
 </pre></div>
 </div>
 </div>
@@ -1290,7 +1284,7 @@ p(w_O|w_I) = \frac{\exp( v_{w_O}^T v_{w_I} )}{\sum^W_{w=1} \exp( v_{w}^T v_{w_I}
     <span class="p">[</span><span class="s2">&quot;woman&quot;</span><span class="p">,</span> <span class="s2">&quot;female&quot;</span><span class="p">],</span>
 <span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">gensim.models</span> <span class="kn">import</span> <span class="n">Word2Vec</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gensim.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Word2Vec</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">Word2Vec</span><span class="p">(</span><span class="n">sentences</span><span class="o">=</span><span class="n">sentences</span><span class="p">,</span> <span class="n">vector_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">min_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1328,8 +1322,8 @@ p(w_O|w_I) = \frac{\exp( v_{w_O}^T v_{w_I} )}{\sum^W_{w=1} \exp( v_{w}^T v_{w_I}
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 自前で足し引きして類似度計算してみる</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="k">def</span> <span class="nf">cosine_sim</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cosine_sim</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">a</span> <span class="o">@</span> <span class="n">b</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
 
 <span class="n">v</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="s2">&quot;king&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="s2">&quot;man&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="s2">&quot;woman&quot;</span><span class="p">]</span>
@@ -1342,10 +1336,10 @@ p(w_O|w_I) = \frac{\exp( v_{w_O}^T v_{w_I} )}{\sum^W_{w=1} \exp( v_{w}^T v_{w_I}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>male: -0.0251
-ruler: -0.0263
-queen: 0.00656
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>queen: 0.00656
+male: -0.0251
 female: -0.0395
+ruler: -0.0263
 </pre></div>
 </div>
 </div>

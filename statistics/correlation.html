@@ -30,7 +30,7 @@
   <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -741,6 +741,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/webapp_framework.html">Web Application Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/platform_engineering.html">Platform Engineering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/multi_tenants_saas.html">マルチテナントSaaS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/local_stack.html">LocalStack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/twelve_factor_app.html">Twelve-Factor App</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../software_engineering/data_store/index.html">データストア（ストレージ・RDB）</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1024,12 +1026,12 @@
 <p>以下のようなデータがあるとする</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">japanize_matplotlib</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">multivariate_normal</span><span class="p">,</span> <span class="n">pearsonr</span>
-<span class="kn">from</span> <span class="nn">semopy.model</span> <span class="kn">import</span> <span class="n">hetcor</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">japanize_matplotlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">multivariate_normal</span><span class="p">,</span> <span class="n">pearsonr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">semopy.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">hetcor</span>
 </pre></div>
 </div>
 </div>
@@ -1149,7 +1151,7 @@
 <span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">semopy.polycorr</span> <span class="kn">import</span> <span class="n">polychoric_corr</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">semopy.polycorr</span><span class="w"> </span><span class="kn">import</span> <span class="n">polychoric_corr</span>
 
 <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
     <span class="nb">dict</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;積率相関係数を量的変数に適用&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">statistic</span><span class="p">),</span>
@@ -1163,29 +1165,29 @@
 <div class="cell_output docutils container">
 <div class="output text_html"><style type="text/css">
 </style>
-<table id="T_ed7f0">
+<table id="T_1ba69">
   <thead>
     <tr>
       <th class="blank level0" >&nbsp;</th>
-      <th id="T_ed7f0_level0_col0" class="col_heading level0 col0" >method</th>
-      <th id="T_ed7f0_level0_col1" class="col_heading level0 col1" >value</th>
+      <th id="T_1ba69_level0_col0" class="col_heading level0 col0" >method</th>
+      <th id="T_1ba69_level0_col1" class="col_heading level0 col1" >value</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th id="T_ed7f0_level0_row0" class="row_heading level0 row0" >0</th>
-      <td id="T_ed7f0_row0_col0" class="data row0 col0" >積率相関係数を量的変数に適用</td>
-      <td id="T_ed7f0_row0_col1" class="data row0 col1" >0.517</td>
+      <th id="T_1ba69_level0_row0" class="row_heading level0 row0" >0</th>
+      <td id="T_1ba69_row0_col0" class="data row0 col0" >積率相関係数を量的変数に適用</td>
+      <td id="T_1ba69_row0_col1" class="data row0 col1" >0.517</td>
     </tr>
     <tr>
-      <th id="T_ed7f0_level0_row1" class="row_heading level0 row1" >1</th>
-      <td id="T_ed7f0_row1_col0" class="data row1 col0" >積率相関係数を質的変数に適用</td>
-      <td id="T_ed7f0_row1_col1" class="data row1 col1" >0.353</td>
+      <th id="T_1ba69_level0_row1" class="row_heading level0 row1" >1</th>
+      <td id="T_1ba69_row1_col0" class="data row1 col0" >積率相関係数を質的変数に適用</td>
+      <td id="T_1ba69_row1_col1" class="data row1 col1" >0.353</td>
     </tr>
     <tr>
-      <th id="T_ed7f0_level0_row2" class="row_heading level0 row2" >2</th>
-      <td id="T_ed7f0_row2_col0" class="data row2 col0" >ポリコリック相関係数を質的変数に適用</td>
-      <td id="T_ed7f0_row2_col1" class="data row2 col1" >0.570</td>
+      <th id="T_1ba69_level0_row2" class="row_heading level0 row2" >2</th>
+      <td id="T_1ba69_row2_col0" class="data row2 col0" >ポリコリック相関係数を質的変数に適用</td>
+      <td id="T_1ba69_row2_col1" class="data row2 col1" >0.570</td>
     </tr>
   </tbody>
 </table>
@@ -1358,7 +1360,7 @@ b_j = \Phi_1^{-1}(P_{\cdot j})
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 閾値a, bを推定</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">P1</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">P2</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
@@ -1390,9 +1392,9 @@ b_j = \Phi_1^{-1}(P_{\cdot j})
 <p>の計算を行う関数を作る</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">multivariate_normal</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">multivariate_normal</span>
 
-<span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">log_likelihood</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">):</span>
     <span class="n">Cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
         <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">rho</span><span class="p">],</span>
         <span class="p">[</span><span class="n">rho</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
@@ -1467,7 +1469,7 @@ b_j = \Phi_1^{-1}(P_{\cdot j})
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ※minimizeの関数に入れるために負の対数尤度にしている</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">fminbound</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">fminbound</span>
 <span class="n">fminbound</span><span class="p">(</span><span class="k">lambda</span> <span class="n">rho</span><span class="p">:</span> <span class="o">-</span><span class="n">log_likelihood</span><span class="p">(</span><span class="n">rho</span><span class="p">),</span> <span class="o">-</span><span class="mf">0.999</span><span class="p">,</span> <span class="mf">0.999</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1535,7 +1537,7 @@ b_j = \Phi_1^{-1}(P_{\cdot j})
     <span class="n">results</span> <span class="o">+=</span> <span class="n">result</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">results</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;カテゴリ数&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;推定された相関係数 $\hat{\rho}$&quot;</span><span class="p">)</span>
@@ -1556,7 +1558,7 @@ b_j = \Phi_1^{-1}(P_{\cdot j})
 <span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">semopy.polycorr</span> <span class="kn">import</span> <span class="n">polyserial_corr</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">semopy.polycorr</span><span class="w"> </span><span class="kn">import</span> <span class="n">polyserial_corr</span>
 
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
@@ -1570,7 +1572,7 @@ b_j = \Phi_1^{-1}(P_{\cdot j})
     <span class="n">results</span> <span class="o">+=</span> <span class="n">result</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">results</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;カテゴリ数&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;推定された相関係数 $\hat{\rho}$&quot;</span><span class="p">)</span>

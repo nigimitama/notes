@@ -30,7 +30,7 @@
   <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -741,6 +741,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/webapp_framework.html">Web Application Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/platform_engineering.html">Platform Engineering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/multi_tenants_saas.html">マルチテナントSaaS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/local_stack.html">LocalStack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/twelve_factor_app.html">Twelve-Factor App</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../software_engineering/data_store/index.html">データストア（ストレージ・RDB）</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1120,8 +1122,8 @@ x = A_{ica} x_{ica}
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 適当にデータを生成する</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -1145,7 +1147,7 @@ x = A_{ica} x_{ica}
 <p>続いて、独立成分分析を行う</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">FastICA</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastICA</span>
 <span class="n">ica</span> <span class="o">=</span> <span class="n">FastICA</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
 <span class="c1"># ICAで求めた行列A</span>
@@ -1179,7 +1181,9 @@ x = A_{ica} x_{ica}
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting munkres
-  Downloading munkres-1.1.4-py2.py3-none-any.whl (7.0 kB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Downloading munkres-1.1.4-py2.py3-none-any.whl (7.0 kB)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Installing collected packages: munkres
@@ -1203,7 +1207,7 @@ x = A_{ica} x_{ica}
 <span class="n">A_ica_inv_small</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A_ica_inv</span><span class="p">)</span>
 
 <span class="c1"># 対角成分の和を最小にする行の入れ替えを行う</span>
-<span class="kn">from</span> <span class="nn">munkres</span> <span class="kn">import</span> <span class="n">Munkres</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">munkres</span><span class="w"> </span><span class="kn">import</span> <span class="n">Munkres</span>
 <span class="n">m</span> <span class="o">=</span> <span class="n">Munkres</span><span class="p">()</span>
 <span class="n">ixs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">A_ica_inv_small</span><span class="p">))</span>
 
@@ -1268,34 +1272,36 @@ x = A_{ica} x_{ica}
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Downloading lingam-1.9.1-py3-none-any.whl (103 kB)
 ?25l     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/103.1 kB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">103.1/103.1 kB</span> <span class=" -Color -Color-Red">7.6 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
-?25hRequirement already satisfied: scipy in /usr/local/lib/python3.10/site-packages (from lingam) (1.13.1)
-Requirement already satisfied: pandas in /usr/local/lib/python3.10/site-packages (from lingam) (2.2.3)
-Requirement already satisfied: statsmodels in /usr/local/lib/python3.10/site-packages (from lingam) (0.14.4)
-Requirement already satisfied: networkx in /usr/local/lib/python3.10/site-packages (from lingam) (3.4.2)
-Requirement already satisfied: scikit-learn in /usr/local/lib/python3.10/site-packages (from lingam) (1.5.2)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting psy
-  Downloading psy-0.0.1-py2.py3-none-any.whl (38 kB)
-Requirement already satisfied: matplotlib in /usr/local/lib/python3.10/site-packages (from lingam) (3.10.0)
-Requirement already satisfied: numpy in /usr/local/lib/python3.10/site-packages (from lingam) (1.26.4)
-Requirement already satisfied: semopy in /usr/local/lib/python3.10/site-packages (from lingam) (2.3.11)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">103.1/103.1 kB</span> <span class=" -Color -Color-Red">6.5 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25hRequirement already satisfied: matplotlib in /usr/local/lib/python3.10/site-packages (from lingam) (3.10.0)
 Requirement already satisfied: graphviz in /usr/local/lib/python3.10/site-packages (from lingam) (0.20.3)
+Collecting psy
+  Downloading psy-0.0.1-py2.py3-none-any.whl (38 kB)
+Requirement already satisfied: semopy in /usr/local/lib/python3.10/site-packages (from lingam) (2.3.11)
+Requirement already satisfied: scikit-learn in /usr/local/lib/python3.10/site-packages (from lingam) (1.5.2)
+Requirement already satisfied: numpy in /usr/local/lib/python3.10/site-packages (from lingam) (1.26.4)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting pygam
   Downloading pygam-0.9.1-py3-none-any.whl (522 kB)
 ?25l     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/522.0 kB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">522.0/522.0 kB</span> <span class=" -Color -Color-Red">57.9 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
-?25hRequirement already satisfied: kiwisolver&gt;=1.3.1 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (1.4.8)
-Requirement already satisfied: packaging&gt;=20.0 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (24.2)
-Requirement already satisfied: python-dateutil&gt;=2.7 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (2.9.0.post0)
-Requirement already satisfied: cycler&gt;=0.10 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (0.12.1)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">522.0/522.0 kB</span> <span class=" -Color -Color-Red">19.7 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25hRequirement already satisfied: networkx in /usr/local/lib/python3.10/site-packages (from lingam) (3.4.2)
+Requirement already satisfied: scipy in /usr/local/lib/python3.10/site-packages (from lingam) (1.13.1)
+Requirement already satisfied: pandas in /usr/local/lib/python3.10/site-packages (from lingam) (2.2.3)
+Requirement already satisfied: statsmodels in /usr/local/lib/python3.10/site-packages (from lingam) (0.14.4)
 Requirement already satisfied: pillow&gt;=8 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (11.1.0)
-Requirement already satisfied: pyparsing&gt;=2.3.1 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (3.2.1)
-Requirement already satisfied: contourpy&gt;=1.0.1 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (1.3.1)
+Requirement already satisfied: python-dateutil&gt;=2.7 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (2.9.0.post0)
 Requirement already satisfied: fonttools&gt;=4.22.0 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (4.55.3)
+Requirement already satisfied: packaging&gt;=20.0 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (24.2)
+Requirement already satisfied: contourpy&gt;=1.0.1 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (1.3.1)
+Requirement already satisfied: cycler&gt;=0.10 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (0.12.1)
+Requirement already satisfied: pyparsing&gt;=2.3.1 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (3.2.1)
+Requirement already satisfied: kiwisolver&gt;=1.3.1 in /usr/local/lib/python3.10/site-packages (from matplotlib-&gt;lingam) (1.4.8)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: pytz&gt;=2020.1 in /usr/local/lib/python3.10/site-packages (from pandas-&gt;lingam) (2024.2)
@@ -1305,7 +1311,7 @@ Requirement already satisfied: tzdata&gt;=2022.7 in /usr/local/lib/python3.10/si
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting progressbar2
   Downloading progressbar2-4.5.0-py3-none-any.whl (57 kB)
 ?25l     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/57.1 kB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">57.1/57.1 kB</span> <span class=" -Color -Color-Red">23.1 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">57.1/57.1 kB</span> <span class=" -Color -Color-Red">20.0 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
 ?25h
 </pre></div>
 </div>
@@ -1314,41 +1320,44 @@ Requirement already satisfied: tzdata&gt;=2022.7 in /usr/local/lib/python3.10/si
 ?25l     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/36.4 MB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">5.2/36.4 MB</span> <span class=" -Color -Color-Red">157.0 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
-     ━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">6.3/36.4 MB</span> <span class=" -Color -Color-Red">155.4 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">1.0/36.4 MB</span> <span class=" -Color -Color-Red">29.0 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:02</span>
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">6.3/36.4 MB</span> <span class=" -Color -Color-Red">155.4 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">2.1/36.4 MB</span> <span class=" -Color -Color-Red">31.4 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:02</span>
+     ━━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">3.7/36.4 MB</span> <span class=" -Color -Color-Red">36.3 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">10.1/36.4 MB</span> <span class=" -Color -Color-Red">73.5 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
-     ━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">15.5/36.4 MB</span> <span class=" -Color -Color-Red">74.4 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">5.9/36.4 MB</span> <span class=" -Color -Color-Red">42.9 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">20.4/36.4 MB</span> <span class=" -Color -Color-Red">151.5 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">8.8/36.4 MB</span> <span class=" -Color -Color-Red">51.3 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">12.7/36.4 MB</span> <span class=" -Color -Color-Red">78.4 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━ <span class=" -Color -Color-Green">25.2/36.4 MB</span> <span class=" -Color -Color-Red">140.0 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╺━━━━━━ <span class=" -Color -Color-Green">30.1/36.4 MB</span> <span class=" -Color -Color-Red">139.0 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">17.7/36.4 MB</span> <span class=" -Color -Color-Red">120.5 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╺ <span class=" -Color -Color-Green">35.8/36.4 MB</span> <span class=" -Color -Color-Red">154.6 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━╺━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">22.5/36.4 MB</span> <span class=" -Color -Color-Red">137.4 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸━━━━━━━━━ <span class=" -Color -Color-Green">27.7/36.4 MB</span> <span class=" -Color -Color-Red">141.6 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸ <span class=" -Color -Color-Green">36.4/36.4 MB</span> <span class=" -Color -Color-Red">152.8 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸ <span class=" -Color -Color-Green">36.4/36.4 MB</span> <span class=" -Color -Color-Red">152.8 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╺━━━ <span class=" -Color -Color-Green">32.9/36.4 MB</span> <span class=" -Color -Color-Red">150.2 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸ <span class=" -Color -Color-Green">36.4/36.4 MB</span> <span class=" -Color -Color-Red">152.8 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">36.4/36.4 MB</span> <span class=" -Color -Color-Red">60.6 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸ <span class=" -Color -Color-Green">36.4/36.4 MB</span> <span class=" -Color -Color-Red">151.6 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸ <span class=" -Color -Color-Green">36.4/36.4 MB</span> <span class=" -Color -Color-Red">151.6 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸ <span class=" -Color -Color-Green">36.4/36.4 MB</span> <span class=" -Color -Color-Red">151.6 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">36.4/36.4 MB</span> <span class=" -Color -Color-Red">59.2 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
 ?25h
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: joblib&gt;=1.2.0 in /usr/local/lib/python3.10/site-packages (from scikit-learn-&gt;lingam) (1.4.2)
-Requirement already satisfied: threadpoolctl&gt;=3.1.0 in /usr/local/lib/python3.10/site-packages (from scikit-learn-&gt;lingam) (3.5.0)
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: numdifftools in /usr/local/lib/python3.10/site-packages (from semopy-&gt;lingam) (0.9.41)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: threadpoolctl&gt;=3.1.0 in /usr/local/lib/python3.10/site-packages (from scikit-learn-&gt;lingam) (3.5.0)
+Requirement already satisfied: joblib&gt;=1.2.0 in /usr/local/lib/python3.10/site-packages (from scikit-learn-&gt;lingam) (1.4.2)
+Requirement already satisfied: numdifftools in /usr/local/lib/python3.10/site-packages (from semopy-&gt;lingam) (0.9.41)
 Requirement already satisfied: sympy in /usr/local/lib/python3.10/site-packages (from semopy-&gt;lingam) (1.13.1)
 Requirement already satisfied: patsy&gt;=0.5.6 in /usr/local/lib/python3.10/site-packages (from statsmodels-&gt;lingam) (1.0.1)
 </pre></div>
@@ -1356,29 +1365,27 @@ Requirement already satisfied: patsy&gt;=0.5.6 in /usr/local/lib/python3.10/site
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting python-utils&gt;=3.8.1
   Downloading python_utils-3.9.1-py2.py3-none-any.whl (32 kB)
 Requirement already satisfied: six&gt;=1.5 in /usr/local/lib/python3.10/site-packages (from python-dateutil&gt;=2.7-&gt;matplotlib-&gt;lingam) (1.17.0)
+Requirement already satisfied: mpmath&lt;1.4,&gt;=1.1.0 in /usr/local/lib/python3.10/site-packages (from sympy-&gt;semopy-&gt;lingam) (1.3.0)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: mpmath&lt;1.4,&gt;=1.1.0 in /usr/local/lib/python3.10/site-packages (from sympy-&gt;semopy-&gt;lingam) (1.3.0)
-Requirement already satisfied: typing_extensions&gt;3.10.0.2 in /usr/local/lib/python3.10/site-packages (from python-utils&gt;=3.8.1-&gt;progressbar2-&gt;psy-&gt;lingam) (4.12.2)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: typing_extensions&gt;3.10.0.2 in /usr/local/lib/python3.10/site-packages (from python-utils&gt;=3.8.1-&gt;progressbar2-&gt;psy-&gt;lingam) (4.12.2)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Installing collected packages: scipy, python-utils, progressbar2, pygam, psy, lingam
   Attempting uninstall: scipy
-    Found existing installation: scipy 1.13.1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    Found existing installation: scipy 1.13.1
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    Uninstalling scipy-1.13.1:
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      Successfully uninstalled scipy-1.13.1
+      Successfully uninstalled scipy-1.13.1
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Successfully installed lingam-1.9.1 progressbar2-4.5.0 psy-0.0.1 pygam-0.9.1 python-utils-3.9.1 scipy-1.11.4
 <span class=" -Color -Color-Yellow">WARNING: Running pip as the &#39;root&#39; user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv</span>
 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> A new release of pip is available: <span class=" -Color -Color-Red">23.0.1</span> -&gt; <span class=" -Color -Color-Green">24.3.1</span>
+<span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> A new release of pip is available: <span class=" -Color -Color-Red">23.0.1</span> -&gt; <span class=" -Color -Color-Green">24.3.1</span>
 <span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> To update, run: <span class=" -Color -Color-Green">pip install --upgrade pip</span>
 </pre></div>
 </div>
@@ -1388,7 +1395,7 @@ Requirement already satisfied: typing_extensions&gt;3.10.0.2 in /usr/local/lib/p
 <p>Tutorial: <a class="reference external" href="https://lingam.readthedocs.io/en/latest/tutorial/lingam.html#directlingam">DirectLiNGAM — LiNGAM 1.8.2 documentation</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">lingam</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">lingam</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">lingam</span><span class="o">.</span><span class="n">DirectLiNGAM</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
