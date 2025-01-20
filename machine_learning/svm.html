@@ -733,7 +733,6 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../software_engineering/development/index.html">ソフトウェア開発</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/frontend.html">フロントエンド開発</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/remix.html">Remix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/backend.html">バックエンド開発</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/networking.html">ネットワーク・通信</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/design.html">要件定義・設計</a></li>
@@ -999,6 +998,11 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">カーネルトリック</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">カーネルモデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">カーネルトリック</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussiankernel-rbf-kernel">GaussianKernel (RBF kernel)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memo-4">Memo 4</a></li>
 </ul>
@@ -1423,13 +1427,47 @@ w=[39.6 49. ]
 <h2>ソフトマージンSVM<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <section id="c-svm">
 <h3>C-SVM<a class="headerlink" href="#c-svm" title="Link to this heading">#</a></h3>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO</span>
-</pre></div>
+<p>スラック変数と呼ばれる変数<span class="math notranslate nohighlight">\(\xi_i\)</span>を追加する。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{cases}
+\xi_i = 0 &amp; (マージン内で正しく識別できる場合)\\
+0 &lt; \xi_i \leq 1 &amp; (マージン境界を超えるが正しく識別できる場合)\\
+\xi_i &gt; 1 &amp; (識別境界を超えて誤識別される場合)
+\end{cases}
+\end{split}\]</div>
+<p>以下のように書くこともできる</p>
+<div class="math notranslate nohighlight">
+\[
+\xi_i
+= \max[0, 1-t_i(w^T x_i + b)]
+= f_{+}(1 - t_i(w^T x_i + b))
+\]</div>
+<p>ここで<span class="math notranslate nohighlight">\(f_{+}(x)\)</span>はヒンジ（hinge）関数と呼ばれるもので</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+f_{+}(x) :=
+\begin{cases}
+x &amp; (x &gt; 0の場合)\\
+0 &amp; (それ以外)
+\end{cases}
+\end{split}\]</div>
+<p>である</p>
+<p>ソフトマージン識別器の主問題は以下のように定式化される。</p>
+<div class="admonition- admonition">
+<p class="admonition-title">主問題</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\text{minimize} &amp; \hspace{1em} L_p(w, \xi) = \frac{1}{2} w^T w + C\sum^N_{i=1} \xi_i \\
+\text{subject to} &amp; \hspace{1em} t_i( w^T x_i + b) - 1 + \xi_i \geq 0 \\
+                &amp; \hspace{1em}  \xi_i \geq 0
+\end{align}
+\end{split}\]</div>
 </div>
-</div>
-</div>
+<p>すべての訓練データのスラック変数の和<span class="math notranslate nohighlight">\(\sum \xi_i (\xi_i \geq 0)\)</span>は誤識別数の上限を与える。
+パラメータ<span class="math notranslate nohighlight">\(C\)</span>は誤識別数に対するペナルティの強さであり、<span class="math notranslate nohighlight">\(C\)</span>が大きいほど<span class="math notranslate nohighlight">\(w\)</span>のノルム最小化よりも誤識別数を小さくする方を優先することになる。</p>
+<p>このSVMは<span class="math notranslate nohighlight">\(C\)</span>-SVMと呼ばれる。</p>
 </section>
 <section id="id4">
 <h3>ν-SVM<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
@@ -1438,6 +1476,73 @@ w=[39.6 49. ]
 </section>
 <section id="id5">
 <h2>カーネルトリック<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h3>カーネルモデル<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>線形モデル</p>
+<div class="math notranslate nohighlight">
+\[
+f^{linear}(x_i) = w^T x_i + b
+\]</div>
+<p>をカーネルモデル</p>
+<div class="math notranslate nohighlight">
+\[
+f^{kernel}(x_i) = \sum^N_{j=1} w_j \phi(x_i)^T \phi(x_j) + b
+\]</div>
+<p>に拡張することを考える。ここで<span class="math notranslate nohighlight">\(\phi(\cdot)\)</span>は任意の関数で、<span class="math notranslate nohighlight">\(\phi(\cdot)\)</span>によって入力ベクトル<span class="math notranslate nohighlight">\(x\)</span>を高次元空間に写像し（2次元では線形分離不可能なものを3次元に写して線形分離不可にするイメージ）、高次元空間上の類似度を内積<span class="math notranslate nohighlight">\(\phi(x_i)^T \phi(x)\)</span>で表す。</p>
+<p>カーネルモデルは<span class="math notranslate nohighlight">\(N\)</span>の和が入っているように、訓練データ数<span class="math notranslate nohighlight">\(N\)</span>が増えるとモデルの表現力は高まるが計算量が増える。</p>
+</section>
+<section id="id7">
+<h3>カーネルトリック<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(\phi(x)\)</span>上での内積計算を緩和するために <strong>正定値関数</strong> （positive definite function）を用いる。</p>
+<div class="admonition- admonition">
+<p class="admonition-title">正定値関数</p>
+<p>関数 <span class="math notranslate nohighlight">\(k(x_i, x_j)\)</span> は次の条件を満たすとき正定値関数と呼ばれる。</p>
+<p>(1) 対称性：<span class="math notranslate nohighlight">\(k(x_i, x_j)=k(x_j, x_i)\)</span></p>
+<p>(2) 正定値性：デー夕点 <span class="math notranslate nohighlight">\(\mathrm{x}_1, \mathrm{x}_2, \ldots, \mathrm{x}_N\)</span> に対する以下の <strong>グラム行列 （Gram matrix）</strong> <span class="math notranslate nohighlight">\(K\)</span> が半正定値である。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+K = \begin{pmatrix}
+k(x_1, x_1) &amp; k(x_1, x_2) &amp; \cdots &amp; k(x_1, x_N) \\
+k(x_2, x_1) &amp; k(x_2, x_2) &amp; \cdots &amp; k(x_2, x_N) \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+k(x_N, x_1) &amp; k(x_N, x_2) &amp; \cdots &amp; k(x_N, x_N)
+\end{pmatrix}
+\end{split}\]</div>
+<p>すなわち、任意の <span class="math notranslate nohighlight">\(N\)</span> 次元のベクトル <span class="math notranslate nohighlight">\(z\)</span> に対し <span class="math notranslate nohighlight">\(z^{\top} K z \geq 0\)</span> が成り立つ。</p>
+</div>
+<p>正定値関数 <span class="math notranslate nohighlight">\(k(x_i, x_j)\)</span> は <strong>再生核ヒルベルト空間</strong> <span class="math notranslate nohighlight">\(\mathcal{H}_k\)</span>への写像 <span class="math notranslate nohighlight">\(\phi(x_i), \phi(x_j) \in \mathcal{H}_k\)</span>の内積に対応する。</p>
+<div class="math notranslate nohighlight">
+\[
+k(x_i, x_j) = \phi(x_i)^T \phi(x_j)
+\]</div>
+<p>これを用いて高次元空間上での内積をより単純な2変数関数の計算<span class="math notranslate nohighlight">\(k(\cdot, \cdot)\)</span>に置き換える事ができる。この正定値関数<span class="math notranslate nohighlight">\(k(\cdot, \cdot)\)</span>のことを <strong>カーネル関数</strong> （kernel function）、グラム行列<span class="math notranslate nohighlight">\(K\)</span>を <strong>カーネル行列</strong> （kernel matrix） と呼ぶ。</p>
+<p>カーネル関数とカーネル行列を用いると、カーネルモデルは以下のように表現できる</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+カーネル行列を用いたカーネルモデル</div>
+<div class="math notranslate nohighlight">
+\[
+f^{kernel}(x_i) = \sum^N_{j=1} w_j k(x_i, x_j) + b
+= K_{i:} w + b
+\]</div>
+<p class="sd-card-text">ここで<span class="math notranslate nohighlight">\(K_{i:}\)</span>はカーネル行列の<span class="math notranslate nohighlight">\(i\)</span>行目の行ベクトルを表す。</p>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO: コードかく</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h2>参考<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>八谷大岳. (2020). ゼロからつくるPython機械学習プログラミング入門.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO</span>
@@ -1460,7 +1565,7 @@ w=[39.6 49. ]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fc5dced2890&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fd786d7bbb0&gt;
 </pre></div>
 </div>
 <img alt="../_images/82ab0c157445123cbf5bdf0322e3db15cebcb06f7c9389bb7e16dfac21c59365.png" src="../_images/82ab0c157445123cbf5bdf0322e3db15cebcb06f7c9389bb7e16dfac21c59365.png" />
@@ -1481,7 +1586,7 @@ w=[39.6 49. ]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fc5dcb37e20&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fd7869f0790&gt;
 </pre></div>
 </div>
 <img alt="../_images/87bce9524c1a5cefd008fd66bb1f5accbe69203e2a020c2abf54517ea838beed.png" src="../_images/87bce9524c1a5cefd008fd66bb1f5accbe69203e2a020c2abf54517ea838beed.png" />
@@ -1640,6 +1745,11 @@ k(\mathbf{x},\mathbf{x}^{\prime}) = \exp \left( \frac{-\| \mathbf{x} - \mathbf{x
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">カーネルトリック</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">カーネルモデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">カーネルトリック</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussiankernel-rbf-kernel">GaussianKernel (RBF kernel)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memo-4">Memo 4</a></li>
 </ul>
