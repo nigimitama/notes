@@ -989,20 +989,22 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#svm">ハードマージンSVM</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">最適識別超平面</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cvxpy">実装例（cvxpy）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">双対問題をソルバーに通すパターン</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scikit-learn">実装例（scikit-learn）</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ソフトマージンSVM</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ソフトマージンSVM</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c-svm">C-SVM</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ν-SVM</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">ν-SVM</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">カーネルトリック</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">カーネルモデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">カーネルトリック</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">カーネルトリック</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">カーネルモデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">カーネルトリック</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">カーネル関数の例</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussiankernel-rbf-kernel">GaussianKernel (RBF kernel)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memo-4">Memo 4</a></li>
 </ul>
@@ -1022,13 +1024,12 @@
 <h1>Support Vector Machine<a class="headerlink" href="#support-vector-machine" title="Link to this heading">#</a></h1>
 <section id="id1">
 <h2>マージン<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>データがクラス<span class="math notranslate nohighlight">\(\{C_1, C_2\}\)</span>のどちらに含まれるかを判断する2クラス識別問題について考える。</p>
-<p>教師ラベルは<span class="math notranslate nohighlight">\(t \in \{+1, -1\}\)</span>で、それぞれデータが<span class="math notranslate nohighlight">\(C_1, C_2\)</span>のどちらに含まれるかを示すとする。
-係数ベクトルを<span class="math notranslate nohighlight">\(w=(w0, w_1, ..., w_d)^T\)</span>, 特徴量ベクトルを<span class="math notranslate nohighlight">\(x=(x_0=1, x_1, ..., x_d)^T\)</span>と表すとすると、</p>
-<p>線形識別関数は</p>
+<p>データがクラス<span class="math notranslate nohighlight">\(\{C_1, C_2\}\)</span>のどちらに含まれるかを判断する2クラス識別問題について考える。
+教師ラベルは<span class="math notranslate nohighlight">\(y \in \{+1, -1\}\)</span>であり、それぞれデータが<span class="math notranslate nohighlight">\(C_1, C_2\)</span>のどちらに含まれるかを示すとする。
+係数ベクトルを<span class="math notranslate nohighlight">\(w=(w_1, ..., w_d)^T\)</span>、バイアス項を<span class="math notranslate nohighlight">\(b\)</span>、特徴量ベクトルを<span class="math notranslate nohighlight">\(x=(x_1, ..., x_d)^T\)</span>とおくと、線形識別関数は</p>
 <div class="math notranslate nohighlight">
 \[
-f(x) = w^T x
+f(x) = w^T x + b
 \]</div>
 <p>と表すことができる。</p>
 <p>識別境界（識別超平面）は<span class="math notranslate nohighlight">\(f(x)=0\)</span>となる位置に描かれるとし、クラス1を<span class="math notranslate nohighlight">\(f(x) &gt;= 0\)</span>、クラス2を<span class="math notranslate nohighlight">\(f(x) &lt; 0\)</span>で表現するように学習させるとする。例えば次の図のように、ある識別関数が存在したとする。</p>
@@ -1054,14 +1055,11 @@ f(x) = w^T x
 <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_c1</span><span class="p">,</span> <span class="n">x_c2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x_c1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x_c2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-
 <span class="c1"># 重みベクトルが仮にこのようなwだったとする</span>
-<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 
 <span class="c1"># 描画範囲</span>
 <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-
 
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_hyperplane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">x1</span><span class="p">):</span>
     <span class="c1"># データ点の散布図</span>
@@ -1089,7 +1087,7 @@ f(x) = w^T x
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/af0260bb22fc297457ab3331c102a96dc25d01ed48aeab60d800b54ab05aa4dd.png" src="../_images/af0260bb22fc297457ab3331c102a96dc25d01ed48aeab60d800b54ab05aa4dd.png" />
+<img alt="../_images/4e5525d1e1b52fb49952ec083972c3afab963d0683577c85abae9c4fe90daff1.png" src="../_images/4e5525d1e1b52fb49952ec083972c3afab963d0683577c85abae9c4fe90daff1.png" />
 </div>
 </div>
 <p>訓練データ中に存在しなかったノイズがテストデータに含まれていた場合、ノイズの分だけ識別を誤りやすくなる。
@@ -1104,12 +1102,12 @@ f(x) = w^T x
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
-<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
-<span class="n">plot_hyperplane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">w_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">plot_hyperplane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w_</span><span class="p">,</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;(a)&quot;</span><span class="p">)</span>
 
-<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="n">plot_hyperplane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">w_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">plot_hyperplane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w_</span><span class="p">,</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;(b)&quot;</span><span class="p">)</span>
 
 <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1123,7 +1121,7 @@ f(x) = w^T x
 </div>
 <p>となれば、 <strong>「識別超平面が訓練データからもっとも離れるように（両クラスの中間になるように）学習させればよいのではないか」</strong> という考えが湧く。</p>
 <p>これがサポートベクターマシン（Support Vector Machine: SVM）の考え方である。</p>
-<p>訓練データと識別超平面との距離のことをその識別超平面の<strong>マージン</strong>（margin）という。</p>
+<p>識別境界<span class="math notranslate nohighlight">\(f(x) = 0\)</span>と最も近い各クラスの訓練データの点を <strong>サポートベクトル</strong> （support vector）といい、サポートベクトルと識別境界との距離（識別境界と最も近いデータ点の距離）を <strong>マージン</strong> （margin）という。</p>
 <p>ある識別関数に対してとれるマージンの大きさは、両クラスの学習データを識別関数の法線ベクトル上に射影した長さの最小値</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1158,19 +1156,20 @@ f(x) = w^T x
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/47fad90c913558b7b3c21285ddd78e2c712defbc7a2fd10d39ad357c6523f8b9.png" src="../_images/47fad90c913558b7b3c21285ddd78e2c712defbc7a2fd10d39ad357c6523f8b9.png" />
+<img alt="../_images/151bc0a48445fbca7f3a229ce5b3bcab0cc91384bd6a3affbd6b1f7a772dd582.png" src="../_images/151bc0a48445fbca7f3a229ce5b3bcab0cc91384bd6a3affbd6b1f7a772dd582.png" />
 </div>
 </div>
 </section>
 <section id="svm">
 <h2>ハードマージンSVM<a class="headerlink" href="#svm" title="Link to this heading">#</a></h2>
-<p>学習データの集合を<span class="math notranslate nohighlight">\(\mathcal{D}_L = \{(t_i, x_i)\}(i=1,...,N)\)</span>とする。係数ベクトルはバイアス項<span class="math notranslate nohighlight">\(b\)</span>を外に出す形で、<span class="math notranslate nohighlight">\(w=(w_1, ..., w_d)^T\)</span>と表記する。特徴量ベクトルは<span class="math notranslate nohighlight">\(x=(x_1,...,x_d)^T\)</span>である。<span class="math notranslate nohighlight">\(t_i=\{-1, +1\}\)</span>は教師データで、学習データ<span class="math notranslate nohighlight">\(x_i\in \mathbb{R}^d\)</span>がどちらのクラスに属するかを示す。</p>
+<p>学習データの集合を<span class="math notranslate nohighlight">\(\mathcal{D}_L = \{(y_i, x_i)\}(i=1,...,N)\)</span>とする。係数ベクトルはバイアス項<span class="math notranslate nohighlight">\(b\)</span>を外に出す形で、<span class="math notranslate nohighlight">\(w=(w_1, ..., w_d)^T\)</span>と表記する。特徴量ベクトルは<span class="math notranslate nohighlight">\(x=(x_1,...,x_d)^T\)</span>である。<span class="math notranslate nohighlight">\(y_i=\{-1, +1\}\)</span>は教師データで、学習データ<span class="math notranslate nohighlight">\(x_i\in \mathbb{R}^d\)</span>がどちらのクラスに属するかを示す。</p>
 <p>線形識別関数のマージンを<span class="math notranslate nohighlight">\(\kappa\)</span>とすれば全ての学習データで</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1181,14 +1180,14 @@ f(x) = w^T x
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{cases}
-w^T x_i + b \geq +1  &amp; \text{if} \hspace{0.5em} t_i = +1\\
-w^T x_i + b \leq -1  &amp; \text{if} \hspace{0.5em} t_i = -1
+w^T x_i + b \geq +1  &amp; \text{if} \hspace{0.5em} y_i = +1\\
+w^T x_i + b \leq -1  &amp; \text{if} \hspace{0.5em} y_i = -1
 \end{cases}
 \end{split}\]</div>
 <p>となり、まとめて表記すると</p>
 <div class="math notranslate nohighlight">
 \[
-t_i \times (w^T x_i + b) \geq 1
+y_i \times (w^T x_i + b) \geq 1
 \]</div>
 <p>クラス間マージンは
 $<span class="math notranslate nohighlight">\(
@@ -1215,12 +1214,13 @@ $<span class="math notranslate nohighlight">\(
 <p>最適な識別超平面は、「すべての訓練データを正しく識別できる」という制約条件</p>
 <div class="math notranslate nohighlight">
 \[
-t_i (w^T x_i + b) \geq 1 \hspace{1em} (i=1,...,N)
+y_i (w^T x_i + b) \geq 1 \hspace{1em} (i=1,...,N)
 \]</div>
-<p>の下で係数ベクトルのノルム<span class="math notranslate nohighlight">\(||w||\)</span>を最小にする解</p>
+<p>の下でマージン<span class="math notranslate nohighlight">\(\frac{1}{\|w\|}\)</span>を最大化した解として得られる。
+マージンの最大化は<span class="math notranslate nohighlight">\(\|w\|\)</span>の最小化と等しいため、</p>
 <div class="math notranslate nohighlight">
 \[
-w_0 = \min ||w||
+w_0 = \min \|w\|
 \]</div>
 <p>として求めることができる。これは次の不等式制約条件つき最適化問題を解くことで得られる。</p>
 <div class="admonition- admonition">
@@ -1229,7 +1229,7 @@ w_0 = \min ||w||
 \[\begin{split}
 \begin{align}
 \text{minimize} &amp; \hspace{1em} L_p(w) = \frac{1}{2} w^T w\\
-\text{subject to} &amp; \hspace{1em} t_i( w^T x_i + b) \geq 1; \ \forall i
+\text{subject to} &amp; \hspace{1em} y_i( w^T x_i + b) \geq 1; \ \forall i
 \end{align}
 \end{split}\]</div>
 </div>
@@ -1237,37 +1237,37 @@ w_0 = \min ||w||
 <div class="math notranslate nohighlight">
 \[
 \tilde{L}_p(w, b, \alpha) = \frac{1}{2} w^T w
-- \sum^N_{i=1} \alpha_i (t_i (w^T x_i + b) - 1)
+- \sum^N_{i=1} \alpha_i (y_i (w^T x_i + b) - 1)
 \]</div>
 <p>ここで<span class="math notranslate nohighlight">\(\alpha=(\alpha_1, ..., \alpha_N)^T\)</span>、<span class="math notranslate nohighlight">\(\alpha_i \geq 0\)</span>であり、<span class="math notranslate nohighlight">\(\alpha_i\)</span>はラグランジュ未定乗数と呼ばれる。</p>
 <p>この最適化問題の解<span class="math notranslate nohighlight">\(w_*\)</span>と<span class="math notranslate nohighlight">\(b_*\)</span>は以下の<strong>KKT（Karush-Kuhn-Tucker）条件</strong>を満たす解として知られている。</p>
 <div class="admonition-kkt admonition">
 <p class="admonition-title">KKT条件</p>
-<p>(1) <span class="math notranslate nohighlight">\(\displaystyle \frac{\partial \tilde{L}_p(w, b, \alpha)}{\partial w}|_{w=w_*} = w_* - \sum^N_{i=1} \alpha_i t_i x_i = 0\)</span></p>
-<p>(2) <span class="math notranslate nohighlight">\(\displaystyle \frac{\partial \tilde{L}_p(w, b, \alpha)}{\partial b} = \sum^N_{i=1} \alpha_i t_i = 0\)</span></p>
-<p>(3) <span class="math notranslate nohighlight">\(t_i(w^T x_i + b) - 1 \geq 0\)</span></p>
+<p>(1) <span class="math notranslate nohighlight">\(\displaystyle \frac{\partial \tilde{L}_p(w, b, \alpha)}{\partial w}|_{w=w_*} = w_* - \sum^N_{i=1} \alpha_i y_i x_i = 0\)</span></p>
+<p>(2) <span class="math notranslate nohighlight">\(\displaystyle \frac{\partial \tilde{L}_p(w, b, \alpha)}{\partial b} = \sum^N_{i=1} \alpha_i y_i = 0\)</span></p>
+<p>(3) <span class="math notranslate nohighlight">\(y_i(w^T x_i + b) - 1 \geq 0\)</span></p>
 <p>(4) <span class="math notranslate nohighlight">\(\alpha_i \geq 0\)</span></p>
-<p>(5) <span class="math notranslate nohighlight">\(\alpha_i (t_i (w^T x_i + b) - 1) = 0\)</span></p>
+<p>(5) <span class="math notranslate nohighlight">\(\alpha_i (y_i (w^T x_i + b) - 1) = 0\)</span></p>
 </div>
 <p>ラグランジュ関数の<span class="math notranslate nohighlight">\(w\)</span>を<span class="math notranslate nohighlight">\(w_*\)</span>に置き換えてKKT条件(1)と(2)を代入して整理すると</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
 L_d(\alpha)
-&amp;= \frac{1}{2} {w_*}^T w_* - \sum^N_{i=1} \alpha_i t_i w_*^T x_i - b \sum^N_{i=1} \alpha_i t_i + \sum^N_{i=1} \alpha_i\\
-&amp;= \sum^N_{i=1} \alpha_i - \frac{1}{2} w_*^T w_*  \hspace{2em} (\because \sum^N_{i=1} \alpha_i t_i = 0)\\
-&amp;= \sum^N_{i=1} \alpha_i - \frac{1}{2} \sum^N_{i=1} \sum^N_{j=1} \alpha_i \alpha_j t_i t_j x_i^T x_j
+&amp;= \frac{1}{2} {w_*}^T w_* - \sum^N_{i=1} \alpha_i y_i w_*^T x_i - b \sum^N_{i=1} \alpha_i y_i + \sum^N_{i=1} \alpha_i\\
+&amp;= \sum^N_{i=1} \alpha_i - \frac{1}{2} w_*^T w_*  \hspace{2em} (\because \sum^N_{i=1} \alpha_i y_i = 0)\\
+&amp;= \sum^N_{i=1} \alpha_i - \frac{1}{2} \sum^N_{i=1} \sum^N_{j=1} \alpha_i \alpha_j y_i y_j x_i^T x_j
 \end{align}
 \end{split}\]</div>
 <p>となり、ラグランジュ未定乗数のみの関数にすることができる</p>
-<p>KKT条件(1)より最適解は<span class="math notranslate nohighlight">\(w_* = \sum^N_{i=1} \alpha_i t_i x_i\)</span>のようになることがわかっているので、最適な係数<span class="math notranslate nohighlight">\(\alpha_i\)</span>を求める問題に置き換えることができる。</p>
+<p>KKT条件(1)より最適解は<span class="math notranslate nohighlight">\(w_* = \sum^N_{i=1} \alpha_i y_i x_i\)</span>のようになることがわかっているので、最適な係数<span class="math notranslate nohighlight">\(\alpha_i\)</span>を求める問題に置き換えることができる。</p>
 <div class="admonition- admonition">
 <p class="admonition-title">双対問題</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
 \text{maximize} &amp; \hspace{1em} L_d(\alpha) = \alpha^T \boldsymbol{1} - \frac{1}{2} \alpha^T H \alpha \\
-\text{subject to} &amp; \hspace{1em} \alpha^T t = 0
+\text{subject to} &amp; \hspace{1em} \alpha^T y = 0
 \end{align}
 \end{split}\]</div>
 </div>
@@ -1276,35 +1276,99 @@ L_d(\alpha)
 \[\begin{split}
 \begin{align}
 \boldsymbol{1} &amp;= (1,...,1)^T\\
-H &amp;= (H_{ij} = t_i t_j x_i^T x_j)\\
-t &amp;= (t_1,...,t_N)^T\\
+H &amp;= (H_{ij} = y_i y_j x_i^T x_j)\\
+y &amp;= (y_1,...,y_N)^T\\
 \end{align}
 \end{split}\]</div>
 <p>である。</p>
 <p>双対問題のラグランジュ関数は、ラグランジュ未定乗数を<span class="math notranslate nohighlight">\(\beta\)</span>とすれば次の関数になる。</p>
 <div class="math notranslate nohighlight">
 \[
-\tilde{L}_d(\alpha, \beta) = \alpha^T \boldsymbol{1} - \frac{1}{2} \alpha^T H \alpha - \beta \alpha^T t
+\tilde{L}_d(\alpha, \beta) = \alpha^T \boldsymbol{1} - \frac{1}{2} \alpha^T H \alpha - \beta \alpha^T y
 \]</div>
-<p>KKT条件(5)より<span class="math notranslate nohighlight">\(\alpha_i (t_i (w^T x_i + b) - 1) = 0\)</span>がすべての<span class="math notranslate nohighlight">\(i\)</span>で成り立てば良いため、</p>
+<p>KKT条件(5)より<span class="math notranslate nohighlight">\(\alpha_i (y_i (w^T x_i + b) - 1) = 0\)</span>がすべての<span class="math notranslate nohighlight">\(i\)</span>で成り立てば良いため、</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{cases}
-\alpha_i &gt; 0 &amp; \text{if} \hspace{0.5em} t_i(w^T x_i + b) - 1 = 0\\
-\alpha_i = 0 &amp; \text{if} \hspace{0.5em} t_i(w^T x_i + b) - 1 \neq 0
+\alpha_i &gt; 0 &amp; \text{if} \hspace{0.5em} y_i(w^T x_i + b) - 1 = 0\\
+\alpha_i = 0 &amp; \text{if} \hspace{0.5em} y_i(w^T x_i + b) - 1 \neq 0
 \end{cases}
 \end{split}\]</div>
 <p>となる。<span class="math notranslate nohighlight">\(\alpha_i &gt; 0\)</span>となる<span class="math notranslate nohighlight">\(x_i\)</span>を<strong>サポートベクトル</strong>という。</p>
 <p>最適なバイアス<span class="math notranslate nohighlight">\(b_*\)</span>はサポートベクトルの一つ<span class="math notranslate nohighlight">\(x_s\)</span>を用いて</p>
 <div class="math notranslate nohighlight">
 \[
-t_s (w_*^T x_s + b_*) - 1 = 0
+y_s (w_*^T x_s + b_*) - 1 = 0
 \]</div>
 <p>を解いて求めるか、それらの平均を用いる。</p>
 </section>
 <section id="cvxpy">
 <h3>実装例（cvxpy）<a class="headerlink" href="#cvxpy" title="Link to this heading">#</a></h3>
-<p>双対問題を<a class="reference external" href="https://www.cvxpy.org/examples/basic/quadratic_program.html">cvxpyの二次計画問題のソルバー</a>を使って解いてみる</p>
+<p>主問題をそのままソルバーに通すパターン</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\min_w &amp; \hspace{1em} \frac{1}{2} w^T w = \frac{1}{2} \|w\|^2_2\\
+\text{s.t.} &amp; \hspace{1em} y_i( w^T x_i + b) \geq 1; \ \forall i
+\end{align}
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cvxpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cp</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">()</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">cp</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">),</span>
+                  <span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The optimal value is&quot;</span><span class="p">,</span> <span class="n">prob</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;w is&quot;</span><span class="p">,</span> <span class="n">w</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;b is&quot;</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The optimal value is 0.9049773766503894
+w is [0.90497738 0.99547511]
+b is -1.2800914228520561e-17
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">value</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">plot_hyperplane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../_images/d21c069ec43da501a2edebe84dcb9041aedffa4726474dde35a6f06bad307085.png" src="../_images/d21c069ec43da501a2edebe84dcb9041aedffa4726474dde35a6f06bad307085.png" />
+</div>
+</div>
+</section>
+<section id="id3">
+<h3>双対問題をソルバーに通すパターン<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>双対問題</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\text{maximize} &amp; \hspace{1em} L_d(\alpha) = \alpha^T \boldsymbol{1} - \frac{1}{2} \alpha^T H \alpha \\
+\text{subject to} &amp; \hspace{1em} \alpha^T y = 0
+\end{align}
+\end{split}\]</div>
+<p>を<a class="reference external" href="https://www.cvxpy.org/examples/basic/quadratic_program.html">cvxpyの二次計画問題のソルバー</a>を使って解いてみる</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># データ数が多くなるとソルバーが上手く動かないので一旦暫定的対処としてデータ数を絞る</span>
@@ -1316,13 +1380,12 @@ t_s (w_*^T x_s + b_*) - 1 = 0
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">y</span>
-<span class="c1"># Hを作成</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Hを作成</span>
 <span class="n">n</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-        <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">@</span> <span class="n">X</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">@</span> <span class="n">X</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
 
 <span class="n">ones</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="p">))</span>
 </pre></div>
@@ -1335,13 +1398,13 @@ t_s (w_*^T x_s + b_*) - 1 = 0
 
 <span class="n">alpha</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># 長さnのベクトル</span>
 <span class="n">prob</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Maximize</span><span class="p">(</span> <span class="n">alpha</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">ones</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">cp</span><span class="o">.</span><span class="n">quad_form</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span> <span class="p">),</span>
-                  <span class="p">[</span><span class="n">alpha</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])</span>
+                  <span class="p">[</span><span class="n">alpha</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])</span>
 <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The optimal value is&quot;</span><span class="p">,</span> <span class="n">prob</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;alpha is&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
 <span class="n">a</span> <span class="o">=</span> <span class="n">alpha</span><span class="o">.</span><span class="n">value</span>
-<span class="n">w</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;w=</span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1423,8 +1486,8 @@ w=[39.6 49. ]
 </div>
 </section>
 </section>
-<section id="id3">
-<h2>ソフトマージンSVM<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<section id="id4">
+<h2>ソフトマージンSVM<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <section id="c-svm">
 <h3>C-SVM<a class="headerlink" href="#c-svm" title="Link to this heading">#</a></h3>
 <p>スラック変数と呼ばれる変数<span class="math notranslate nohighlight">\(\xi_i\)</span>を追加する。</p>
@@ -1440,8 +1503,8 @@ w=[39.6 49. ]
 <div class="math notranslate nohighlight">
 \[
 \xi_i
-= \max[0, 1-t_i(w^T x_i + b)]
-= f_{+}(1 - t_i(w^T x_i + b))
+= \max[0, 1-y_i(w^T x_i + b)]
+= f_{+}(1 - y_i(w^T x_i + b))
 \]</div>
 <p>ここで<span class="math notranslate nohighlight">\(f_{+}(x)\)</span>はヒンジ（hinge）関数と呼ばれるもので</p>
 <div class="math notranslate nohighlight">
@@ -1460,7 +1523,7 @@ x &amp; (x &gt; 0の場合)\\
 \[\begin{split}
 \begin{align}
 \text{minimize} &amp; \hspace{1em} L_p(w, \xi) = \frac{1}{2} w^T w + C\sum^N_{i=1} \xi_i \\
-\text{subject to} &amp; \hspace{1em} t_i( w^T x_i + b) - 1 + \xi_i \geq 0 \\
+\text{subject to} &amp; \hspace{1em} y_i( w^T x_i + b) - 1 + \xi_i \geq 0 \\
                 &amp; \hspace{1em}  \xi_i \geq 0
 \end{align}
 \end{split}\]</div>
@@ -1469,30 +1532,49 @@ x &amp; (x &gt; 0の場合)\\
 パラメータ<span class="math notranslate nohighlight">\(C\)</span>は誤識別数に対するペナルティの強さであり、<span class="math notranslate nohighlight">\(C\)</span>が大きいほど<span class="math notranslate nohighlight">\(w\)</span>のノルム最小化よりも誤識別数を小さくする方を優先することになる。</p>
 <p>このSVMは<span class="math notranslate nohighlight">\(C\)</span>-SVMと呼ばれる。</p>
 </section>
-<section id="id4">
-<h3>ν-SVM<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>ν-SVM<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p>上限サポートベクトル（マージン誤り<span class="math notranslate nohighlight">\(\xi_i &gt; 0\)</span>のベクトルの数）の割合の上限を規定するハイパーパラメータ<span class="math notranslate nohighlight">\(\nu\)</span>が指定できるようになった</p>
 </section>
 </section>
-<section id="id5">
-<h2>カーネルトリック<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <section id="id6">
-<h3>カーネルモデル<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
-<p>線形モデル</p>
+<h2>カーネルトリック<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h3>カーネルモデル<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>線形モデルをカーネルモデルに拡張することを考える。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+線形モデル</div>
 <div class="math notranslate nohighlight">
 \[
 f^{linear}(x_i) = w^T x_i + b
 \]</div>
-<p>をカーネルモデル</p>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(x_i = (x_{i1}, \dots, x_{iD})\)</span></p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(w=(x_1,\dots,x_D)^T\)</span></p></li>
+</ul>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+カーネルモデル</div>
 <div class="math notranslate nohighlight">
 \[
 f^{kernel}(x_i) = \sum^N_{j=1} w_j \phi(x_i)^T \phi(x_j) + b
 \]</div>
-<p>に拡張することを考える。ここで<span class="math notranslate nohighlight">\(\phi(\cdot)\)</span>は任意の関数で、<span class="math notranslate nohighlight">\(\phi(\cdot)\)</span>によって入力ベクトル<span class="math notranslate nohighlight">\(x\)</span>を高次元空間に写像し（2次元では線形分離不可能なものを3次元に写して線形分離不可にするイメージ）、高次元空間上の類似度を内積<span class="math notranslate nohighlight">\(\phi(x_i)^T \phi(x)\)</span>で表す。</p>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(x_i = (x_{i1}, \dots, x_{iD})\)</span></p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(w=(x_1,\dots,x_N)^T\)</span></p></li>
+</ul>
+</div>
+</div>
+<p>ここで<span class="math notranslate nohighlight">\(\phi(\cdot)\)</span>は任意の関数で、<span class="math notranslate nohighlight">\(\phi(\cdot)\)</span>によって入力ベクトル<span class="math notranslate nohighlight">\(x\)</span>を高次元空間に写像し（2次元では線形分離不可能なものを3次元に写して線形分離不可にするイメージ）、高次元空間上の類似度を内積<span class="math notranslate nohighlight">\(\phi(x_i)^T \phi(x)\)</span>で表す。</p>
 <p>カーネルモデルは<span class="math notranslate nohighlight">\(N\)</span>の和が入っているように、訓練データ数<span class="math notranslate nohighlight">\(N\)</span>が増えるとモデルの表現力は高まるが計算量が増える。</p>
 </section>
-<section id="id7">
-<h3>カーネルトリック<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>カーネルトリック<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(\phi(x)\)</span>上での内積計算を緩和するために <strong>正定値関数</strong> （positive definite function）を用いる。</p>
 <div class="admonition- admonition">
 <p class="admonition-title">正定値関数</p>
@@ -1529,6 +1611,54 @@ f^{kernel}(x_i) = \sum^N_{j=1} w_j k(x_i, x_j) + b
 <p class="sd-card-text">ここで<span class="math notranslate nohighlight">\(K_{i:}\)</span>はカーネル行列の<span class="math notranslate nohighlight">\(i\)</span>行目の行ベクトルを表す。</p>
 </div>
 </div>
+</section>
+<section id="id9">
+<h3>カーネル関数の例<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+線形カーネル（linear kernel）</div>
+<div class="math notranslate nohighlight">
+\[
+k(x_i, x_j) = x_i x_j^T
+\]</div>
+<p class="sd-card-text">入力をそのまま出力する写像関数<span class="math notranslate nohighlight">\(\phi(x)=x^T\)</span>に対応する</p>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+ガウスカーネル（Gaussian kernel）</div>
+<div class="math notranslate nohighlight">
+\[
+k(x_i, x_j) = \exp \left( -\frac{\| x_i-x_j \|^2}{2\sigma^2} \right)
+\]</div>
+</div>
+</div>
+<div class="admonition- admonition">
+<p class="admonition-title">カーネルモデルを用いたソフトマージン最大化問題（主問題）</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\min_{w,b,\xi} &amp; \hspace{1em} L_p(w, \xi) = \frac{1}{2} w^T w + C\sum^N_{i=1} \xi_i \\
+\text{s. t.} &amp; \hspace{1em} y_i ( K_{i:} w + b) - 1 + \xi_i \geq 0 \\
+                &amp; \hspace{1em}  \xi_i \geq 0 ~ \forall i
+\end{align}
+\end{split}\]</div>
+</div>
+<div class="admonition- admonition">
+<p class="admonition-title">カーネルモデルを用いたソフトマージン最大化のラグランジュ双対問題</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\max _{\boldsymbol{\lambda}} \mathcal{L}\left(\boldsymbol{\lambda}, \boldsymbol{\gamma}^*, \mathbf{w}^*, b^*, \boldsymbol{\xi}^*\right)
+= &amp; -\frac{1}{2} \sum_{i=1}^N \sum_{j=1}^N \lambda_i y_i k (x_i, x_j) t_j \lambda_j+\sum_{i=1}^N \lambda_i \\
+\text { s.t. } \quad &amp; -\lambda_i \leq 0 \\
+&amp; \lambda_i \leq C \\
+&amp; \sum_{i=1}^N \lambda_i y_i=0 \forall_i
+\end{aligned}
+\end{split}\]</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO: コードかく</span>
@@ -1538,8 +1668,8 @@ f^{kernel}(x_i) = \sum^N_{j=1} w_j k(x_i, x_j) + b
 </div>
 </section>
 </section>
-<section id="id8">
-<h2>参考<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id10">
+<h2>参考<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>八谷大岳. (2020). ゼロからつくるPython機械学習プログラミング入門.</p></li>
 </ul>
@@ -1565,7 +1695,7 @@ f^{kernel}(x_i) = \sum^N_{j=1} w_j k(x_i, x_j) + b
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7efd3ad81ff0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fa79f07dcc0&gt;
 </pre></div>
 </div>
 <img alt="../_images/82ab0c157445123cbf5bdf0322e3db15cebcb06f7c9389bb7e16dfac21c59365.png" src="../_images/82ab0c157445123cbf5bdf0322e3db15cebcb06f7c9389bb7e16dfac21c59365.png" />
@@ -1586,7 +1716,7 @@ f^{kernel}(x_i) = \sum^N_{j=1} w_j k(x_i, x_j) + b
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7efd3a9fd360&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fa79ebecd60&gt;
 </pre></div>
 </div>
 <img alt="../_images/87bce9524c1a5cefd008fd66bb1f5accbe69203e2a020c2abf54517ea838beed.png" src="../_images/87bce9524c1a5cefd008fd66bb1f5accbe69203e2a020c2abf54517ea838beed.png" />
@@ -1736,20 +1866,22 @@ k(\mathbf{x},\mathbf{x}^{\prime}) = \exp \left( \frac{-\| \mathbf{x} - \mathbf{x
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#svm">ハードマージンSVM</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">最適識別超平面</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cvxpy">実装例（cvxpy）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">双対問題をソルバーに通すパターン</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scikit-learn">実装例（scikit-learn）</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ソフトマージンSVM</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ソフトマージンSVM</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c-svm">C-SVM</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ν-SVM</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">ν-SVM</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">カーネルトリック</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">カーネルモデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">カーネルトリック</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">カーネルトリック</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">カーネルモデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">カーネルトリック</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">カーネル関数の例</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussiankernel-rbf-kernel">GaussianKernel (RBF kernel)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memo-4">Memo 4</a></li>
 </ul>
