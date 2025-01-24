@@ -986,7 +986,13 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#n">1の原始<span class="math notranslate nohighlight">\(N\)</span>乗根による表現</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">高速フーリエ変換</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">高速フーリエ変換</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">間引き</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">バタフライ</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">高速フーリエ変換</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Pythonの実装</a></li>
 </ul>
             </nav>
         </div>
@@ -1102,7 +1108,332 @@ F_k=\frac{1}{N} \overline{\sum_{l=0}^{N-1} \overline{f_l} \omega_N^{k l}}
 </details></section>
 <section id="id2">
 <h2>高速フーリエ変換<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p><span class="math notranslate nohighlight">\(N\)</span>が2の冪乗であれば、離散フーリエ変換の計算が効率化される</p>
+<p><span class="math notranslate nohighlight">\(N\)</span>が2の冪乗であれば、離散フーリエ変換の計算が効率化される（具体的には<span class="math notranslate nohighlight">\(O(N)\)</span> から <span class="math notranslate nohighlight">\(O(N\log N)\)</span>になる）</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+定理</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(N\)</span>が偶数のとき、次の関係が成り立つ</p>
+<div class="math notranslate nohighlight">
+\[
+\omega_N^{N / 2}=-1, \quad \omega_N^{N / 2+1}=-\omega_N, \quad \omega_N^{N / 2+2}=-\omega_N^2, \quad \ldots, \quad \omega_N^{N-1}=-\omega_N^{N / 2-1}
+\]</div>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">定義 <span class="math notranslate nohighlight">\(\omega_N := e^{i 2 \pi / N}\)</span> より、</p>
+<div class="math notranslate nohighlight">
+\[
+\omega_N^{N / 2} = \left(e^{i 2 \pi / N}\right)^{N / 2}
+ =e^{i \pi}=-1
+\]</div>
+<p class="sd-card-text">である。ゆえに</p>
+<div class="math notranslate nohighlight">
+\[
+\omega_N^{N / 2+k} = \omega_N^{N / 2} \omega_N^k=-\omega_N^k
+\]</div>
+</div>
+</details><div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+定理</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(N\)</span>が偶数のとき、<span class="math notranslate nohighlight">\(\omega^2_N\)</span>は1の原始<span class="math notranslate nohighlight">\(N/2\)</span>乗根として表せる。</p>
+<div class="math notranslate nohighlight">
+\[
+\omega_N^2=\omega_{N / 2}
+\]</div>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(\omega_N^2=\left(e^{i 2 \pi / N}\right)^2=e^{i 4 \pi / N}=e^{i 2 \pi /(N / 2)}=\omega_{N / 2}\)</span> となる</p>
+</div>
+</details><p>1の原始<span class="math notranslate nohighlight">\(N\)</span>乗根<span class="math notranslate nohighlight">\(\omega_N\)</span>を次々と冪乗すると、複素平面の単位円周上を回転する</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cmath</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span> <span class="s1">&#39;box&#39;</span><span class="p">)</span>
+
+<span class="c1"># 軸を描画</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">head_width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">head_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">,</span> <span class="n">head_width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">head_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">1.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span> <span class="n">adjustable</span><span class="o">=</span><span class="s1">&#39;datalim&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;bottom&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">))</span>
+
+<span class="c1"># 単位円</span>
+<span class="n">unit_circle</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">unit_circle</span><span class="p">)</span>
+
+<span class="c1"># 偶数のN</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">omega_n</span> <span class="o">=</span> <span class="n">cmath</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">cmath</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega_n</span><span class="o">.</span><span class="n">real</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega_n</span><span class="o">.</span><span class="n">imag</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">omega</span> <span class="o">=</span> <span class="n">omega_n</span><span class="o">**</span><span class="n">k</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">omega</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">omega</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">omega</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">omega</span><span class="o">.</span><span class="n">imag</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="sa">rf</span><span class="s1">&#39;$\omega_N^</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;dimgray&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">31</span>
+<span class="g g-Whitespace">     </span><span class="mi">28</span> <span class="n">omega_n</span> <span class="o">=</span> <span class="n">cmath</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">cmath</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">30</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega_n</span><span class="o">.</span><span class="n">real</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega_n</span><span class="o">.</span><span class="n">imag</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">31</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n</span>
+<span class="g g-Whitespace">     </span><span class="mi">32</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">33</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span>
+
+<span class="ne">NameError</span>: name &#39;np&#39; is not defined
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ignoring fixed x limits to fulfill fixed data aspect with adjustable data limits.
+</pre></div>
+</div>
+<img alt="../../_images/f1f2de00345346013010467e006919614c2314429286439574420a96cef79496.png" src="../../_images/f1f2de00345346013010467e006919614c2314429286439574420a96cef79496.png" />
+</div>
+</div>
+<p><span class="math notranslate nohighlight">\(N-1\)</span> 次多項式</p>
+<div class="math notranslate nohighlight">
+\[
+f(x)=a_0+a_1 x+a_2 x^2+\cdots+a_{N-1} x^{N-1}=\sum_{l=0}^{N-1} a_l x^l
+\]</div>
+<p>を定義すると</p>
+<div class="math notranslate nohighlight">
+\[
+b_k=\sum_{l=0}^{N-1} a_l \omega_N^{k l}, \quad k=0,1,2, \ldots, N-1
+\]</div>
+<p>は</p>
+<div class="math notranslate nohighlight">
+\[
+b_k=f\left(\omega_N^k\right), \quad k=0,1,2, \ldots, N-1
+\]</div>
+<p>と書くことができる。</p>
+<p>つまり、 <strong>複素平面上の単位円周の<span class="math notranslate nohighlight">\(N\)</span>等分点で<span class="math notranslate nohighlight">\(N-1\)</span>次多項式<span class="math notranslate nohighlight">\(f(x)\)</span>を計算すれば<span class="math notranslate nohighlight">\(b_0,b_1,\dots,b_N\)</span>が得られる</strong>。</p>
+<p>この計算を<span class="math notranslate nohighlight">\(\operatorname{FFT}_N[f(x)]\)</span>と表す。</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{FFT}_N[f(x)]=\{f(1), f(\omega_N), f(\omega_N^2), \ldots, f(\omega_N^{N-1})\}
+\]</div>
+<section id="id3">
+<h3>間引き<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>上記の多項式は次のように書き直せる</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+f(x)= &amp; a_0+a_1 x+a_2 x^2+\cdots+a_{N-1} x^{N-1}\\
+= &amp; a_0+a_2 x^2+a_4 x^4+\cdots+a_{N-2} x^{N-2} \\
+  &amp; +x\left(a_1+a_3 x^2+a_5 x^4+\cdots+a_{N-1} x^{N-2}\right) \\
+= &amp; p(x^2)+x q(x^2)
+\end{aligned}
+\end{split}\]</div>
+<p>ただし、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left\{\begin{array}{l}
+p(x)=a_0+a_2 x+a_4 x^2+\cdots+a_{N-2} x^{N / 2-1} \\
+q(x)=a_1+a_3 x+a_5 x^2+\cdots+a_{N-1} x^{N / 2-1}
+\end{array}\right.
+\end{split}\]</div>
+<p>とおいた。この係数の <strong>間引き</strong> は高速フーリエ変換における重要な計算手順の一つ。</p>
+<p><span class="math notranslate nohighlight">\(p(x^2)\)</span>は<span class="math notranslate nohighlight">\(x\)</span>が複素平面上の単位円周の<span class="math notranslate nohighlight">\(N\)</span>等分点を順にたどって1周するとき <strong><span class="math notranslate nohighlight">\(x^2\)</span>はそれらを1つおきに進んで2周する</strong> 。そのため <strong>前半の<span class="math notranslate nohighlight">\(N/2\)</span>個のみを計算すればよい</strong> から、</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{FFT}_{N}[p(x^2)]=\{p(1), p(\omega_N^2), p(\omega_N^4), \ldots, p(\omega_N^{N-2})\}
+\]</div>
+<p>となる。</p>
+<p>また「<span class="math notranslate nohighlight">\(N\)</span>が偶数のとき<span class="math notranslate nohighlight">\(\omega_N^2=\omega_{N / 2}\)</span>」という定理より以下のように書き直せる。</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{FFT}_{N}[p(x^2)]=\{p(1), p(\omega_{N/2}), p(\omega_{N/2}^2), \ldots, p(\omega_{N/2}^{N/2-1})\}
+\]</div>
+<p>→ <strong>データ数<span class="math notranslate nohighlight">\(N/2\)</span>個の離散フーリエ変換</strong> を計算すればいい。</p>
+<p><span class="math notranslate nohighlight">\(q(x^2)\)</span>についても同様に得られる。</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{FFT}_{N}[q(x^2)]=\{q(1), q(\omega_{N/2}), q(\omega_{N/2}^2), \ldots, q(\omega_{N/2}^{N/2-1})\}
+\]</div>
+<p>これら<span class="math notranslate nohighlight">\(N/2\)</span>個の離散フーリエ変換で得られるものたちを以下のように<span class="math notranslate nohighlight">\(\operatorname{FFT}_{N / 2}\)</span>と表記する</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{FFT}_N[p(x^2)]=\operatorname{FFT}_{N / 2}[p(x)], \quad \operatorname{FFT}_N[q(x^2)]=\operatorname{FFT}_{N / 2}[q(x)]
+\]</div>
+</section>
+<section id="id4">
+<h3>バタフライ<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(f(x)\)</span>は</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+定理</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(N\)</span>が偶数のとき、次の関係が成り立つ</p>
+<div class="math notranslate nohighlight">
+\[
+\omega_N^{N / 2}=-1, \quad \omega_N^{N / 2+1}=-\omega_N, \quad \omega_N^{N / 2+2}=-\omega_N^2, \quad \ldots, \quad \omega_N^{N-1}=-\omega_N^{N / 2-1}
+\]</div>
+</div>
+</div>
+<p>という定理と</p>
+<div class="math notranslate nohighlight">
+\[
+f(x) = p(x^2)+x q(x^2)
+\]</div>
+<p>により、以下のように計算できる。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{cases}
+f(\omega_N^k)=p(\omega_{N / 2}^k)+\omega_N^k q(\omega_{N / 2}^k), &amp; k=0,1, \ldots, N / 2-1 \\
+f(\omega_N^{N / 2+k})=p(\omega_{N / 2}^k)-\omega_N^k q(\omega_{N / 2}^k), &amp; k=0,1, \ldots, N / 2-1
+\end{cases}
+\end{split}\]</div>
+<p>この計算を <strong>バタフライ</strong> と呼び、式中の<span class="math notranslate nohighlight">\(\omega_N^k\)</span>を <strong>回転因子</strong> と呼ぶ。</p>
+</section>
+<section id="id5">
+<h3>高速フーリエ変換<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(\operatorname{FFT}_N\)</span>は係数の間引き（Decimation-In-Time, DIT）<span class="math notranslate nohighlight">\(D_N\)</span>を行って<span class="math notranslate nohighlight">\(\operatorname{FFT}_{N/2}\)</span>を実行し、バタフライ<span class="math notranslate nohighlight">\(B_N\)</span>を施す。</p>
+<p>間引きによって<span class="math notranslate nohighlight">\(\operatorname{FFT}_{N/4}, \operatorname{FFT}_{N/8}, \operatorname{FFT}_{N/16}, \dots\)</span>と分解していくと最終的に<span class="math notranslate nohighlight">\(\operatorname{FFT}_{1}\)</span>の計算になり、<span class="math notranslate nohighlight">\(0\)</span>次式（定数）の計算になる。</p>
+<p>その後バタフライによって統合していく。</p>
+<p>そのため<span class="math notranslate nohighlight">\(\operatorname{FFT}_{N}\)</span>は間引きの繰り返しとバタフライの繰り返しで分割統治法によって計算できる。</p>
+<p>この方法を <strong>高速フーリエ変換</strong> （FFT）と呼ぶ。</p>
+</section>
+</section>
+<section id="python">
+<h2>Pythonの実装<a class="headerlink" href="#python" title="Link to this heading">#</a></h2>
+<p>by chatGPT</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cmath</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">fft_recursive</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">complex</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">complex</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Args: 入力信号（複素数リスト）</span>
+<span class="sd">    Returns: FFTの結果（周波数成分Fのリスト）（複素数のリスト）</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">N</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># 再帰の終了条件</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="c1"># 偶数番目と奇数番目に分割</span>
+    <span class="n">even</span> <span class="o">=</span> <span class="n">fft_recursive</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">odd</span> <span class="o">=</span> <span class="n">fft_recursive</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="c1"># バタフライ操作</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="p">[</span><span class="n">cmath</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">cmath</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">k</span> <span class="o">/</span> <span class="n">N</span><span class="p">)</span> <span class="o">*</span> <span class="n">odd</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">even</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="n">T</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)]</span> <span class="o">+</span> \
+           <span class="p">[</span><span class="n">even</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">T</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># テスト用データ</span>
+<span class="n">input_signal</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>  <span class="c1"># サンプルデータ</span>
+
+<span class="c1"># 信号を複素数に変換</span>
+<span class="n">input_signal</span> <span class="o">=</span> <span class="p">[</span><span class="nb">complex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">input_signal</span><span class="p">]</span>
+
+<span class="c1"># FFTを計算</span>
+<span class="n">fft_result</span> <span class="o">=</span> <span class="n">fft_recursive</span><span class="p">(</span><span class="n">input_signal</span><span class="p">)</span>
+
+<span class="c1"># 結果を表示</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FFTの結果:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fft_result</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;X[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">] = </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># NumPyによるFFT計算</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="n">fft_result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">input_signal</span><span class="p">)</span>
+
+<span class="c1"># 結果を表示</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NumPy FFT結果:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fft_result</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;X[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">] = </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>FFTの結果:
+X[0] = 28.000+0.000j
+X[1] = -4.000+9.657j
+X[2] = -4.000+4.000j
+X[3] = -4.000+1.657j
+X[4] = -4.000+0.000j
+X[5] = -4.000-1.657j
+X[6] = -4.000-4.000j
+X[7] = -4.000-9.657j
+NumPy FFT結果:
+X[0] = 28.000+0.000j
+X[1] = -4.000+9.657j
+X[2] = -4.000+4.000j
+X[3] = -4.000+1.657j
+X[4] = -4.000+0.000j
+X[5] = -4.000-1.657j
+X[6] = -4.000-4.000j
+X[7] = -4.000-9.657j
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># サンプル信号を作成（サンプリング周波数: 1000 Hz）</span>
+<span class="n">fs</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># サンプリング周波数</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># 時間軸</span>
+<span class="n">frequencies</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span>
+<span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">frequencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">frequencies</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># FFTを計算</span>
+<span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+<span class="n">fft_result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+<span class="n">frequencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">fs</span><span class="p">)</span>  <span class="c1"># 周波数軸</span>
+
+<span class="c1"># 振幅スペクトルを取得</span>
+<span class="n">amplitude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">fft_result</span><span class="p">)</span> <span class="o">/</span> <span class="n">N</span>  <span class="c1"># 振幅正規化</span>
+
+<span class="c1"># 結果をプロット</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">frequencies</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">],</span> <span class="n">amplitude</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># 正の周波数成分のみプロット</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Frequency Spectrum&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Frequency (Hz)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Amplitude&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/f7ca4f0b3aaf97ec7c714a511841cabe1acad5e222da62d4f936c90ba6574132.png" src="../../_images/f7ca4f0b3aaf97ec7c714a511841cabe1acad5e222da62d4f936c90ba6574132.png" />
+</div>
+</div>
 </section>
 </section>
 
@@ -1154,7 +1485,13 @@ F_k=\frac{1}{N} \overline{\sum_{l=0}^{N-1} \overline{f_l} \omega_N^{k l}}
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#n">1の原始<span class="math notranslate nohighlight">\(N\)</span>乗根による表現</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">高速フーリエ変換</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">高速フーリエ変換</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">間引き</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">バタフライ</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">高速フーリエ変換</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Pythonの実装</a></li>
 </ul>
   </nav></div>
 
