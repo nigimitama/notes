@@ -30,11 +30,12 @@
 
 - [](statistics/probability/index)
 - [](statistics/statistical_inference/index)
+- [](statistics/correlation_coefficient)
+- [](statistics/correlation_for_ordinal_scale)
 - [](statistics/divergence)
 - [](statistics/optimal_transport)
 - [](statistics/bootstrap)
 - [](statistics/nonparametric_density_estimation)
-- [](statistics/correlation)
 - [](statistics/missing_data)
 - [](statistics/sandwich_estimator)
 - [](statistics/asymptotic_theory/index)

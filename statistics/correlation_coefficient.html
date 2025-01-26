@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>順序尺度の相関係数 &#8212; データサイエンス関連+αのメモ</title>
+    <title>相関係数 &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -76,11 +76,11 @@
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'statistics/correlation';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'statistics/correlation_coefficient';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="欠測データ" href="missing_data.html" />
-    <link rel="prev" title="ノンパラメトリック密度推定" href="nonparametric_density_estimation.html" />
+    <link rel="next" title="順序尺度の相関係数" href="correlation_for_ordinal_scale.html" />
+    <link rel="prev" title="尤度関数と確率関数の違いは何なのか？" href="statistical_inference/likelihood_and_probability.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -359,11 +359,12 @@
 <li class="toctree-l2"><a class="reference internal" href="statistical_inference/likelihood_and_probability.html">尤度関数と確率関数の違いは何なのか？</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">相関係数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="correlation_for_ordinal_scale.html">順序尺度の相関係数</a></li>
 <li class="toctree-l1"><a class="reference internal" href="divergence.html">ダイバージェンス</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimal_transport.html">最適輸送</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bootstrap.html">Bootstrap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nonparametric_density_estimation.html">ノンパラメトリック密度推定</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">順序尺度の相関係数</a></li>
 <li class="toctree-l1"><a class="reference internal" href="missing_data.html">欠測データ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sandwich_estimator.html">Sandwich Estimator</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="asymptotic_theory/index.html">漸近理論</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -899,7 +900,7 @@
       
       
       
-      <li><a href="../_sources/statistics/correlation.ipynb" target="_blank"
+      <li><a href="../_sources/statistics/correlation_coefficient.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -975,7 +976,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>順序尺度の相関係数</h1>
+    <h1>相関係数</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -985,16 +986,11 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">例</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">順序尺度の相関係数はどういうふうに推定するのか</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ポリコリック相関係数の推定方法</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">尤度関数</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">推定</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">推定の流れ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ピアソンの積率相関係数</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">どうやって<span class="math notranslate nohighlight">\([-1,1]\)</span>の範囲に収まるよう正規化しているのか？</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">カテゴリの値がいくつだと積率相関係数でもよいか</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">注意点</a></li>
 </ul>
             </nav>
         </div>
@@ -1007,482 +1003,78 @@
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>順序尺度の相関係数<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<p>アンケート調査の「1: あてはまらない」「2: どちらともいえない」「3: あてはまる」のような3値をとる順序尺度の変数や、「該当する」「該当しない」のような二値変数のような、値の種類数が比較的少ない順序尺度の相関係数は、ピアソンの積率相関係数で測った場合過小評価される（絶対値が小さくなる傾向がある）。これは<strong>相関係数の希薄化</strong>と呼ばれる現象である。</p>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>「5値以上あれば積率相関係数でも誤差があまり大きくないため、連続尺度の変数のように積率相関係数にもとづいて相関を分析してもよい」という研究結果もある。</p>
-<p>「1: 全くあてはまらない」「2: あまりあてはまらない」…「5: よくあてはまる」の5件法がよく使われる理由のひとつはこのため。</p>
-<p>（<a class="reference external" href="https://www.jstage.jst.go.jp/article/jjpsy1926/67/1/67_1_1/_article/-char/ja/">萩生田 &amp; 繁桝 1996</a>）</p>
-</div>
-<p>こうした問題に対処するために、次のような相関係数が存在する。</p>
-<ul class="simple">
-<li><p><strong>ポリコリック相関係数</strong>（polychoric correlation）：順序尺度同士の相関係数</p></li>
-<li><p><strong>ポリシリアル相関係数</strong>（polyserial correlation）：順序尺度と連続尺度の相関係数</p></li>
-</ul>
+<h1>相関係数<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <section id="id2">
-<h2>例<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>以下のようなデータがあるとする</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">japanize_matplotlib</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">multivariate_normal</span><span class="p">,</span> <span class="n">pearsonr</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">semopy.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">hetcor</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># generate data</span>
-<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">mean</span> <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">std</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="n">rho</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="n">cov</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">std</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">std</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">Cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="n">std</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">cov</span><span class="p">],</span>
-    <span class="p">[</span><span class="n">cov</span><span class="p">,</span> <span class="n">std</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
-<span class="p">])</span>
-
-<span class="n">X</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">Cov</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.7</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;x2&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;N(μ=</span><span class="si">{</span><span class="n">mean</span><span class="si">}</span><span class="s2">, Σ=</span><span class="si">{</span><span class="n">Cov</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">) (ρ=</span><span class="si">{</span><span class="n">rho</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../_images/2cbfb04cf41fafb2a6516680f61d3e42b0158f64f4b63f315c4da053b98035e5.png" src="../_images/2cbfb04cf41fafb2a6516680f61d3e42b0158f64f4b63f315c4da053b98035e5.png" />
-</div>
-</div>
-<p>適当な閾値で区切って離散化したとする。</p>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 離散化</span>
-<span class="n">d1</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">d2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="p">))</span>
-<span class="n">d2</span><span class="p">[(</span><span class="o">-</span><span class="mi">4</span> <span class="o">&lt;=</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">d2</span><span class="p">[(</span><span class="mi">4</span> <span class="o">&lt;=</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="mi">3</span>
-
-<span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
-<span class="n">D</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;d1&quot;</span><span class="p">,</span> <span class="s2">&quot;d2&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-
-<span class="n">table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="s2">&quot;d1&quot;</span><span class="p">],</span> <span class="n">D</span><span class="p">[</span><span class="s2">&quot;d2&quot;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;離散化したデータのクロス集計表&quot;</span><span class="p">)</span>
-<span class="n">table</span> <span class="c1">#.style.set_caption(&quot;クロス集計表&quot;)</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>離散化したデータのクロス集計表
-</pre></div>
-</div>
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th>d2</th>
-      <th>1</th>
-      <th>2</th>
-      <th>3</th>
-    </tr>
-    <tr>
-      <th>d1</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>7</td>
-      <td>39</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1</td>
-      <td>38</td>
-      <td>13</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>離散化前の量的変数に積率相関係数を適用した場合と、離散化後の質的変数に積率相関係数を使用した場合、そしてポリコリック相関係数を使用した場合の結果は次のようになる。</p>
-<p>質的変数にピアソンの積率相関係数を使用すると、相関が過小評価されていること、そしてポリコリック相関係数のほうが離散化前の相関係数の再現度がより高いことがわかる。</p>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">semopy.polycorr</span><span class="w"> </span><span class="kn">import</span> <span class="n">polychoric_corr</span>
-
-<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
-    <span class="nb">dict</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;積率相関係数を量的変数に適用&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">statistic</span><span class="p">),</span>
-    <span class="nb">dict</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;積率相関係数を質的変数に適用&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">D</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
-    <span class="nb">dict</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;ポリコリック相関係数を質的変数に適用&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">polychoric_corr</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="s2">&quot;d1&quot;</span><span class="p">],</span> <span class="n">D</span><span class="p">[</span><span class="s2">&quot;d2&quot;</span><span class="p">]))</span>
-<span class="p">])</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="p">})</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<div class="output text_html"><style type="text/css">
-</style>
-<table id="T_f8898">
-  <thead>
-    <tr>
-      <th class="blank level0" >&nbsp;</th>
-      <th id="T_f8898_level0_col0" class="col_heading level0 col0" >method</th>
-      <th id="T_f8898_level0_col1" class="col_heading level0 col1" >value</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th id="T_f8898_level0_row0" class="row_heading level0 row0" >0</th>
-      <td id="T_f8898_row0_col0" class="data row0 col0" >積率相関係数を量的変数に適用</td>
-      <td id="T_f8898_row0_col1" class="data row0 col1" >0.517</td>
-    </tr>
-    <tr>
-      <th id="T_f8898_level0_row1" class="row_heading level0 row1" >1</th>
-      <td id="T_f8898_row1_col0" class="data row1 col0" >積率相関係数を質的変数に適用</td>
-      <td id="T_f8898_row1_col1" class="data row1 col1" >0.353</td>
-    </tr>
-    <tr>
-      <th id="T_f8898_level0_row2" class="row_heading level0 row2" >2</th>
-      <td id="T_f8898_row2_col0" class="data row2 col0" >ポリコリック相関係数を質的変数に適用</td>
-      <td id="T_f8898_row2_col1" class="data row2 col1" >0.570</td>
-    </tr>
-  </tbody>
-</table>
-</div></div>
-</div>
-</section>
+<h2>ピアソンの積率相関係数<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+r=\frac{\sum\left(x_i-\bar{x}\right)\left(y_i-\bar{y}\right)}{\sqrt{\sum\left(x_i-\bar{x}\right)^2 \sum\left(y_i-\bar{y}\right)^2}}
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(r\)</span>：相関係数。<span class="math notranslate nohighlight">\(r\in[-1,1]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(x_i\)</span>：標本における変数<span class="math notranslate nohighlight">\(x\)</span>の値</p></li>
+<li><p><span class="math notranslate nohighlight">\(\bar{x}\)</span>：変数<span class="math notranslate nohighlight">\(x\)</span>の値の平均</p></li>
+<li><p><span class="math notranslate nohighlight">\(y_i\)</span>：標本における変数<span class="math notranslate nohighlight">\(y\)</span>の値</p></li>
+<li><p><span class="math notranslate nohighlight">\(\bar{y}\)</span>：変数<span class="math notranslate nohighlight">\(y\)</span>の値の平均</p></li>
+</ul>
 <section id="id3">
-<h2>順序尺度の相関係数はどういうふうに推定するのか<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p>基本的な考え方としては、「離散値の背景には何らかの連続尺度が潜在的に存在する」という仮定をおくものである。</p>
-<p>例えばアンケート調査なら、その潜在的な連続変数が一定のしきい値以上になった場合に「よくあてはまる」といった回答がなされている、と考える。</p>
-<p>より具体的には次の節で述べる。</p>
-</section>
-<section id="id4">
-<h2>ポリコリック相関係数の推定方法<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="http://kosugitti.sakura.ne.jp/wp/wp-content/uploads/2013/08/polynote.pdf">小杉考司（2013）</a>を参考に、二段階の最尤推定を行う方法を紹介する。
-この方法はシンプルでわかりやすく、またsemopyなどのライブラリでも利用されている。</p>
-<p>まず、観測された順序尺度の変数の背景に連続尺度の変数が存在し、それらは二変量の標準正規分布に従うと仮定する。</p>
-<p>2変量正規分布の空間を閾値で区切って離散化されたものが観測値として実現したと考える。</p>
-<section id="id5">
-<h3>尤度関数<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
-<p>クロス集計表におけるセル<span class="math notranslate nohighlight">\((i, j)\)</span>の観測度数を<span class="math notranslate nohighlight">\(n_{ij}\)</span>とする（<span class="math notranslate nohighlight">\(i=1,2,\cdots, s, \ j=1,2,\cdots,r\)</span>）。</p>
-<p>観測度数がセル<span class="math notranslate nohighlight">\((i, j)\)</span>に含まれる確率を<span class="math notranslate nohighlight">\(\pi_{ij}\)</span>とすれば、そのサンプルの尤度は</p>
-<div class="math notranslate nohighlight">
-\[
-L = C \prod^s_{i=1} \prod^r_{j=1} \pi_{ij}^{n_{ij}}
-\]</div>
-<p>である。ここで<span class="math notranslate nohighlight">\(C\)</span>は定数で、最尤推定においては推定に関わらないので気にしなくてよい。対数尤度は</p>
-<div class="math notranslate nohighlight">
-\[
-\ell = \ln L = \ln C + \sum^s_{i=1} \sum^r_{j=1} n_{ij} \ln \pi_{ij}
-\]</div>
-<p>相関を測りたい変数が<span class="math notranslate nohighlight">\(x,y\)</span>の2つあるとし、変数<span class="math notranslate nohighlight">\(x\)</span>の閾値を<span class="math notranslate nohighlight">\(a_i\)</span>、変数<span class="math notranslate nohighlight">\(y\)</span>の閾値を<span class="math notranslate nohighlight">\(b_j\)</span>と表す（<span class="math notranslate nohighlight">\(i=0, 1,2,\cdots, s, \ j=0,1,2,\cdots,r\)</span>）。
-ここで<span class="math notranslate nohighlight">\(a_0 = b_0 = -\infty, a_s = b_r = +\infty\)</span>である。</p>
-<p><span class="math notranslate nohighlight">\(\pi_{ij}\)</span>は相関係数<span class="math notranslate nohighlight">\(\rho\)</span>のおｔきの2変数正規分布<span class="math notranslate nohighlight">\(\Phi_2\)</span>を用いて</p>
-<div class="math notranslate nohighlight">
-\[
-\pi_{ij} = \Phi_2(a_i, b_j)
-- \Phi_2(a_{i-1}, b_j)
-- \Phi_2(a_i, b_{j-1})
-+ \Phi_2(a_{i-1}, b_{j-1})
-\]</div>
-<p>と表すことができる。</p>
-</section>
-<section id="id6">
-<h3>推定<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
-<p>閾値は次のように推定することができる。</p>
+<h3>どうやって<span class="math notranslate nohighlight">\([-1,1]\)</span>の範囲に収まるよう正規化しているのか？<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>内積<span class="math notranslate nohighlight">\(\langle \boldsymbol{a}, \boldsymbol{b} \rangle\)</span>とノルム<span class="math notranslate nohighlight">\(\|\cdot\|\)</span> についての <strong>コーシー・シュワルツの不等式</strong></p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-a_i = \Phi_1^{-1}(P_{i \cdot})\\
-b_j = \Phi_1^{-1}(P_{\cdot j})
+\begin{aligned}
+&amp; | \langle \boldsymbol{a}, \boldsymbol{b} \rangle |
+\leq
+\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|
+\\
+\iff &amp;
+- \| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|
+\leq 
+\langle \boldsymbol{a}, \boldsymbol{b} \rangle
+\leq
+\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|
+\\
+\iff &amp;
+- 1 \leq 
+\frac{\langle \boldsymbol{a}, \boldsymbol{b} \rangle}{\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|}
+\leq 1
+\end{aligned}
 \end{split}\]</div>
-<p>ここで<span class="math notranslate nohighlight">\(P_{i \cdot}, P_{\cdot j}\)</span>は観測された累積周辺分布である。</p>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-
-<span class="n">k</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">ticks</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">ticklabels_a</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;a_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
-<span class="n">ticklabels_b</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;b_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
-
-<span class="k">for</span> <span class="n">tick</span> <span class="ow">in</span> <span class="n">ticks</span><span class="p">:</span>
-    <span class="n">ax1</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">tick</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
-    <span class="n">ax1</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">tick</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
-
-<span class="n">cell_coords</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i_show</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cell_coords</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">j_show</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cell_coords</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">ax1</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;n_</span><span class="si">{</span><span class="n">i_show</span><span class="si">}{</span><span class="n">j_show</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">)</span>
-
-<span class="n">ax1</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">xticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;閾値のイメージ&quot;</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">ticks</span><span class="o">=</span><span class="n">ticks</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">ticklabels_a</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
-
-<span class="n">ax2</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twiny</span><span class="p">()</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">ax1</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">())</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">ticks</span><span class="o">=</span><span class="n">ticks</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">ticklabels_b</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../_images/4ebdd82dbb7d3790e3ace15d4d5316868de4deec618538e8a8e68ac4fee85e8a.png" src="../_images/4ebdd82dbb7d3790e3ace15d4d5316868de4deec618538e8a8e68ac4fee85e8a.png" />
-</div>
-</div>
-</section>
-<section id="id7">
-<h3>推定の流れ<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
-<p>実際に推定してみよう。</p>
-<p>まずクロス集計表を作って観測度数を得る。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="s2">&quot;d1&quot;</span><span class="p">],</span> <span class="n">D</span><span class="p">[</span><span class="s2">&quot;d2&quot;</span><span class="p">])</span>
-<span class="n">table</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th>d2</th>
-      <th>1</th>
-      <th>2</th>
-      <th>3</th>
-    </tr>
-    <tr>
-      <th>d1</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>7</td>
-      <td>39</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1</td>
-      <td>38</td>
-      <td>13</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>クロス集計表を横軸や縦軸に向けて合計していき、累積周辺分布<span class="math notranslate nohighlight">\(P_{i \cdot}, P_{\cdot j}\)</span>を得る</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 累積周辺分布</span>
-<span class="n">n</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-<span class="n">P1</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span> <span class="o">/</span> <span class="n">n</span>
-<span class="n">P2</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span> <span class="o">/</span> <span class="n">n</span>
-<span class="n">P2</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.08, 0.85, 1.  ])
-</pre></div>
-</div>
-</div>
-</div>
-<p><span class="math notranslate nohighlight">\(a_i, b_j\)</span>を推定する。<span class="math notranslate nohighlight">\(a_0 = b_0 = -\infty\)</span>、<span class="math notranslate nohighlight">\(a_s = b_r = \infty\)</span>となるようにする</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 閾値a, bを推定</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">P1</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">P2</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">]</span>
-<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">*</span><span class="n">b</span><span class="p">]</span>
-<span class="n">b</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-inf, -1.4050715603096329, 1.0364333894937898, inf]
-</pre></div>
-</div>
-</div>
-</div>
-<p>確率密度</p>
+<p>を応用する。</p>
+<p><span class="math notranslate nohighlight">\(\langle \boldsymbol{a}, \boldsymbol{b} \rangle\)</span> を確率変数<span class="math notranslate nohighlight">\(A,B\)</span>の積の期待値 <span class="math notranslate nohighlight">\(E[A B]\)</span> に置き換え、ノルムを<span class="math notranslate nohighlight">\(E[A^2], E[B^2]\)</span>に置き換えた</p>
 <div class="math notranslate nohighlight">
 \[
-\pi_{ij} = \Phi_2(a_i, b_j)
-- \Phi_2(a_{i-1}, b_j)
-- \Phi_2(a_i, b_{j-1})
-+ \Phi_2(a_{i-1}, b_{j-1})
+|E[A B]|^2 \leq E[A^2] E[B^2]
 \]</div>
-<p>の推定と、対数尤度</p>
+<p>を用いる。</p>
 <div class="math notranslate nohighlight">
 \[
-\ln L = \ln C + \sum^s_{i=1} \sum^r_{j=1} n_{ij} \ln \pi_{ij}
+A = E[X - E[X]],\quad
+B = E[Y - E[Y]]
 \]</div>
-<p>の計算を行う関数を作る</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">multivariate_normal</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">log_likelihood</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">):</span>
-    <span class="n">Cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">rho</span><span class="p">],</span>
-        <span class="p">[</span><span class="n">rho</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="p">])</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
-    <span class="n">likelihood</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)):</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)):</span>
-            <span class="n">ij</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="o">.</span><span class="n">cdf</span><span class="p">([</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="p">]],</span> <span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">Cov</span><span class="p">)</span>
-            <span class="n">ij</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ij</span><span class="p">)</span> <span class="k">else</span> <span class="n">ij</span>
-
-            <span class="n">i1j</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="o">.</span><span class="n">cdf</span><span class="p">([</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="p">]],</span> <span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">Cov</span><span class="p">)</span>
-            <span class="n">i1j</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">i1j</span><span class="p">)</span> <span class="k">else</span> <span class="n">i1j</span>
-
-            <span class="n">ij1</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="o">.</span><span class="n">cdf</span><span class="p">([</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">Cov</span><span class="p">)</span>
-            <span class="n">ij1</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ij1</span><span class="p">)</span> <span class="k">else</span> <span class="n">ij1</span>
-
-            <span class="n">i1j1</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="o">.</span><span class="n">cdf</span><span class="p">([</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">Cov</span><span class="p">)</span>
-            <span class="n">i1j1</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">i1j1</span><span class="p">)</span> <span class="k">else</span> <span class="n">i1j1</span>
-            <span class="n">pi</span> <span class="o">=</span> <span class="n">ij</span> <span class="o">-</span> <span class="n">i1j</span> <span class="o">-</span> <span class="n">ij1</span> <span class="o">+</span> <span class="n">i1j1</span>
-            <span class="c1"># ちなみにpiの推定は上記のように愚直にやらずとも scipy.stats の mvn.mvnun でもできる</span>
-
-            <span class="k">if</span> <span class="n">pi</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">likelihood</span> <span class="o">+=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pi</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">likelihood</span>
-
-<span class="n">log_likelihood</span><span class="p">(</span><span class="n">rho</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-135.95432934194218
-</pre></div>
-</div>
-</div>
-</div>
-<p>尤度を最大にする<span class="math notranslate nohighlight">\(\rho\)</span>を探索する。</p>
-<p>今回は<span class="math notranslate nohighlight">\(\rho\)</span>が<span class="math notranslate nohighlight">\((-1, 1)\)</span>にあることがわかっているので、その範囲を細かく刻んで全部計算して最良の<span class="math notranslate nohighlight">\(\rho\)</span>を推定値とする、という全探索法をつかうこともできる。</p>
-<p>この方法を実際に行ったのが次の図である。</p>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 最尤推定1: 全探索</span>
-<span class="n">rho_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.99</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">likelihoods</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">log_likelihood</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span> <span class="k">for</span> <span class="n">rho</span> <span class="ow">in</span> <span class="n">rho_range</span><span class="p">])</span>
-<span class="n">rho_hat</span> <span class="o">=</span> <span class="n">rho_range</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">likelihoods</span><span class="p">)]</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rho_range</span><span class="p">,</span> <span class="n">likelihoods</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;dimgray&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\rho$&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;log likelihood&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Maximum Likelihood Estimate&quot;</span><span class="p">)</span>
-
-<span class="n">l</span> <span class="o">=</span> <span class="n">likelihoods</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">likelihoods</span><span class="p">)]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">l</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">rho_hat</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;$\hat{\rho}$&quot;</span><span class="o">+</span><span class="sa">f</span><span class="s2">&quot;=</span><span class="si">{</span><span class="n">rho_hat</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">rho_hat</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../_images/61a1b83bf27b826c6185c0d157f1941f48a369d2a56ff22d08fe648f6b755e75.png" src="../_images/61a1b83bf27b826c6185c0d157f1941f48a369d2a56ff22d08fe648f6b755e75.png" />
-</div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">scipy.optimize.fminbound</span></code>などを使ってBrent法という最適化手法を用いると効率的である。</p>
-<p>（実際、<code class="docutils literal notranslate"><span class="pre">semopy</span></code>や<code class="docutils literal notranslate"><span class="pre">RyStats</span></code>などのパッケージではscipyの最適化関数を呼び出すことでBrent法を使っている: <a class="reference external" href="https://gitlab.com/georgy.m/semopy/-/blob/master/semopy/polycorr.py">semopy/polycorr.py</a>）</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ※minimizeの関数に入れるために負の対数尤度にしている</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">fminbound</span>
-<span class="n">fminbound</span><span class="p">(</span><span class="k">lambda</span> <span class="n">rho</span><span class="p">:</span> <span class="o">-</span><span class="n">log_likelihood</span><span class="p">(</span><span class="n">rho</span><span class="p">),</span> <span class="o">-</span><span class="mf">0.999</span><span class="p">,</span> <span class="mf">0.999</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5697450392309811
-</pre></div>
-</div>
-</div>
-</div>
+<p>とおくと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\big| E\big[ E[X - E[X]] \cdot E[Y - E[Y]] \big] \big|^2
+\leq E[(E[X - E[X]])^2] E[(E[Y - E[Y]])^2]\\
+\iff
+| \operatorname{Cov}(X, Y) |^2
+\leq \operatorname{Var}(X) \operatorname{Var}(Y)
+\\
+\iff
+-1 \leq
+\frac{ \operatorname{Cov}(X, Y) }{ \sqrt{ \operatorname{Var}(X) } \sqrt{ \operatorname{Var}(Y) } }
+\leq 1
+\end{aligned}
+\end{split}\]</div>
 </section>
 </section>
-<section id="id8">
-<h2>カテゴリの値がいくつだと積率相関係数でもよいか<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id4">
+<h2>注意点<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>データの関係性をざっくり表すのが相関係数の良さだが、散布図でみると全然異なるデータであってもたまたま同じ相関係数になることがある。また外れ値にひっぱられる特性もある。</p>
+<p>下の図はアンスコムの例と呼ばれる、線形回帰をしたときに同じ傾き係数になるデータセット。
+相関係数だと線形回帰と違って切片部分がないため係数は若干異なるがだいたい同じになる。</p>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
@@ -1490,109 +1082,28 @@ b_j = \Phi_1^{-1}(P_{\cdot j})
 <span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># generate data</span>
-<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">mean</span> <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">std</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="n">rho</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="n">cov</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">std</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">std</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">Cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="n">std</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">cov</span><span class="p">],</span>
-    <span class="p">[</span><span class="n">cov</span><span class="p">,</span> <span class="n">std</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
-<span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">statsmodels.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">anscombe</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;anscombe&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
 
-<span class="n">X</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">Cov</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.7</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;x2&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;N(μ=</span><span class="si">{</span><span class="n">mean</span><span class="si">}</span><span class="s2">, Σ=</span><span class="si">{</span><span class="n">Cov</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">) (ρ=</span><span class="si">{</span><span class="n">rho</span><span class="si">}</span><span class="s2">, n=</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../_images/016f0c9c88f88d6b362bc0f0db2cb9179c7795bfdb07413675355ff74c8fc5be.png" src="../_images/016f0c9c88f88d6b362bc0f0db2cb9179c7795bfdb07413675355ff74c8fc5be.png" />
-</div>
-</div>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
-    <span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="n">d2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-
-    <span class="n">result</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="nb">dict</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;積率相関係数を量的変数に適用&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">statistic</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">),</span>
-        <span class="nb">dict</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;積率相関係数を質的変数に適用&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">)</span><span class="o">.</span><span class="n">statistic</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">),</span>
-        <span class="nb">dict</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;ポリコリック相関係数を質的変数に適用&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">polychoric_corr</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
-    <span class="p">]</span>
-    <span class="n">results</span> <span class="o">+=</span> <span class="n">result</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">results</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;カテゴリ数&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;推定された相関係数 $\hat{\rho}$&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;x1, x2の両方を離散化した場合（真値：$\rho = 0.5$）&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">],</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">70</span><span class="p">)</span>
+<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="n">corr</span> <span class="o">=</span> <span class="n">anscombe</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">anscombe</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;x</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;y</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">ci</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scatter_kws</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">})</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;corr = </span><span class="si">{</span><span class="n">corr</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/79837155b5449d9ab46676d7ac7d3edd19164178725f907dedbc4bf260363f95.png" src="../_images/79837155b5449d9ab46676d7ac7d3edd19164178725f907dedbc4bf260363f95.png" />
+<img alt="../_images/02bb3decfac04e83920dde6fb74d4f73b412c5a5b2e6def9c8e1f244a55154e8.png" src="../_images/02bb3decfac04e83920dde6fb74d4f73b412c5a5b2e6def9c8e1f244a55154e8.png" />
 </div>
 </div>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">semopy.polycorr</span><span class="w"> </span><span class="kn">import</span> <span class="n">polyserial_corr</span>
-
-<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
-    <span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-
-    <span class="n">result</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="nb">dict</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;積率相関係数を量的変数に適用&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">statistic</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">),</span>
-        <span class="nb">dict</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;積率相関係数を質的変数に適用&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">statistic</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">),</span>
-        <span class="nb">dict</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;ポリシリアル相関係数を質的変数に適用&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">polyserial_corr</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">d1</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
-    <span class="p">]</span>
-    <span class="n">results</span> <span class="o">+=</span> <span class="n">result</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">results</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;カテゴリ数&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;推定された相関係数 $\hat{\rho}$&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;x1だけ離散化した場合（真値：$\rho = 0.5$）&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../_images/276aa9263203c963ea156ccb5f9703ae84bb9abd1bf983d61725e66868d525c0.png" src="../_images/276aa9263203c963ea156ccb5f9703ae84bb9abd1bf983d61725e66868d525c0.png" />
-</div>
-</div>
-</section>
-<section id="id9">
-<h2>参考文献<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p>豊田秀樹（2012）『因子分析入門』、東京図書。</p></li>
-<li><p><a class="reference external" href="http://kosugitti.sakura.ne.jp/wp/wp-content/uploads/2013/08/polynote.pdf">小杉考司（2013）順序尺度の相関係数（ポリコリック相関係数）について</a></p></li>
-<li><p><a class="reference external" href="https://www.jstage.jst.go.jp/article/jjpsy1926/67/1/67_1_1/_article/-char/ja/">萩生田伸子, &amp; 繁桝算男. (1996). 順序付きカテゴリカルデータへの因子分析の適用に関するいくつかの注意点. 心理学研究, 67(1), 1-8.</a></p></li>
-</ul>
 </section>
 </section>
 
@@ -1627,20 +1138,20 @@ b_j = \Phi_1^{-1}(P_{\cdot j})
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="nonparametric_density_estimation.html"
+       href="statistical_inference/likelihood_and_probability.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">ノンパラメトリック密度推定</p>
+        <p class="prev-next-title">尤度関数と確率関数の違いは何なのか？</p>
       </div>
     </a>
     <a class="right-next"
-       href="missing_data.html"
+       href="correlation_for_ordinal_scale.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">欠測データ</p>
+        <p class="prev-next-title">順序尺度の相関係数</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1661,16 +1172,11 @@ b_j = \Phi_1^{-1}(P_{\cdot j})
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">例</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">順序尺度の相関係数はどういうふうに推定するのか</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ポリコリック相関係数の推定方法</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">尤度関数</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">推定</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">推定の流れ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ピアソンの積率相関係数</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">どうやって<span class="math notranslate nohighlight">\([-1,1]\)</span>の範囲に収まるよう正規化しているのか？</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">カテゴリの値がいくつだと積率相関係数でもよいか</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">注意点</a></li>
 </ul>
   </nav></div>
 

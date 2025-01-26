@@ -359,11 +359,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../statistics/statistical_inference/likelihood_and_probability.html">尤度関数と確率関数の違いは何なのか？</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../statistics/correlation_coefficient.html">相関係数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../statistics/correlation_for_ordinal_scale.html">順序尺度の相関係数</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/divergence.html">ダイバージェンス</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/optimal_transport.html">最適輸送</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/bootstrap.html">Bootstrap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/nonparametric_density_estimation.html">ノンパラメトリック密度推定</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../statistics/correlation.html">順序尺度の相関係数</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/missing_data.html">欠測データ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/sandwich_estimator.html">Sandwich Estimator</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../statistics/asymptotic_theory/index.html">漸近理論</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1030,7 +1031,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.PairGrid at 0x7f1c90fe9ab0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.PairGrid at 0x7f2b281c04f0&gt;
 </pre></div>
 </div>
 <img alt="../../_images/d9589c21ee3f97fc8c1cb14f3b2e8c8fc24a9ccfe707a2f5042f52509cc125c2.png" src="../../_images/d9589c21ee3f97fc8c1cb14f3b2e8c8fc24a9ccfe707a2f5042f52509cc125c2.png" />
@@ -1155,36 +1156,29 @@
 <span class="g g-Whitespace">    </span><span class="mi">966</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evals_result</span> <span class="o">=</span> <span class="n">evals_result</span>
 <span class="g g-Whitespace">    </span><span class="mi">967</span> <span class="bp">self</span><span class="o">.</span><span class="n">_best_iteration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Booster</span><span class="o">.</span><span class="n">best_iteration</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/engine.py:191,</span> in <span class="ni">train</span><span class="nt">(params, train_set, num_boost_round, valid_sets, valid_names, feval, init_model, feature_name, categorical_feature, keep_training_booster, callbacks)</span>
-<span class="g g-Whitespace">    </span><span class="mi">188</span>     <span class="n">_emit_dataset_kwarg_warning</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="s2">&quot;feature_name&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">190</span> <span class="c1"># create predictor first</span>
-<span class="ne">--&gt; </span><span class="mi">191</span> <span class="n">params</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">192</span> <span class="n">params</span> <span class="o">=</span> <span class="n">_choose_param_value</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">193</span>     <span class="n">main_param_name</span><span class="o">=</span><span class="s2">&quot;objective&quot;</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">194</span>     <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">195</span>     <span class="n">default_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">196</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">197</span> <span class="n">fobj</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">_LGBM_CustomObjectiveFunction</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/engine.py:335,</span> in <span class="ni">train</span><span class="nt">(params, train_set, num_boost_round, valid_sets, valid_names, feval, init_model, feature_name, categorical_feature, keep_training_booster, callbacks)</span>
+<span class="g g-Whitespace">    </span><span class="mi">333</span>     <span class="n">booster</span><span class="o">.</span><span class="n">best_score</span><span class="p">[</span><span class="n">dataset_name</span><span class="p">][</span><span class="n">eval_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span>
+<span class="g g-Whitespace">    </span><span class="mi">334</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_training_booster</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">335</span>     <span class="n">booster</span><span class="o">.</span><span class="n">model_from_string</span><span class="p">(</span><span class="n">booster</span><span class="o">.</span><span class="n">model_to_string</span><span class="p">())</span><span class="o">.</span><span class="n">free_dataset</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">336</span> <span class="k">return</span> <span class="n">booster</span>
 
-<span class="nn">File /usr/local/lib/python3.10/copy.py:146,</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span> <span class="n">copier</span> <span class="o">=</span> <span class="n">_deepcopy_dispatch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span> <span class="k">if</span> <span class="n">copier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">146</span>     <span class="n">y</span> <span class="o">=</span> <span class="n">copier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>     <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-
-<span class="nn">File /usr/local/lib/python3.10/copy.py:231,</span> in <span class="ni">_deepcopy_dict</span><span class="nt">(x, memo, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span> <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">230</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="ne">--&gt; </span><span class="mi">231</span>     <span class="n">y</span><span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">memo</span><span class="p">)]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span> <span class="k">return</span> <span class="n">y</span>
-
-<span class="nn">File /usr/local/lib/python3.10/copy.py:138,</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">135</span>     <span class="n">memo</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="g g-Whitespace">    </span><span class="mi">137</span> <span class="n">d</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">138</span> <span class="n">y</span> <span class="o">=</span> <span class="n">memo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">_nil</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">139</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_nil</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">140</span>     <span class="k">return</span> <span class="n">y</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/lightgbm/basic.py:4522,</span> in <span class="ni">Booster.model_from_string</span><span class="nt">(self, model_str)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4519</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">()</span>
+<span class="g g-Whitespace">   </span><span class="mi">4520</span> <span class="n">out_num_iterations</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4521</span> <span class="n">_safe_call</span><span class="p">(</span>
+<span class="ne">-&gt; </span><span class="mi">4522</span>     <span class="n">_LIB</span><span class="o">.</span><span class="n">LGBM_BoosterLoadModelFromString</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">4523</span>         <span class="n">_c_str</span><span class="p">(</span><span class="n">model_str</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">4524</span>         <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">out_num_iterations</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">4525</span>         <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">4526</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4527</span> <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4528</span> <span class="n">out_num_class</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4529</span> <span class="n">_safe_call</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">4530</span>     <span class="n">_LIB</span><span class="o">.</span><span class="n">LGBM_BoosterGetNumClasses</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">4531</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">4532</span>         <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">out_num_class</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">4533</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">4534</span> <span class="p">)</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
