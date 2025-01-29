@@ -989,9 +989,10 @@
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#n">1の原始<span class="math notranslate nohighlight">\(N\)</span>乗根による表現</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">高速フーリエ変換</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">間引き</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">バタフライ</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">高速フーリエ変換</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">単位円での表現</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">間引き</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">バタフライ</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">高速フーリエ変換</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Pythonの実装</a></li>
@@ -1110,51 +1111,16 @@ F_k=\frac{1}{N} \overline{\sum_{l=0}^{N-1} \overline{f_l} \omega_N^{k l}}
 </details></section>
 <section id="id2">
 <h2>高速フーリエ変換<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p><span class="math notranslate nohighlight">\(N\)</span>が2の冪乗であれば、離散フーリエ変換の計算が効率化される（具体的には<span class="math notranslate nohighlight">\(O(N)\)</span> から <span class="math notranslate nohighlight">\(O(N\log N)\)</span>になる）</p>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-定理</div>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(N\)</span>が偶数のとき、次の関係が成り立つ</p>
-<div class="math notranslate nohighlight">
-\[
-\omega_N^{N / 2}=-1, \quad \omega_N^{N / 2+1}=-\omega_N, \quad \omega_N^{N / 2+2}=-\omega_N^2, \quad \ldots, \quad \omega_N^{N-1}=-\omega_N^{N / 2-1}
-\]</div>
-</div>
-</div>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">定義 <span class="math notranslate nohighlight">\(\omega_N := e^{i 2 \pi / N}\)</span> より、</p>
-<div class="math notranslate nohighlight">
-\[
-\omega_N^{N / 2} = \left(e^{i 2 \pi / N}\right)^{N / 2}
- =e^{i \pi}=-1
-\]</div>
-<p class="sd-card-text">である。ゆえに</p>
-<div class="math notranslate nohighlight">
-\[
-\omega_N^{N / 2+k} = \omega_N^{N / 2} \omega_N^k=-\omega_N^k
-\]</div>
-</div>
-</details><div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-定理</div>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(N\)</span>が偶数のとき、<span class="math notranslate nohighlight">\(\omega^2_N\)</span>は1の原始<span class="math notranslate nohighlight">\(N/2\)</span>乗根として表せる。</p>
-<div class="math notranslate nohighlight">
-\[
-\omega_N^2=\omega_{N / 2}
-\]</div>
-</div>
-</div>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
-<summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(\omega_N^2=\left(e^{i 2 \pi / N}\right)^2=e^{i 4 \pi / N}=e^{i 2 \pi /(N / 2)}=\omega_{N / 2}\)</span> となる</p>
-</div>
-</details><p>1の原始<span class="math notranslate nohighlight">\(N\)</span>乗根<span class="math notranslate nohighlight">\(\omega_N\)</span>を次々と冪乗すると、複素平面の単位円周上を回転する</p>
-<div class="cell docutils container">
+<p><span class="math notranslate nohighlight">\(N\)</span>が2の冪乗であれば、離散フーリエ変換の計算が効率化される（具体的には<span class="math notranslate nohighlight">\(O(N)\)</span> から <span class="math notranslate nohighlight">\(O(N\log N)\)</span>になる）これを使うのが高速フーリエ変換。</p>
+<section id="id3">
+<h3>単位円での表現<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>1の原始<span class="math notranslate nohighlight">\(N\)</span>乗根<span class="math notranslate nohighlight">\(\omega_N\)</span>を次々と冪乗すると、複素平面の単位円周上を回転する</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cmath</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -1183,7 +1149,7 @@ F_k=\frac{1}{N} \overline{\sum_{l=0}^{N-1} \overline{f_l} \omega_N^{k l}}
 <span class="n">ax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">unit_circle</span><span class="p">)</span>
 
 <span class="c1"># 偶数のN</span>
-<span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">8</span>
 <span class="n">omega_n</span> <span class="o">=</span> <span class="n">cmath</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">cmath</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega_n</span><span class="o">.</span><span class="n">real</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega_n</span><span class="o">.</span><span class="n">imag</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
@@ -1202,11 +1168,185 @@ F_k=\frac{1}{N} \overline{\sum_{l=0}^{N-1} \overline{f_l} \omega_N^{k l}}
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ignoring fixed x limits to fulfill fixed data aspect with adjustable data limits.
 </pre></div>
 </div>
-<img alt="../../_images/a9a999cbce16c447124a00cb4df79c8f75697748466f88b8566ddf5f2d1ce354.png" src="../../_images/a9a999cbce16c447124a00cb4df79c8f75697748466f88b8566ddf5f2d1ce354.png" />
+<img alt="../../_images/3fc2c0aeb6041c7f6f8e808105a96edd0331c8522d4ed80f47a8360bae4085ee.png" src="../../_images/3fc2c0aeb6041c7f6f8e808105a96edd0331c8522d4ed80f47a8360bae4085ee.png" />
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+定理</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(N\)</span>が偶数のとき、次の関係が成り立つ</p>
+<div class="math notranslate nohighlight">
+\[
+\omega_N^{N / 2}=-1, \quad \omega_N^{N / 2+1}=-\omega_N, \quad \omega_N^{N / 2+2}=-\omega_N^2, \quad \ldots, \quad \omega_N^{N-1}=-\omega_N^{N / 2-1}
+\]</div>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">定義 <span class="math notranslate nohighlight">\(\omega_N := e^{i 2 \pi / N}\)</span> より、</p>
+<div class="math notranslate nohighlight">
+\[
+\omega_N^{N / 2} = \left(e^{i 2 \pi / N}\right)^{N / 2}
+ =e^{i \pi}=-1
+\]</div>
+<p class="sd-card-text">である。ゆえに</p>
+<div class="math notranslate nohighlight">
+\[
+\omega_N^{N / 2+k} = \omega_N^{N / 2} \omega_N^k=-\omega_N^k
+\]</div>
+</div>
+</details><p>例えば<span class="math notranslate nohighlight">\(N=8\)</span>のときは、<span class="math notranslate nohighlight">\(\omega_{N}^{N/2} = \omega_{N}^{4} = -1 = -\omega_{N}^{0}\)</span>であり、<span class="math notranslate nohighlight">\(\omega_{N}^{N/2+1} = \omega_{N}^{5} = -\omega_{N}^{1} = -\omega_{N}\)</span>である。以下同様。</p>
+<p>単位円で描くとちょうど反対側に位置する。</p>
+<p>そのため、 <strong><span class="math notranslate nohighlight">\(N/2\)</span>個の<span class="math notranslate nohighlight">\(\omega_N\)</span>についてのみ考えればよい</strong> ことがわかる。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cmath</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span> <span class="s1">&#39;box&#39;</span><span class="p">)</span>
+
+<span class="c1"># 軸を描画</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">head_width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">head_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">,</span> <span class="n">head_width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">head_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">1.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span> <span class="n">adjustable</span><span class="o">=</span><span class="s1">&#39;datalim&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;bottom&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">))</span>
+
+<span class="c1"># 単位円</span>
+<span class="n">unit_circle</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">unit_circle</span><span class="p">)</span>
+
+<span class="c1"># 偶数のN</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">omega_n</span> <span class="o">=</span> <span class="n">cmath</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">cmath</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega_n</span><span class="o">.</span><span class="n">real</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega_n</span><span class="o">.</span><span class="n">imag</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">//</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="n">omega</span> <span class="o">=</span> <span class="n">omega_n</span><span class="o">**</span><span class="n">k</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">omega</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">omega</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">omega</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">omega</span><span class="o">.</span><span class="n">imag</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="sa">rf</span><span class="s1">&#39;$\omega_N^</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;dimgray&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+    <span class="n">omega</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">omega</span>
+    <span class="n">k2</span> <span class="o">=</span> <span class="n">k</span> <span class="o">+</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">omega</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">omega</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">omega</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">omega</span><span class="o">.</span><span class="n">imag</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="sa">rf</span><span class="s1">&#39;$\omega_N^</span><span class="si">{</span><span class="n">k2</span><span class="si">}</span><span class="s1"> = -\omega_N^</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ignoring fixed x limits to fulfill fixed data aspect with adjustable data limits.
+</pre></div>
+</div>
+<img alt="../../_images/b53db06b1267272c7b1f85fbf8ed41672f1492ce34396e2fb5cf15cf0b96a5c4.png" src="../../_images/b53db06b1267272c7b1f85fbf8ed41672f1492ce34396e2fb5cf15cf0b96a5c4.png" />
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+定理</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(N\)</span>が偶数のとき、<span class="math notranslate nohighlight">\(\omega^2_N\)</span>は1の原始<span class="math notranslate nohighlight">\(N/2\)</span>乗根として表せる。</p>
+<div class="math notranslate nohighlight">
+\[
+\omega_N^2=\omega_{N / 2}
+\]</div>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(\omega_N^2=\left(e^{i 2 \pi / N}\right)^2=e^{i 4 \pi / N}=e^{i 2 \pi /(N / 2)}=\omega_{N / 2}\)</span> となる</p>
+</div>
+</details><p>前出の定理より、<span class="math notranslate nohighlight">\(\omega_{N}^{2k} = \omega_{N / 2}^k\)</span>となっている。例えば<span class="math notranslate nohighlight">\(\omega_{N}^{4} = \omega_{N / 2}^2\)</span>となっている</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cmath</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span> <span class="s1">&#39;box&#39;</span><span class="p">)</span>
+
+<span class="c1"># 軸を描画</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">head_width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">head_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">,</span> <span class="n">head_width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">head_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">1.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span> <span class="n">adjustable</span><span class="o">=</span><span class="s1">&#39;datalim&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;bottom&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">))</span>
+
+<span class="c1"># 単位円</span>
+<span class="n">unit_circle</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">unit_circle</span><span class="p">)</span>
+
+<span class="c1"># 偶数のN</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">omega_n</span> <span class="o">=</span> <span class="n">cmath</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">cmath</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega_n</span><span class="o">.</span><span class="n">real</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega_n</span><span class="o">.</span><span class="n">imag</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">omega</span> <span class="o">=</span> <span class="n">omega_n</span><span class="o">**</span><span class="n">k</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">omega</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">omega</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">omega</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">omega</span><span class="o">.</span><span class="n">imag</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="sa">rf</span><span class="s1">&#39;$\omega_</span><span class="se">{{</span><span class="s1">N/2</span><span class="se">}}</span><span class="s1">^</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;dimgray&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ignoring fixed x limits to fulfill fixed data aspect with adjustable data limits.
+</pre></div>
+</div>
+<img alt="../../_images/bb87fe34840dd443f069d41562fb5e21708b0c8ca957ea659bff53dffd73905b.png" src="../../_images/bb87fe34840dd443f069d41562fb5e21708b0c8ca957ea659bff53dffd73905b.png" />
 </div>
 </div>
 <p><span class="math notranslate nohighlight">\(N-1\)</span> 次多項式</p>
@@ -1231,8 +1371,9 @@ b_k=f\left(\omega_N^k\right), \quad k=0,1,2, \ldots, N-1
 \[
 \operatorname{FFT}_N[f(x)]=\{f(1), f(\omega_N), f(\omega_N^2), \ldots, f(\omega_N^{N-1})\}
 \]</div>
-<section id="id3">
-<h3>間引き<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+</section>
+<section id="id4">
+<h3>間引き<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <p>上記の多項式は次のように書き直せる</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1275,26 +1416,10 @@ q(x)=a_1+a_3 x+a_5 x^2+\cdots+a_{N-1} x^{N / 2-1}
 \operatorname{FFT}_N[p(x^2)]=\operatorname{FFT}_{N / 2}[p(x)], \quad \operatorname{FFT}_N[q(x^2)]=\operatorname{FFT}_{N / 2}[q(x)]
 \]</div>
 </section>
-<section id="id4">
-<h3>バタフライ<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(f(x)\)</span>は</p>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-定理</div>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(N\)</span>が偶数のとき、次の関係が成り立つ</p>
-<div class="math notranslate nohighlight">
-\[
-\omega_N^{N / 2}=-1, \quad \omega_N^{N / 2+1}=-\omega_N, \quad \omega_N^{N / 2+2}=-\omega_N^2, \quad \ldots, \quad \omega_N^{N-1}=-\omega_N^{N / 2-1}
-\]</div>
-</div>
-</div>
-<p>という定理と</p>
-<div class="math notranslate nohighlight">
-\[
-f(x) = p(x^2)+x q(x^2)
-\]</div>
-<p>により、以下のように計算できる。</p>
+<section id="id5">
+<h3>バタフライ<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(f(x)\)</span>は「<span class="math notranslate nohighlight">\(N\)</span>が偶数のとき、<span class="math notranslate nohighlight">\(\omega_N^{N / 2}=-1, \quad \omega_N^{N / 2+1}=-\omega_N, \quad \omega_N^{N / 2+2}=-\omega_N^2, \quad \ldots, \quad \omega_N^{N-1}=-\omega_N^{N / 2-1}\)</span>」という定理と
+<span class="math notranslate nohighlight">\(f(x) = p(x^2)+x q(x^2)\)</span> により、以下のように計算できる。</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{cases}
@@ -1302,10 +1427,20 @@ f(\omega_N^k)=p(\omega_{N / 2}^k)+\omega_N^k q(\omega_{N / 2}^k), &amp; k=0,1, \
 f(\omega_N^{N / 2+k})=p(\omega_{N / 2}^k)-\omega_N^k q(\omega_{N / 2}^k), &amp; k=0,1, \ldots, N / 2-1
 \end{cases}
 \end{split}\]</div>
-<p>この計算を <strong>バタフライ</strong> と呼び、式中の<span class="math notranslate nohighlight">\(\omega_N^k\)</span>を <strong>回転因子</strong> と呼ぶ。</p>
-</section>
-<section id="id5">
-<h3>高速フーリエ変換<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>この計算を <strong>バタフライ</strong> と呼び、式中の<span class="math notranslate nohighlight">\(\omega_N^k\)</span>を <strong>回転因子（ひねり因子）</strong> と呼ぶ。</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">考察：なぜ引数は<span class="math notranslate nohighlight">\(\omega_{N / 2}^k\)</span>なのに回転因子は<span class="math notranslate nohighlight">\(\omega_N^k\)</span>なのか？</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(f(x)= p(x^2)+x q(x^2)\)</span>なのと同様の形になっていると思われる。</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">考察：<span class="math notranslate nohighlight">\(f(\omega_N^{N / 2+k})=p(\omega_{N / 2}^k)-\omega_N^k q(\omega_{N / 2}^k)\)</span>で<span class="math notranslate nohighlight">\(-\omega_N^k\)</span>とマイナスがつくのはなぜ？</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">前述の定理より、<span class="math notranslate nohighlight">\(\omega_N^{N / 2+k} = -\omega_N^{k}\)</span></p>
+</div>
+</details></section>
+<section id="id6">
+<h3>高速フーリエ変換<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(\operatorname{FFT}_N\)</span>は係数の間引き（Decimation-In-Time, DIT）<span class="math notranslate nohighlight">\(D_N\)</span>を行って<span class="math notranslate nohighlight">\(\operatorname{FFT}_{N/2}\)</span>を実行し、バタフライ<span class="math notranslate nohighlight">\(B_N\)</span>を施す。</p>
 <p>間引きによって<span class="math notranslate nohighlight">\(\operatorname{FFT}_{N/4}, \operatorname{FFT}_{N/8}, \operatorname{FFT}_{N/16}, \dots\)</span>と分解していくと最終的に<span class="math notranslate nohighlight">\(\operatorname{FFT}_{1}\)</span>の計算になり、<span class="math notranslate nohighlight">\(0\)</span>次式（定数）の計算になる。</p>
 <p>その後バタフライによって統合していく。</p>
@@ -1341,7 +1476,12 @@ f(\omega_N^{N / 2+k})=p(\omega_{N / 2}^k)-\omega_N^k q(\omega_{N / 2}^k), &amp; 
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># テスト用データ</span>
 <span class="n">input_signal</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>  <span class="c1"># サンプルデータ</span>
@@ -1368,6 +1508,7 @@ f(\omega_N^{N / 2+k})=p(\omega_{N / 2}^k)-\omega_N^k q(\omega_{N / 2}^k), &amp; 
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>FFTの結果:
 X[0] = 28.000+0.000j
@@ -1391,7 +1532,12 @@ X[7] = -4.000-9.657j
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -1421,6 +1567,7 @@ X[7] = -4.000-9.657j
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="../../_images/6d6ea8f29c6ea7523b67247d719350b3afc415ba24f3468a2486c5c2589c010f.png" src="../../_images/6d6ea8f29c6ea7523b67247d719350b3afc415ba24f3468a2486c5c2589c010f.png" />
 </div>
@@ -1495,9 +1642,10 @@ X[7] = -4.000-9.657j
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#n">1の原始<span class="math notranslate nohighlight">\(N\)</span>乗根による表現</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">高速フーリエ変換</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">間引き</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">バタフライ</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">高速フーリエ変換</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">単位円での表現</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">間引き</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">バタフライ</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">高速フーリエ変換</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Pythonの実装</a></li>
