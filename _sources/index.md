@@ -54,6 +54,7 @@
 - [](statistical_modeling/quantile_regression)
 - [](statistical_modeling/survival_analysis)
 - [](statistical_modeling/sem/index)
+- [](statistical_modeling/test_theory/index)
 - [](statistical_modeling/glm/index)
 - [](statistical_modeling/bayes_modeling/index)
 - [](statistical_modeling/time_series_analysis/index)
