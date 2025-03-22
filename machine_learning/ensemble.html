@@ -1015,7 +1015,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bagging">Bagging</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boosting">Boosting</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-strength-of-weak-learnability">The strength of weak learnability</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adaboost">Adaboost</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adaboost">AdaBoost</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-boosting-machine">Gradient Boosting Machine</a></li>
 </ul>
 </li>
@@ -1055,16 +1055,69 @@ document.write(`
 </ol>
 </section>
 <section id="adaboost">
-<h3>Adaboost<a class="headerlink" href="#adaboost" title="Link to this heading">#</a></h3>
-<p>adaboostというアルゴリズムが提案され、性能の高さから広く普及した</p>
+<h3>AdaBoost<a class="headerlink" href="#adaboost" title="Link to this heading">#</a></h3>
+<p>Freund &amp; Schapire (1997) により <strong>AdaBoost</strong> というアルゴリズムが提案され、性能の高さから広く普及した。</p>
+<div class="admonition-adaboost admonition">
+<p class="admonition-title">アルゴリズム（AdaBoost）</p>
+<p>訓練データ：<span class="math notranslate nohighlight">\((x_1, y_1),\dots,(x_m,y_m)\)</span> ここで <span class="math notranslate nohighlight">\(x_i \in \mathcal{X}, y_i \in \{-1, +1\}\)</span></p>
+<p>初期化：<span class="math notranslate nohighlight">\(i=1,\dots,m\)</span>について分布（重み）を<span class="math notranslate nohighlight">\(D_1(i) = 1/m\)</span>とする。</p>
+<p><span class="math notranslate nohighlight">\(t=1,\dots,T\)</span> について、</p>
+<ul class="simple">
+<li><p>弱学習器を分布<span class="math notranslate nohighlight">\(D_t\)</span>で訓練し、仮説<span class="math notranslate nohighlight">\(h_t: \mathcal{X} \to \{-1, +1\}\)</span>を得る。</p></li>
+<li><p>目的：重み付き誤差<span class="math notranslate nohighlight">\(\varepsilon_t = P_{i\sim D_t}[h_t(x_i)\neq y_i]\)</span>が低い<span class="math notranslate nohighlight">\(h_t\)</span>を選ぶこと</p></li>
+<li><p>仮説の信頼度 <span class="math notranslate nohighlight">\(\alpha_t = \frac{1}{2} \ln \left( \frac{1-\varepsilon_t} {\varepsilon_t} \right)\)</span> を定める</p></li>
+<li><p><span class="math notranslate nohighlight">\(i = 1,\dots,m\)</span>について分布（重み）を更新する</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\displaystyle D_{t+1}(i) = \frac{D_t(i) \exp(-\alpha_t y_i h_t(x_i) )}{ Z_t }\)</span></p></li>
+<li><p>ここで<span class="math notranslate nohighlight">\(Z_t\)</span>は<span class="math notranslate nohighlight">\(D\)</span>を分布とするための正規化係数（normalization factor）</p></li>
+</ul>
+</li>
+</ul>
+<p>出力：</p>
+<p>最終的な仮説（判別器）は</p>
+<div class="math notranslate nohighlight">
+\[
+H(x) = \text{sign} \left(\sum_{t=1}^T \alpha_t h_t(x)\right)
+\]</div>
+</div>
+<p>なお対数誤差を最小化する予測確率は対数オッズに等しい。</p>
+<div class="math notranslate nohighlight">
+\[
+f^*(x) = \arg \min _{f(x)} \mathrm{E}_{Y \mid x}\left(e^{-Y f(x)}\right)
+=\frac{1}{2} \log \frac{\operatorname{Pr}(Y=1 \mid x)}{\operatorname{Pr}(Y=-1 \mid x)}
+\]</div>
+<p>あるいは等しい別の表現として</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{Pr}(Y=1 \mid x)=\frac{1}{1+e^{-2 f^*(x)}}
+\]</div>
+<p>となる。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考</div>
+<ul class="simple">
+<li><p class="sd-card-text"><a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S002200009791504X">Freund, Y., &amp; Schapire, R. E. (1997). A decision-theoretic generalization of on-line learning and an application to boosting. Journal of computer and system sciences, 55(1), 119-139.</a></p></li>
+<li><p class="sd-card-text"><a class="reference external" href="http://rob.schapire.net/papers/explaining-adaboost.pdf">Schapire, R. E. (2013). Explaining adaboost. In Empirical inference: festschrift in honor of vladimir N. Vapnik (pp. 37-52). Berlin, Heidelberg: Springer Berlin Heidelberg.</a></p></li>
+</ul>
+</div>
+</div>
 </section>
 <section id="gradient-boosting-machine">
 <h3>Gradient Boosting Machine<a class="headerlink" href="#gradient-boosting-machine" title="Link to this heading">#</a></h3>
-<p>adaboostを一般化して勾配ブースティング（gradient boosting）というアルゴリズムに整理した。</p>
-<p>誤差の勾配に対して適応的に学習する手法として整理された。</p>
-<p>例えば二乗誤差なら勾配は残差のことなので、<span class="math notranslate nohighlight">\(k\geq 0\)</span>個のモデルを学習した時点<span class="math notranslate nohighlight">\(\sum_{i=0}^k f_i(x)\)</span>の予測の残差が大きいものに対して新たに<span class="math notranslate nohighlight">\(f_{k+1}(x)\)</span>を学習させて追加したモデル<span class="math notranslate nohighlight">\(\sum_{i=0}^{k+1} f_i(x)\)</span>を新たなモデルとする、といった学習を何らかの基準（上限の回数や誤差の基準）を満たすまで繰り返す。</p>
-<p>adaboostは誤差関数を指数誤差にした勾配ブースティングであることが示されている。</p>
+<p><a class="reference external" href="https://www.jstor.org/stable/2699986">Friedman, J. H. (2001)</a> はAdaBoostを一般化して勾配ブースティング（gradient boosting）というアルゴリズムに整理した。</p>
+<p>勾配ブースティングは誤差の勾配に対して適応的に学習する手法。例えば二乗誤差なら勾配は残差のことなので、<span class="math notranslate nohighlight">\(k\geq 0\)</span>個のモデルを学習した時点<span class="math notranslate nohighlight">\(\sum_{i=0}^k f_i(x)\)</span>の予測の残差が大きいものに対して新たに<span class="math notranslate nohighlight">\(f_{k+1}(x)\)</span>を学習させて追加したモデル<span class="math notranslate nohighlight">\(\sum_{i=0}^{k+1} f_i(x)\)</span>を新たなモデルとする、といった学習を何らかの基準（上限の回数や誤差の基準）を満たすまで繰り返す。</p>
+<p>AdaBoostは誤差関数を指数誤差<span class="math notranslate nohighlight">\(\ell(m)=e^{-m}\)</span>にした勾配ブースティングであることが示されている。</p>
 <p>勾配ブースティングは決定木と相性が良く、勾配ブースティング決定木（gradient boosted decsision tree: GBDT）として非常に広く使われている。計算量を抑えて学習を高速化する工夫が取られたモダンなGBDTにはXGBoostやLightGBMなどがあり、2024年現在でもテーブルデータの予測においてSOTAと評価されている。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考</div>
+<ul class="simple">
+<li><p class="sd-card-text"><a class="reference external" href="https://www.jstor.org/stable/2699986">Friedman, J. H. (2001). Greedy function approximation: a gradient boosting machine. Annals of statistics, 1189-1232.</a></p></li>
+</ul>
+</div>
+</div>
 </section>
 </section>
 <section id="stacking">
@@ -1146,7 +1199,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bagging">Bagging</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boosting">Boosting</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-strength-of-weak-learnability">The strength of weak learnability</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adaboost">Adaboost</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adaboost">AdaBoost</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-boosting-machine">Gradient Boosting Machine</a></li>
 </ul>
 </li>
