@@ -1027,7 +1027,7 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">推定量のバイアスとバリアンス</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">バイアス</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">バイアス・バリアンスのトレードオフ</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">バリアンス</a></li>
 </ul>
 </li>
@@ -1348,13 +1348,78 @@ J(\beta)=
 リッジ回帰やlassoの推定量は不偏ではない（バイアスがある）推定量であるが、最小二乗推定量よりも小さなバリアンスとなる可能性がある。
 そのため、最小二乗推定法を使用する線形回帰よりもリッジ回帰のほうが予測の2乗誤差を小さくする可能性がある。</p>
 <section id="id9">
-<h3>バイアス<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
-<p>Ridge推定量のバイアスは</p>
+<h3>バイアス・バリアンスのトレードオフ<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p>Ridge推定量のバイアスとバリアンスは次のようになっている（<a class="reference external" href="https://www.jstage.jst.go.jp/article/bjsiam/28/2/28_28/_article/-char/ja">鈴木 (2018)</a>）</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\mathrm{Bias} &amp;= \lambda^2 \| ( X^\top X + \lambda I)^{-1} \boldsymbol{\beta} \|^2 \\
+\mathrm{Variance} &amp;= \sigma^2 \operatorname{Tr}\left[\left(X^{\top} X+\lambda I\right)^{-2} X^{\top} X\right]
+\end{aligned}
+\end{split}\]</div>
+<p>これらにはトレードオフの関係がある。</p>
+<p>(1) <span class="math notranslate nohighlight">\(\lambda \to 0\)</span>のとき（OLSに近づくとき）、<span class="math notranslate nohighlight">\(\mathrm{Bias}\to 0, \mathrm{Variance} \to \sigma^2 \operatorname{Tr}[(X^{\top} X)^{-1}]\)</span>となる。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\lim_{\lambda \to 0} \mathrm{Bias} &amp;= 0 \times \| ( X^\top X )^{-1} \boldsymbol{\beta} \|^2  \to 0\\
+\lim_{\lambda \to 0} \mathrm{Variance} &amp;= \sigma^2 \operatorname{Tr}\left[(X^{\top} X)^{-2} X^{\top} X\right]
+= \sigma^2 \operatorname{Tr}[(X^{\top} X)^{-1}]
+\end{aligned}
+\end{split}\]</div>
+<p>(2) <span class="math notranslate nohighlight">\(\lambda \to \infty\)</span>のとき、<span class="math notranslate nohighlight">\(\mathrm{Bias} \to \|\beta\|^2, \mathrm{Variance} \to 0\)</span>となる。</p>
+<p>Biasについては、 <span class="math notranslate nohighlight">\(\left(X^{\top} X+\lambda I\right)^{-1}=\lambda^{-1}\left(I+\frac{1}{\lambda} X^{\top} X\right)^{-1}\)</span> となることとノルムの斉次性 <span class="math notranslate nohighlight">\(\| c \boldsymbol{x} \|^2 = c^2 \| \boldsymbol{x} \|^2\)</span>を用いると</p>
 <div class="math notranslate nohighlight">
 \[
-Bias = \lambda^2 \| ( \boldsymbol{X}^\top \boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{\beta} \|^2
+\begin{aligned}
+\lambda^2\left\|\left(X^{\top} X+\lambda I\right)^{-1} \beta\right\|^2
+=\lambda^2\left\|\lambda^{-1}\left(I+\frac{1}{\lambda} X^{\top} X\right)^{-1} \beta\right\|^2
+=\left\|\left(I+\frac{1}{\lambda} X^{\top} X\right)^{-1} \beta\right\|^2
+\end{aligned}
 \]</div>
-<p>となる（<a class="reference external" href="https://www.jstage.jst.go.jp/article/bjsiam/28/2/28_28/_article/-char/ja">鈴木 (2018)</a>）</p>
+<p>となる。</p>
+<div class="admonition-left-x-top-x-lambda-i-right-1-lambda-1-left-i-frac-1-lambda-x-top-x-right-1 admonition">
+<p class="admonition-title"><span class="math notranslate nohighlight">\(\left(X^{\top} X+\lambda I\right)^{-1}=\lambda^{-1}\left(I+\frac{1}{\lambda} X^{\top} X\right)^{-1}\)</span> について</p>
+<div class="math notranslate nohighlight">
+\[
+\lambda I + A = \lambda\left(I+\frac{1}{\lambda} A\right)
+\]</div>
+<p>ゆえに</p>
+<div class="math notranslate nohighlight">
+\[
+(A+\lambda I)^{-1}
+=\left(\lambda\left(I+\frac{1}{\lambda} A\right)\right)^{-1}
+=\lambda^{-1}\left(I+\frac{1}{\lambda} A\right)^{-1}
+\]</div>
+<p>となる。<span class="math notranslate nohighlight">\(A=X^\top X\)</span>とおけばよい</p>
+</div>
+<p>ここで<span class="math notranslate nohighlight">\(\lambda \to \infty\)</span>なので、 <span class="math notranslate nohighlight">\(\left\|\left(I+\frac{1}{\lambda} X^{\top} X\right)^{-1} \beta\right\|^2\)</span> は <span class="math notranslate nohighlight">\(\frac{1}{\lambda} X^{\top} X \to 0\)</span> となり、<span class="math notranslate nohighlight">\(I^{-1} = I\)</span>のため</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\lim_{\lambda \to \infty} \mathrm{Bias}
+&amp;= \left\|\left(I + \frac{1}{\lambda} X^{\top} X  \right)^{-1} \beta\right\|^2 \\
+&amp;= \left\|I^{-1} \beta\right\|^2 \quad (\because \frac{1}{\lambda} X^{\top} X \to 0 ) \\
+&amp;= \left\| \beta \right\|^2 \quad (\because I^{-1} = I)
+\end{aligned}
+\end{split}\]</div>
+<p>Variance <span class="math notranslate nohighlight">\(\sigma^2 \operatorname{Tr}\left[\left(X^{\top} X+\lambda I\right)^{-2} X^{\top} X\right]\)</span> については、</p>
+<div class="math notranslate nohighlight">
+\[
+(X^{\top} X +\lambda I)^{-2}
+=\lambda^{-2}\left(I+\frac{1}{\lambda} X^{\top} X \right)^{-2}
+\]</div>
+<p>であり、 <span class="math notranslate nohighlight">\(\left(I+\frac{1}{\lambda} X^{\top} X \right)^{-2}\)</span> は <span class="math notranslate nohighlight">\(\lambda \to \infty\)</span> で<span class="math notranslate nohighlight">\(I\)</span>になるため</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\lim_{\lambda \to \infty} \mathrm{Variance}
+&amp;= \sigma^2 \operatorname{Tr}\left[\lambda ^{-2} X^{\top} X\right]\\
+&amp;= \lambda^{-2} \cdot \sigma^2 \operatorname{Tr}\left[X^{\top} X\right]\\
+&amp;= \frac{1}{\lambda^{2}} \cdot \sigma^2 \operatorname{Tr}\left[X^{\top} X\right]\\
+&amp;= 0
+\end{aligned}
+\end{split}\]</div>
 </section>
 <section id="id10">
 <h3>バリアンス<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
@@ -1481,7 +1546,7 @@ y = \beta_0 + \beta_1 x + \beta_2 x^2 + u
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7f72f0059660&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x7f1a183507f0&gt;
 </pre></div>
 </div>
 <img alt="../../../_images/7778c329419b97213c2b57a6afa0c1d69b574c26a9b2db9e0c928ac21e753fb1.png" src="../../../_images/7778c329419b97213c2b57a6afa0c1d69b574c26a9b2db9e0c928ac21e753fb1.png" />
@@ -1712,7 +1777,7 @@ variance:
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">推定量のバイアスとバリアンス</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">バイアス</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">バイアス・バリアンスのトレードオフ</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">バリアンス</a></li>
 </ul>
 </li>
