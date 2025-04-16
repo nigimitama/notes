@@ -15,27 +15,33 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-# 閾値a, bを推定
-from scipy.stats import norm
-a = norm.ppf(P1, loc=0, scale=1)
-b = norm.ppf(P2, loc=0, scale=1)
+# データ生成（潜在相関0.6）
+np.random.seed(1)
+latent_x = np.random.normal(size=100)
+latent_y = 0.6 * latent_x + np.random.normal(size=100)
+X = (latent_x > 0.3).astype(int)
+Y = (latent_y > 0.3).astype(int)
 
-a = [-np.inf, *a]
-b = [-np.inf, *b]
-
-print(f"{a=}")
-print(f"{b=}")
+# 推定
+rho_hat = tetrachoric_corr(X, Y)
+print(f"推定されたテトラコリック相関: {rho_hat:.4f}")
 ------------------
 
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mNameError[0m                                 Traceback (most recent call last)
-Cell [0;32mIn[11], line 3[0m
-[1;32m      1[0m [38;5;66;03m# 閾値a, bを推定[39;00m
-[1;32m      2[0m [38;5;28;01mfrom[39;00m[38;5;250m [39m[38;5;21;01mscipy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mstats[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m norm
-[0;32m----> 3[0m a [38;5;241m=[39m norm[38;5;241m.[39mppf([43mP1[49m, loc[38;5;241m=[39m[38;5;241m0[39m, scale[38;5;241m=[39m[38;5;241m1[39m)
-[1;32m      4[0m b [38;5;241m=[39m norm[38;5;241m.[39mppf(P2, loc[38;5;241m=[39m[38;5;241m0[39m, scale[38;5;241m=[39m[38;5;241m1[39m)
-[1;32m      6[0m a [38;5;241m=[39m [[38;5;241m-[39mnp[38;5;241m.[39minf, [38;5;241m*[39ma]
+Cell [0;32mIn[9], line 9[0m
+[1;32m      6[0m Y [38;5;241m=[39m (latent_y [38;5;241m>[39m [38;5;241m0.3[39m)[38;5;241m.[39mastype([38;5;28mint[39m)
+[1;32m      8[0m [38;5;66;03m# 推定[39;00m
+[0;32m----> 9[0m rho_hat [38;5;241m=[39m [43mtetrachoric_corr[49m[43m([49m[43mX[49m[43m,[49m[43m [49m[43mY[49m[43m)[49m
+[1;32m     10[0m [38;5;28mprint[39m([38;5;124mf[39m[38;5;124m"[39m[38;5;124m推定されたテトラコリック相関: [39m[38;5;132;01m{[39;00mrho_hat[38;5;132;01m:[39;00m[38;5;124m.4f[39m[38;5;132;01m}[39;00m[38;5;124m"[39m)
 
-[0;31mNameError[0m: name 'P1' is not defined
+Cell [0;32mIn[8], line 13[0m, in [0;36mtetrachoric_corr[0;34m(x, y)[0m
+[1;32m     10[0m px0 [38;5;241m=[39m (n00 [38;5;241m+[39m n01) [38;5;241m/[39m n
+[1;32m     11[0m py0 [38;5;241m=[39m (n00 [38;5;241m+[39m n10) [38;5;241m/[39m n
+[0;32m---> 13[0m tau_x [38;5;241m=[39m [43mnorm[49m[38;5;241m.[39mppf(px0)
+[1;32m     14[0m tau_y [38;5;241m=[39m norm[38;5;241m.[39mppf(py0)
+[1;32m     16[0m [38;5;28;01mdef[39;00m[38;5;250m [39m[38;5;21mneg_log_likelihood[39m(rho):
+
+[0;31mNameError[0m: name 'norm' is not defined
 
