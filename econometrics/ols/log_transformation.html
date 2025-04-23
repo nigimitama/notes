@@ -671,6 +671,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../image_processing/rotation_correction.html">傾き補正</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../image_processing/distortion_correction.html">歪み補正・台形補正</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../image_processing/similarity_and_hashing.html">類似度・hash化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image_processing/intensity_transformation.html">輝度変換</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../image_processing/sample_images.html">文書風のサンプル画像の生成コード メモ</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">推薦システム</span></p>
@@ -1021,6 +1022,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ln-y-beta-0-beta-1-x">(3) <span class="math notranslate nohighlight">\(\ln(Y) = \beta_0 + \beta_1 X\)</span></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ln-y-beta-0-beta-1-ln-x">(4) <span class="math notranslate nohighlight">\(\ln(Y) = \beta_0 + \beta_1 \ln(X)\)</span></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">別データ例：賃金データ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">最近は逆双曲線変換をするらしい</a></li>
 </ul>
             </nav>
         </div>
@@ -1644,6 +1646,33 @@ exp(x) - 1: 0.1051709
 </div></div></div>
 </div>
 </section>
+<section id="id3">
+<h2>最近は逆双曲線変換をするらしい<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{arsinh}(x)=\ln \left(x+\sqrt{x^2+1}\right)
+\]</div>
+<p>長所：</p>
+<ol class="arabic simple">
+<li><p>対数と同様に振る舞う：被説明変数と説明変数両方にarsinh()している場合推定した回帰係数が弾力性になる<span class="math notranslate nohighlight">\(\beta \approx \frac{\partial y}{\partial x}\frac{x}{y}\)</span>（xとyが10以上などある程度大きい値のとき）</p></li>
+<li><p>値がゼロの観測値を維持する: <span class="math notranslate nohighlight">\(\operatorname{arsinh}(0) = \ln (1)\)</span></p></li>
+<li><p>値が負の観測値も維持する（<span class="math notranslate nohighlight">\(x^2\)</span>があるため）</p></li>
+</ol>
+<p>短所：</p>
+<ol class="arabic simple">
+<li><p>推定した係数が弾力性になるにはxとyが10以上などある程度大きい値のときのみ → 零や負の値を使えるという利点があまり活きない</p></li>
+</ol>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考文献</div>
+<ul class="simple">
+<li><p class="sd-card-text"><a class="reference external" href="https://himaginary.hatenablog.com/entry/20180302/log_and_IHS">log(x+1)の代わりに何を使うべきか？ - himaginary’s diary</a></p></li>
+<li><p class="sd-card-text"><a class="reference external" href="https://keita43a.hatenablog.com/entry/2025/04/21/115951?_gl=1*yp89nq*_gcl_au*NjE2NDI4NTI2LjE3Mzc4NzI0NTU.">回帰分析で対数変換などもう古い、時代は逆双曲線正弦変換だ！ - Waves, Currents and Insights</a></p></li>
+</ul>
+</div>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1715,6 +1744,7 @@ exp(x) - 1: 0.1051709
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ln-y-beta-0-beta-1-x">(3) <span class="math notranslate nohighlight">\(\ln(Y) = \beta_0 + \beta_1 X\)</span></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ln-y-beta-0-beta-1-ln-x">(4) <span class="math notranslate nohighlight">\(\ln(Y) = \beta_0 + \beta_1 \ln(X)\)</span></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">別データ例：賃金データ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">最近は逆双曲線変換をするらしい</a></li>
 </ul>
   </nav></div>
 

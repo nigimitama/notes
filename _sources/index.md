@@ -165,6 +165,7 @@
 - [](image_processing/rotation_correction)
 - [](image_processing/distortion_correction)
 - [](image_processing/similarity_and_hashing)
+- [](image_processing/intensity_transformation)
 - [](image_processing/sample_images)
 :::
 
