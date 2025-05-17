@@ -32,6 +32,7 @@
 - [](statistics/statistical_inference/index)
 - [](statistics/correlation_coefficient)
 - [](statistics/correlation_for_ordinal_scale)
+- [](statistics/correlation_for_nominal_scale)
 - [](statistics/divergence)
 - [](statistics/optimal_transport)
 - [](statistics/bootstrap)
@@ -223,6 +224,8 @@
 
 - [](english/vocabulary/index)
 - [](english/grammar)
+- [](english/small_talk)
+- [](english/for_mathematic)
 :::
 
 :::{grid-item-card}
