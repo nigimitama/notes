@@ -1028,6 +1028,18 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">2パラメータ正規累積モデル</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">能力パラメータの推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">最尤推定法による推定</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">項目パラメータの推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">最尤推定法</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">同時最尤推定法</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">周辺最尤推定法</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -1196,6 +1208,87 @@ P(y_{ij} = 1)
 <p>なお横軸に<span class="math notranslate nohighlight">\(\theta_i\)</span>、縦軸に<span class="math notranslate nohighlight">\(P(y_{ij}=1)\)</span>をとったグラフは <strong>項目特性曲線 （item characteristic curve: ICC）</strong> と呼ばれる。</p>
 </section>
 </section>
+<section id="id5">
+<h2>能力パラメータの推定<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h3>最尤推定法による推定<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>例として2PLMを考え、項目パラメータ<span class="math notranslate nohighlight">\(a,b\)</span>が既知であり、<span class="math notranslate nohighlight">\(\theta\)</span>を推定したい場合であるとする。</p>
+<p>局所独立性の仮定のもとで、受験者<span class="math notranslate nohighlight">\(i\)</span>の能力値<span class="math notranslate nohighlight">\(\theta_i\)</span>のもとでの項目反応<span class="math notranslate nohighlight">\(\mathbf{u}_i\)</span>の同時分布は</p>
+<div class="math notranslate nohighlight">
+\[
+P(\mathbf{u}_i \mid \theta_i)=\prod_{j=1}^J P_j(\theta_i)^{u_{i j}} Q_j(\theta_i)^{1-u_{i j}}
+\]</div>
+<p>となる。ここで<span class="math notranslate nohighlight">\(P_j(\theta_i)\)</span>は能力値<span class="math notranslate nohighlight">\(\theta_i\)</span>の受験者が項目<span class="math notranslate nohighlight">\(j\)</span>に正答する確率であり、2PLMのICC</p>
+<div class="math notranslate nohighlight">
+\[
+P_j(\theta)=\frac{1}{1+\exp \left(-1.7 a_j\left(\theta-b_j\right)\right)}, \quad-\infty&lt;\theta&lt;\infty
+\]</div>
+<p>で表現される。<span class="math notranslate nohighlight">\(Q_j(\theta_i)\)</span>は誤答する確率であり、<span class="math notranslate nohighlight">\(Q_j(\theta_i):= 1 - P_j(\theta_i)\)</span>である。</p>
+<p>項目反応が既知であれば<span class="math notranslate nohighlight">\(P(\mathbf{u}_i \mid \theta_i)\)</span>は尤度<span class="math notranslate nohighlight">\(L(\theta_i \mid \mathbf{u}_i)\)</span>となる。</p>
+</section>
+</section>
+<section id="id7">
+<h2>項目パラメータの推定<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<p>主に2つのアプローチがある</p>
+<ol class="arabic simple">
+<li><p>能力パラメータ<span class="math notranslate nohighlight">\(\theta\)</span>と項目パラメータ<span class="math notranslate nohighlight">\(a,b\)</span>を同時に推定する方法</p>
+<ul class="simple">
+<li><p>最尤推定だと <strong>同時最尤推定法（joint maximum likelihood estimation）</strong></p></li>
+<li><p>ベイズ推定だと <strong>階層ベイズ推定法（hierarchical Bayes estimation）</strong></p></li>
+</ul>
+</li>
+<li><p>能力パラメータ<span class="math notranslate nohighlight">\(\theta\)</span>は <strong>消去</strong> して項目パラメータ<span class="math notranslate nohighlight">\(a,b\)</span>を推定する方法</p>
+<ul class="simple">
+<li><p>最尤推定だと <strong>周辺最尤推定法（marginal maximum likelihood estimation）</strong></p></li>
+<li><p>ベイズ推定だと <strong>周辺ベイズ推定法（marginal Bayes estimation）</strong></p></li>
+</ul>
+</li>
+</ol>
+<section id="id8">
+<h3>最尤推定法<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>尤度関数は項目パラメータ<span class="math notranslate nohighlight">\(\mathbf{T}\)</span>、反応パターン行列<span class="math notranslate nohighlight">\(\mathbf{U}\)</span>をもとに</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+L(\mathbf{T}, \boldsymbol{\theta} \mid \mathbf{U})
+&amp;=\prod_{i=1}^I L(\mathbf{T}, \theta_i \mid \mathbf{u}_i) \\
+&amp;=\prod_{i=1}^I \prod_{j=1}^J P_j(\theta_i \mid \mathbf{T})^{u_{i j}} Q_j(\theta_i \mid \mathbf{T})^{1-u_{i j}}
+\end{aligned}
+\end{split}\]</div>
+<p>と表される。</p>
+<section id="id9">
+<h4>同時最尤推定法<a class="headerlink" href="#id9" title="Link to this heading">#</a></h4>
+<p>以下の手順で解く。</p>
+<ol class="arabic simple">
+<li><p>パラメータの初期値を与える</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{\theta}\)</span>を所与として<span class="math notranslate nohighlight">\(\mathbf{T}\)</span>を推定する</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{T}\)</span>を所与として<span class="math notranslate nohighlight">\(\mathbf{\theta}\)</span>を推定する</p></li>
+<li><p>2.と3.を収束するまで繰り返す</p></li>
+</ol>
+<p>同時最尤推定法は1PLMでは十分機能するが、2PLM以上だと解が収束しないことがあったり、項目パラメータが一致性をもたないなどの問題がある。
+そのため、実際に多くのIRTソフトウェア（IRTPRO, BILOG-MG, ICLなど）で用いられているのは周辺最尤推定法である。</p>
+</section>
+<section id="id10">
+<h4>周辺最尤推定法<a class="headerlink" href="#id10" title="Link to this heading">#</a></h4>
+<p>Bock &amp; Lieberman (1970)が提案した周辺最尤推定法では尤度関数から<span class="math notranslate nohighlight">\(\theta\)</span>を積分消去した尤度関数（周辺尤度関数）を使用して項目パラメータを求める。周辺尤度関数<span class="math notranslate nohighlight">\(L_M\)</span>は次のように定義される。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+L_M(\mathbf{T} \mid \mathbf{U}) &amp; =\prod_{i=1}^I \int_{-\infty}^{\infty} L(\mathbf{T}, \theta_i \mid \mathbf{u}_i) f(\theta_i) d \theta_i \\
+&amp; =\prod_{i=1}^I \int_{-\infty}^{\infty} \left \{\prod_{j=1}^J P_j(\theta_i)^{u_{i j}} Q_j(\theta_i)^{1-u_{i j}} \right\} f(\theta_i) d \theta_i
+\end{aligned}
+\end{split}\]</div>
+<p>ここで<span class="math notranslate nohighlight">\(f(\theta_i)\)</span>はあらかじめ定めた<span class="math notranslate nohighlight">\(\theta\)</span>の母集団分布（事前分布）であり、通常は標準正規分布<span class="math notranslate nohighlight">\(\mathcal{N}(0,1)\)</span>が用いられる。
+<span class="math notranslate nohighlight">\(\theta\)</span>に分布を仮定して期待値をとることで<span class="math notranslate nohighlight">\(\theta\)</span>を除去している。</p>
+<p>周辺尤度の対数をとった対数周辺尤度関数を使ってのパラメータ推定は計算が難しい課題があった。
+そこでBock &amp; Aitkin (1981)が <strong>EMアルゴリズム</strong> (Dempster et al., 1977)の利用を提案した。</p>
+<div class="math notranslate nohighlight">
+\[
+L_C(\mathbf{T} \mid \mathbf{u}_i, \theta_i)=L(\mathbf{T}, \theta_i \mid \mathbf{u}_i) f(\theta_i)
+\]</div>
+</section>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1265,6 +1358,18 @@ P(y_{ij} = 1)
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モデル</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">1パラメータ正規累積モデル</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">2パラメータ正規累積モデル</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">能力パラメータの推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">最尤推定法による推定</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">項目パラメータの推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">最尤推定法</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">同時最尤推定法</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">周辺最尤推定法</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
