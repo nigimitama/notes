@@ -244,6 +244,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/eigenvalue/eigenvalue_and_covariance.html">固有値と共分散</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/eigenvalue/interpret_of_eigenvalue.html">固有値・固有ベクトルの解釈・意味</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/eigenvalue/definiteness.html">2次形式と定値性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/eigenvalue/singular_value_decomposition.html">特異値分解</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/linear_algebra/diagonalization/index.html">対角化</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -425,6 +426,7 @@
 <li class="toctree-l2"><a class="reference internal" href="classical_test_theory.html">古典的テスト理論</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">項目反応理論</a></li>
 <li class="toctree-l2"><a class="reference internal" href="irt_models.html">項目反応理論のモデル群</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html">スコアの妥当性検証</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../glm/index.html">一般化線形モデル（GLM)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1024,19 +1026,23 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">項目特性曲線</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">1パラメータ正規累積モデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">2パラメータ正規累積モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">局所独立性</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-3"><span class="math notranslate nohighlight">\(Q_3\)</span>統計量</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">能力パラメータの推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">最尤推定法による推定</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1パラメータ正規累積モデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2パラメータ正規累積モデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">項目パラメータの推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">最尤推定法</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">同時最尤推定法</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">周辺最尤推定法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">能力パラメータの推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">最尤推定法による推定</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">項目パラメータの推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">最尤推定法</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">同時最尤推定法</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">周辺最尤推定法</a></li>
 </ul>
 </li>
 </ul>
@@ -1058,10 +1064,75 @@ document.write(`
 <p>IRTではテストに含まれる項目の難易度と受験者の能力を分離して表現できる。</p>
 <section id="id2">
 <h2>項目特性曲線<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>確率0.5に</p>
+<p>IRTでは <strong>項目特性曲線（item characteristic curve: ICC）</strong> を使うことで受験者の能力と項目の困難度を分離する。</p>
+<p>最も標準的なIRTモデルである2PLM（2 parameters logistic model）は</p>
+<div class="math notranslate nohighlight">
+\[
+P_j(\theta)=\frac{1}{1+\exp \left(-1.7 a_j\left(\theta-b_j\right)\right)}, \quad-\infty&lt;\theta&lt;\infty
+\]</div>
+<p>であり、これを図にしたものがICCになる。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">for</span> <span class="n">beta</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">a</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$b$ = &quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\theta_i$&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$P(y_</span><span class="si">{ij}</span><span class="s2"> = 1)$&quot;</span><span class="p">,</span> <span class="n">xticklabels</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticklabels</span><span class="o">=</span><span class="p">[])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">beta</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">a</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$a$ = &quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\theta_i$&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$P(y_</span><span class="si">{ij}</span><span class="s2"> = 1)$&quot;</span><span class="p">,</span> <span class="n">xticklabels</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticklabels</span><span class="o">=</span><span class="p">[])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/55340cb34607b4780c08b1b4d12ac5c6edb69da626d83cbb7660d93719c1959d.png" src="../../_images/55340cb34607b4780c08b1b4d12ac5c6edb69da626d83cbb7660d93719c1959d.png" />
+</div>
+</div>
+<p>困難度<span class="math notranslate nohighlight">\(b\)</span>が能力値<span class="math notranslate nohighlight">\(\theta\)</span>と等しくなる点で正答率<span class="math notranslate nohighlight">\(P(y=1)=0.5\)</span>となるようになっている</p>
+<p>ICCは2種類の解釈がある</p>
+<ol class="arabic simple">
+<li><p>能力値が<span class="math notranslate nohighlight">\(\theta\)</span>である個々の受験者の正答確率</p></li>
+<li><p>能力値が<span class="math notranslate nohighlight">\(\theta\)</span>である受験者母集団における正答者の比率</p></li>
+</ol>
+<p>後者が頻度主義的であり一般的で無理のない解釈</p>
 </section>
 <section id="id3">
-<h2>モデル<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h2>局所独立性<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<section id="q-3">
+<h3><span class="math notranslate nohighlight">\(Q_3\)</span>統計量<a class="headerlink" href="#q-3" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(Q_3\)</span>統計量は局所独立性の検証に使われる統計量</p>
+<p><span class="math notranslate nohighlight">\(Q_3\)</span>統計量は</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\theta\)</span>によって項目間の相関関係が十分に説明されているとすれば、その影響を除去した残差得点同士の相関は0に近くなるはず</p></li>
+<li><p><span class="math notranslate nohighlight">\(\theta\)</span>以外に項目間に相関をもたらす要因がある場合は<span class="math notranslate nohighlight">\(\theta\)</span>の影響を除いてもなお相関が残る</p></li>
+</ul>
+<p>という考え方をとっている。</p>
+<p>目安としては、「<span class="math notranslate nohighlight">\(Q_3 &gt; 0.20\)</span>の項目ペアは局所独立性の侵害を疑う必要がある」とされる。</p>
+</section>
+</section>
+<section id="id4">
+<h2>モデル<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <p><span class="math notranslate nohighlight">\(i\)</span>番目の被験者の<span class="math notranslate nohighlight">\(j\)</span>番目の項目の値<span class="math notranslate nohighlight">\(y_{ij}\)</span>が二値<span class="math notranslate nohighlight">\(\{0, 1\}\)</span>であるとする（例えば正解・不正解だったり、アンケートの「あてはまる」「あてはまらない」という2件法など）。</p>
 <p><span class="math notranslate nohighlight">\(y_{ij}\)</span>の背後には潜在的な能力の連続量<span class="math notranslate nohighlight">\(\theta_i \in \mathbb{R}\)</span>が存在し、<span class="math notranslate nohighlight">\(\theta_i\)</span>が閾値<span class="math notranslate nohighlight">\(b_j\)</span>を超えていたら1、超えていなければ0が観測されるとする。つまり<span class="math notranslate nohighlight">\(y_{ij}\)</span>が以下のように決まるとする。</p>
 <div class="math notranslate nohighlight">
@@ -1072,8 +1143,8 @@ y_{ij}
 1 &amp; \text{ if } \theta_i \geq b_j\\
 \end{cases}
 \end{split}\]</div>
-<section id="id4">
-<h3>1パラメータ正規累積モデル<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>1パラメータ正規累積モデル<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p>しかし、実際には被験者<span class="math notranslate nohighlight">\(i\)</span>の体調や運（たまたま正解できた）などにより、常にこのようにきれいに正解・不正解が決まるわけではないと考えられる。こうした誤差を表すパラメータ<span class="math notranslate nohighlight">\(\varepsilon_{ij} \sim N(0, \sigma^2_{\varepsilon})\)</span>も追加して</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1150,8 +1221,8 @@ P(y_{ij} = 1)
 </div>
 </div>
 </section>
-<section id="id5">
-<h3>2パラメータ正規累積モデル<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>2パラメータ正規累積モデル<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(\sigma^2_{\varepsilon}\)</span>が項目ごとに異なる場合を考える。<span class="math notranslate nohighlight">\(\sigma^2_{\varepsilon}=1/a_j\)</span>とすると、誤差の確率分布は</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1213,10 +1284,10 @@ P(y_{ij} = 1)
 <p>なお横軸に<span class="math notranslate nohighlight">\(\theta_i\)</span>、縦軸に<span class="math notranslate nohighlight">\(P(y_{ij}=1)\)</span>をとったグラフは <strong>項目特性曲線 （item characteristic curve: ICC）</strong> と呼ばれる。</p>
 </section>
 </section>
-<section id="id6">
-<h2>能力パラメータの推定<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <section id="id7">
-<h3>最尤推定法による推定<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<h2>能力パラメータの推定<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<section id="id8">
+<h3>最尤推定法による推定<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <p>例として2PLMを考え、項目パラメータ<span class="math notranslate nohighlight">\(a,b\)</span>が既知であり、<span class="math notranslate nohighlight">\(\theta\)</span>を推定したい場合であるとする。</p>
 <p>局所独立性の仮定のもとで、受験者<span class="math notranslate nohighlight">\(i\)</span>の能力値<span class="math notranslate nohighlight">\(\theta_i\)</span>のもとでの項目反応<span class="math notranslate nohighlight">\(\mathbf{u}_i\)</span>の同時分布は</p>
 <div class="math notranslate nohighlight">
@@ -1232,8 +1303,8 @@ P_j(\theta)=\frac{1}{1+\exp \left(-1.7 a_j\left(\theta-b_j\right)\right)}, \quad
 <p>項目反応が既知であれば<span class="math notranslate nohighlight">\(P(\mathbf{u}_i \mid \theta_i)\)</span>は尤度<span class="math notranslate nohighlight">\(L(\theta_i \mid \mathbf{u}_i)\)</span>となる。</p>
 </section>
 </section>
-<section id="id8">
-<h2>項目パラメータの推定<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id9">
+<h2>項目パラメータの推定<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
 <p>主に2つのアプローチがある</p>
 <ol class="arabic simple">
 <li><p>能力パラメータ<span class="math notranslate nohighlight">\(\theta\)</span>と項目パラメータ<span class="math notranslate nohighlight">\(a,b\)</span>を同時に推定する方法</p>
@@ -1249,8 +1320,8 @@ P_j(\theta)=\frac{1}{1+\exp \left(-1.7 a_j\left(\theta-b_j\right)\right)}, \quad
 </ul>
 </li>
 </ol>
-<section id="id9">
-<h3>最尤推定法<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>最尤推定法<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p>尤度関数は項目パラメータ<span class="math notranslate nohighlight">\(\mathbf{T}\)</span>、反応パターン行列<span class="math notranslate nohighlight">\(\mathbf{U}\)</span>をもとに</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1261,8 +1332,8 @@ L(\mathbf{T}, \boldsymbol{\theta} \mid \mathbf{U})
 \end{aligned}
 \end{split}\]</div>
 <p>と表される。</p>
-<section id="id10">
-<h4>同時最尤推定法<a class="headerlink" href="#id10" title="Link to this heading">#</a></h4>
+<section id="id11">
+<h4>同時最尤推定法<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
 <p>以下の手順で解く。</p>
 <ol class="arabic simple">
 <li><p>パラメータの初期値を与える</p></li>
@@ -1273,8 +1344,8 @@ L(\mathbf{T}, \boldsymbol{\theta} \mid \mathbf{U})
 <p>同時最尤推定法は1PLMでは十分機能するが、2PLM以上だと解が収束しないことがあったり、項目パラメータが一致性をもたないなどの問題がある。
 そのため、実際に多くのIRTソフトウェア（IRTPRO, BILOG-MG, ICLなど）で用いられているのは周辺最尤推定法である。</p>
 </section>
-<section id="id11">
-<h4>周辺最尤推定法<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
+<section id="id12">
+<h4>周辺最尤推定法<a class="headerlink" href="#id12" title="Link to this heading">#</a></h4>
 <p>Bock &amp; Lieberman (1970)が提案した周辺最尤推定法では尤度関数から<span class="math notranslate nohighlight">\(\theta\)</span>を積分消去した尤度関数（周辺尤度関数）を使用して項目パラメータを求める。周辺尤度関数<span class="math notranslate nohighlight">\(L_M\)</span>は次のように定義される。</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1382,19 +1453,23 @@ L_C(\mathbf{T} \mid \mathbf{U}, \boldsymbol{\theta})=\prod_{i=1}^I L_C(\mathbf{T
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">項目特性曲線</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">1パラメータ正規累積モデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">2パラメータ正規累積モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">局所独立性</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-3"><span class="math notranslate nohighlight">\(Q_3\)</span>統計量</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">能力パラメータの推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">最尤推定法による推定</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1パラメータ正規累積モデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2パラメータ正規累積モデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">項目パラメータの推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">最尤推定法</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">同時最尤推定法</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">周辺最尤推定法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">能力パラメータの推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">最尤推定法による推定</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">項目パラメータの推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">最尤推定法</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">同時最尤推定法</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">周辺最尤推定法</a></li>
 </ul>
 </li>
 </ul>
