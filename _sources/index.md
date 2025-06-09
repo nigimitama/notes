@@ -43,6 +43,7 @@
 - [](statistics/bayes_statistics/index)
 - [](statistics/done_wrong)
 - [](statistics/visualization)
+- [](statistics/price_index)
 :::
 
 :::{grid-item-card}
@@ -215,7 +216,7 @@
 - [](soft_skills/presentation)
 - [](soft_skills/negotiation)
 - [](soft_skills/harvard_negotiation)
-- [](soft_skills/leadership)
+- [](soft_skills/management/index)
 :::
 
 :::{grid-item-card}

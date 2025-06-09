@@ -76,6 +76,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'statistics/price_index';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LOWESS" href="../statistical_modeling/lowess.html" />
+    <link rel="prev" title="データの可視化" href="visualization.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -137,8 +139,6 @@
     <div class="bd-container__inner bd-page-width">
       
       
-      
-        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -356,7 +356,7 @@
 </details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">統計学</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="probability/index.html">確率</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="probability/01_probability.html">確率</a></li>
 <li class="toctree-l2"><a class="reference internal" href="probability/02_expectation.html">確率変数と期待値・分散</a></li>
@@ -401,6 +401,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="done_wrong.html">統計学の誤用や望ましい作法</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">データの可視化</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">価格指数</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">統計モデリング</span></p>
 <ul class="nav bd-sidenav">
@@ -743,7 +744,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../soft_skills/presentation.html">プレゼンテーション</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../soft_skills/negotiation.html">交渉 / 人を巻き込む</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../soft_skills/harvard_negotiation.html">『ハーバード流交渉術』</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../soft_skills/leadership.html">リーダーシップ</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../soft_skills/management/index.html">マネジメント</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../soft_skills/management/leadership.html">リーダーシップ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../soft_skills/management/task_management.html">タスク管理・仕事の進め方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../soft_skills/management/1on1.html">1on1</a></li>
+</ul>
+</details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">英語</span></p>
 <ul class="nav bd-sidenav">
@@ -1025,13 +1031,17 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">一般的な価格指数の手法</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">住宅価格指数</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ヘドニック法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">一般的な価格指数の手法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ラスパイレス指数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">パーシェ指数</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">住宅価格指数</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">ヘドニック法</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#repeat-sales-model">リピートセールモデル（Repeat Sales Model）</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -1047,19 +1057,72 @@ document.write(`
 <h1>価格指数<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <section id="id2">
 <h2>一般的な価格指数の手法<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>ラスパイレス</p>
-<p>パーシェ</p>
-</section>
 <section id="id3">
-<h2>住宅価格指数<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h3>ラスパイレス指数<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p><strong>基準年の数量</strong>を重みとして算出する。</p>
+<p>日本の消費者物価指数で用いられている方式。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[
+L = \frac{ \sum_{i} p_{i}^{1} q_{i}^{0} }{ \sum_{i} p_{i}^{0} q_{i}^{0} }
+\]</div>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(p_i^0\)</span>：基準年（0年）の価格</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(p_i^1\)</span>：比較年（1年）の価格</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(q_i^0\)</span>：基準年の数量（固定）</p></li>
+</ul>
+</div>
+</div>
+<p><strong>特徴</strong>：</p>
+<ul class="simple">
+<li><p>現実の変化よりやや大きめに出やすい（消費行動が変わらないと仮定）</p></li>
+</ul>
+</section>
 <section id="id4">
-<h3>ヘドニック法<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<h3>パーシェ指数<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p><strong>比較年の数量</strong>を使って、実際の消費行動の変化も反映する。</p>
+<div class="math notranslate nohighlight">
+\[
+P = \frac{ \sum_{i} p_{i}^{1} q_{i}^{1} }{ \sum_{i} p_{i}^{0} q_{i}^{1} }
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(q_i^1\)</span>：比較年の数量</p></li>
+</ul>
+<p><strong>特徴</strong>：</p>
+<ul class="simple">
+<li><p>現実に近いが、データ収集がやや難しい（当年の数量が必要）</p></li>
+</ul>
+</section>
+</section>
+<section id="id5">
+<h2>住宅価格指数<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h3>ヘドニック法<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <p><strong>概要</strong></p>
 <ul class="simple">
 <li><p>住宅の特徴を説明変数に入れた線形回帰モデルを組み、切片で時点のダミー（固定効果）を入れて経時的な価格変化を捉える。</p></li>
 <li><p>日本の国交省の価格指数ではヘドニック法をベースとしている。</p></li>
 </ul>
-<p><strong>長短</strong></p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[
+\ln P_{i t} = \alpha + \boldsymbol{D}_t^\top \boldsymbol{\delta}_t + \boldsymbol{x}_{i t}^\top \boldsymbol{\beta}_t + \varepsilon_{i t}
+\]</div>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(P_{i t} \in \mathbb{R}\)</span>：時点<span class="math notranslate nohighlight">\(t\)</span>、地点<span class="math notranslate nohighlight">\(i\)</span>の床面積当たりの価格</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\alpha \in \mathbb{R}\)</span>：切片項</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\boldsymbol{\delta}_t \in \mathbb{R}^T\)</span>：時間固定効果 → 価格指数に使う</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\boldsymbol{D}_t \in \{0, 1\}^T\)</span>：時点ダミーベクトル</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\boldsymbol{x}_{i t} \in \mathbb{R}^{m}\)</span>：物件の属性情報（共変量・統制変数）</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\boldsymbol{\beta}_t \in \mathbb{R}^{m}\)</span>：属性情報の回帰係数（局外母数）</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\varepsilon_{i t} \in \mathbb{R}\)</span>：誤差項</p></li>
+</ul>
+<p class="sd-card-text">で求めたあとに基準年を100とするよう指数化する</p>
+</div>
+</div>
+<p><strong>特徴</strong></p>
 <ul class="simple">
 <li><p>長所：多くのサンプルを利用可能</p></li>
 <li><p>短所：仮定がやや多い</p>
@@ -1069,21 +1132,6 @@ document.write(`
 </ol>
 </li>
 </ul>
-<p><strong>数理的には</strong></p>
-<div class="math notranslate nohighlight">
-\[
-\ln P_{i t} = \alpha + \boldsymbol{D}_t^\top \boldsymbol{\delta}_t + \boldsymbol{x}_{i t}^\top \boldsymbol{\beta}_t + \varepsilon_{i t}
-\]</div>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(P_{i t} \in \mathbb{R}\)</span>：時点<span class="math notranslate nohighlight">\(t\)</span>、地点<span class="math notranslate nohighlight">\(i\)</span>の床面積当たりの価格</p></li>
-<li><p><span class="math notranslate nohighlight">\(\alpha \in \mathbb{R}\)</span>：切片項</p></li>
-<li><p><span class="math notranslate nohighlight">\(\boldsymbol{\delta}_t \in \mathbb{R}^T\)</span>：時間固定効果 → 価格指数に使う</p></li>
-<li><p><span class="math notranslate nohighlight">\(\boldsymbol{D}_t \in \{0, 1\}^T\)</span>：時点ダミーベクトル</p></li>
-<li><p><span class="math notranslate nohighlight">\(\boldsymbol{x}_{i t} \in \mathbb{R}^{m}\)</span>：物件の属性情報（共変量・統制変数）</p></li>
-<li><p><span class="math notranslate nohighlight">\(\boldsymbol{\beta}_t \in \mathbb{R}^{m}\)</span>：属性情報の回帰係数（局外母数）</p></li>
-<li><p><span class="math notranslate nohighlight">\(\varepsilon_{i t} \in \mathbb{R}\)</span>：誤差項</p></li>
-</ul>
-<p>で求めたあとに基準年を100とするよう指数化</p>
 </section>
 <section id="repeat-sales-model">
 <h3>リピートセールモデル（Repeat Sales Model）<a class="headerlink" href="#repeat-sales-model" title="Link to this heading">#</a></h3>
@@ -1092,19 +1140,20 @@ document.write(`
 <li><p>Baily et al.(1963)やCase and Shiller(1989)によって開発されてきた手法。S&amp;Pケースシラー住宅価格指数で使われている。</p></li>
 <li><p>同じ物件が異なる時点で取引されたときの価格変化を平均する。</p></li>
 </ul>
-<p><strong>長短</strong></p>
+<p><strong>特徴</strong></p>
 <ul class="simple">
 <li><p>長所：同一物件の価格変化を見るため、物件ごとの個体差を完全に統制できる</p></li>
 <li><p>短所：分析に使用可能なサンプルが限られる</p></li>
 </ul>
-<p><strong>数理的には</strong></p>
-<p>ある物件が時点 <span class="math notranslate nohighlight">\(f\)</span>に1回目の売買がされ、時点<span class="math notranslate nohighlight">\(s\)</span> に2回目の売買がされ、その価格がそれぞれ <span class="math notranslate nohighlight">\(P_{if}\)</span> および <span class="math notranslate nohighlight">\(P_{is}\)</span> だったとする。
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text">ある物件が時点 <span class="math notranslate nohighlight">\(f\)</span>に1回目の売買がされ、時点<span class="math notranslate nohighlight">\(s\)</span> に2回目の売買がされ、その価格がそれぞれ <span class="math notranslate nohighlight">\(P_{if}\)</span> および <span class="math notranslate nohighlight">\(P_{is}\)</span> だったとする。
 また</p>
 <ul class="simple">
-<li><p>(仮定1) 物件のすべての属性が時期を通して不変だった（リフォーム等はしていない, <span class="math notranslate nohighlight">\(\boldsymbol{x}_{i f} = \boldsymbol{x}_{i s}\)</span>）</p></li>
-<li><p>(仮定2) 属性のパラメーターは時期を通して不変だった（<span class="math notranslate nohighlight">\(\boldsymbol{\beta}_f = \boldsymbol{\beta}_s\)</span>）</p></li>
+<li><p class="sd-card-text">(仮定1) 物件のすべての属性が時期を通して不変だった（リフォーム等はしていない, <span class="math notranslate nohighlight">\(\boldsymbol{x}_{i f} = \boldsymbol{x}_{i s}\)</span>）</p></li>
+<li><p class="sd-card-text">(仮定2) 属性のパラメーターは時期を通して不変だった（<span class="math notranslate nohighlight">\(\boldsymbol{\beta}_f = \boldsymbol{\beta}_s\)</span>）</p></li>
 </ul>
-<p>と仮定する。このとき、ヘドニック法の価格関数の2時点間の差分は</p>
+<p class="sd-card-text">と仮定する。このとき、ヘドニック法の価格関数の2時点間の差分は</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
@@ -1119,7 +1168,7 @@ document.write(`
 &amp;= \boldsymbol{M}^\top \boldsymbol{\delta} + \Delta \varepsilon_{i}
 \end{aligned}
 \end{split}\]</div>
-<p>ここで</p>
+<p class="sd-card-text">ここで</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 M_t = 
@@ -1129,16 +1178,18 @@ M_t =
 0 &amp; \text{ otherwise }
 \end{cases}
 \end{split}\]</div>
+<p class="sd-card-text">つまり1回目の取引時点のダミーを<span class="math notranslate nohighlight">\(-1\)</span>、2回目の取引を<span class="math notranslate nohighlight">\(+1\)</span>として取引ペアを表現すれば線形回帰モデルで求めることができる。</p>
 <ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(P_{if}, P_{is}\)</span>：それぞれの時点での売買価格</p></li>
-<li><p><span class="math notranslate nohighlight">\(\boldsymbol{\delta} \in \mathbb{R}^T\)</span>：各期間の住宅価格の対数変化率</p></li>
-<li><p><span class="math notranslate nohighlight">\(\Delta \varepsilon_i := \varepsilon_{i f} - \varepsilon_{i s}\)</span>：撹乱項の変化</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(P_{if}, P_{is}\)</span>：それぞれの時点での売買価格</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\boldsymbol{\delta} \in \mathbb{R}^T\)</span>：各期間の住宅価格の対数変化率</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\Delta \varepsilon_i := \varepsilon_{i f} - \varepsilon_{i s}\)</span>：撹乱項の変化</p></li>
 </ul>
-<p>このモデルは、価格差の対数が<strong>期間ごとの価格変化の累積</strong>と一致するという仮定に基づいています。</p>
+</div>
+</div>
 </section>
 </section>
-<section id="id5">
-<h2>参考<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h2>参考<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.mlit.go.jp/common/001360416.pdf">国土交通省「不動産価格指数（住宅）の作成方法」</a></p></li>
 <li><p><a class="reference external" href="https://www.lij.jp/html/jli/jli_2016/2016autumn_p105.pdf">沓澤隆司. (2016). 中古マンションの不動産価格指数の推計におけるリピートセールス法導入の可能性. 土地総合研究/土地総合研究所 [編], 24(4), 105-111.</a></p></li>
@@ -1176,6 +1227,24 @@ M_t =
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="visualization.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">データの可視化</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../statistical_modeling/lowess.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">LOWESS</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -1192,13 +1261,17 @@ M_t =
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">一般的な価格指数の手法</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">住宅価格指数</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">ヘドニック法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">一般的な価格指数の手法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ラスパイレス指数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">パーシェ指数</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">住宅価格指数</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">ヘドニック法</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#repeat-sales-model">リピートセールモデル（Repeat Sales Model）</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a></li>
 </ul>
   </nav></div>
 
