@@ -746,18 +746,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../soft_skills/management/leadership.html">リーダーシップ</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../soft_skills/management/task_management.html">タスク管理・仕事の進め方</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../soft_skills/management/1on1.html">1on1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../soft_skills/management/people_management.html">People Management</a></li>
 </ul>
 </details></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">英語</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../english/vocabulary/index.html">Vocabulary</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../english/vocabulary/idioms.html">idioms</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../english/grammar.html">Grammar</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../english/small_talk.html">Small Talk</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../english/for_mathematic.html">英語での数式表現</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ソフトウェア工学</span></p>
 <ul class="current nav bd-sidenav">
@@ -1029,6 +1020,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beyond-the-twelve-factor-app">Beyond the Twelve-Factor App</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">参考</a></li>
 </ul>
             </nav>
@@ -1043,7 +1035,8 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="twelve-factor-app">
 <h1>Twelve-Factor App<a class="headerlink" href="#twelve-factor-app" title="Link to this heading">#</a></h1>
-<p>Webアプリ開発のベスト・プラクティスとされる方法論</p>
+<p><a class="reference external" href="https://12factor.net/">The Twelve-Factor App</a> は Webアプリ開発のベスト・プラクティスとされる方法論</p>
+<p>Adam Wiggins がHerokuの開発で得た知見を2012年ごろにまとめたもの。</p>
 <div class="admonition-the-twelve-factors admonition">
 <p class="admonition-title">The Twelve Factors</p>
 <ol class="arabic simple">
@@ -1117,13 +1110,76 @@ document.write(`
 </li>
 </ol>
 </div>
+<section id="beyond-the-twelve-factor-app">
+<h2>Beyond the Twelve-Factor App<a class="headerlink" href="#beyond-the-twelve-factor-app" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://www.oreilly.com/library/view/beyond-the-twelve-factor/9781492042631/">Beyond the Twelve-Factor App</a> は 2016年ごろにPivotal社のアーキテクト Kevin Hoffman によって「クラウドネイティブアプリ」向けにアップデートされたもの。</p>
+<p>“API first”と”Telemetry”とセキュリティの話（Authentication and Authorization）が追加されているのが主な変更点（因子の順番も優先順位に応じて書かれている）</p>
+<p><a class="reference external" href="https://www.cdta.org/sites/default/files/awards/beyond_the_12-factor_app_pivotal.pdf?utm_source=chatgpt.com">beyond_the_12-factor_app_pivotal.pdf</a></p>
+<div class="admonition-beyond-the-twelve-factor-app admonition">
+<p class="admonition-title">Beyond the Twelve-Factor App</p>
+<ol class="arabic simple">
+<li><p>One codebase, one application</p></li>
+<li><p>API first</p>
+<ul class="simple">
+<li><p>APIで他のアプリと連携することが多い時代になってきたのでAPIファーストの実装にする</p></li>
+<li><p>開発時は常にAPIとして利用されることを想定する（Webにしろモバイルにしろ）</p></li>
+<li><p>API開発時は業界標準的なAPIの書き方やドキュメント作成ツールやserver mockを活用する</p></li>
+</ul>
+</li>
+<li><p>Dependency management</p></li>
+<li><p>Design, build, release, and run</p></li>
+<li><p>Configuration, credentials, and code</p></li>
+<li><p>Logs</p></li>
+<li><p>Disposability</p></li>
+<li><p>Backing services</p></li>
+<li><p>Environment parity</p></li>
+<li><p>Administrative processes</p></li>
+<li><p>Port binding</p></li>
+<li><p>Stateless processes</p></li>
+<li><p>Concurrency</p></li>
+<li><p>Telemetry</p>
+<ul class="simple">
+<li><p>目的：効率的に監視したい。クラウドネイティブのアプリでは数百台のサーバーインスタンスを使ったりして大量のログが出てきたりするのでもうログを読んだりデバッガーを実行したりでは対応できない</p></li>
+<li><p>方法：</p>
+<ol class="arabic simple">
+<li><p>Application performance monitoring (APM)</p>
+<ul>
+<li><p>外部ツール・ダッシュボードがアプリのパフォーマンスを監視するために使われるイベントストリーム。</p></li>
+<li><p>例：1秒あたりのHTTPリクエストの平均回数</p></li>
+</ul>
+</li>
+<li><p>Domain-specific telemetry</p>
+<ul>
+<li><p>データウェアハウスに入れて分析するイベントストリーム</p></li>
+<li><p>例：直近20分の製品の販売個数</p></li>
+</ul>
+</li>
+<li><p>Health and system logs</p>
+<ul>
+<li><p>クラウドプロバイダーが提供する、定期的なヘルスチェックの結果やアプリケーションの起動、終了などのイベントストリーム</p></li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>※Telemetry（テレメトリ, 遠隔測定法）は何かを測定した結果を通信して伝えること。例えばロケットが測定したデータを地球上の基地に伝えること。クラウドのサーバーは直接触れられないのでこの用語を使っている</p></li>
+</ul>
+</li>
+<li><p>Authentication and authorization</p>
+<ul class="simple">
+<li><p>クラウドネイティブアプリではrole-based access control (RBAC) が使われる事が多い</p></li>
+</ul>
+</li>
+</ol>
+</div>
+</section>
 <section id="id1">
 <h2>参考<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://12factor.net/ja/">The Twelve-Factor App （日本語訳）</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/takurUN/items/b8bf6fa193ffac5ef431">Beyond the Twelve-Factor Appを意訳してみた（前半） #Design - Qiita</a></p></li>
 <li><p><a class="reference external" href="https://www.amazon.co.jp/dp/B0BRPRQFMH">AWSで実現するモダンアプリケーション入門</a></p>
 <ul>
-<li><p>まだ読めてないがBeyond twelve-factor appというセクションもある</p></li>
+<li><p>The Twelve-Factor AppやBeyondにからめて具体的な実装を紹介している</p></li>
 </ul>
 </li>
 </ul>
@@ -1194,6 +1250,7 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beyond-the-twelve-factor-app">Beyond the Twelve-Factor App</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">参考</a></li>
 </ul>
   </nav></div>

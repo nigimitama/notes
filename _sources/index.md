@@ -221,12 +221,10 @@
 
 :::{grid-item-card}
 :columns: 6
-英語
+外国語
 
-- [](english/vocabulary/index)
-- [](english/grammar)
-- [](english/small_talk)
-- [](english/for_mathematic)
+- [](english/index)
+- [](chinese/index)
 :::
 
 :::{grid-item-card}
