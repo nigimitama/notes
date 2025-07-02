@@ -1040,26 +1040,30 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">連続反応モデル</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">適合度の評価</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">局所独立性の確認</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">個人適合度</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">多次元モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">補償型と非補償型</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">適合度の評価</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">局所独立性の確認</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">個人適合度</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#irt">IRTの前提条件・仮定</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-independence">局所独立性（local independence）の仮定</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">一次元性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">一次元性</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pythonirt">PythonでのIRTの実装</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">2PL</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">データの生成</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">モデルの定義</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">推定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">2PL</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">データの生成</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">モデルの定義</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">推定</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -1224,6 +1228,44 @@ P(y_{ij} = 1)
 </div>
 </div>
 <p>なお横軸に<span class="math notranslate nohighlight">\(\theta_i\)</span>、縦軸に<span class="math notranslate nohighlight">\(P(y_{ij}=1)\)</span>をとったグラフは <strong>項目特性曲線 （item characteristic curve: ICC）</strong> と呼ばれる。</p>
+<div class="tip admonition">
+<p class="admonition-title">因子分析と2P正規累積モデルは等価</p>
+<p>因子分析と2パラメータ正規累積モデルは数学的に等価であると知られている。標準化していない（切片が0でない）1因子モデルは、切片<span class="math notranslate nohighlight">\(\tau_j\)</span>、因子負荷量<span class="math notranslate nohighlight">\(a_j\)</span>、因子スコア<span class="math notranslate nohighlight">\(f_i\)</span>で</p>
+<div class="math notranslate nohighlight">
+\[
+y_{ij} = \tau_j +  a_j f_i - \varepsilon_{ij}
+\quad (\varepsilon_{ij}\sim N(0, \sigma_{\varepsilon}))
+\]</div>
+<p>となる（IRTの説明に合わせて誤差の符号をマイナスにしている）</p>
+<p>カテゴリカル因子分析では「離散的な観測変数<span class="math notranslate nohighlight">\(y_{ij}\)</span>はその背後にある潜在的な連続変数によって決まる」という考え方をするため、IRTの冒頭の説明と同じで</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+y_{ij}
+= \begin{cases}
+0 &amp; \text{ if } (\tau_j +  a_j f_i) &lt; \varepsilon_{ij}\\
+1 &amp; \text{ if } (\tau_j +  a_j f_i) \geq \varepsilon_{ij}\\
+\end{cases}
+\end{split}\]</div>
+<p>つまり標準正規分布に従う誤差<span class="math notranslate nohighlight">\(\varepsilon_{ij}\)</span>が<span class="math notranslate nohighlight">\(\tau_j +  a_j f_i\)</span>より小さいときに<span class="math notranslate nohighlight">\(y_{ij}=1\)</span>となると考えるため、その確率<span class="math notranslate nohighlight">\(P(y_{ij}=1)\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+P(y_{ij} = 1)
+&amp;= P(\varepsilon_{ij} \leq \tau_j +  a_j f_i)\\
+&amp;= \int_{-\infty}^{ (\tau_j +  a_j f_i)} \frac{1}{\sqrt{2 \pi}} \exp \left(-\frac{z^2}{2}\right) d z
+\end{aligned}
+\end{split}\]</div>
+<p>となる。2つのモデルのパラメータを<span class="math notranslate nohighlight">\((f_i, a_j, \tau_j) = (\theta_i, a_j, a_j b_j)\)</span>と対応させると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\tau_j +  a_j f_i
+&amp;= a_j \left( f_i + \frac{\tau_j}{a_j} \right) \\
+&amp;= a_j (\theta_i - b_i)
+\end{aligned}
+\end{split}\]</div>
+<p>となる。</p>
+</div>
 </section>
 </section>
 <section id="id5">
@@ -1347,36 +1389,6 @@ P(y_{ij} = 1)
 <li><p><span class="math notranslate nohighlight">\(e_j\)</span>：非対称性</p></li>
 </ul>
 </div>
-<div class="tip admonition">
-<p class="admonition-title">因子分析と2P正規累積モデルは等価</p>
-<p>因子分析と2パラメータ正規累積モデルは数学的に等価であると知られている。標準化していない（切片が0でない）1因子モデルは、</p>
-<div class="math notranslate nohighlight">
-\[
-y_{ij} = \tau_j +  a_j f_i - \varepsilon_{ij}
-\quad (\varepsilon_{ij}\sim N(0, \sigma_{\varepsilon}))
-\]</div>
-<p>となる（IRTの説明に合わせて誤差の符号をマイナスにしている）</p>
-<p>カテゴリカル因子分析では離散的な観測変数<span class="math notranslate nohighlight">\(y_{ij}\)</span>はその背後にある連続量によって決まる、という考え方をするため、IRTの冒頭の説明と同じ。</p>
-<p>標準正規分布に従う誤差<span class="math notranslate nohighlight">\(\varepsilon_{ij}\)</span>が<span class="math notranslate nohighlight">\(\tau_j +  a_j f_i\)</span>より小さいときに<span class="math notranslate nohighlight">\(y_{ij}=1\)</span>となるため、その確率<span class="math notranslate nohighlight">\(P(y_{ij}=1)\)</span>は</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
-P(y_{ij} = 1)
-&amp;= P(\varepsilon_{ij} \leq \tau_j +  a_j f_i)\\
-&amp;= \int_{-\infty}^{ (\tau_j +  a_j f_i)} \frac{1}{\sqrt{2 \pi}} \exp \left(-\frac{z^2}{2}\right) d z
-\end{aligned}
-\end{split}\]</div>
-<p>となる。2つのモデルのパラメータを<span class="math notranslate nohighlight">\((f_i, a_j, \tau_j) = (\theta_i, a_j, a_j b_j)\)</span>と対応させると</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
-\tau_j +  a_j f_i
-&amp;= a_j \left( f_i + \frac{\tau_j}{a_j} \right) \\
-&amp;= a_j (\theta_i - b_i)
-\end{aligned}
-\end{split}\]</div>
-<p>となる。</p>
-</div>
 </section>
 </section>
 <section id="id9">
@@ -1448,15 +1460,55 @@ b_{x_j} = \beta_j + \frac{1}{\alpha_j} \log \frac{x_j}{K_j-x_j}
 </div>
 </section>
 <section id="id13">
-<h2>適合度の評価<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<h2>多次元モデル<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<p>多次元因子分析モデルでは項目反応<span class="math notranslate nohighlight">\(y_{ij}\)</span>を</p>
+<div class="math notranslate nohighlight">
+\[
+y_{i j} = \tau_j + \sum_{t=1}^T f_{i t} b_{t j} - \varepsilon_{ij}
+\]</div>
+<p>のように表す。ここから考えると、多次元IRTモデル（の2PLM）の項目反応関数は</p>
+<div class="math notranslate nohighlight">
+\[
+P(y_{ij}=1) = \frac{1}{ 1 + \exp \left[ -\sum_{t=1}^T \alpha_{j t} \theta_{i t} - \tau_j \right]}
+\]</div>
+<p>のように考えられる。<span class="math notranslate nohighlight">\(\tau_j\)</span>は切片のパラメータで、これを困難度に変換するには、次元ごとの識別力を一つにまとめた <strong>多次元識別力</strong> である</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{MDISC}_j=\sqrt{\sum_{t=1}^T \alpha_{t j}^2}
+\]</div>
+<p>を使って</p>
+<div class="math notranslate nohighlight">
+\[
+\beta_j=\frac{-\tau_j}{\mathrm{MDISC}_j}
+\]</div>
+<p>と変換する（豊田 2013 『項目反応理論［中級編]』） 。</p>
 <section id="id14">
-<h3>局所独立性の確認<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<h3>補償型と非補償型<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<p>ある次元の特性値が低くても、別の次元の特性値がとても高い場合は反応確率が高くなるようなモデルは <strong>補償型 (compensatory) モデル</strong> と呼ばれる。例えば先述の</p>
+<div class="math notranslate nohighlight">
+\[
+P(y_{ij}=1) = \frac{1}{ 1 + \exp \left[ -\sum_{t=1}^T \alpha_{j t} \theta_{i t} - \tau_j \right]}
+\]</div>
+<p>は補償型モデルである。</p>
+<p>一方で複数の次元の特性値がそろわないと高くならない多次元IRTモデルは <strong>非補償 (noncompensatory) モデル</strong> あるいは <strong>部分補償(partially compensatory)モデル</strong> と呼ばれる（例：「総合学力」に対して「数学力スコア」と「英語力スコア」はそれぞれ独立していると考える）。最もシンプルな非補償モデルの項目反応関数は</p>
+<div class="math notranslate nohighlight">
+\[
+P(y_{ij}=1) = \prod_{t=1}^T \frac{1}{1+\exp \left[-\alpha_{j t}\left(\theta_{i t}-\beta_{j t}\right)\right]}
+\]</div>
+<p>である。それぞれの次元の特性値<span class="math notranslate nohighlight">\(\theta_{i t}\)</span>で説明される確率の積にして同時確率のようになっている。</p>
+<p>推定の難しさなどの観点から補償型のほうがよく使われるらしい</p>
+</section>
+</section>
+<section id="id15">
+<h2>適合度の評価<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
+<section id="id16">
+<h3>局所独立性の確認<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\chi^2\)</span>統計量</p></li>
 </ul>
 </section>
-<section id="id15">
-<h3>個人適合度<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h3>個人適合度<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
 <p>「<span class="math notranslate nohighlight">\(\theta_i\)</span>が高い人なのに困難度が低い項目で間違えるのはおかしい」といった考え方から、特性<span class="math notranslate nohighlight">\(\theta_i\)</span>と困難度<span class="math notranslate nohighlight">\(b_j\)</span>の関係性を見る。</p>
 <ul class="simple">
 <li><p><strong><span class="math notranslate nohighlight">\(z_h\)</span>（<span class="math notranslate nohighlight">\(l_z\)</span>）統計量</strong> ：ある回答者の反応パターン<span class="math notranslate nohighlight">\(\boldsymbol{y}_i = (y_{i1}, y_{i2}, \dots, y_{iJ})\)</span> と「考えられる全反応パターン」での尤度を比較する</p></li>
@@ -1473,8 +1525,8 @@ b_{x_j} = \beta_j + \frac{1}{\alpha_j} \log \frac{x_j}{K_j-x_j}
 <li><p>例えばデータから<span class="math notranslate nohighlight">\(\theta_i\)</span>が特定の値の人を集めて（<span class="math notranslate nohighlight">\(\theta_i\)</span>で条件づけたデータを用意して）、項目<span class="math notranslate nohighlight">\(j,l\)</span>の回答のクロス表を作ったとき、関連性がない場合は局所独立性が満たされていることがわかる。</p></li>
 </ul>
 </section>
-<section id="id16">
-<h3>一次元性<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<section id="id18">
+<h3>一次元性<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
 <p>もともとのIRTは単一のテストに対する単一の能力を測定することが主たる目的のため、推定する因子数は1である（因子数を拡張したモデルも存在するが、基本は1）。そのため、すべての項目が同じ能力・特性のみを反映していることが必要となる。</p>
 <p><strong>仮定を満たすか確認する方法：</strong></p>
 <ul class="simple">
@@ -1487,10 +1539,10 @@ b_{x_j} = \beta_j + \frac{1}{\alpha_j} \log \frac{x_j}{K_j-x_j}
 <h2>PythonでのIRTの実装<a class="headerlink" href="#pythonirt" title="Link to this heading">#</a></h2>
 <p>一般的なモデル → <a class="reference external" href="https://github.com/17zuoye/pyirt">pyirt</a>などパッケージがある</p>
 <p>複雑な、独自のモデル → PyStanやPyMCでベイズ推定するのが良さそう</p>
-<section id="id17">
-<h3>2PL<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
-<section id="id18">
-<h4>データの生成<a class="headerlink" href="#id18" title="Link to this heading">#</a></h4>
+<section id="id19">
+<h3>2PL<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
+<section id="id20">
+<h4>データの生成<a class="headerlink" href="#id20" title="Link to this heading">#</a></h4>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
@@ -1590,31 +1642,31 @@ b_{x_j} = \beta_j + \frac{1}{\alpha_j} \log \frac{x_j}{K_j-x_j}
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>1</td>
-      <td>1</td>
+      <td>0</td>
+      <td>0</td>
       <td>0</td>
     </tr>
     <tr>
       <th>user_2</th>
-      <td>1</td>
       <td>0</td>
       <td>1</td>
       <td>1</td>
       <td>1</td>
+      <td>0</td>
+      <td>1</td>
       <td>1</td>
       <td>0</td>
       <td>1</td>
-      <td>0</td>
-      <td>0</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>user_3</th>
       <td>1</td>
-      <td>0</td>
-      <td>0</td>
+      <td>1</td>
       <td>1</td>
       <td>0</td>
-      <td>0</td>
+      <td>1</td>
+      <td>1</td>
       <td>1</td>
       <td>0</td>
       <td>1</td>
@@ -1623,27 +1675,27 @@ b_{x_j} = \beta_j + \frac{1}{\alpha_j} \log \frac{x_j}{K_j-x_j}
     <tr>
       <th>user_4</th>
       <td>1</td>
+      <td>1</td>
+      <td>0</td>
       <td>0</td>
       <td>0</td>
       <td>1</td>
       <td>0</td>
-      <td>1</td>
       <td>0</td>
       <td>0</td>
-      <td>1</td>
-      <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>user_5</th>
       <td>1</td>
       <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
       <td>0</td>
       <td>1</td>
       <td>1</td>
       <td>1</td>
-      <td>1</td>
-      <td>1</td>
-      <td>0</td>
       <td>1</td>
     </tr>
   </tbody>
@@ -1698,7 +1750,7 @@ b_{x_j} = \beta_j + \frac{1}{\alpha_j} \log \frac{x_j}{K_j-x_j}
       <th>1</th>
       <td>user_2</td>
       <td>question_1</td>
-      <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>2</th>
@@ -1723,8 +1775,8 @@ b_{x_j} = \beta_j + \frac{1}{\alpha_j} \log \frac{x_j}{K_j-x_j}
 </div></div></div>
 </div>
 </section>
-<section id="id19">
-<h4>モデルの定義<a class="headerlink" href="#id19" title="Link to this heading">#</a></h4>
+<section id="id21">
+<h4>モデルの定義<a class="headerlink" href="#id21" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># indexと値の取得</span>
@@ -1757,12 +1809,12 @@ b_{x_j} = \beta_j + \frac{1}{\alpha_j} \log \frac{x_j}{K_j-x_j}
   warnings.warn(
 </pre></div>
 </div>
-<img alt="../../_images/02618bcc3282f71d3df60a8629ddcc29ee481f4c66688c8b67c917ff5aa0d6f7.svg" src="../../_images/02618bcc3282f71d3df60a8629ddcc29ee481f4c66688c8b67c917ff5aa0d6f7.svg" />
+<img alt="../../_images/3b62609ef72341dabf3e0c4e9d707638110538d74d1c3b2c97bc136e836196be.svg" src="../../_images/3b62609ef72341dabf3e0c4e9d707638110538d74d1c3b2c97bc136e836196be.svg" />
 </div>
 </div>
 </section>
-<section id="id20">
-<h4>推定<a class="headerlink" href="#id20" title="Link to this heading">#</a></h4>
+<section id="id22">
+<h4>推定<a class="headerlink" href="#id22" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
@@ -1781,7 +1833,7 @@ b_{x_j} = \beta_j + \frac{1}{\alpha_j} \log \frac{x_j}{K_j-x_j}
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>NUTS: [theta, a, beta]
 </pre></div>
 </div>
-<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "b383e2ed6b8e42c780c9535af0f275f8"}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "bb74aae612f9449d817dbec9a790fbbe"}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
 </div><div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
 <span class="n">File</span> <span class="o">&lt;</span><span class="n">timed</span> <span class="n">exec</span><span class="o">&gt;</span><span class="p">:</span><span class="mi">2</span>
@@ -4090,8 +4142,8 @@ dl.xr-attrs {
 </section>
 </section>
 </section>
-<section id="id21">
-<h2>参考<a class="headerlink" href="#id21" title="Link to this heading">#</a></h2>
+<section id="id23">
+<h2>参考<a class="headerlink" href="#id23" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www2.kobe-u.ac.jp/~bunji/files/lecture/MVA/mva-08-item-response-theory.pdf">Chapter 8 項目反応理論 1</a></p></li>
 <li><p><a class="reference external" href="https://ytake2.github.io/IRT_stan_adventcalendar/irt_document.html#content">項目反応理論やってみよう</a></p></li>
@@ -4181,26 +4233,30 @@ dl.xr-attrs {
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">連続反応モデル</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">適合度の評価</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">局所独立性の確認</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">個人適合度</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">多次元モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">補償型と非補償型</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">適合度の評価</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">局所独立性の確認</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">個人適合度</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#irt">IRTの前提条件・仮定</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-independence">局所独立性（local independence）の仮定</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">一次元性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">一次元性</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pythonirt">PythonでのIRTの実装</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">2PL</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">データの生成</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">モデルの定義</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">推定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">2PL</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">データの生成</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">モデルの定義</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">推定</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">参考</a></li>
 </ul>
   </nav></div>
 
