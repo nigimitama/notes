@@ -1001,7 +1001,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -1017,6 +1019,19 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">応用研究</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cate">小売業においてクーポン配布のCATEを推定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#amazon">Amazonの顧客ターゲティング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mcjames-et-al-2024">「少しずつ頻繁に」行う宿題の学習効果 McJames et al. (2024)</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -1030,6 +1045,56 @@ document.write(`
 <h1>Casual Tree<a class="headerlink" href="#casual-tree" title="Link to this heading">#</a></h1>
 <p>Random Forestをカーネル重み付けとみなす視点に、Robinson (1988)の部分線形モデルを合わせたもの</p>
 <p><a class="reference external" href="https://speakerdeck.com/tomoshige_n/ban-hua-randamuhuoresutonoli-lun-totong-ji-de-yin-guo-tui-lun-henoying-yong?slide=42">一般化ランダムフォレストの理論と統計的因果推論への応用 - Speaker Deck</a></p>
+<section id="id1">
+<h2>応用研究<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="cate">
+<h3>小売業においてクーポン配布のCATEを推定<a class="headerlink" href="#cate" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0278937">How causal machine learning can leverage marketing strategies: Assessing and improving the performance of a coupon campaign | PLOS One</a></p>
+<ul class="simple">
+<li><p>Kaggle公開データを使ってCATEを推定</p></li>
+<li><p>配布した5種類のクーポンのうち、ドラッグストア商品券と食品カテゴリ券の2種だけが有意に売上増効果を持つことが分かった。</p></li>
+<li><p>他のクーポンは統計的に効果が確認できず、無効な施策だった。</p></li>
+<li><p>また効果の異質性分析から、「ドラッグストア券は事前購買額の大きい優良顧客に特に効果的」「一般食品券は購買額の少ないライト層に効果的」といったセグメント別の効果差が判明した</p></li>
+<li><p>例えば、既存ヘビーユーザーには日用品系クーポンで追加購買を促進でき、ライトユーザーには普段買わない食品クーポンで来店を促すと効果的。</p></li>
+<li><p>この結果を踏まえ、クーポン配布の対象を効果の高いセグメントに絞る最適施策を導出したところ、全顧客に配布する場合と比べ費用対効果が大幅に向上した（少数配布で売上効果の大半を実現）。因果フォレストを用いることで、マーケティングROIを最大化する配布戦略の策定が可能になることを示した。</p></li>
+</ul>
+</section>
+<section id="amazon">
+<h3>Amazonの顧客ターゲティング<a class="headerlink" href="#amazon" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://arxiv.org/abs/2409.13847">[2409.13847] Segment Discovery: Enhancing E-commerce Targeting</a></p>
+<p>方法</p>
+<ul class="simple">
+<li><p>Amazon社内の大規模実験データ（オンラインサービス等のABテスト複数）。例：ある定額サービスで解約防止のプロモメッセージを送る実験（数十万人規模）。</p></li>
+<li><p>まずランダム化比較試験から顧客毎のCATEをCausal Forestやuplift modelで推定。次に企業側の制約（予算・接触可能数）を組み込んだ最適化アルゴリズム（Large-Scale Budget-Constrained Causal Forest）で最大効果のターゲット集合を選定。</p></li>
+</ul>
+<p>結果</p>
+<ul class="simple">
+<li><p>従来は、例えば離脱率の高い順に顧客に介入するなど予測モデルに基づくターゲティングが行われていた。しかし実験データを分析したところ、離脱リスクが極端に高い顧客層では、プロモメッセージを送っても効果が無いばかりか逆効果（介入で離脱率が悪化）になる場合があることが判明</p></li>
+<li><p>一方、リスクが中程度の層に大きなプラス効果が見られるなど、どの層に介入すべきかは単純な予測スコア順とは一致しないことが示された。</p></li>
+<li><p>Causal Forestを用いるターゲティングでは、こうした「介入効果の高い層」を的確に抽出できる。実際、<strong>あるサービスの例では従来ルールでは離脱スコア下位39.1%を一律介入対象としていたが、因果モデルに基づき効果の見込める顧客だけを選別したところ、むしろ全体の半数以下の配信で離脱抑止効果の75%以上を達成</strong>できた。</p></li>
+<li><p>このアプローチにより、顧客体験を損ねる無駄な介入を避けつつ、限られたマーケ予算で最大限の効果を上げることが可能となる。Amazon社の研究では複数のキャンペーンで有効性が検証されており、大規模パーソナライズドマーケティングへの因果機械学習の実用性を示すケースとなっている。</p></li>
+</ul>
+</section>
+<section id="mcjames-et-al-2024">
+<h3>「少しずつ頻繁に」行う宿題の学習効果 McJames et al. (2024)<a class="headerlink" href="#mcjames-et-al-2024" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0959475224000951?via%3Dihub">Little and often: Causal inference machine learning demonstrates the benefits of homework for improving achievement in mathematics and science - ScienceDirect</a></p></li>
+<li><p><a class="reference external" href="https://phys.org/news/2024-09-reveals-impact-homework-student-math.html">Study reveals impact of homework on student achievement in math and science</a></p></li>
+</ul>
+<p>方法：</p>
+<ul class="simple">
+<li><p>国際学力調査TIMSS 2019のデータから、アイルランドの中学2年生4,118人の数学・理科成績と家庭学習時間を分析</p></li>
+<li><p>Bayesian Causal Forests で、宿題の頻度・長さを疑似介入変数として成績への因果効果を推定</p></li>
+</ul>
+<p>結果：</p>
+<ul class="simple">
+<li><p>週あたりの宿題実施回数を増やすことが学力向上に効果的である一方、1回あたりの宿題時間を延ばしても効果は頭打ちになる傾向が示された</p></li>
+<li><p>15分程度の短い課題でも長時間の課題と同等の効果があり、頻度を上げて宿題を小分けにする「Little and Often」戦略が有効であることがデータから裏付けられた。</p></li>
+<li><p><strong>数学では「毎日少し」の宿題が最も成績を伸ばし</strong> 、理科では週3～4回程度が効果的。</p></li>
+<li><p>また従来の通説では家庭環境により宿題効果に差が出ると考えられていたが、本解析ではどの社会経済層の生徒も宿題の恩恵を等しく享受しており、一部の層だけが得をするわけではないことが示された。</p></li>
+</ul>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1086,6 +1151,26 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">応用研究</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cate">小売業においてクーポン配布のCATEを推定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#amazon">Amazonの顧客ターゲティング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mcjames-et-al-2024">「少しずつ頻繁に」行う宿題の学習効果 McJames et al. (2024)</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
