@@ -234,13 +234,13 @@
 - [](software_engineering/programming)
 - [](software_engineering/algorithms/index)
 - [](software_engineering/development/index)
+- [](software_engineering/frontend/index)
 - [](software_engineering/data_store/index)
 - [](software_engineering/faas/index)
 - [](software_engineering/security/index)
 - [](software_engineering/pseudorandom_numbers/index)
 - [](software_engineering/web_optimization)
 - [](software_engineering/linux)
-- [](software_engineering/ui_design/index)
 :::
 
 :::{grid-item-card}
