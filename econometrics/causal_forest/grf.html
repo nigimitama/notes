@@ -71,6 +71,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/causal_forest/grf';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -1024,7 +1026,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grf">GRFは欠陥あり？</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">理論</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grf">GRFは欠陥あり？</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -1038,6 +1043,31 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="generalized-random-forest-grf">
 <h1>Generalized Random Forest (GRF)<a class="headerlink" href="#generalized-random-forest-grf" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://arxiv.org/abs/1610.01271">[1610.01271] Generalized Random Forests</a></p>
+<p><strong>Generalized Random Forest（GRF）</strong> はRandom Forestを局所的な重み付けの推定器として一般化したもの。</p>
+<ul class="simple">
+<li><p>与えられた観測点 <span class="math notranslate nohighlight">\(x\)</span> に対し、その周囲の観測データを「重み付き」平均で統計量を推定する構造</p></li>
+<li><p>目的変数は一般のM-推定問題に拡張可能（平均だけでなく、分位点、最適政策など）</p></li>
+</ul>
+<section id="id1">
+<h2>理論<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>まずモーメント条件により<span class="math notranslate nohighlight">\(\theta(x)\)</span>のforest-based estimatorsを定義する</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+(定義) 局所モーメント条件</div>
+<p class="sd-card-text">データ <span class="math notranslate nohighlight">\((X_i, O_i) \in \mathcal{X} \times \mathcal{O}\)</span> が次の式を満たすと仮定する</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}\left[\psi_{\theta(x), \nu(x)}\left(O_i\right) \mid X_i=x\right]=0 \text { for all } x \in \mathcal{X}
+\]</div>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\theta=(\theta(x))_{x \in \mathcal{X}} \in \Theta=\left\{\theta: \mathcal{X} \rightarrow \mathbb{R}^{k_p}\right\}:\)</span> 興味のある（汎関数）パラメータ</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\nu=(\nu(x))_{x \in \mathcal{X}} \in \Theta=\left\{\nu: \mathcal{X} \rightarrow \mathbb{R}^{k_q}\right\}:\)</span> 局外（汎関数）パラメータ</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\psi_{., .}(\cdot): \mathcal{X} \times \mathcal{O} \rightarrow \mathbb{R}^{k_\psi}:\)</span> スコア関数</p></li>
+</ul>
+</div>
+</div>
 <p><a class="reference external" href="https://speakerdeck.com/tomoshige_n/ban-hua-randamuhuoresutonoli-lun-totong-ji-de-yin-guo-tui-lun-henoying-yong">一般化ランダムフォレストの理論と統計的因果推論への応用 - Speaker Deck</a></p>
 <ul class="simple">
 <li><p>非常によくまとまっている資料</p></li>
@@ -1045,10 +1075,14 @@ document.write(`
 <ul class="simple">
 <li><p>Random Forest / Tree は、サンプルをある基準で重み付けるカーネルを学習するもの、という一般化</p></li>
 </ul>
+<ul class="simple">
+<li><p><a class="reference external" href="https://grf-labs.github.io/grf/">grf</a>パッケージ（R）</p></li>
+</ul>
 <section id="grf">
-<h2>GRFは欠陥あり？<a class="headerlink" href="#grf" title="Link to this heading">#</a></h2>
+<h3>GRFは欠陥あり？<a class="headerlink" href="#grf" title="Link to this heading">#</a></h3>
 <p>Atlantic causal inference conferenceの因果推論コンペでの成績は悪かったらしい</p>
 <p>（<a class="reference external" href="https://twitter.com/kenmcalinn/status/1630768792912506881">Ken McAlinnさんはTwitterを使っています: 「因果推定コンテストで回帰分析にボロ負けした話もちゃんと載せてほしい。」 / Twitter</a>）</p>
+</section>
 </section>
 </section>
 
@@ -1098,7 +1132,10 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grf">GRFは欠陥あり？</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">理論</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grf">GRFは欠陥あり？</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

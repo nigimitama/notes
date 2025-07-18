@@ -1037,6 +1037,8 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#roc">ROC曲線</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#precision-recall-curve">Precision-Recall Curve</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#imbalanced-dataprroc">imbalanced dataとPR曲線・ROC曲線</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mcc">マシューズ相関係数（MCC）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#balanced-accuracy">Balanced Accuracy</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">コサイン類似度</a></li>
@@ -1266,7 +1268,7 @@ f1_score=0.094
 </div>
 </details>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;sklearn.metrics._plot.confusion_matrix.ConfusionMatrixDisplay at 0x7ff869a8f0d0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;sklearn.metrics._plot.confusion_matrix.ConfusionMatrixDisplay at 0x7f7cc411b610&gt;
 </pre></div>
 </div>
 <img alt="../../_images/648eccf07850c4eeacc2ff45b4615ae869cf09bb0544050e7ad743467f2a7e33.png" src="../../_images/648eccf07850c4eeacc2ff45b4615ae869cf09bb0544050e7ad743467f2a7e33.png" />
@@ -1293,6 +1295,75 @@ f1_score=0.094
 </details>
 <div class="cell_output docutils container">
 <img alt="../../_images/196eeb682bd3fae61765fb03136ed61936b29e99c4fe9f859b1bdeacdd2fc9b1.png" src="../../_images/196eeb682bd3fae61765fb03136ed61936b29e99c4fe9f859b1bdeacdd2fc9b1.png" />
+</div>
+</div>
+</section>
+<section id="mcc">
+<h3>マシューズ相関係数（MCC）<a class="headerlink" href="#mcc" title="Link to this heading">#</a></h3>
+<p><strong>マシューズ相関係数（Matthews Correlation Coefficient: MCC）</strong> は二値分類モデルの性能評価指標の一つで、特にクラスの不均衡がある場合に信頼性が高いことで知られている。</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{MCC}=\frac{T P \cdot T N-F P \cdot F N}{\sqrt{(T P+F P)(T P+F N)(T N+F P)(T N+F N)}}
+\]</div>
+<p>言葉でいうと</p>
+<ul class="simple">
+<li><p>分子： <strong>正しく分類された数（TP × TN）</strong> から、 <strong>誤分類の積（FP × FN）</strong> を引いたもの。</p></li>
+<li><p>分母：全体の規模を正規化（0除算を防ぐため）。</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">matthews_corrcoef</span>
+
+<span class="n">y_true</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MCC: </span><span class="si">{</span><span class="n">matthews_corrcoef</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 不均衡なデータに対してMajority Classだけを予測した場合</span>
+<span class="n">y_true</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MCC: </span><span class="si">{</span><span class="n">matthews_corrcoef</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MCC: 0.300
+MCC: 0.000
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="balanced-accuracy">
+<h3>Balanced Accuracy<a class="headerlink" href="#balanced-accuracy" title="Link to this heading">#</a></h3>
+<p>Balanced Accuracy は、各クラスの正解率（リコール、感度）を平均したもの</p>
+<div class="math notranslate nohighlight">
+\[
+\text { Balanced Accuracy }=\frac{1}{2}\left(\frac{T P}{T P+F N}+\frac{T N}{T N+F P}\right)
+\]</div>
+<p>ここで：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\frac{TP}{TP + FN}\)</span>：感度（Sensitivity）または再現率（Recall）</p></li>
+<li><p><span class="math notranslate nohighlight">\(\frac{TN}{TN + FP}\)</span>：特異度（Specificity）</p></li>
+</ul>
+<p>不均衡データに強いとされる。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">balanced_accuracy_score</span>
+
+<span class="c1"># 不均衡なデータに対してMajority Classだけを予測した場合</span>
+<span class="n">y_true</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;accuracy: </span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;balanced_accuracy: </span><span class="si">{</span><span class="n">balanced_accuracy_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>accuracy: 0.857
+balanced_accuracy: 0.500
+</pre></div>
+</div>
 </div>
 </div>
 </section>
@@ -1508,6 +1579,8 @@ f1_score=0.094
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#roc">ROC曲線</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#precision-recall-curve">Precision-Recall Curve</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#imbalanced-dataprroc">imbalanced dataとPR曲線・ROC曲線</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mcc">マシューズ相関係数（MCC）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#balanced-accuracy">Balanced Accuracy</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">コサイン類似度</a></li>
