@@ -541,6 +541,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/unsupervised_learning/t_sne.html">t-SNE</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/anomaly_detection/index.html">異常検知</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/anomaly_detection/isolation_forest.html">Isolation Forest</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/linear_models/index.html">線形モデル</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/linear_models/regression/linear_regression.html">線形回帰</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/linear_models/regression/ridge_regression.html">Ridge回帰</a></li>
@@ -1026,9 +1030,20 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">シンプルなやつ（母比率の検定の場合）</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">丁寧なやつ</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">シンプルなやつ（母比率の検定の場合）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statsmodels">statsmodels</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">本格的な実験手順</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">手順1. 事前分析：サンプルサイズの設計</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">効果量</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">手順2. 事後分析：検出力分析</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">statsmodels</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -1123,33 +1138,380 @@ n \geq (2 \times 1.96 \times \sqrt{\widehat{p}(1-\widehat{p})} \times \frac{1}{w
 </div>
 </div>
 </div>
+<section id="statsmodels">
+<h3>statsmodels<a class="headerlink" href="#statsmodels" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://www.statsmodels.org/dev/generated/statsmodels.stats.proportion.samplesize_confint_proportion.html#statsmodels.stats.proportion.samplesize_confint_proportion">samplesize_confint_proportion</a>
+を使うことで、想定される比率、幅、有意水準からサンプル数を推定できる</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.stats.proportion</span><span class="w"> </span><span class="kn">import</span> <span class="n">samplesize_confint_proportion</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="n">samplesize_confint_proportion</span><span class="p">(</span><span class="n">proportion</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">half_length</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">,.0f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3,457
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 <section id="id3">
-<h2>丁寧なやつ<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p>statsmodels: <a class="reference external" href="https://www.statsmodels.org/dev/stats.html#power-and-sample-size-calculations">Size Calculations</a></p>
+<h2>本格的な実験手順<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <div class="admonition- admonition">
 <p class="admonition-title">サンプルサイズの4大因子</p>
-<p>以下の4つのうち3つが決まれば残る1つも決まる</p>
+<p>次の4つのうち3つが決まれば残る1つも決まる</p>
 <ol class="arabic simple">
-<li><p>サンプルサイズ</p></li>
-<li><p>効果量</p></li>
-<li><p>有意水準（<span class="math notranslate nohighlight">\(\alpha\)</span>）</p></li>
-<li><p>検出力（<span class="math notranslate nohighlight">\(1-\beta\)</span>）</p></li>
+<li><p>サンプルサイズ（Sample size）</p></li>
+<li><p>効果量（Effect size）</p>
+<ul class="simple">
+<li><p>比較対象（平均や割合など）の差の大きさ。</p></li>
+<li><p>例：Cohen’s d, r, η² など</p></li>
+</ul>
+</li>
+<li><p>有意水準（Significance level, <span class="math notranslate nohighlight">\(\alpha\)</span>）</p>
+<ul class="simple">
+<li><p>第1種の過誤（誤って帰無仮説を棄却する）の確率</p></li>
+</ul>
+</li>
+<li><p>検出力（Power, <span class="math notranslate nohighlight">\(1-\beta\)</span>）</p>
+<ul class="simple">
+<li><p>帰無仮説が誤っているときに、それを正しく棄却できる確率。第2種の過誤（棄却できない確率<span class="math notranslate nohighlight">\(\beta\)</span>）をしない確率</p></li>
+<li><p>通常は 0.8（80%）以上が望ましいとされる</p></li>
+</ul>
+</li>
 </ol>
+<p>→ サンプルサイズを設計するにはサンプルサイズ以外の3つを設定すればいい</p>
+<p>→ 検出力を推定するには検出力以外の3つを使えばいい</p>
 </div>
-<p>サンプルサイズを設計するには</p>
+<section id="id4">
+<h3>手順1. 事前分析：サンプルサイズの設計<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>調査（A/Bテストなど）を行う前のサンプルサイズ設計。</p>
 <ol class="arabic simple">
 <li><p>効果量</p></li>
-<li><p>有意水準（<span class="math notranslate nohighlight">\(\alpha\)</span>）</p></li>
-<li><p>検出力（<span class="math notranslate nohighlight">\(1-\beta\)</span>）</p></li>
+<li><p>有意水準</p></li>
+<li><p>検出力</p></li>
 </ol>
-<p>を設定すればよい</p>
+<p>を決めてサンプルサイズを算出する。</p>
+<p>有意水準は5%、検出力は80%などにすればいいが、効果量がちょっと難しい。</p>
+<p>A/Bテストでいうと「この新施策で成約率が5ポイント上昇するはず」などの仮定をおいて効果量を算出することになる。</p>
+<section id="id5">
+<h4>効果量<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<p>代表的な効果量にはCohenのdやhがある。</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>効果量</p></th>
+<th class="head"><p>用途</p></th>
+<th class="head"><p>備考</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Cohen’s <span class="math notranslate nohighlight">\(d\)</span></p></td>
+<td><p>2群の平均値の差</p></td>
+<td><p>目安：0.2=小, 0.5=中, 0.8=大</p></td>
+</tr>
+<tr class="row-odd"><td><p>Hedges’ <span class="math notranslate nohighlight">\(g\)</span></p></td>
+<td><p>2群の平均値の差</p></td>
+<td><p>Cohen’s <span class="math notranslate nohighlight">\(d\)</span>の小標本でのバイアス補正版</p></td>
+</tr>
+<tr class="row-even"><td><p>Cohen’s <span class="math notranslate nohighlight">\(h\)</span></p></td>
+<td><p>2群の比率の差</p></td>
+<td><p>目安：0.2=小, 0.5=中, 0.8=大</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition-cohen-s-d admonition">
+<p class="admonition-title">Cohen’s <span class="math notranslate nohighlight">\(d\)</span></p>
+<p>2群の平均値の差の効果量。</p>
+<div class="math notranslate nohighlight">
+\[
+d=\frac{\bar{X}_1-\bar{X}_2}{s_{\text {pooled }}}
+\]</div>
+<p>ここで：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\bar{X}_1\)</span> ：群1の平均</p></li>
+<li><p><span class="math notranslate nohighlight">\(\bar{X}_2\)</span> ：群2の平均</p></li>
+<li><p><span class="math notranslate nohighlight">\(s_{\text {pooled }}\)</span> ：プールされた標準偏差（両群の分散を平均したもの）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+s_{\text {pooled }}=\sqrt{\frac{\left(n_1-1\right) s_1^2+\left(n_2-1\right) s_2^2}{n_1+n_2-2}}
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(s_1^2, s_2^2:\)</span> それぞれの群の不偏分散</p></li>
+<li><p><span class="math notranslate nohighlight">\(n_1, n_2\)</span> ：それぞれの群のサンプルサイズ</p></li>
+</ul>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cohens_d</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">x1</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">n2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">x2</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">n1</span> <span class="o">+</span> <span class="n">n2</span> <span class="o">-</span> <span class="mi">2</span>
+    <span class="n">pooled_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">denom</span> <span class="o">/</span> <span class="n">num</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">x2</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="n">pooled_std</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">cohens_d</span><span class="p">(</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">450</span><span class="p">),</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">300</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">d</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">cohens_d</span><span class="p">(</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">350</span><span class="p">),</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">300</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">d</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>d=0.103
+d=0.485
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition-hdges-g admonition">
+<p class="admonition-title">Hdges’ <span class="math notranslate nohighlight">\(g\)</span></p>
+<p>Cohen’s <span class="math notranslate nohighlight">\(d\)</span>はサンプルサイズが小さいときに過大評価するバイアスがあるため補正する係数を乗じたもの</p>
+<div class="math notranslate nohighlight">
+\[
+g=J \cdot d
+\]</div>
+<p>ここで：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(d\)</span> ：Cohen’s <span class="math notranslate nohighlight">\(d\)</span> （2群の標準化された平均差）</p></li>
+<li><p><span class="math notranslate nohighlight">\(J:\)</span> バイアス補正係数（通常は小さくなる）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+J=1-\frac{3}{4 (n_1+n_2 - 2)-1}
+\]</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">hedges_g</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">cohens_d</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">3</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">n1</span> <span class="o">+</span> <span class="n">n2</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">J</span> <span class="o">*</span> <span class="n">d</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">cohens_d</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">d</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">J</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">3</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="n">x2</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">J</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">hedges_g</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">g</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>d=0.213
+J=0.997
+g=0.212
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition-cohen-s-h admonition">
+<p class="admonition-title">Cohen’s <span class="math notranslate nohighlight">\(h\)</span></p>
+<p>2群の比率の差の効果量。</p>
+<div class="math notranslate nohighlight">
+\[
+h=2 \cdot \arcsin (\sqrt{p_1})-2 \cdot \arcsin (\sqrt{p_2})
+\]</div>
+<p>ここで：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(p_1\)</span> ：群1の比率（成約率など）</p></li>
+<li><p><span class="math notranslate nohighlight">\(p_2\)</span> ：群2の比率（成約率など）</p></li>
+</ul>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cohens_h</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">p1</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">p2</span><span class="o">**</span><span class="mf">0.5</span><span class="p">))</span>
+
+<span class="n">h</span> <span class="o">=</span> <span class="n">cohens_h</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">h</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>h=0.152
+</pre></div>
+</div>
+</div>
+</div>
 </section>
-<section id="id4">
-<h2>参考<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+</section>
+<section id="id6">
+<h3>手順2. 事後分析：検出力分析<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>実測のサンプルサイズ</p></li>
+<li><p>実測の効果量</p></li>
+<li><p>有意水準</p></li>
+</ol>
+<p>で検出力を算出する</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 平均値の差の場合 ------------------------------</span>
+<span class="c1"># サンプルの例</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># calc power</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.stats.power</span><span class="w"> </span><span class="kn">import</span> <span class="n">TTestIndPower</span>
+<span class="n">power_analysis</span> <span class="o">=</span> <span class="n">TTestIndPower</span><span class="p">()</span>
+<span class="n">power</span> <span class="o">=</span> <span class="n">power_analysis</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+    <span class="n">nobs1</span><span class="o">=</span><span class="n">x1</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+    <span class="n">ratio</span><span class="o">=</span><span class="n">x2</span><span class="o">.</span><span class="n">size</span> <span class="o">/</span> <span class="n">x1</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>  <span class="c1"># nobs2 = nobs1 * ratio</span>
+    <span class="n">effect_size</span><span class="o">=</span><span class="n">hedges_g</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">power</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>power=0.721
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 比率の差の場合 ------------------------------</span>
+<span class="c1"># サンプルの例</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">750</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+
+<span class="c1"># calc power</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.stats.power</span><span class="w"> </span><span class="kn">import</span> <span class="n">NormalIndPower</span>
+<span class="n">power_analysis</span> <span class="o">=</span> <span class="n">NormalIndPower</span><span class="p">()</span>
+<span class="n">power</span> <span class="o">=</span> <span class="n">power_analysis</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+    <span class="n">nobs1</span><span class="o">=</span><span class="n">x1</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+    <span class="n">ratio</span><span class="o">=</span><span class="n">x2</span><span class="o">.</span><span class="n">size</span> <span class="o">/</span> <span class="n">x1</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>  <span class="c1"># nobs2 = nobs1 * ratio</span>
+    <span class="n">effect_size</span><span class="o">=</span><span class="n">hedges_g</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">power</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>power=0.954
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id7">
+<h3>statsmodels<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>statsmodels: <a class="reference external" href="https://www.statsmodels.org/dev/stats.html#power-and-sample-size-calculations">Size Calculations</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># サンプルサイズの変化に応じた検定力の推移</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.stats.power</span><span class="w"> </span><span class="kn">import</span> <span class="n">TTestIndPower</span>
+
+<span class="n">power_analysis</span> <span class="o">=</span> <span class="n">TTestIndPower</span><span class="p">()</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">power_analysis</span><span class="o">.</span><span class="n">plot_power</span><span class="p">(</span>
+    <span class="n">dep_var</span><span class="o">=</span><span class="s1">&#39;nobs&#39;</span><span class="p">,</span>
+    <span class="n">nobs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+    <span class="n">effect_size</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/17173e68f48921961eed8190caa72defcac2ac60bec63d09ea1568efe00f4795.png" src="../../_images/17173e68f48921961eed8190caa72defcac2ac60bec63d09ea1568efe00f4795.png" />
+</div>
+</div>
+<p>statsmodelsの <code class="docutils literal notranslate"><span class="pre">solve_power</span></code> では、4要因のうち <code class="docutils literal notranslate"><span class="pre">None</span></code> にした要素を推定できる</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># effect_sizeをNoneにしてeffect_sizeを推定</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.stats.power</span><span class="w"> </span><span class="kn">import</span> <span class="n">TTestIndPower</span>
+<span class="n">power_analysis</span> <span class="o">=</span> <span class="n">TTestIndPower</span><span class="p">()</span>
+<span class="n">effect_size</span> <span class="o">=</span> <span class="n">power_analysis</span><span class="o">.</span><span class="n">solve_power</span><span class="p">(</span>
+    <span class="n">nobs1</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">ratio</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># nobs2 = nobs1 * ratio</span>
+    <span class="n">effect_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">effect_size</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>effect_size=0.398
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># effect_sizeをNoneにして必要なeffect_sizeを推定</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.stats.power</span><span class="w"> </span><span class="kn">import</span> <span class="n">NormalIndPower</span>
+<span class="n">power_analysis</span> <span class="o">=</span> <span class="n">NormalIndPower</span><span class="p">()</span>
+<span class="n">effect_size</span> <span class="o">=</span> <span class="n">power_analysis</span><span class="o">.</span><span class="n">solve_power</span><span class="p">(</span>
+    <span class="n">nobs1</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">ratio</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># nobs2 = nobs1 * ratio</span>
+    <span class="n">effect_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">effect_size</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>effect_size=0.125
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h2>参考<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://bellcurve.jp/statistics/course/9129.html?srsltid=AfmBOor_VrX0VRNoaDn20rzg-4p3TdUMNflYCO7EGUwvrOtqo6LQ94bw">21-4. 必要なサンプルサイズ1 | 統計学の時間 | 統計WEB</a></p></li>
 <li><p><a class="reference external" href="https://bellcurve.jp/statistics/course/12769.html">31-6. サンプルサイズの設計と検出力分析 | 統計学の時間 | 統計WEB</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/Yushin-Tati/items/8aeb2c190e3494dd6b78#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB">Python初心者の備忘録 #14 ~統計学入門編04~ #Python3 - Qiita</a></p></li>
 <li><p><a class="reference external" href="https://citeseerx.ist.psu.edu/document?repid=rep1&amp;amp;type=pdf&amp;amp;doi=77a4e5a32157ddd2c8ccab43093e7a7602e6938f">Wang, H., &amp; Chow, S. C. (2014). Sample Size Calculation for Comparing Variabilities. Wiley StatsRef: Statistics Reference Online. John Wiley &amp; Sons, Ltd.</a></p>
 <ul>
 <li><p>ちゃんとやる場合にはこれ参考になりそう</p></li>
@@ -1206,9 +1568,20 @@ n \geq (2 \times 1.96 \times \sqrt{\widehat{p}(1-\widehat{p})} \times \frac{1}{w
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">シンプルなやつ（母比率の検定の場合）</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">丁寧なやつ</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">シンプルなやつ（母比率の検定の場合）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statsmodels">statsmodels</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">本格的な実験手順</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">手順1. 事前分析：サンプルサイズの設計</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">効果量</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">手順2. 事後分析：検出力分析</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">statsmodels</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考</a></li>
 </ul>
   </nav></div>
 

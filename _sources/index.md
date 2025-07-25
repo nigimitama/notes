@@ -100,6 +100,7 @@
 
 - [](machine_learning/statistical_learning_theory/index)
 - [](machine_learning/unsupervised_learning/index)
+- [](machine_learning/anomaly_detection/index)
 - [](machine_learning/linear_models/index)
 - [](machine_learning/svm)
 - [](machine_learning/ensemble)
