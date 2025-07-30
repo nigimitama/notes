@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Casual Tree &#8212; データサイエンス関連+αのメモ</title>
+    <title>Casual Forest &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -510,7 +510,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Causal Forest / GRF</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Casual Tree</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Casual Forest</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../causal_machine_learning/index.html">Causal Machine Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1021,7 +1021,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Casual Tree</h1>
+    <h1>Casual Forest</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -1031,21 +1031,25 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">背景</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#random-forest">Random Forestの理論解析の進展</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">因果推論についての前提</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-tree">Causal Tree</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#random-forest">背景：Random Forestの理論解析の進展</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">因果推論についての前提</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#honest">Honest</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#honestcart">honestな木はCARTと異なる目的関数をもつ</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">honestな木は過学習しにくい</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hte">HTEの推定</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#honest">Honest</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">honestな木は過学習しにくい</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">応用研究</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-forest">Causal Forest</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">応用研究</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cate">小売業においてクーポン配布のCATEを推定</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#amazon">Amazonの顧客ターゲティング</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mcjames-et-al-2024">「少しずつ頻繁に」行う宿題の学習効果 McJames et al. (2024)</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1057,17 +1061,17 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="casual-tree">
-<h1>Casual Tree<a class="headerlink" href="#casual-tree" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="casual-forest">
+<h1>Casual Forest<a class="headerlink" href="#casual-forest" title="Link to this heading">#</a></h1>
 <p>Random Forestをカーネル重み付けとみなす視点に、Robinson (1988)の部分線形モデルを合わせたもの</p>
 <p><a class="reference external" href="https://speakerdeck.com/tomoshige_n/ban-hua-randamuhuoresutonoli-lun-totong-ji-de-yin-guo-tui-lun-henoying-yong?slide=42">一般化ランダムフォレストの理論と統計的因果推論への応用 - Speaker Deck</a></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://speakerdeck.com/tomoshige_n/randamuhuoresutoniyoruyin-guo-tui-lun-tozui-jin-nozhan-kai-838c3989-570d-49ca-b630-22044a798589">ランダムフォレストによる因果推論と最近の展開 - Speaker Deck</a></p></li>
 </ul>
-<section id="id1">
-<h2>背景<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="causal-tree">
+<h2>Causal Tree<a class="headerlink" href="#causal-tree" title="Link to this heading">#</a></h2>
 <section id="random-forest">
-<h3>Random Forestの理論解析の進展<a class="headerlink" href="#random-forest" title="Link to this heading">#</a></h3>
+<h3>背景：Random Forestの理論解析の進展<a class="headerlink" href="#random-forest" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Delgado et al. (2014) はUCIデータセット121に対して様々な手法を適用し、Random Forestが優れた結果を示したと報告</p>
 <ul>
@@ -1096,8 +1100,8 @@ document.write(`
 </li>
 </ul>
 </section>
-<section id="id2">
-<h3>因果推論についての前提<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<section id="id1">
+<h3>因果推論についての前提<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
@@ -1161,12 +1165,13 @@ Definition: Heterogeneous Treatment Effect (HTE)</div>
 </div>
 </div>
 </section>
-</section>
 <section id="honest">
-<h2>Honest<a class="headerlink" href="#honest" title="Link to this heading">#</a></h2>
-<p>Causal Treesはrecursive partitioningを用いてHeterogeneous Treatment Effectを推定する手法。</p>
-<p>honest性という概念がcausal forestsやGeneralized Random Forestの証明において重要な役割を果たす。</p>
-<p>またhonest性を満たすTreeはCARTと比較して過学習を起こしにくいという性質もある。</p>
+<h3>Honest<a class="headerlink" href="#honest" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Causal Treesはrecursive partitioningを用いてHeterogeneous Treatment Effectを推定する手法。</p></li>
+<li><p>honest性という概念がcausal forestsやGeneralized Random Forestの証明において重要な役割を果たす。</p></li>
+<li><p>またhonest性を満たすTreeはCARTと比較して過学習を起こしにくいという性質もある。</p></li>
+</ul>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
@@ -1174,6 +1179,8 @@ honest</div>
 <p class="sd-card-text"><strong>「木の分割（partitioning）をするために用いるサンプル」と「TreeのLeafごとの推定量の計算に用いるサンプル」に別々のサンプルを用いることで、partition <span class="math notranslate nohighlight">\(\Pi\)</span> と 推定量<span class="math notranslate nohighlight">\(\hat{\mu}\)</span> が独立になったTree を honest なTreeであるという</strong></p>
 </div>
 </div>
+<section id="honestcart">
+<h4>honestな木はCARTと異なる目的関数をもつ<a class="headerlink" href="#honestcart" title="Link to this heading">#</a></h4>
 <p>honestな木はpartition <span class="math notranslate nohighlight">\(\Pi\)</span>のもとで estimation sample <span class="math notranslate nohighlight">\(\mathcal{S}^{e s t}\)</span> を用いて推定された条件付き平均<span class="math notranslate nohighlight">\(\hat{\mu}\left(X_i ; \mathcal{S}^{e s t}, \Pi\right)\)</span>とテストデータ<span class="math notranslate nohighlight">\(\mathcal{S}^{t e}\)</span>の平均二乗誤差</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1195,8 +1202,9 @@ honest</div>
 \arg\min_\Pi \mathrm{E}_{\mathcal{S}^{\text{te}}, \mathcal{S}^{\text{tr}}}
 \left[\operatorname{MSE}(\mathcal{S}^{\text{te}}, \mathcal{S}^{\text{tr}}, \Pi(\mathcal{S}^{\text{tr}})\right]
 \]</div>
-<section id="id3">
-<h3>honestな木は過学習しにくい<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+</section>
+<section id="id2">
+<h4>honestな木は過学習しにくい<a class="headerlink" href="#id2" title="Link to this heading">#</a></h4>
 <p>MSEの期待値を取ったものをEMSE</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1228,9 +1236,25 @@ honest</div>
 \]</div>
 <p>leaf内分散はleaf内のサンプル数が多いうちは小さい（=CARTとhonest treeは似た挙動になる）が、leaf内サンプルが小さくなると高くなりやすい（分割を停止する方向に動く）。</p>
 </section>
+<section id="hte">
+<h4>HTEの推定<a class="headerlink" href="#hte" title="Link to this heading">#</a></h4>
+<p>問題：データ <span class="math notranslate nohighlight">\(\left(Y_i, X_i, W_i\right) \in \mathbb{R} \times \mathbb{R}^\rho \times\{0,1\}\)</span> が観測されたもとで、 <span class="math notranslate nohighlight">\(\theta^{H T E}(x)=\mathrm{E}\left[Y_{a=1}-Y_{a=0} \mid X=x\right]\)</span> を推定する問題</p>
+<div class="math notranslate nohighlight">
+\[
+\tau(x ; \Pi) \equiv \mathrm{E}\left[Y_{a=1}-Y_{a=0} \mid X \in \ell(x ; \Pi)\right]
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\mu(a, x ; \Pi) \equiv \mathrm{E}\left[Y_a \mid X \in \ell(x ; \Pi)\right]
+\]</div>
 </section>
-<section id="id4">
-<h2>応用研究<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+</section>
+</section>
+<section id="causal-forest">
+<h2>Causal Forest<a class="headerlink" href="#causal-forest" title="Link to this heading">#</a></h2>
+</section>
+<section id="id3">
+<h2>応用研究<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <section id="cate">
 <h3>小売業においてクーポン配布のCATEを推定<a class="headerlink" href="#cate" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0278937">How causal machine learning can leverage marketing strategies: Assessing and improving the performance of a coupon campaign | PLOS One</a></p>
@@ -1278,6 +1302,17 @@ honest</div>
 <li><p>また従来の通説では家庭環境により宿題効果に差が出ると考えられていたが、本解析ではどの社会経済層の生徒も宿題の恩恵を等しく享受しており、一部の層だけが得をするわけではないことが示された。</p></li>
 </ul>
 </section>
+</section>
+<section id="id4">
+<h2>参考文献<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://tomtom58.hatenablog.com/entry/2024/07/15/211016">Causal TreeとCausal Forestの理論と実装 - tomtom58’s blog</a></p>
+<ul>
+<li><p>フルスクラッチ実装例がある</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://www.slideshare.net/slideshow/ss-67818872/67818872">計量経済学と 機械学習の交差点入り口 （公開用） | PDF</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -1345,21 +1380,25 @@ honest</div>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">背景</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#random-forest">Random Forestの理論解析の進展</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">因果推論についての前提</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-tree">Causal Tree</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#random-forest">背景：Random Forestの理論解析の進展</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">因果推論についての前提</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#honest">Honest</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#honestcart">honestな木はCARTと異なる目的関数をもつ</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">honestな木は過学習しにくい</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hte">HTEの推定</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#honest">Honest</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">honestな木は過学習しにくい</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">応用研究</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-forest">Causal Forest</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">応用研究</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cate">小売業においてクーポン配布のCATEを推定</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#amazon">Amazonの顧客ターゲティング</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mcjames-et-al-2024">「少しずつ頻繁に」行う宿題の学習効果 McJames et al. (2024)</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考文献</a></li>
 </ul>
   </nav></div>
 

@@ -510,7 +510,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="causal_forest/index.html">Causal Forest / GRF</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="causal_forest/causal_forest.html">Casual Tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="causal_forest/causal_forest.html">Casual Forest</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="causal_machine_learning/index.html">Causal Machine Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1045,14 +1045,15 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">回帰分析によるATE推定</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">強く無視できる割り当て条件</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">識別可能性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">強く無視できる割り当て条件</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sutva">SUTVA条件</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">条件1について</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">条件2について</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">条件1について</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">条件2について</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">参考文献</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">講義ノート</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">参考文献</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">講義ノート</a></li>
 </ul>
 </li>
 </ul>
@@ -1266,15 +1267,55 @@ Y = \tau D + \boldsymbol{X \beta} + \varepsilon
 </section>
 </section>
 <section id="id9">
-<h2>強く無視できる割り当て条件<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
-<p>共変量<span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span>を条件付けた下での処置割当<span class="math notranslate nohighlight">\(D\)</span>と結果<span class="math notranslate nohighlight">\(Y(0), Y(1)\)</span>の独立（<strong>条件付き独立</strong> conditional independence）</p>
+<h2>識別可能性<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<p><strong>識別可能性（identifiability）</strong> とは、データから母数が一意に推定可能であること。</p>
+<p>識別可能性をもつためには、2つの条件を満たす必要がある</p>
+<div class="admonition- admonition">
+<p class="admonition-title">独立性 / 交換可能性</p>
+<p><strong>独立性</strong> （あるいは <strong>交換可能性（exchangeability）</strong> ）とは、潜在的結果変数と処置の割当<span class="math notranslate nohighlight">\(D\)</span>が独立であること</p>
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\indep}{\mathop{\hspace{0.1em} \perp\!\!\!\perp \hspace{0.1em}}}
+\{Y(1), Y(0)\} \indep D
+\]</div>
+</div>
+<p>例えば二値変数の<span class="math notranslate nohighlight">\(D\in\{0,1\}\)</span>のとき、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+E[Y \mid D=0] = E[Y(0) \mid D] = E[Y(0)]\\
+E[Y \mid D=1] = E[Y(1) \mid D] = E[Y(1)]
+\end{split}\]</div>
+<p>となるため、観測できない潜在的結果<span class="math notranslate nohighlight">\(E[Y(0)],E[Y(1)]\)</span>が観測可能な<span class="math notranslate nohighlight">\(E[Y \mid D=0], E[Y \mid D=1]\)</span>の推定値で推定可能となる</p>
+<div class="math notranslate nohighlight">
+\[
+E[Y \mid D=1] - E[Y \mid D=0]
+= E[Y(1)] - E[Y(0)]
+= ATE
+\]</div>
+</section>
+<section id="id10">
+<h2>強く無視できる割り当て条件<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<p>共変量<span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span>を条件付けた下での処置割当<span class="math notranslate nohighlight">\(D\)</span>と結果<span class="math notranslate nohighlight">\(Y(0), Y(1)\)</span>の独立</p>
 <div class="math notranslate nohighlight">
 \[
 \newcommand{\indep}{\mathop{\hspace{0.1em} \perp\!\!\!\perp \hspace{0.1em}}}
 (Y(0), Y(1)) \indep D | \boldsymbol{X}
 \]</div>
-<p>を<strong>強く無視できる割り当て</strong>（strongly ignorable treatment assignment）条件という。</p>
-<p>この条件が成立するとき、<strong>平均での独立性</strong>（mean independence）</p>
+<p>を</p>
+<ul class="simple">
+<li><p><strong>強く無視できる割り当て</strong>（strongly ignorable treatment assignment）条件 や</p></li>
+<li><p><strong>条件付き独立の仮定</strong> （conditional independence assumption: CIA） や</p></li>
+<li><p><strong>条件付き交換可能性</strong> や</p></li>
+<li><p><strong>selection on observables</strong></p></li>
+</ul>
+<p>と呼ぶ。</p>
+<blockquote>
+<div><p>This leads to the conditional independence assumption (CIA), a core assumption that provides the (sometimes implicit) justiÖcation for the causal interpretation of regression.
+This assumption is sometimes called selection-on-observables because the covariates to be held fixed are assumed to be known and observed (e.g., in Goldberger, 1972; Barnow,
+Cain, and Goldberger, 1981)</p>
+<p>Angrist &amp; Pischke (2009). Mostly Harmless Econometrics（Princeton Univ. Press）, p39.</p>
+</div></blockquote>
+<p>強く無視できる割当条件が成立するとき、<strong>平均での独立性</strong>（mean independence）</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 E[Y|D=0, \boldsymbol{X}] = E[Y(0)|D, \boldsymbol{X}] = E[Y(0)|\boldsymbol{X}]\\
@@ -1284,7 +1325,7 @@ E[Y|D=1, \boldsymbol{X}] = E[Y(1)|D, \boldsymbol{X}] = E[Y(1)|\boldsymbol{X}]
 <p>そこから共変量について期待値をとればATEが推定できる</p>
 <div class="math notranslate nohighlight">
 \[
-E_{\boldsymbol{X}} [ E[Y(1) - Y(0)|\boldsymbol{X}] ] = E[Y(1) - Y(0)]
+E_{\boldsymbol{X}} [ E[Y(1) - Y(0)|\boldsymbol{X}] ] = E[Y(1) - Y(0)] = ATE
 \]</div>
 </section>
 <section id="sutva">
@@ -1294,27 +1335,27 @@ E_{\boldsymbol{X}} [ E[Y(1) - Y(0)|\boldsymbol{X}] ] = E[Y(1) - Y(0)]
 <li><p>個体<span class="math notranslate nohighlight">\(i\)</span>の潜在的結果は、他の個体が受ける処置の値に依存しない</p></li>
 <li><p>個体<span class="math notranslate nohighlight">\(i\)</span>に対する処置は1通りに定まる</p></li>
 </ol>
-<section id="id10">
-<h3>条件1について<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3>条件1について<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <p>条件1は相互干渉がない（no interference）という言い方もされる（Cox 1958）。</p>
 <p>相互干渉がある場合、個体<span class="math notranslate nohighlight">\(i\)</span>の潜在的結果は個体<span class="math notranslate nohighlight">\(i\)</span>の処置<span class="math notranslate nohighlight">\(D_i\)</span>だけでは定まらず、<span class="math notranslate nohighlight">\(Y_i(D_1, \cdots, D_n)\)</span>のように書く必要が出てきてかなり複雑になる。
 そのため、条件1は潜在的結果をシンプルに扱うための条件となる。</p>
 <p>しかし現実には相互干渉が発生しうる。例えば労働者への教育プログラムの効果を推定する際には、他にもそのプログラムを受けて技能を向上させた労働者が多く現れる場合、労働市場における希少価値は低下し、結果として個体<span class="math notranslate nohighlight">\(i\)</span>の潜在的結果に影響を与えると考えられる。</p>
 </section>
-<section id="id11">
-<h3>条件2について<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>条件2について<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <p>条件2は処置の内容を明確にすることを要請している。</p>
 <p>例えば「ダイエットをする」という処置では、具体的に何をしたのかが人によって大きく異なる可能性がある。</p>
 </section>
 </section>
-<section id="id12">
-<h2>参考文献<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+<section id="id13">
+<h2>参考文献<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="http://www.fsb.muohio.edu/lij14/420_paper_Rubin74.pdf">Rubin, D. B. (1974). Estimating causal effects of treatments in randomized and nonrandomized studies. Journal of educational Psychology, 66(5), 688.</a></p></li>
 <li><p><a class="reference external" href="https://www.cps.fgv.br/cps/bd/curso/17_Statistics_and_Causal_Inference_Holland.pdf">Holland, P. W. (1986). Statistics and causal inference. Journal of the American statistical Association, 81(396), 945-960.</a></p></li>
 </ul>
-<section id="id13">
-<h3>講義ノート<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>講義ノート<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://arxiv.org/abs/2305.18793">[2305.18793] A First Course in Causal Inference</a>（UCバークレーの講義ノート）</p></li>
 </ul>
@@ -1400,14 +1441,15 @@ E_{\boldsymbol{X}} [ E[Y(1) - Y(0)|\boldsymbol{X}] ] = E[Y(1) - Y(0)]
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">回帰分析によるATE推定</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">強く無視できる割り当て条件</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">識別可能性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">強く無視できる割り当て条件</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sutva">SUTVA条件</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">条件1について</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">条件2について</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">条件1について</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">条件2について</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">参考文献</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">講義ノート</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">参考文献</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">講義ノート</a></li>
 </ul>
 </li>
 </ul>
