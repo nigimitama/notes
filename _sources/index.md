@@ -30,9 +30,7 @@
 
 - [](statistics/probability/index)
 - [](statistics/statistical_inference/index)
-- [](statistics/correlation_coefficient)
-- [](statistics/correlation_for_ordinal_scale)
-- [](statistics/correlation_for_nominal_scale)
+- [](statistics/correlation/index)
 - [](statistics/divergence)
 - [](statistics/optimal_transport)
 - [](statistics/bootstrap)

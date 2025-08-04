@@ -1,0 +1,1403 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>相関係数 &#8212; データサイエンス関連+αのメモ</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=1699c4f2" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-KCTWFQM00B"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-KCTWFQM00B');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-KCTWFQM00B');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'statistics/correlation/correlation_coefficient';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">データサイエンス関連+αのメモ</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    データサイエンス関連+αのメモ
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">数学</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../mathematics/introduction.html">数学の初歩</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mathematics/set_theory.html">集合論</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/algebra/index.html">代数学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/algebra/group_theory.html">群論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/algebra/ring_theory.html">環論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/algebra/field_theory.html">体論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/algebra/number_theory.html">数論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/algebra/factorization.html">因数分解</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/linear_algebra/index.html">線形代数学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/linear_algebra/vector/index.html">ベクトル</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector/vector.html">ベクトル</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector/dot_product.html">内積</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector/cross_product.html">クロス積（ベクトル積）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector/direct_product.html">直積</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/linear_algebra/matrix.html">行列</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/linear_algebra/determinant/index.html">行列式</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/determinant/definition.html">行列式の定義</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/determinant/nature.html">行列式の性質</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/determinant/geometry.html">行列式の幾何的な解釈：体積拡大率</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/determinant/minor_determinant.html">余因子</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/determinant/permutation.html">置換</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/linear_algebra/inverse_matrix.html">逆行列</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/linear_algebra/vector_space/index.html">ベクトル空間</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector_space/vector_space.html">ベクトル空間</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector_space/basis.html">基底</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector_space/linear_mapping.html">線形写像</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector_space/rank_nullity_theorem.html">像、核、次元定理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector_space/rank.html">行列の階数（rank）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector_space/dual_space.html">双対空間</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector_space/inner_product_space.html">内積空間</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector_space/orthogonalization.html">直交化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/vector_space/normed_vector_space.html">ノルム線型空間とヒルベルト空間</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/linear_algebra/simultaneous_linear_equations/index.html">連立1次方程式</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/simultaneous_linear_equations/introduction.html">概要</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/simultaneous_linear_equations/gauss_elimination.html">Gauss-Jordanの消去法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/simultaneous_linear_equations/lu_decomposition.html">LU分解</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/simultaneous_linear_equations/conjugate_gradient.html">共役勾配法</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/linear_algebra/eigenvalue/index.html">固有値</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/eigenvalue/eigenvalue.html">固有値と固有ベクトル</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/eigenvalue/eigenvalue_of_symmetric.html">対称行列の固有値</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/eigenvalue/eigenvalue_and_covariance.html">固有値と共分散</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/eigenvalue/interpret_of_eigenvalue.html">固有値・固有ベクトルの解釈・意味</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/eigenvalue/definiteness.html">2次形式と定値性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/eigenvalue/singular_value_decomposition.html">特異値分解</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/linear_algebra/diagonalization/index.html">対角化</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/diagonalization/diagonalization.html">対角化の概要</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/diagonalization/diagonalization_by_eigenvectors.html">固有ベクトルによる対角化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/diagonalization/diagonalization_by_orthogonal.html">対称行列の直交行列による対角化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/diagonalization/jordan_normal_form.html">ジョルダン標準形</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/linear_algebra/geometry.html">2次元と3次元の簡単な幾何学</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/linear_algebra/complexity/index.html">計算量や数値計算について</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/complexity/inverse_matrix.html">逆行列の計算量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/complexity/implementation.html">numpyやscipyの逆行列の実装について</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/index.html">練習問題</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_01.html">練習問題 メモ 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_02.html">練習問題 メモ 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_03.html">練習問題 メモ 3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_04.html">練習問題 メモ 4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_05.html">練習問題メモ 5（連立1次方程式）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_06.html">練習問題メモ 6（正則行列）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_07.html">練習問題メモ 7（置換）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_08.html">練習問題メモ 8（行列式）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_09.html">練習問題メモ 9（余因子展開）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_10.html">練習問題メモ 10（特別な形をした行列式）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_11.html">練習問題メモ 11（行列式の幾何学的意味）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_12.html">練習問題メモ 12（行列の指数関数）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_13.html">練習問題メモ 13（ベクトル空間）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_14.html">練習問題メモ 14（1次独立と1次従属）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_15.html">練習問題メモ 15（基底と次元）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_16.html">練習問題メモ 16（基底変換）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_17.html">練習問題メモ 17（線形写像）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_18.html">練習問題メモ 18（表現行列）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_19.html">練習問題メモ 19（固有値と固有ベクトル その1－正方行列の定める線形変換の場合－）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_20.html">練習問題メモ 20（固有値と固有ベクトル その2－一般の線形変換の場合－）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_21.html">練習問題メモ 21（対角化）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_22.html">練習問題メモ 22（内積空間）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_23.html">練習問題メモ 23（正規直交基底）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/linear_algebra/exercise/exercise_24.html">練習問題メモ 24（対称行列の対角化）</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/calculus/index.html">微分積分学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/calculus/numerical_sequence.html">数列</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/calculus/function/index.html">関数</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/function/function.html">関数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/function/trigonometric_function.html">三角関数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/function/exp_and_log.html">指数関数と対数関数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/function/limit.html">極限</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/calculus/differential/index.html">微分法</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/differential/differential.html">微分法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/differential/extreme_value.html">極値</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/differential/basic_theorem.html">微分学の基礎的な定理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/differential/taylor_approximation.html">テイラー近似</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/differential/partial_derivative.html">偏微分</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/differential/directional_derivative.html">方向微分</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/differential/total_differential.html">全微分</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/calculus/integral/index.html">積分法</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/integral/indefinite_integral.html">不定積分</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/integral/definite_integral.html">定積分</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/integral/multiple_integral.html">多重積分</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../mathematics/calculus/exercise/index.html">練習問題メモ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/exercise/01.html">練習問題メモ 01</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/exercise/02.html">練習問題メモ 02</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mathematics/calculus/exercise/03.html">練習問題メモ 03</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/mathematical_optimization/index.html">数理最適化</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/optimality_conditions.html">最適性条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/gradient_descent.html">勾配法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/lagrange.html">ラグランジュの未定乗数法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/knapsack_problem.html">ナップサック問題</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/optimal_transport.html">最適輸送</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/shortest_path_problem.html">最短経路問題</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/mathematical_optimization/mathematical_modeling.html">数理モデリング</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/applied_math/index.html">応用数学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/applied_math/orthogonal_expansions.html">直交関数展開：ベクトルと関数の交差点</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/applied_math/fourier_analysis.html">フーリエ解析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/applied_math/discrete_fourier_analysis.html">離散フーリエ変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/applied_math/fast_fourier_transform.html">高速フーリエ変換</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/applied_math/exercise/index.html">『これなら分かる応用数学教室』メモ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/applied_math/exercise/1.html">応用数学 ch1メモ（最小二乗法）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/applied_math/exercise/2.html">応用数学 ch2メモ（直交関数展開）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/applied_math/exercise/5.html">応用数学 ch5メモ（2次形式、対角化、固有値）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/applied_math/exercise/6.html">応用数学 ch6メモ（主軸変換とその応用：主成分分析、特異値分解）</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/probability_theory/index.html">確率論</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/probability_theory/probability.html">確率</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/discrete_mathematics/index.html">離散数学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/discrete_mathematics/combinatorics.html">組合せ論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mathematics/discrete_mathematics/graph_theory.html">グラフ理論</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">統計学</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../probability/index.html">確率</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../probability/01_probability.html">確率</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../probability/02_expectation.html">確率変数と期待値・分散</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../probability/03_discrete_probability_distribution.html">離散確率分布</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../probability/04_continuous_probability_distribution.html">連続確率分布</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../probability/05_nature_of_distribution.html">確率分布の性質</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../statistical_inference/index.html">統計的推測</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_inference/01_sample_distribution.html">標本分布</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_inference/02_generating_functions.html">母関数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_inference/03_central_limit_theorem.html">中心極限定理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_inference/04_point_estimation.html">点推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_inference/05_interval_inference.html">区間推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_inference/06_test.html">検定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_inference/ci_and_test.html">信頼区間と検定の関係性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../statistical_inference/likelihood_and_probability.html">尤度関数と確率関数の違いは何なのか？</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="index.html">相関関係の定量化 / 相関係数</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../divergence.html">ダイバージェンス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../optimal_transport.html">最適輸送</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nonparametric_density_estimation.html">ノンパラメトリック密度推定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../missing_data.html">欠測データ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sandwich_estimator.html">Sandwich Estimator</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../asymptotic_theory/index.html">漸近理論</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../asymptotic_theory/introduction.html">漸近理論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asymptotic_theory/landau_symbol.html">漸近オーダーの表記法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asymptotic_theory/law_of_large_numbers.html">大数の法則</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asymptotic_theory/consistency_simulation.html">一致性のシミュレーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asymptotic_theory/empirical_processes.html">経験過程</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../bayes_statistics/index.html">ベイズ統計学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../bayes_statistics/bayes_estimation.html">ベイズ推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bayes_statistics/mcmc.html">マルコフ連鎖モンテカルロ（MCMC）法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bayes_statistics/prior.html">事前分布</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../done_wrong.html">統計学の誤用や望ましい作法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization.html">データの可視化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../price_index.html">価格指数</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">統計モデリング</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/lowess.html">LOWESS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/factor_analysis.html">因子分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/gaussian_process.html">ガウス過程回帰</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/quantile_regression.html">分位点回帰</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/survival_analysis.html">生存分析</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../statistical_modeling/sem/index.html">構造方程式モデリング</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/introduction.html">Structural Equation Modeling（SEM）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/statistic.html">統計量</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/regression_analysis.html">回帰分析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/path_analysis.html">パス解析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/mimic_pls.html">MIMICモデル &amp; PLSモデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/factor_analysis.html">因子分析モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/evaluation.html">モデルの評価</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/sem/independence_model.html">Lavaanの独立モデル</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../statistical_modeling/test_theory/index.html">テスト理論・項目反応理論・スコアリング</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/test_theory/introduction.html">テスト理論（スコアリング）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/test_theory/item_analysis.html">項目分析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/test_theory/classical_test_theory.html">古典的テスト理論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/test_theory/item_response_theory.html">項目反応理論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/test_theory/irt_models.html">項目反応理論のモデル群</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/test_theory/validation.html">スコアの妥当性検証</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../statistical_modeling/glm/index.html">一般化線形モデル（GLM)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/glm/introduction.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/glm/logistic_regression.html">ロジスティック回帰モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/glm/pseudo_r_squared.html">疑似R2乗値</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../statistical_modeling/bayes_modeling/index.html">ベイズ統計モデリング</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/bayes_modeling/introduction.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/bayes_modeling/linear_regression.html">ベイズ線形回帰</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../statistical_modeling/time_series_analysis/index.html">時系列分析</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/time_series_analysis/time_series_data.html">時系列データの特徴</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/time_series_analysis/data_transformation.html">時系列データの変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/time_series_analysis/arima_model.html">ARIMAモデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/time_series_analysis/state_space_model.html">状態空間モデル</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../statistical_modeling/symbolic_data_analysis.html">Symbolic Data Analysis</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../statistical_modeling/semiparametric/index.html">セミ・ノンパラメトリックモデル</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/semiparametric/introduction.html">概要</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../statistical_modeling/evaluation/index.html">統計モデルの評価</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/evaluation/aic.html">AIC / BIC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../statistical_modeling/evaluation/waic.html">WAIC / WBIC / 渡辺ベイズ理論</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">計量経済学・因果推論</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../econometrics/structure_estimation/index.html">構造推定</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/structure_estimation/discrete_choice_models.html">離散選択モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/structure_estimation/blp_model.html">BLPモデル</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/rubin_causal_model.html">ルービンの因果モデル</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/selection_bias.html">Selection Bias</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/experimental_design.html">実験デザイン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/pearl_causal_model.html">Pearl流の因果推論</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/causal_diagram.html">因果ダイアグラム</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../econometrics/ols/index.html">回帰分析</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/ols.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/assumptions.html">OLSの仮定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/type_of_regression_model.html">線形回帰モデルの種類</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/mle_and_ols.html">最尤推定法に基づく正規方程式の導出</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/error_and_residual.html">誤差項と残差の違い</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/cef.html">条件付き期待値関数（CEF）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/ols_estimator.html">OLS推定量の性質</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/test_of_ols.html">OLSの検定・区間推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/ols_robust_standard_error.html">OLSのロバスト標準誤差</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/log_transformation.html">対数変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/omitted_variable_bias.html">欠落変数バイアス</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/ols/fwl_theorem.html">FWL定理</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/propensity_score.html">傾向スコア</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../econometrics/iv/index.html">操作変数法</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/iv/instrumental_variables.html">操作変数法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/iv/gmm_and_iv.html">一般化モーメント法と操作変数法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/iv/history.html">操作変数法の歴史</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/iv/simulatenous_equasion_model.html">同時方程式モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/iv/bayesian_iv.html">Bayesian IV</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/regression_discontinuity.html">RDD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/fixed_effect_model.html">固定効果モデル</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/difference_in_differences.html">Difference In Differences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/synthetic_control.html">Synthetic Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/causalimpact.html">Causal Impact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/gmm.html">一般化モーメント法</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../econometrics/dml/index.html">Double/Debiased Machine Learning (DML)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/dml/dml.html">Double/Debiased Machine Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/dml/dml_simulation.html">DoubleMLパッケージによるDMLのシミュレーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/dml/dml_simple_simulation.html">シミュレーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/dml/dml_example.html">DMLパッケージで試してみる</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../econometrics/causal_forest/index.html">Causal Forest / GRF</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/causal_forest/causal_forest.html">Casual Forest</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../econometrics/causal_machine_learning/index.html">Causal Machine Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/causal_machine_learning/meta_learner.html">Meta Learner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/causal_machine_learning/applied_research.html">Causal ML系の応用研究</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../econometrics/causal_machine_learning/model_evaluation.html">モデルの評価</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/causal_discovery.html">統計的因果探索</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/uplift_modeling.html">Uplift Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/sensitivity_analysis.html">感度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/causal_clustering.html">Causal Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../econometrics/literatures.html">よさそうな文献・サイト</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">機械学習</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/statistical_learning_theory/index.html">統計的学習理論</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/statistical_learning_theory/introduction.html">統計的学習理論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/statistical_learning_theory/loss.html">学習アルゴリズムの評価</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/statistical_learning_theory/squared_loss_decomposition.html">二乗誤差の分解</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/statistical_learning_theory/complexity.html">仮説集合の複雑度</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/unsupervised_learning/index.html">教師なし学習</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/unsupervised_learning/distance.html">距離や類似度の関数</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/unsupervised_learning/k_means.html">k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/unsupervised_learning/pca.html">主成分分析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/unsupervised_learning/t_sne.html">t-SNE</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/anomaly_detection/index.html">異常検知</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/anomaly_detection/isolation_forest.html">Isolation Forest</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/linear_models/index.html">線形モデル</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/linear_models/regression/linear_regression.html">線形回帰</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/linear_models/regression/ridge_regression.html">Ridge回帰</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/linear_models/regression/lasso.html">LASSO</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/linear_models/classification/linear_discriminant_analysis.html">線形判別モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/linear_models/classification/logistic_regression.html">ロジスティック回帰</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../machine_learning/svm.html">Support Vector Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../machine_learning/ensemble.html">アンサンブル学習</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/trees/index.html">Tree-based Algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/decision_tree.html">決定木</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/extra_trees.html">Extra Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/gbdt.html">勾配ブースティング決定木</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/lightgbm.html">LightGBM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/lightgbm_quantize.html">Quantized Training of LightGBM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/ngboost.html">NGBoost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/catboost.html">CatBoost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/mondrian_forest.html">Mondrian Forests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/generalized_random_forest.html">Generalized Random Forest (GRF)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/distributional_random_forest.html">Distributional Random Forest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/trees/tabular_data_and_trees.html">なぜTree-based modelはDeep Learningよりテーブルデータに強いのか</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../machine_learning/knn.html">kNN（k最近傍法）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../machine_learning/naive_bayes.html">ナイーブベイズ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../machine_learning/bayesian_network.html">ベイジアンネットワーク</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../machine_learning/imbalanced_data.html">不均衡データ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../machine_learning/distillation.html">Distillation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../machine_learning/probability_prediction.html">確率予測</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/evaluation/evaluation.html">予測モデルの評価</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/cross_validation.html">交差検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/generalization_error.html">汎化誤差</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/irreducible_error.html">削減不能な誤差の推定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/aic.html">AICとCross Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/uncertainty_of_prediction.html">予測の不確実性の評価</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/evaluation/data_split_for_timeseries.html">時系列データにおけるモデル評価のためのデータ分割法</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/ml_ops/index.html">MLOps</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/ml_ops/ml_design_patterns.html">ML Design Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/ml_ops/ml_system_design_patterns.html">ML System Design Pattern</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/ml_ops/dataset_shift.html">データセットシフト</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../machine_learning/overfitting.html">過学習と良性の過学習（Double Descent, Grokking）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../machine_learning/feature_engineering.html">Feature Engineering</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/explainability/introduction.html">説明可能性</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/explainability/influence_function.html">影響関数（influence function）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/explainability/influence_function_with_linear_regression.html">Influence Function 線形回帰での例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/explainability/shap.html">SHAP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/explainability/model_class_reliance.html">Model Class Reliance (MCR)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/uncertainty/index.html">予測の不確実性</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/uncertainty/metrics.html">区間予測の評価指標</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/uncertainty/quantile_regression.html">分位点回帰</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/uncertainty/conformal_regression.html">Conformal Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/uncertainty/distribution_prediction.html">条件付き分布予測</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/uncertainty/gaussian_process.html">ガウス過程モデル</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">深層学習</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../deep_learning/history.html">深層学習の歴史</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../deep_learning/theory.html">深層学習の理論</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../deep_learning/intro_with_keras.html">ディープラーニング基礎 (with Keras)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../deep_learning/rola.html">RoLAとReLoLA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../deep_learning/neural_network.html">Feed-Forward Neural Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../deep_learning/dl_and_tabular_data.html">Deep Learning and Tabular data</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../deep_learning/dnn/index.html">Deep Neural Network</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../deep_learning/dnn/mlp.html">多層パーセプトロン</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../deep_learning/cnn/index.html">CNN</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../deep_learning/cnn/cnn.html">CNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deep_learning/cnn/cnn_vs_vit.html">CNN vs. ViT</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../deep_learning/rnn/index.html">RNN</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../deep_learning/rnn/rnn.html">RNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deep_learning/rnn/lstm.html">LSTM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deep_learning/rnn/gru.html">GRU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deep_learning/rnn/rnn_derivatives.html">RNNの派生手法</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../deep_learning/transformer/index.html">Transformer</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../deep_learning/transformer/algorithm.html">Transformerのアルゴリズム</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deep_learning/transformer/analysis.html">Transformerの理論的解析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deep_learning/transformer/implementation.html">numpyでGPTを再現する</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">生成モデル</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../generative_models/generative_models.html">生成モデル</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generative_models/autoencoder.html">Autoencoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generative_models/gan.html">GAN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generative_models/diffusion_models.html">Diffusion Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">自然言語処理</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/character_code.html">文字コード</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/normalization.html">テキストデータの前処理：表記揺れ、正規化</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/tokenization.html">トークン化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/language_model.html">言語モデル</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/embedding.html">単語の埋め込み</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/rnn.html">言語モデルとRNN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../natural_language_processing/latent_dirichlet_allocation.html">Latent Dirichlet Allocation (LDA)</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../natural_language_processing/task/index.html">タスク</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/task/document_understanding.html">Document Understanding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/task/table_processing.html">表の読み取りや処理（Table Processing）</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../natural_language_processing/large_language_models/index.html">Large Language Models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/introduction.html">Large Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/emergent_abilities.html">Emergent Abilities（創発的能力）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/gpt.html">GPT series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/gpt_implementation.html">GPTの実装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/chat_gpt.html">ChatGPT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/deep_seek.html">DeepSeek</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/prompt_engineering.html">Prompt Engineering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/retrieval_augmented_generation.html">Retrieval Augmented Generation (RAG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/ai_agents.html">AI Agents</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/investigation_of_llm.html">LLMの調査</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/evaluation_of_llm.html">LLMの評価</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">画像処理</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../image_processing/introduction.html">画像処理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image_processing/rotation_correction.html">傾き補正</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image_processing/distortion_correction.html">歪み補正・台形補正</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image_processing/similarity_and_hashing.html">類似度・hash化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image_processing/intensity_transformation.html">輝度変換</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image_processing/region_splitting.html">領域分割処理</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">推薦システム</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../recommender_system/introduction.html">概要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recommender_system/collaborative_filtering.html">協調フィルタリング</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recommender_system/matrix_factorization.html">行列分解に基づく推薦システム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recommender_system/factorization_machines.html">Factorization Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recommender_system/bayesian_personalized_ranking.html">Bayesian Personalized Ranking (BPR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recommender_system/two_tower.html">Two-Tower Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recommender_system/causal_inference_in_recommendation.html">Causal Inference in Recommender Systems</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">データ分析のビジネス応用</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../applied_data_science/data_management.html">データマネジメント</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applied_data_science/type_of_applications.html">データサイエンス応用の類型</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">ビジネス関連知識</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../business/revenue_structure.html">売上構造やKPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../business/accounting.html">会計</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../business/people_management/index.html">People Management</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../business/people_management/1on1.html">1on1</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../business/product_management/index.html">プロダクトマネジメント</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../business/product_management/prd.html">PRD（Product Requirements Document）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../business/product_management/ml_pdm.html">Machine Learning Product Management（MLPdM）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../business/product_management/product.html">プロダクト</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../business/project_management/index.html">プロジェクトマネジメント</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../business/project_management/introduction.html">プロジェクトマネジメント 概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../business/project_management/development_methods.html">システム開発手法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../business/project_management/roadmap.html">ロードマップ</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../business/business_administration/index.html">経営学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../business/business_administration/introduction.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../business/business_administration/history.html">経営学史</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../business/business_administration/concepts.html">経営・マーケティング系の概念まとめ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../business/business_administration/frame_works.html">フレームワーク</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../business/business_administration/causal_process_tracing.html">因果過程追跡</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../business/business_administration/competitive_strategy/index.html">競争戦略論</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../business/business_administration/competitive_strategy/scp_rbv.html">SCP理論、ポーターの競争戦略論、RBV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../business/business_administration/competitive_strategy/hypercompetition.html">ハイパーコンペティション下での競争戦略</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../business/business_administration/competitive_strategy/competition_under_uncertainty.html">不確実性のもとでの競争戦略論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../business/business_administration/competitive_strategy/moat.html">Moat</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../business/document_management.html">ドキュメント管理</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">ソフトスキル</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../soft_skills/mindset.html">マインドセット</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../soft_skills/logic/index.html">論理学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../soft_skills/logic/fallacy.html">誤謬論</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../soft_skills/writing.html">文章作成</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../soft_skills/presentation.html">プレゼンテーション</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../soft_skills/negotiation.html">交渉 / 人を巻き込む</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../soft_skills/harvard_negotiation.html">『ハーバード流交渉術』</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../soft_skills/management/index.html">マネジメント</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../soft_skills/management/leadership.html">リーダーシップ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../soft_skills/management/task_management.html">タスク管理・仕事の進め方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../soft_skills/management/1on1.html">1on1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../soft_skills/management/people_management.html">People Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../soft_skills/management/team_management.html">チームマネジメント</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">ソフトウェア工学</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../software_engineering/programming.html">プログラミング</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/algorithms/index.html">アルゴリズムとデータ構造</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/algorithms/data_structure.html">データ構造</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/algorithms/search_algorithms.html">探索アルゴリズム</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/algorithms/sort_algorithms.html">ソートのアルゴリズム</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/algorithms/mathematic_algorithms.html">数学的なアルゴリズム</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/algorithms/other_algorithms.html">その他のアルゴリズム</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/development/index.html">ソフトウェア開発</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/design_patterns.html">デザインパターン</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/networking.html">ネットワーク・通信</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/design.html">要件定義・設計</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/virtualization.html">仮想化技術</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/webapp_framework.html">Web Application Frameworks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/webapp_architecture.html">Web Application Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/platform_engineering.html">Platform Engineering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/multi_tenants_saas.html">マルチテナントSaaS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/local_stack.html">LocalStack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/development/twelve_factor_app.html">Twelve-Factor App</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/frontend/index.html">フロントエンド開発</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/frontend/react.html">React</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/data_store/index.html">データストア（ストレージ・RDB）</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/data_store/rdbms.html">RDBMS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/data_store/tenant_separation.html">テナント分離</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/faas/index.html">Function as a Service (FaaS)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/faas/faas.html">FaaS概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/faas/aws_lambda.html">AWS Lambda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/faas/aws_sam.html">AWS SAM メモ</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/security/index.html">サイバーセキュリティ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/security/security.html">個人としてのセキュリティ対策</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/security/website.html">ウェブアプリ開発のセキュリティ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/security/cwe.html">CWE (Common Weakness Enumeration)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/pseudorandom_numbers/index.html">疑似乱数</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/pseudorandom_numbers/introduction.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/pseudorandom_numbers/lcg.html">線形合同法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/pseudorandom_numbers/xorshift.html">Xorshift</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/pseudorandom_numbers/mersenne_twister.html">Mersenne Twister法</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../software_engineering/web_optimization.html">Web最適化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../software_engineering/linux.html">Linux</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">経済学</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../economics/introduction.html">経済学概論</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../economics/microeconomics/index.html">ミクロ経済学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../economics/microeconomics/demand_elasticity.html">需要の弾力性</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../economics/macroeconomics/index.html">マクロ経済学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../economics/macroeconomics/national_income_accounts.html">国民経済計算</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../economics/macroeconomics/economic_growth.html">経済成長</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../economics/macroeconomics/microfoundations.html">ミクロ的基礎付け</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../economics/quantitative_economics.html">Quantitative Economics</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">金融経済学</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../financial_economics/introduction.html">概要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../financial_economics/optimal_portfolio.html">最適ポートフォリオ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../financial_economics/capm.html">CAPM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../financial_economics/metrics.html">ファイナンスの指標たち</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../financial_economics/feature_neutralization.html">Feature Neutralization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../financial_economics/statistical_arbitrage.html">統計的裁定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../financial_economics/asset_pricing.html">Asset Pricing</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../financial_economics/papers/index.html">論文メモ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/papers/abcd_forcast.html">ABCD Forcast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/papers/deep_portfolio.html">Deep Portfolio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/papers/llm.html">計量ファイナンスにおけるLLMの活用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/papers/beige_book.html">BeigeBookで利下げ・利上げを予測して国債を買う</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../financial_economics/financial_time_series/index.html">金融時系列解析</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/financial_time_series/evaluation.html">時系列予測の性能検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/financial_time_series/augmentation.html">Data Augmentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../financial_economics/investment_strategies/index.html">投資戦略</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/investment_strategies/buy_in_fear.html">市場が恐怖しているときに買う</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/investment_strategies/dogs_of_dow.html">「ダウの犬」戦略</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/investment_strategies/performance_based_investment.html">業績ベースの投資</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/investment_strategies/performance_prediction.html">業績予想</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../financial_economics/libraries.html">金融系ライブラリ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../financial_economics/random_walk.html">ランダムウォークによる株価のシミュレーション</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../financial_economics/factors/index.html">Multiple Factor Models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/factors/multiple_factor_models.html">Multiple Factor Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../financial_economics/factors/factor_zoo.html">Factor Zoo</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/nigimitama/notes" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/statistics/correlation/correlation_coefficient.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>相関係数</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ピアソンの積率相関係数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">どうやって<span class="math notranslate nohighlight">\([-1,1]\)</span>の範囲に収まるよう正規化しているのか？</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">前提：内積</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">具体的な内積の例</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">標本レベルの話</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">期待値と内積</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">相関係数の導出</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">幾何学的解説</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">注意点</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-new-coefficient-of-correlation">A New Coefficient of Correlation</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>相関係数<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<section id="id2">
+<h2>ピアソンの積率相関係数<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<div class="admonition- admonition">
+<p class="admonition-title">ピアソンの積率相関係数</p>
+<div class="math notranslate nohighlight">
+\[
+r = \frac{\operatorname{Cov}(X, Y)}{\sigma_{Y} \sigma_{Y} }
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\operatorname{Cov}(X, Y)\)</span>：XとYの共分散</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma_{Y}, \sigma_{Y}\)</span>：XとYの標準偏差</p></li>
+</ul>
+</div>
+<div class="admonition- admonition">
+<p class="admonition-title">ピアソンの積率相関係数（標本レベル）</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{r} = \frac{\sum\left(x_i-\bar{x}\right)\left(y_i-\bar{y}\right)}{\sqrt{\sum\left(x_i-\bar{x}\right)^2} \sqrt{\sum\left(y_i-\bar{y}\right)^2}}
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\hat{r}\)</span>：相関係数。<span class="math notranslate nohighlight">\(r\in[-1,1]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(x_i\)</span>：標本における変数<span class="math notranslate nohighlight">\(x\)</span>の値</p></li>
+<li><p><span class="math notranslate nohighlight">\(\bar{x}\)</span>：変数<span class="math notranslate nohighlight">\(x\)</span>の値の平均</p></li>
+<li><p><span class="math notranslate nohighlight">\(y_i\)</span>：標本における変数<span class="math notranslate nohighlight">\(y\)</span>の値</p></li>
+<li><p><span class="math notranslate nohighlight">\(\bar{y}\)</span>：変数<span class="math notranslate nohighlight">\(y\)</span>の値の平均</p></li>
+</ul>
+</div>
+</section>
+<section id="id3">
+<h2>どうやって<span class="math notranslate nohighlight">\([-1,1]\)</span>の範囲に収まるよう正規化しているのか？<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>結論：コーシー・シュワルツの不等式を確率変数にあてはめている。</p>
+<section id="id4">
+<h3>前提：内積<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>ベクトル空間（要素間の和と定数倍が定義された集合であり、和と定数倍の結果もまた集合の要素であるような集合）における内積について触れておく。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+（参考）内積の定義</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(\mathbb{R}\)</span> 上のベクトル空間 <span class="math notranslate nohighlight">\(V\)</span> において、任意の2つのベクトル <span class="math notranslate nohighlight">\(\boldsymbol{a}, \boldsymbol{b}\)</span> に対して実数 <span class="math notranslate nohighlight">\(\langle \boldsymbol{a}, \boldsymbol{b} \rangle\)</span> が定まり、次の(1)～(4)を満たすとき、<span class="math notranslate nohighlight">\(\langle \boldsymbol{a}, \boldsymbol{b} \rangle\)</span> を <span class="math notranslate nohighlight">\(\boldsymbol{a}\)</span> と <span class="math notranslate nohighlight">\(\boldsymbol{b}\)</span> の 内積 という。</p>
+<p class="sd-card-text">(1) <span class="math notranslate nohighlight">\(\langle \boldsymbol{a}, \boldsymbol{b} \rangle = \langle \boldsymbol{b}, \boldsymbol{a} \rangle\)</span></p>
+<p class="sd-card-text">(2) <span class="math notranslate nohighlight">\(\langle \boldsymbol{a} + \boldsymbol{b}, \boldsymbol{c} \rangle = \langle \boldsymbol{a}, \boldsymbol{c} \rangle + \langle \boldsymbol{b}, \boldsymbol{c} \rangle\)</span></p>
+<p class="sd-card-text">(3) <span class="math notranslate nohighlight">\(\langle k \boldsymbol{a}, \boldsymbol{b} \rangle = k \langle \boldsymbol{a}, \boldsymbol{b} \rangle \quad (k \in \mathbb{R})\)</span></p>
+<p class="sd-card-text">(4) <span class="math notranslate nohighlight">\(\langle \boldsymbol{a}, \boldsymbol{a} \rangle \geqq 0\)</span> で，<span class="math notranslate nohighlight">\(\langle \boldsymbol{a}, \boldsymbol{a} \rangle = 0 \Longleftrightarrow \boldsymbol{a} = \mathbf{0}\)</span></p>
+</div>
+</div>
+<p>また、内積<span class="math notranslate nohighlight">\(\langle \boldsymbol{a}, \boldsymbol{b} \rangle\)</span>とノルム<span class="math notranslate nohighlight">\(\|\boldsymbol{a}\| = \sqrt{\langle \boldsymbol{a}, \boldsymbol{a} \rangle}\)</span> についての定理のひとつで <strong>コーシー・シュワルツの不等式</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; | \langle \boldsymbol{a}, \boldsymbol{b} \rangle |
+\leq
+\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|
+\\
+\iff &amp;
+- \| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|
+\leq 
+\langle \boldsymbol{a}, \boldsymbol{b} \rangle
+\leq
+\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|
+\\
+\iff &amp;
+- 1 \leq 
+\frac{\langle \boldsymbol{a}, \boldsymbol{b} \rangle}{\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|}
+\leq 1
+\end{aligned}
+\end{split}\]</div>
+<p>というものが存在する。</p>
+<p>なお、<span class="math notranslate nohighlight">\(\frac{\langle \boldsymbol{a}, \boldsymbol{b} \rangle}{\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|}\)</span>は <strong>コサイン類似度</strong> と呼ばれ、ベクトル間の類似性を示すのでデータサイエンスの世界でよく使われる。</p>
+<section id="id5">
+<h4>具体的な内積の例<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<p>実数空間<span class="math notranslate nohighlight">\(\mathbb{R}\)</span>上のベクトル空間における内積の定義を満たす関数の例は次の通り。<span class="math notranslate nohighlight">\(\boldsymbol{x},\boldsymbol{y}\in \mathbb{R}^n\)</span>に対し、</p>
+<div class="math notranslate nohighlight">
+\[
+\langle \boldsymbol{x}, \boldsymbol{y} \rangle = \sum_{i=1}^n x_i y_i
+\]</div>
+</section>
+</section>
+<section id="id6">
+<h3>標本レベルの話<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(n\)</span>個の観測値からなるベクトル <span class="math notranslate nohighlight">\(\boldsymbol{x} = (x_1, x_2, \cdots, x_n)^\top\)</span> と <span class="math notranslate nohighlight">\(\boldsymbol{y} = (y_1, y_2, \cdots, y_n)^\top\)</span> があるとする。</p>
+<p>またそれらから平均値<span class="math notranslate nohighlight">\(\bar{x}, \bar{y}\)</span>を引いたベクトルを <span class="math notranslate nohighlight">\(\bar{\boldsymbol{x}} = (x_1 - \bar{x}, x_2 - \bar{x}, \cdots, x_n - \bar{x})^\top\)</span>、<span class="math notranslate nohighlight">\(\bar{\boldsymbol{y}} = (y_1 - \bar{y}, y_2 - \bar{y}, \cdots, y_n - \bar{y})^\top\)</span>とする。</p>
+<p>標本共分散<span class="math notranslate nohighlight">\(\widehat{\operatorname{Cov}}\)</span>は</p>
+<div class="math notranslate nohighlight">
+\[
+\widehat{\operatorname{Cov}}
+= \frac{1}{N} \sum_{i=1}^n (x_i - \bar{x}) (y_i - \bar{y})
+= \frac{1}{N} \langle \bar{\boldsymbol{x}}, \bar{\boldsymbol{y}} \rangle
+\]</div>
+<p><span class="math notranslate nohighlight">\(\boldsymbol{x}, \boldsymbol{y}\)</span>それぞれの標本標準偏差は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{\sigma}_{\boldsymbol{x}}
+&amp;= \sqrt{ \frac{1}{N} \sum_{i=1}^n (x_i - \bar{x})^2 }
+= \sqrt{ \frac{1}{N} \sum_{i=1}^n \bar{\boldsymbol{x}}^2 }
+= \sqrt{ \frac{1}{N} \langle \bar{\boldsymbol{x}}, \bar{\boldsymbol{x}} \rangle }
+\\
+\hat{\sigma}_{\boldsymbol{y}}
+&amp;= \sqrt{ \frac{1}{N} \sum_{i=1}^n (y_i - \bar{y})^2 }
+= \sqrt{ \frac{1}{N} \sum_{i=1}^n \bar{\boldsymbol{y}}^2 }
+= \sqrt{ \frac{1}{N} \langle \bar{\boldsymbol{y}}, \bar{\boldsymbol{y}} \rangle }
+\end{aligned}
+\end{split}\]</div>
+<p>よって</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{r}
+= \frac{\widehat{\operatorname{Cov}}}{\hat{\sigma}_{\boldsymbol{x}}\hat{\sigma}_{\boldsymbol{y}}}
+= \frac{\frac{1}{N} \langle \bar{\boldsymbol{x}}, \bar{\boldsymbol{y}} \rangle}{
+\sqrt{ \frac{1}{N} \langle \bar{\boldsymbol{x}}, \bar{\boldsymbol{x}} \rangle }
+\sqrt{ \frac{1}{N} \langle \bar{\boldsymbol{y}}, \bar{\boldsymbol{y}} \rangle }
+}
+= \frac{ \langle \bar{\boldsymbol{x}}, \bar{\boldsymbol{y}} \rangle }
+{ \| \bar{\boldsymbol{x}} \| \cdot \| \bar{\boldsymbol{y}} \| }
+\]</div>
+<p>したがってコーシー・シュワルツの定理</p>
+<div class="math notranslate nohighlight">
+\[
+-1 \leq 
+\frac{\langle \boldsymbol{a}, \boldsymbol{b} \rangle}{\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|}
+\leq 1
+\]</div>
+<p>より、相関係数の範囲は<span class="math notranslate nohighlight">\([-1,1]\)</span>に収まる。</p>
+</section>
+<section id="id7">
+<h3>期待値と内積<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>つづいて母集団レベルの話。</p>
+<p>確率変数<span class="math notranslate nohighlight">\(X,Y\)</span>を<span class="math notranslate nohighlight">\(L^2\)</span>空間の要素（確率空間上の二乗可積分な関数）とすると、その積の期待値<span class="math notranslate nohighlight">\(E[XY]\)</span>は内積の性質を満たす。</p>
+<p>(1) <span class="math notranslate nohighlight">\(\langle X, Y \rangle = E[XY] = E[YX] = \langle Y, X \rangle\)</span></p>
+<p>(2) <span class="math notranslate nohighlight">\(\langle X + Y, Z \rangle = \langle X, Z \rangle + \langle Y, Z \rangle\)</span></p>
+<p>(3) <span class="math notranslate nohighlight">\(\langle k X, Y \rangle = k \langle X, Y \rangle \quad (k \in \mathbb{R})\)</span></p>
+<p>(4) <span class="math notranslate nohighlight">\(\langle X, X \rangle = E[X^2] \geqq 0\)</span> かつ <span class="math notranslate nohighlight">\(E[X^2] = 0 \iff X = 0 ~ \text{a.s.}\)</span></p>
+</section>
+<section id="id8">
+<h3>相関係数の導出<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>コーシー・シュワルツの不等式の内積<span class="math notranslate nohighlight">\(\langle \boldsymbol{a}, \boldsymbol{b} \rangle\)</span> を確率変数<span class="math notranslate nohighlight">\(A,B\)</span>の積の期待値 <span class="math notranslate nohighlight">\(E[A B]\)</span> に置き換える。ノルムは例えば確率変数<span class="math notranslate nohighlight">\(X\)</span>について<span class="math notranslate nohighlight">\(\|X\| = \sqrt{\langle X, X \rangle} = E[X^2]\)</span>と置き換える。こうしてコーシー・シュワルツの不等式を置き換えた</p>
+<div class="math notranslate nohighlight">
+\[
+|E[A B]|^2 \leq E[A^2] E[B^2]
+\]</div>
+<p>を用いる。</p>
+<div class="math notranslate nohighlight">
+\[
+A = (X - E[X]),\quad
+B = (Y - E[Y])
+\]</div>
+<p>とおくと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\big| E\big[ (X - E[X]) (Y - E[Y]) \big] \big|^2
+\leq E[(X - E[X])^2] E[(Y - E[Y])^2]\\
+\iff
+| \operatorname{Cov}(X, Y) |^2
+\leq \operatorname{Var}(X) \operatorname{Var}(Y)
+\\
+\iff
+-1 \leq
+\frac{ \operatorname{Cov}(X, Y) }{ \sqrt{ \operatorname{Var}(X) } \sqrt{ \operatorname{Var}(Y) } }
+\leq 1
+\end{aligned}
+\end{split}\]</div>
+</section>
+</section>
+<section id="id9">
+<h2>幾何学的解説<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<img style="width: 600px;" src="data:image/png;base64,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"><p>（出所：<a class="reference external" href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson correlation coefficient - Wikipedia</a>）</p>
+</section>
+<section id="id10">
+<h2>注意点<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<p>データの関係性をざっくり表すのが相関係数の良さだが、散布図でみると全然異なるデータであってもたまたま同じ相関係数になることがある。また外れ値にひっぱられる特性もある。</p>
+<p>下の図はアンスコムの例と呼ばれる、線形回帰をしたときに同じ傾き係数になるデータセット。
+相関係数だと線形回帰と違って切片部分がないため係数は若干異なるがだいたい同じになる。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">statsmodels.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">anscombe</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;anscombe&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">],</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">70</span><span class="p">)</span>
+<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="n">corr</span> <span class="o">=</span> <span class="n">anscombe</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">anscombe</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;x</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;y</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">ci</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scatter_kws</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">})</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;corr = </span><span class="si">{</span><span class="n">corr</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/c2bd78ac546d90e8e01c3ef5f6f9b32421048b0d925e443dd4b70450c5a95950.png" src="../../_images/c2bd78ac546d90e8e01c3ef5f6f9b32421048b0d925e443dd4b70450c5a95950.png" />
+</div>
+</div>
+</section>
+<section id="a-new-coefficient-of-correlation">
+<h2>A New Coefficient of Correlation<a class="headerlink" href="#a-new-coefficient-of-correlation" title="Link to this heading">#</a></h2>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text"><a class="reference external" href="https://www.tandfonline.com/doi/abs/10.1080/01621459.2020.1758115">Chatterjee, Sourav. “A new coefficient of correlation.” Journal of the American Statistical Association 116.536 (2021): 2009-2022.</a></p></li>
+<li><p class="sd-card-text">arxiv: <a class="reference external" href="https://arxiv.org/abs/1909.10140">https://arxiv.org/abs/1909.10140</a></p></li>
+</ul>
+</div>
+</div>
+<p>Chatterjee (2021) は 以下の3つの性質をもつ相関係数が定義可能かという問いを立て、これらを満たす新たな相関係数を提案した。</p>
+<ol class="arabic simple">
+<li><p>シンプル：ピアソンなど古典的な相関係数のように計算が簡単であること</p></li>
+<li><p>一貫性：相関係数が0となるのは変数が独立な場合のみで、1となるのは一方が他方の可測関数である場合のみであること。</p></li>
+<li><p>漸近理論：古典的な相関係数のように簡潔な漸近理論をもつ</p></li>
+</ol>
+<p>この新しい相関係数は、変数の分布に関する仮定を必要とせず、非線形な依存関係も捉えることができる。
+また、独立性の検定や変数間の関係性の評価において、従来の相関係数よりも優れた性能を示すことが報告されている</p>
+<div class="math notranslate nohighlight">
+\[
+\xi_n(X, Y):=1-\frac{3 \sum_{i=1}^{n-1}\left|r_{i+1}-r_i\right|}{n^2-1}
+\]</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./statistics/correlation"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ピアソンの積率相関係数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">どうやって<span class="math notranslate nohighlight">\([-1,1]\)</span>の範囲に収まるよう正規化しているのか？</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">前提：内積</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">具体的な内積の例</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">標本レベルの話</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">期待値と内積</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">相関係数の導出</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">幾何学的解説</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">注意点</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-new-coefficient-of-correlation">A New Coefficient of Correlation</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By mitama
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

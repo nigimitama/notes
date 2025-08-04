@@ -1,0 +1,61 @@
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 154, in wrapped
+    asyncio.get_running_loop()
+RuntimeError: no running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 1319, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/usr/local/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 158, in wrapped
+    return loop.run_until_complete(inner)
+  File "/usr/local/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+fig, ax1 = plt.subplots(figsize=[4, 4])
+
+k = 5
+ticks = range(0, 2 * k, 2)
+ticklabels_a = [f"a_{i}" for i in range(1, k + 1)]
+ticklabels_b = [f"b_{i}" for i in range(1, k + 1)]
+
+for tick in ticks:
+    ax1.axhline(tick, color="gray")
+    ax1.axvline(tick, color="gray")
+
+cell_coords = range(1, 2 * k - 1, 2)
+for i_show, i in enumerate(cell_coords, start=1):
+    for j_show, j in enumerate(cell_coords, start=1):
+        ax1.text(j, i, f"n_{i_show}{j_show}", ha="center", va="center")
+
+ax1.set(ylabel="x", xticks=[], title="閾値のイメージ")
+ax1.set_yticks(ticks=ticks, labels=ticklabels_a)
+ax1.invert_yaxis()
+
+ax2 = ax1.twiny()
+ax2.set_xlim(ax1.get_xlim())
+ax2.set_xlabel("y")
+ax2.set_xticks(ticks=ticks, labels=ticklabels_b)
+fig.show()
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[1], line 1[0m
+[0;32m----> 1[0m fig, ax1 [38;5;241m=[39m [43mplt[49m[38;5;241m.[39msubplots(figsize[38;5;241m=[39m[[38;5;241m4[39m, [38;5;241m4[39m])
+[1;32m      3[0m k [38;5;241m=[39m [38;5;241m5[39m
+[1;32m      4[0m ticks [38;5;241m=[39m [38;5;28mrange[39m([38;5;241m0[39m, [38;5;241m2[39m [38;5;241m*[39m k, [38;5;241m2[39m)
+
+[0;31mNameError[0m: name 'plt' is not defined
+

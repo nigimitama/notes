@@ -1,0 +1,67 @@
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 154, in wrapped
+    asyncio.get_running_loop()
+RuntimeError: no running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 1319, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/usr/local/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 158, in wrapped
+    return loop.run_until_complete(inner)
+  File "/usr/local/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/usr/local/lib/python3.10/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+from scipy.optimize import minimize_scalar
+
+def tetrachoric_corr(x: np.ndarray, y: np.ndarray) -> float:
+    n = len(x)
+    n00 = np.sum((x == 0) & (y == 0))
+    n01 = np.sum((x == 0) & (y == 1))
+    n10 = np.sum((x == 1) & (y == 0))
+    n11 = np.sum((x == 1) & (y == 1))
+    
+    px0 = (n00 + n01) / n
+    py0 = (n00 + n10) / n
+    
+    tau_x = norm.ppf(px0)
+    tau_y = norm.ppf(py0)
+
+    def neg_log_likelihood(rho):
+        cov = np.array([[1, rho], [rho, 1]])
+        p00 = multivariate_normal.cdf([tau_x, tau_y], mean=[0, 0], cov=cov)
+        p01 = norm.cdf(tau_x) - p00
+        p10 = norm.cdf(tau_y) - p00
+        p11 = 1 - norm.cdf(tau_x) - norm.cdf(tau_y) + p00
+
+        probs = np.array([p00, p01, p10, p11])
+        counts = np.array([n00, n01, n10, n11])
+
+        assert np.all(probs >= 0)
+        return -np.sum(counts * np.log(probs))
+
+    result = minimize_scalar(neg_log_likelihood, bounds=(-0.999, 0.999), method='bounded')
+    return result.x
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[1], line 3[0m
+[1;32m      1[0m [38;5;28;01mfrom[39;00m[38;5;250m [39m[38;5;21;01mscipy[39;00m[38;5;21;01m.[39;00m[38;5;21;01moptimize[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m minimize_scalar
+[0;32m----> 3[0m [38;5;28;01mdef[39;00m[38;5;250m [39m[38;5;21mtetrachoric_corr[39m(x: [43mnp[49m[38;5;241m.[39mndarray, y: np[38;5;241m.[39mndarray) [38;5;241m-[39m[38;5;241m>[39m [38;5;28mfloat[39m:
+[1;32m      4[0m     n [38;5;241m=[39m [38;5;28mlen[39m(x)
+[1;32m      5[0m     n00 [38;5;241m=[39m np[38;5;241m.[39msum((x [38;5;241m==[39m [38;5;241m0[39m) [38;5;241m&[39m (y [38;5;241m==[39m [38;5;241m0[39m))
+
+[0;31mNameError[0m: name 'np' is not defined
+
