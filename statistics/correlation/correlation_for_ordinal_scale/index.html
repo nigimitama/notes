@@ -76,7 +76,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'statistics/correlation/correlation_for_ordinal_scale/index';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="相関係数の希薄化" href="attenuation.html" />
+    <link rel="next" title="相関の希薄化" href="attenuation.html" />
     <link rel="prev" title="名義尺度の相関係数" href="../correlation_for_nominal_scale.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -381,7 +381,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../correlation_coefficient.html">相関係数</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../correlation_for_nominal_scale.html">名義尺度の相関係数</a></li>
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">順序尺度の相関係数</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="attenuation.html">相関係数の希薄化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="attenuation.html">相関の希薄化</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tetrachoric.html">テトラコリック相関係数（tetrachoric correlation）</a></li>
 <li class="toctree-l3"><a class="reference internal" href="polychoric.html">ポリコリック相関係数</a></li>
 <li class="toctree-l3"><a class="reference internal" href="polyserial.html">ポリシリアル相関係数</a></li>
@@ -1188,11 +1188,39 @@ document.write(`
 <span class="g g-Whitespace">   </span><span class="mi">2352</span> <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
 <span class="g g-Whitespace">   </span><span class="mi">2353</span> <span class="n">fmin_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">fu</span><span class="p">)</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/ordinalcorr/polytomous.py:205,</span> in <span class="ni">polyserial.&lt;locals&gt;.neg_log_likelihood</span><span class="nt">(rho)</span>
-<span class="g g-Whitespace">    </span><span class="mi">202</span>     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">p_i</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">203</span>         <span class="k">continue</span>
-<span class="ne">--&gt; </span><span class="mi">205</span>     <span class="n">log_likelihood</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_i</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">207</span> <span class="k">return</span> <span class="o">-</span><span class="n">log_likelihood</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/ordinalcorr/polytomous.py:199,</span> in <span class="ni">polyserial.&lt;locals&gt;.neg_log_likelihood</span><span class="nt">(rho)</span>
+<span class="g g-Whitespace">    </span><span class="mi">197</span> <span class="n">tau_lower</span> <span class="o">=</span> <span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">198</span> <span class="n">tau_upper</span> <span class="o">=</span> <span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">199</span> <span class="n">p_i</span> <span class="o">=</span> <span class="n">univariate_cdf</span><span class="p">(</span><span class="n">tau_lower</span><span class="p">,</span> <span class="n">tau_upper</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">201</span> <span class="n">p_i</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">p_i</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span>  <span class="c1"># soft clipping</span>
+<span class="g g-Whitespace">    </span><span class="mi">202</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">p_i</span><span class="p">):</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/ordinalcorr/polytomous.py:23,</span> in <span class="ni">univariate_cdf</span><span class="nt">(lower, upper)</span>
+<span class="g g-Whitespace">     </span><span class="mi">21</span> <span class="n">var</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="g g-Whitespace">     </span><span class="mi">22</span> <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">23</span> <span class="k">return</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">upper</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">std</span><span class="p">)</span> <span class="o">-</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">std</span><span class="p">)</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/scipy/stats/_distn_infrastructure.py:2137,</span> in <span class="ni">rv_continuous.cdf</span><span class="nt">(self, x, *args, **kwds)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2135</span> <span class="n">place</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">cond0</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">badvalue</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2136</span> <span class="n">place</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">cond2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">2137</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">cond</span><span class="p">):</span>  <span class="c1"># call only if at least 1 entry</span>
+<span class="g g-Whitespace">   </span><span class="mi">2138</span>     <span class="n">goodargs</span> <span class="o">=</span> <span class="n">argsreduce</span><span class="p">(</span><span class="n">cond</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="n">x</span><span class="p">,)</span><span class="o">+</span><span class="n">args</span><span class="p">))</span>
+<span class="g g-Whitespace">   </span><span class="mi">2139</span>     <span class="n">place</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cdf</span><span class="p">(</span><span class="o">*</span><span class="n">goodargs</span><span class="p">))</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/numpy/_core/fromnumeric.py:2477,</span> in <span class="ni">any</span><span class="nt">(a, axis, out, keepdims, where)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2472</span> <span class="k">def</span><span class="w"> </span><span class="nf">_any_dispatcher</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2473</span>                     <span class="n">where</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">_NoValue</span><span class="p">):</span>
+<span class="g g-Whitespace">   </span><span class="mi">2474</span>     <span class="k">return</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">2477</span> <span class="nd">@array_function_dispatch</span><span class="p">(</span><span class="n">_any_dispatcher</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2478</span> <span class="k">def</span><span class="w"> </span><span class="nf">any</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">_NoValue</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">_NoValue</span><span class="p">):</span>
+<span class="g g-Whitespace">   </span><span class="mi">2479</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">   </span><span class="mi">2480</span><span class="sd">     Test whether any array element along a given axis evaluates to True.</span>
+<span class="g g-Whitespace">   </span><span class="mi">2481</span><span class="sd"> </span>
+<span class="sd">   (...)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2578</span><span class="sd"> </span>
+<span class="g g-Whitespace">   </span><span class="mi">2579</span><span class="sd">     &quot;&quot;&quot;</span>
+<span class="g g-Whitespace">   </span><span class="mi">2580</span>     <span class="k">return</span> <span class="n">_wrapreduction_any_all</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">,</span> <span class="s1">&#39;any&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2581</span>                                   <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">where</span><span class="p">)</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
@@ -1256,7 +1284,7 @@ document.write(`
 <h2>目次<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="attenuation.html">相関係数の希薄化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="attenuation.html">相関の希薄化</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tetrachoric.html">テトラコリック相関係数（tetrachoric correlation）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="polychoric.html">ポリコリック相関係数</a></li>
 <li class="toctree-l1"><a class="reference internal" href="polyserial.html">ポリシリアル相関係数</a></li>
@@ -1321,7 +1349,7 @@ document.write(`
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">相関係数の希薄化</p>
+        <p class="prev-next-title">相関の希薄化</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

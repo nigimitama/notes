@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>相関係数の希薄化 &#8212; データサイエンス関連+αのメモ</title>
+    <title>相関の希薄化 &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -381,7 +381,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../correlation_coefficient.html">相関係数</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../correlation_for_nominal_scale.html">名義尺度の相関係数</a></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">順序尺度の相関係数</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">相関係数の希薄化</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">相関の希薄化</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tetrachoric.html">テトラコリック相関係数（tetrachoric correlation）</a></li>
 <li class="toctree-l3"><a class="reference internal" href="polychoric.html">ポリコリック相関係数</a></li>
 <li class="toctree-l3"><a class="reference internal" href="polyserial.html">ポリシリアル相関係数</a></li>
@@ -1033,7 +1033,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>相関係数の希薄化</h1>
+    <h1>相関の希薄化</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -1043,15 +1043,22 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attenuation-formula">attenuation formula</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">信頼性とは</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-retest">再検査法（test-retest）的な考え方</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">信頼性係数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">測定誤差による相関の希薄化</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attenuation-formula">attenuation formula</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">信頼性とは</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#test-retest">再検査法（test-retest）的な考え方</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">信頼性係数</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dis-attenuation-formula">dis-attenuation formula</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#polychoric">Polychoricとのつながり</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考文献</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dis-attenuation-formula">dis-attenuation formula</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">離散化による相関の希薄化</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">希薄化の例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">希薄化の係数</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1064,11 +1071,13 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>相関係数の希薄化<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<p>相関係数の希薄化とは、データの測定の信頼性によって相関がゼロに近づく方向のバイアスをもつ現象。</p>
+<h1>相関の希薄化<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p><strong>相関の希薄化（attenuation of correlation）</strong> とは、データの測定の信頼性によって相関がゼロに近づく方向のバイアスをもつ現象。</p>
 <p>信頼性は例えばテストやアンケートの設計に起因するものもあるし、連続変数を離散化したことによる情報の欠落によるものもある（→カテゴリカル変数の相関係数は希薄化を補正する考えから生まれた）</p>
+<section id="id2">
+<h2>測定誤差による相関の希薄化<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <section id="attenuation-formula">
-<h2>attenuation formula<a class="headerlink" href="#attenuation-formula" title="Link to this heading">#</a></h2>
+<h3>attenuation formula<a class="headerlink" href="#attenuation-formula" title="Link to this heading">#</a></h3>
 <p>Spearman (1904) は相関係数の希薄化（attenuation）という問題を指摘した</p>
 <p>観測される相関は真の相関に信頼性の影響が掛かったものである、という考え方をする。</p>
 <div class="admonition-attenuation-formula admonition">
@@ -1085,10 +1094,10 @@ r_{x y}=\rho_{x y} \cdot \sqrt{r_{x x} \cdot r_{y y}}
 </ul>
 </div>
 </section>
-<section id="id2">
-<h2>信頼性とは<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="id3">
+<h3>信頼性とは<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <section id="test-retest">
-<h3>再検査法（test-retest）的な考え方<a class="headerlink" href="#test-retest" title="Link to this heading">#</a></h3>
+<h4>再検査法（test-retest）的な考え方<a class="headerlink" href="#test-retest" title="Link to this heading">#</a></h4>
 <p>例えばテストの得点においては「偶然高い得点（低い得点）になった」というようなランダム性の要素が少なくて、仮に同じ能力の人が同様のテストを繰り返し受験したら毎回同様の能力値の評価がなされるようなテストは信頼性が高い。逆にランダム性の影響が高いテストは信頼性が低いと考えられる。</p>
 <p>なお、この考え方はテスト理論における再検査法の考え方。</p>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
@@ -1123,8 +1132,8 @@ r_{pq} = \frac{r_{p'q'}}{\sqrt{r_{p'p'} \cdot r_{q'q'}}}
 </div>
 </div>
 </section>
-<section id="id3">
-<h3>信頼性係数<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h4>信頼性係数<a class="headerlink" href="#id4" title="Link to this heading">#</a></h4>
 <p>本質的に同様の考え方ではあるが、観測値が「真のスコア」と「測定誤差」から構成されて、真のスコアの割合が高いほど信頼性が高いという考えから次のように定式化することもできる</p>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
@@ -1144,7 +1153,7 @@ r_{x x}=\frac{\operatorname{Var}(T)}{\operatorname{Var}(X)}=1-\frac{\operatornam
 </section>
 </section>
 <section id="dis-attenuation-formula">
-<h2>dis-attenuation formula<a class="headerlink" href="#dis-attenuation-formula" title="Link to this heading">#</a></h2>
+<h3>dis-attenuation formula<a class="headerlink" href="#dis-attenuation-formula" title="Link to this heading">#</a></h3>
 <p>もし希薄化の影響がわかるなら、観測された相関係数を補正できる。</p>
 <p>次の式は the double correction などと呼ばれる。</p>
 <div class="admonition-double-correction admonition">
@@ -1168,14 +1177,153 @@ r_{x x}=\frac{\operatorname{Var}(T)}{\operatorname{Var}(X)}=1-\frac{\operatornam
 \]</div>
 </div>
 </section>
-<section id="polychoric">
-<h2>Polychoricとのつながり<a class="headerlink" href="#polychoric" title="Link to this heading">#</a></h2>
 </section>
-<section id="id4">
-<h2>参考文献<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<section id="id5">
+<h2>離散化による相関の希薄化<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<p>連続変数を離散化すると、測定の精度が下がることになる。そういう点で相関の希薄化と同様の問題が起こる。
+そのため離散化された質的変数を含む2変数間の相関関係をピアソンの積率相関係数で評価しようとすると希薄化が起こって過小評価バイアスが含まれることになる。</p>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>連続変数を離散化したことによる相関の希薄化は、また別である。 Cohen (1983)は次のように述べている</p>
+<blockquote>
+<div><p>This loss from dichotomization should not be confused with the familiar attenuation due to classical random measurement error. Dichotomization results in the systematic loss of measurement information</p>
+<p>（二値化によるこの損失は、古典的なランダム測定誤差による一般的な希薄化と混同すべきではありません。二値化は測定情報の体系的な損失をもたらします。）</p>
+<p>Cohen, J. (1983). The cost of dichotomization. Applied psychological measurement, 7(3), 249-253.</p>
+</div></blockquote>
+</aside>
+<section id="id6">
+<h3>希薄化の例<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>Peters &amp; Van Voorhis (1940) は相関係数が<span class="math notranslate nohighlight">\(\rho\)</span>の 2 変量正規分布に従う確率変数 <span class="math notranslate nohighlight">\(X, Y\)</span>があるとき、<span class="math notranslate nohighlight">\(X\)</span>を平均値や中央値で二値化した確率変数を<span class="math notranslate nohighlight">\(X_d\)</span>とすると、<span class="math notranslate nohighlight">\(X_d\)</span>と<span class="math notranslate nohighlight">\(Y\)</span>の間の相関係数は<span class="math notranslate nohighlight">\(0.798 \rho\)</span>になる、つまり真の相関係数の約 0.8 倍へと過小評価する問題があることを報告している。<span class="math notranslate nohighlight">\(0.798\)</span>になるのは二値化のときであり、離散化のカテゴリ数や分割点を変えれば希薄化の強さは変わる。</p>
+<p>モンテカルロシミュレーションしてみると、だいたいそのような結果になることが簡単に確認できる。例えば真の相関係数<span class="math notranslate nohighlight">\(\rho=0.5\)</span>の分布から疑似乱数でサンプルを生成して二値化して相関係数<span class="math notranslate nohighlight">\(\hat{\rho}=\operatorname{cor}(x_d, y)\)</span>を計算することを何回も繰り返してその標本分布を描くと、平均的には<span class="math notranslate nohighlight">\(\operatorname{avg}(\hat{\rho}) \approx 0.4\)</span>となり、その比率<span class="math notranslate nohighlight">\(\frac{\hat{\rho}}{\rho}\)</span>の平均は</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{avg}\left( \frac{\hat{\rho}}{\rho} \right) \approx 0.798
+\]</div>
+<p>となることがわかる。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">pearsonr</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">simulate_dichotomization</span><span class="p">(</span><span class="n">rho</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="n">rho</span><span class="p">],</span> <span class="p">[</span><span class="n">rho</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">xd</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>  <span class="c1"># 平均で2値化</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">xd</span><span class="p">,</span> <span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">r</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">n_trials</span> <span class="o">=</span> <span class="mi">1500</span>
+<span class="n">true_rho</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">estimates</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">seed</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_trials</span><span class="p">):</span>
+    <span class="n">est_rho</span> <span class="o">=</span> <span class="n">simulate_dichotomization</span><span class="p">(</span><span class="n">rho</span><span class="o">=</span><span class="n">true_rho</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">estimates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">est_rho</span><span class="p">)</span>
+<span class="n">estimates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">estimates</span><span class="p">)</span>
+
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib_fontja</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="c1"># fig1</span>
+<span class="n">hist</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">estimates</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#7abcff&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;#7abcff&quot;</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s2">&quot;density&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;積率相関係数の分布&quot;</span><span class="p">)</span>
+
+<span class="n">max_height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">hist</span><span class="o">.</span><span class="n">patches</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">true_rho</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkorange&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">true_rho</span><span class="p">,</span> <span class="n">max_height</span> <span class="o">*</span> <span class="mf">0.95</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;真のρ=</span><span class="si">{</span><span class="n">true_rho</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkorange&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">estimates</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#007fff&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">max_height</span> <span class="o">*</span> <span class="mf">0.95</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;平均=</span><span class="si">{</span><span class="n">r</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#007fff&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+<span class="c1"># fig2</span>
+<span class="n">ratios</span> <span class="o">=</span> <span class="n">estimates</span> <span class="o">/</span> <span class="n">true_rho</span>
+<span class="n">hist</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">ratios</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#80f000&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;#80f000&quot;</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s2">&quot;density&quot;</span><span class="p">)</span>
+<span class="n">max_height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">hist</span><span class="o">.</span><span class="n">patches</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;比率 $\hat{\rho} / \rho$ の分布&quot;</span><span class="p">)</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">ratios</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#006400&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">max_height</span> <span class="o">*</span> <span class="mf">0.95</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot; 平均=</span><span class="si">{</span><span class="n">r</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#006400&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../../_images/1f080757b155ba99002142336217931767e714e25b36e7fd247ac8df986ca40a.png" src="../../../_images/1f080757b155ba99002142336217931767e714e25b36e7fd247ac8df986ca40a.png" />
+</div>
+</div>
+</section>
+<section id="id7">
+<h3>希薄化の係数<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>Cohen (1983)によれば、Peters and Van Voorhis (1940)が報告しているような希薄化の係数は次のように一般化できる</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[
+e = \frac{h}{\sqrt{p(1 - p)}}
+\]</div>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(h\)</span>：標準正規分布の密度関数の縦軸（the ordinate of the standard unit normal curve）</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(p\)</span>：二値化した変数の比率</p></li>
+</ul>
+</div>
+</div>
+<p>例えば標準正規分布に従う連続変数<span class="math notranslate nohighlight">\(X\)</span>を平均値で二値化した場合は分割点が0なので、標準正規分布の密度関数</p>
+<div class="math notranslate nohighlight">
+\[
+\phi(z)=\frac{1}{\sqrt{2 \pi}} e^{-z^2 / 2}
+\]</div>
+<p>より、</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(h = \phi(0) \approx 0.3989\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(p = 0.5\)</span></p></li>
+</ul>
+<p>となり、</p>
+<div class="math notranslate nohighlight">
+\[
+e = \frac{h}{\sqrt{p(1 - p)}}
+= \frac{0.3989}{\sqrt{ 0.5 \cdot 0.5}}
+= \frac{0.3989}{0.5}
+\approx 0.798
+\]</div>
+<p>となる。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>np.float64(0.7978845608028654)
+</pre></div>
+</div>
+</div>
+</div>
+<p>なお、Bedrick (1995) は離散化の仕方や離散化前の潜在変数が従う分布などの条件によって希薄化の強さが異なることを報告している。</p>
+</section>
+</section>
+<section id="id8">
+<h2>参考文献<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="http://digamoo.free.fr/spearman1904a.pdf">Spearman, C. (1904). The proof and measurement of association between two things. Am J Psychol, 15, 72-101.</a></p></li>
-<li><p><a class="reference external" href="https://bpspsychub.onlinelibrary.wiley.com/doi/abs/10.1111/j.2044-8317.1995.tb01064.x">Bedrick, E. J. (1995). A note on the attenuation of correlation. British Journal of Mathematical and Statistical Psychology, 48(2), 271-280.</a></p></li>
+<li><p><a class="reference external" href="https://bpspsychub.onlinelibrary.wiley.com/doi/abs/10.1111/j.2044-8317.1995.tb01064.x">Bedrick, E. J. (1995). A note on the attenuation of correlation. <em>British Journal of Mathematical and Statistical Psychology</em>, 48(2), 271-280.</a></p></li>
+<li><p>Cohen, J. (1983). The cost of dichotomization. <em>Applied psychological measurement</em>, 7(3), 249-253.</p></li>
+<li><p>Drasgow, F. (1986). <em>Polychoric and polyserial correlations</em>. In S. Kotz &amp; N. Johnson (Eds.), The Encyclopedia of Statistics.</p></li>
+<li><p>Peters, C. C., &amp; Van Voorhis, W. R. (1940). <em>Statistical procedures and their mathematical bases</em>. McGraw-Hill.</p></li>
 <li><p><a class="reference external" href="https://www.medicine.mcgill.ca/epidemiology/hanley/bios601/Surveys/AttenuationOfCorrelations-2016-Teaching_Statistics.pdf?utm_source=chatgpt.com">Trafimow, D. (2016). The attenuation of correlation coefficients: A statistical literacy issue. Teaching Statistics, 38(1), 25-28.</a></p>
 <ul>
 <li><p>テスト理論的な観点から説明</p></li>
@@ -1254,15 +1402,22 @@ r_{x x}=\frac{\operatorname{Var}(T)}{\operatorname{Var}(X)}=1-\frac{\operatornam
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attenuation-formula">attenuation formula</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">信頼性とは</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-retest">再検査法（test-retest）的な考え方</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">信頼性係数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">測定誤差による相関の希薄化</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attenuation-formula">attenuation formula</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">信頼性とは</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#test-retest">再検査法（test-retest）的な考え方</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">信頼性係数</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dis-attenuation-formula">dis-attenuation formula</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#polychoric">Polychoricとのつながり</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考文献</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dis-attenuation-formula">dis-attenuation formula</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">離散化による相関の希薄化</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">希薄化の例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">希薄化の係数</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
 </ul>
   </nav></div>
 
