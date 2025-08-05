@@ -1396,6 +1396,54 @@ r_{\text{pbi}}=\frac{\bar{X}_1-\bar{X}_0}{s_X} \cdot \sqrt{p q}
 \[
 r_{\text{bi}} = r_{\text{pbi}} \cdot \frac{\sqrt{pq}}{\phi(z)} = \frac{\bar{X}_1-\bar{X}_0}{s_X} \cdot \frac{p q}{\phi(z)}
 \]</div>
+<p>Peters &amp; Van Voorhis (1940) は相関係数が<span class="math notranslate nohighlight">\(\rho\)</span>の 2 変量正規分布に従う確率変数 <span class="math notranslate nohighlight">\(X, Y\)</span>があるとき、<span class="math notranslate nohighlight">\(X\)</span>を平均値や中央値で二値化した確率変数を<span class="math notranslate nohighlight">\(X_d\)</span>とすると、<span class="math notranslate nohighlight">\(X_d\)</span>と<span class="math notranslate nohighlight">\(Y\)</span>の間の相関係数は<span class="math notranslate nohighlight">\(0.798 \rho\)</span>になる、つまり真の相関係数の約 0.8 倍へと過小評価する問題があることを報告している。</p>
+<p>Cohen (1983)によれば、Peters and Van Voorhis (1940)が報告しているような二値化の希薄化の係数は次のように一般化できる</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[
+e = \frac{\phi(z)}{\sqrt{p(1 - p)}}
+\]</div>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\phi(z)\)</span>：標準正規分布の密度関数</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(p\)</span>：二値化した変数の比率</p></li>
+</ul>
+</div>
+</div>
+<p>この希薄化誤差<span class="math notranslate nohighlight">\(e\)</span>の逆数をpoint-biserialに掛けているのがbiserial</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">pearsonr</span>
+
+<span class="c1"># 2変量標準正規分布に従うデータ</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="mf">0.75</span>
+<span class="n">size</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="n">rho</span><span class="p">],</span> <span class="p">[</span><span class="n">rho</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># 平均値で二値化する</span>
+<span class="n">xd</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>  <span class="c1"># 平均で2値化</span>
+<span class="n">rho_d</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">xd</span><span class="p">,</span> <span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;真のρ=</span><span class="si">{</span><span class="n">rho</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, 離散化後のpearson=</span><span class="si">{</span><span class="n">rho_d</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, 比率=</span><span class="si">{</span><span class="n">rho_d</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">rho</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">xd</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">mean_z</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 「標準正規分布」 &amp; 「平均値で二分」の仮定より、閾値=平均値は0</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">mean_z</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">=:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, 補正後（biserial）=</span><span class="si">{</span><span class="n">rho_d</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">e</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>真のρ=0.75, 離散化後のpearson=0.601, 比率=0.801
+e=0.798, 補正後（biserial）=0.753
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rho</span> <span class="o">=</span> <span class="mf">0.5</span>
