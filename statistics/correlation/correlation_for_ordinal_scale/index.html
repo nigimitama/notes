@@ -71,10 +71,12 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'statistics/correlation/correlation_for_ordinal_scale/index';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="ダイバージェンス" href="../../divergence.html" />
+    <link rel="next" title="相関係数の希薄化" href="attenuation.html" />
     <link rel="prev" title="名義尺度の相関係数" href="../correlation_for_nominal_scale.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -378,7 +380,14 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">相関関係の定量化 / 相関係数</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../correlation_coefficient.html">相関係数</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../correlation_for_nominal_scale.html">名義尺度の相関係数</a></li>
-<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">順序尺度の相関係数</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">順序尺度の相関係数</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="attenuation.html">相関係数の希薄化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tetrachoric.html">テトラコリック相関係数（tetrachoric correlation）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="polychoric.html">ポリコリック相関係数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="polyserial.html">ポリシリアル相関係数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biserial.html">point-biserial / biserial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spearman.html">スピアマンの順位相関係数（Spearman’s rho）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kendall.html">ケンドールの順位相関係数（Kendall’s tau）</a></li>
 </ul>
 </details></li>
 </ul>
@@ -1191,12 +1200,12 @@ document.write(`
 <span class="g g-Whitespace">     </span><span class="mi">22</span> <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
 <span class="ne">---&gt; </span><span class="mi">23</span> <span class="k">return</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">upper</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">std</span><span class="p">)</span> <span class="o">-</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">std</span><span class="p">)</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/scipy/stats/_distn_infrastructure.py:2132,</span> in <span class="ni">rv_continuous.cdf</span><span class="nt">(self, x, *args, **kwds)</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/scipy/stats/_distn_infrastructure.py:2129,</span> in <span class="ni">rv_continuous.cdf</span><span class="nt">(self, x, *args, **kwds)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2127</span> <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2128</span> <span class="n">dtyp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">promote_types</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">2129</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">loc</span><span class="p">)</span><span class="o">/</span><span class="n">scale</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtyp</span><span class="p">)</span>
 <span class="g g-Whitespace">   </span><span class="mi">2130</span> <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">scale</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
 <span class="g g-Whitespace">   </span><span class="mi">2131</span> <span class="n">cond1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open_support_mask</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">scale</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">2132</span> <span class="n">cond2</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_b</span><span class="p">))</span> <span class="o">&amp;</span> <span class="n">cond0</span>
-<span class="g g-Whitespace">   </span><span class="mi">2133</span> <span class="n">cond</span> <span class="o">=</span> <span class="n">cond0</span> <span class="o">&amp;</span> <span class="n">cond1</span>
-<span class="g g-Whitespace">   </span><span class="mi">2134</span> <span class="n">output</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">cond</span><span class="p">),</span> <span class="n">dtyp</span><span class="p">)</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
@@ -1259,6 +1268,15 @@ document.write(`
 <section id="id2">
 <h2>目次<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="attenuation.html">相関係数の希薄化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tetrachoric.html">テトラコリック相関係数（tetrachoric correlation）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polychoric.html">ポリコリック相関係数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polyserial.html">ポリシリアル相関係数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biserial.html">point-biserial / biserial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spearman.html">スピアマンの順位相関係数（Spearman’s rho）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kendall.html">ケンドールの順位相関係数（Kendall’s tau）</a></li>
+</ul>
 </div>
 </section>
 <section id="id3">
@@ -1312,11 +1330,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="../../divergence.html"
+       href="attenuation.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">ダイバージェンス</p>
+        <p class="prev-next-title">相関係数の希薄化</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
