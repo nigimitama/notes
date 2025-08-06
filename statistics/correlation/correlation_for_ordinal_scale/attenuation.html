@@ -1055,7 +1055,10 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">離散化による相関の希薄化</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">希薄化の例</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">希薄化の係数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">希薄化の係数</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biserial">biserial相関係数</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
@@ -1315,7 +1318,51 @@ e = \frac{h}{\sqrt{p(1 - p)}}
 </div>
 </div>
 </div>
-<p>なお、Bedrick (1995) は離散化の仕方や離散化前の潜在変数が従う分布などの条件によって希薄化の強さが異なることを報告している。</p>
+<section id="biserial">
+<h4>biserial相関係数<a class="headerlink" href="#biserial" title="Link to this heading">#</a></h4>
+<p>なお、二値化変数と連続変数の間の相関係数の一種である <strong>Biserial相関係数</strong> はCohen (1983)が述べたような希薄化の係数の逆数をピアソンの積率相関係数に掛けて補正する（Spearmanの希薄化の修正式を使う）タイプの相関係数である</p>
+<div class="math notranslate nohighlight">
+\[
+r_{\text{bi}} = \frac{ r_{\text{Pearson}} }{ e }
+= r_{\text{Pearson}} \cdot \frac{\sqrt{p (1-p)}}{h}
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 二変量標準正規分布からのサンプルとする</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="n">rho</span><span class="p">],</span> <span class="p">[</span><span class="n">rho</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># 平均値を閾値として二値化されたとする</span>
+<span class="n">yd</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>  <span class="c1"># 二値化</span>
+
+<span class="c1"># Cohen (1983) にも記載の希薄化率 e</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">yd</span><span class="p">)</span>  <span class="c1"># 離散化後に y_d == 1 の比率</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>  <span class="c1"># 閾値の位置（= y_d == 1の比率、の標準正規分布上の値）</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>  <span class="c1"># 標準正規分布の閾値での確率密度</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">h</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span>
+
+<span class="c1"># biserial 相関係数</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">pearsonr</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">yd</span><span class="p">)</span><span class="o">.</span><span class="n">statistic</span>
+<span class="n">r_bi</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">e</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;真の相関ρ=</span><span class="si">{</span><span class="n">rho</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, 観測値r=</span><span class="si">{</span><span class="n">r</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, 誤差e=</span><span class="si">{</span><span class="n">e</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, 補正後(biserial)=</span><span class="si">{</span><span class="n">r_bi</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>真の相関ρ=0.500, 観測値r=0.396, 誤差e=0.798, 補正後(biserial)=0.496
+</pre></div>
+</div>
+</div>
+</div>
+<p>Bedrick (1995) は離散化の仕方や離散化前の潜在変数が従う分布などの条件によって希薄化の強さが異なることを報告している。</p>
+</section>
 </section>
 </section>
 <section id="id8">
@@ -1416,7 +1463,10 @@ e = \frac{h}{\sqrt{p(1 - p)}}
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">離散化による相関の希薄化</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">希薄化の例</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">希薄化の係数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">希薄化の係数</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biserial">biserial相関係数</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
