@@ -477,6 +477,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../structure_estimation/index.html">構造推定</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../structure_estimation/discrete_choice_models.html">離散選択モデル</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../structure_estimation/blp_model.html">BLPモデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../structure_estimation/probit_model.html">プロビットモデル</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../rubin_causal_model.html">ルービンの因果モデル</a></li>
@@ -499,6 +500,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../ols/fwl_theorem.html">FWL定理</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../panel_data/index.html">パネルデータ分析</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../panel_data/fixed_effect_model.html">固定効果モデル</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1"><a class="reference internal" href="../propensity_score.html">傾向スコア</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../iv/index.html">操作変数法</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../iv/instrumental_variables.html">操作変数法</a></li>
@@ -509,7 +514,6 @@
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../regression_discontinuity.html">RDD</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../fixed_effect_model.html">固定効果モデル</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../difference_in_differences.html">Difference In Differences</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../synthetic_control.html">Synthetic Control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../causalimpact.html">Causal Impact</a></li>
@@ -1043,25 +1047,22 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-tree">Causal Tree</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#random-forest">背景：Random Forestの理論解析の進展</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#notation">前提 / Notation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#honest">Honest</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#honestcart">honestな木はCARTと異なる目的関数をもつ</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">honestな木は過学習しにくい</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hte">HTEの推定</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#random-forest">背景：Random Forestの理論解析の進展</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">理論</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モデルの枠組み</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">推定の流れ</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">数式的表現</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">実装例</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-forest">Causal Forest</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">応用研究</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">応用研究</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cate">小売業においてクーポン配布のCATEを推定</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#amazon">Amazonの顧客ターゲティング</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mcjames-et-al-2024">「少しずつ頻繁に」行う宿題の学習効果 McJames et al. (2024)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-tree-transformed-outcome">Causal Tree-Transformed Outcome</a></li>
 </ul>
             </nav>
         </div>
@@ -1075,15 +1076,15 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="casual-forest">
 <h1>Casual Forest<a class="headerlink" href="#casual-forest" title="Link to this heading">#</a></h1>
+<p>Causal Forest（因果フォレスト）とは、ランダムフォレストの枠組みを拡張し、個別化された因果効果（Heterogeneous Treatment Effect: HTE）を推定するための機械学習手法。</p>
+<p>一般化ランダムフォレスト（Generalized Random Forest: GRF）の一種として提案され、非線形性や高次元の特徴量を持つデータにおいて、因果推論を可能にする。</p>
 <p>Random Forestをカーネル重み付けとみなす視点に、Robinson (1988)の部分線形モデルを合わせたもの</p>
 <p><a class="reference external" href="https://speakerdeck.com/tomoshige_n/ban-hua-randamuhuoresutonoli-lun-totong-ji-de-yin-guo-tui-lun-henoying-yong?slide=42">一般化ランダムフォレストの理論と統計的因果推論への応用 - Speaker Deck</a></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://speakerdeck.com/tomoshige_n/randamuhuoresutoniyoruyin-guo-tui-lun-tozui-jin-nozhan-kai-838c3989-570d-49ca-b630-22044a798589">ランダムフォレストによる因果推論と最近の展開 - Speaker Deck</a></p></li>
 </ul>
-<section id="causal-tree">
-<h2>Causal Tree<a class="headerlink" href="#causal-tree" title="Link to this heading">#</a></h2>
 <section id="random-forest">
-<h3>背景：Random Forestの理論解析の進展<a class="headerlink" href="#random-forest" title="Link to this heading">#</a></h3>
+<h2>背景：Random Forestの理論解析の進展<a class="headerlink" href="#random-forest" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Delgado et al. (2014) はUCIデータセット121に対して様々な手法を適用し、Random Forestが優れた結果を示したと報告</p>
 <ul>
@@ -1112,132 +1113,71 @@ document.write(`
 </li>
 </ul>
 </section>
-<section id="notation">
-<h3>前提 / Notation<a class="headerlink" href="#notation" title="Link to this heading">#</a></h3>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Potential outcome framework</div>
-<ul class="simple">
-<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(Y_{a=1}, Y_{a=0} \in \mathbb{R}\)</span> ：潜在結果変数</p></li>
-<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(X_j\)</span>： <span class="math notranslate nohighlight">\(p\)</span>次元の pre-treatment 共変量（ <span class="math notranslate nohighlight">\(j=1:p\)</span> ）</p></li>
-<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(A=\{0,1\}\)</span> ：処置変数</p></li>
-<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\pi(x)=\operatorname{Pr}(A=1 \mid X=x)\)</span> ：傾向スコア</p></li>
-</ul>
-</div>
-</div>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Assumptions</div>
-<ul class="simple">
-<li><p class="sd-card-text">Consistency: <span class="math notranslate nohighlight">\(Y=A Y_{a=1}+(1-A) Y_{a=0}\)</span></p></li>
-<li><p class="sd-card-text">Unconfoundedness: <span class="math notranslate nohighlight">\(A \perp Y_a \mid X \text { for } a=0,1\)</span></p></li>
-<li><p class="sd-card-text">Posititvity: <span class="math notranslate nohighlight">\(0&lt;\pi(x)&lt;1\)</span></p></li>
-</ul>
-</div>
-</div>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Definitions</div>
-<ul class="simple">
-<li><p class="sd-card-text">Average Treatment Effect (ATE): <span class="math notranslate nohighlight">\(\theta^{A T E}=\mathrm{E}\left[Y_{a=1}-Y_{a=0}\right]\)</span></p></li>
-<li><p class="sd-card-text">Heterogeneous Treatment Effect (HTE): <span class="math notranslate nohighlight">\(\theta^{H T E}(x)=\mathrm{E}\left[Y_{a=1}-Y_{a=0} \mid X=x\right]\)</span></p></li>
-</ul>
-</div>
-</div>
-</section>
-<section id="honest">
-<h3>Honest<a class="headerlink" href="#honest" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Causal Treesはrecursive partitioningを用いてHeterogeneous Treatment Effectを推定する手法。</p></li>
-<li><p>honest性という概念がcausal forestsやGeneralized Random Forestの証明において重要な役割を果たす。</p></li>
-<li><p>またhonest性を満たすTreeはCARTと比較して過学習を起こしにくいという性質もある。</p></li>
-</ul>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-honest</div>
-<p class="sd-card-text"><strong>「木の分割（partitioning）をするために用いるサンプル」と「TreeのLeafごとの推定量の計算に用いるサンプル」に別々のサンプルを用いることで、partition <span class="math notranslate nohighlight">\(\Pi\)</span> と 推定量<span class="math notranslate nohighlight">\(\hat{\mu}\)</span> が独立になったTree を honest なTreeであるという</strong></p>
-</div>
-</div>
-<section id="honestcart">
-<h4>honestな木はCARTと異なる目的関数をもつ<a class="headerlink" href="#honestcart" title="Link to this heading">#</a></h4>
-<p>honestな木はpartition <span class="math notranslate nohighlight">\(\Pi\)</span>のもとで estimation sample <span class="math notranslate nohighlight">\(\mathcal{S}^{e s t}\)</span> を用いて推定された条件付き平均<span class="math notranslate nohighlight">\(\hat{\mu}\left(X_i ; \mathcal{S}^{e s t}, \Pi\right)\)</span>とテストデータ<span class="math notranslate nohighlight">\(\mathcal{S}^{t e}\)</span>の平均二乗誤差</p>
-<div class="math notranslate nohighlight">
-\[
-\operatorname{MSE}\left(\mathcal{S}^{t e}, \mathcal{S}^{e s t}, \Pi\right)=\frac{1}{\#\left(\mathcal{S}^{t e}\right)} 
-\sum_{i \in \mathcal{S}^{t e}}
-\left\{\left(Y_i-\hat{\mu}\left(X_i ; \mathcal{S}^{e s t}, \Pi\right)\right)^2-Y_i^2\right\}
-\]</div>
-<p>の期待値をとったものを最小化する。</p>
-<div class="math notranslate nohighlight">
-\[
-\Pi^{\text{honest}}=
-\arg\min_\Pi \mathrm{E}_{\mathcal{S}^{\text{te}}, \mathcal{S}^{\text{est}}, \mathcal{S}^{\text{tr}}}
-\left[\operatorname{MSE}(\mathcal{S}^{\text{te}}, \mathcal{S}^{\text{est}}, \Pi(\mathcal{S}^{\text{tr}})\right]
-\]</div>
-<p>一方で一般的なCARTでは、訓練サンプル <span class="math notranslate nohighlight">\(\mathcal{S}^{\text{te}}\)</span> を使ってpartition <span class="math notranslate nohighlight">\(\Pi\)</span>と推定量<span class="math notranslate nohighlight">\(\hat{\mu}\)</span>を作って誤差を最小化する</p>
-<div class="math notranslate nohighlight">
-\[
-\Pi^{\text{CART}}=
-\arg\min_\Pi \mathrm{E}_{\mathcal{S}^{\text{te}}, \mathcal{S}^{\text{tr}}}
-\left[\operatorname{MSE}(\mathcal{S}^{\text{te}}, \mathcal{S}^{\text{tr}}, \Pi(\mathcal{S}^{\text{tr}})\right]
-\]</div>
-</section>
 <section id="id1">
-<h4>honestな木は過学習しにくい<a class="headerlink" href="#id1" title="Link to this heading">#</a></h4>
-<p>MSEの期待値を取ったものをEMSE</p>
-<div class="math notranslate nohighlight">
-\[
-\operatorname{EMSE}(\Pi) := \mathrm{E}_{\mathcal{S}^{t e}, \mathcal{S}^{\text {est }}}\left[\operatorname{MSE}\left(\mathcal{S}^{t e}, \mathcal{S}^{\text {est }}, \Pi\right)\right]
-\]</div>
-<p>とする。honestな木はこれを目的関数とする。</p>
-<p>負のEMSEを展開すると</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
--\operatorname{EMSE}(\Pi) &amp; =-\mathrm{E}_{\left(Y_i, X_j\right), \mathcal{S}^{\operatorname{est}}}\left[\left(Y_i-\mu\left(X_i ; \Pi\right)^2-Y_i\right]\right. \\
-&amp; -\mathrm{E}_{X_i, \mathcal{S}^{\text {est }}}\left[\left(\hat{\mu}\left(X_i ; \mathcal{S}^{\text {est }} ; \Pi\right)-\mu\left(X_i ; \Pi\right)\right)^2\right] \\
-&amp; =\mathrm{E}_{X_i}\left[\mu^2\left(X_i ; \Pi\right)\right]-\mathrm{E}_{\mathcal{S}^{\text {est }}, X_i}\left[\operatorname{Var}\left(\hat{\mu}\left(X_i ; \mathcal{S}^{\text {est }} ; \Pi\right)\right)\right]
-\end{aligned}
-\end{split}\]</div>
-<p>となる。</p>
-<p>これに対して訓練サンプル<span class="math notranslate nohighlight">\(\mathcal{S}^{t r}\)</span>から不偏推定量を構成すると</p>
-<div class="math notranslate nohighlight">
-\[
-\widehat{\operatorname{EMSE}}\left(\mathcal{S}^{t r}, \Pi\right)
-=\frac{1}{N^{t r}} \sum_{i \in \mathcal{S}^{t r}} \hat{\mu}^2\left(X_i ; \mathcal{S}^{t r}, \Pi\right)
--\underbrace{ \frac{2}{N^{t r}} \cdot \sum_{\ell \in \Pi} S_{\mathcal{S}^{t r}}^2(\ell) }_{penalty}
-\]</div>
-<p>となる。ここで<span class="math notranslate nohighlight">\(S_{\mathcal{S}^{t r}}^2(\ell)\)</span>は<span class="math notranslate nohighlight">\(\ell \in \Pi\)</span>におけるleaf内分散を意味する。</p>
-<p>一方で、CARTにおいてはpenalty項がなく、分割を行えば行うほど<span class="math notranslate nohighlight">\(-\operatorname{MSE}\)</span>が改善するため、枝刈りが必要になる。</p>
-<div class="math notranslate nohighlight">
-\[
--\operatorname{MSE}\left(\mathcal{S}^{t r}, \mathcal{S}^{t r}, \Pi\right)=\frac{1}{N^{t r}} \sum_{i \in \mathcal{S}^{t r}} \hat{\mu}^2\left(X_i ; \mathcal{S}^{t r}, \Pi\right)
-\]</div>
-<p>leaf内分散はleaf内のサンプル数が多いうちは小さい（=CARTとhonest treeは似た挙動になる）が、leaf内サンプルが小さくなると高くなりやすい（分割を停止する方向に動く）。</p>
-</section>
-<section id="hte">
-<h4>HTEの推定<a class="headerlink" href="#hte" title="Link to this heading">#</a></h4>
-<p>問題：データ <span class="math notranslate nohighlight">\(\left(Y_i, X_i, W_i\right) \in \mathbb{R} \times \mathbb{R}^\rho \times\{0,1\}\)</span> が観測されたもとで、 <span class="math notranslate nohighlight">\(\theta^{H T E}(x)=\mathrm{E}\left[Y_{a=1}-Y_{a=0} \mid X=x\right]\)</span> を推定する問題</p>
-<div class="math notranslate nohighlight">
-\[
-\tau(x ; \Pi) \equiv \mathrm{E}\left[Y_{a=1}-Y_{a=0} \mid X \in \ell(x ; \Pi)\right]
-\]</div>
-<div class="math notranslate nohighlight">
-\[
-\mu(a, x ; \Pi) \equiv \mathrm{E}\left[Y_a \mid X \in \ell(x ; \Pi)\right]
-\]</div>
-</section>
-</section>
-</section>
-<section id="causal-forest">
-<h2>Causal Forest<a class="headerlink" href="#causal-forest" title="Link to this heading">#</a></h2>
-</section>
+<h2>理論<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://arxiv.org/abs/1510.04342">Wager, S., &amp; Athey, S. (2015). Estimation and inference of heterogeneous treatment effects using random forests. arXiv.</a></p>
 <section id="id2">
-<h2>応用研究<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h3>モデルの枠組み<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>因果推論の標準的な設定として、観測データは以下の変数で構成される。</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(Y_i\)</span> : アウトカム（結果変数）</p></li>
+<li><p><span class="math notranslate nohighlight">\(W_i \in \{0,1\}\)</span> : 処置変数（1は処置群、0は対照群）</p></li>
+<li><p><span class="math notranslate nohighlight">\(X_i\)</span> : 共変量ベクトル</p></li>
+</ul>
+<p>潜在アウトカムモデルは次のように表される。</p>
+<div class="math notranslate nohighlight">
+\[
+Y_i(1), \ Y_i(0) \quad \text{（それぞれ処置あり・なしの場合のアウトカム）}
+\]</div>
+<p>観測されるアウトカムは</p>
+<div class="math notranslate nohighlight">
+\[
+Y_i = W_i Y_i(1) + (1 - W_i) Y_i(0)
+\]</div>
+<p>である。</p>
+<p>個別処置効果（Conditional Average Treatment Effect: CATE）は</p>
+<div class="math notranslate nohighlight">
+\[
+\tau(x) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]
+\]</div>
+<p>として定義される。</p>
+</section>
+<section id="id3">
+<h3>推定の流れ<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>Causal Forestは以下のステップで構築される。</p>
+<ol class="arabic simple">
+<li><p><strong>サンプルスプリット（Honest Splitting）</strong><br />
+データを分割し、一方で木の分割規則を学習し、もう一方で効果を推定する。これにより過学習を抑制する。</p></li>
+<li><p><strong>分割基準</strong><br />
+各ノードで、処置効果の異質性を最大化するように分割する。これは通常の回帰木や分類木とは異なり、平均アウトカムではなく効果のばらつきを重視する。</p></li>
+<li><p><strong>効果推定</strong><br />
+終端ノード（リーフ）ごとに、処置群と対照群の平均アウトカム差を計算し、局所的なCATE推定値とする。</p></li>
+<li><p><strong>アンサンブル化</strong><br />
+多数の木を構築して平均化し、安定した推定を得る。</p></li>
+</ol>
+</section>
+<section id="id4">
+<h3>数式的表現<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>各リーフ <span class="math notranslate nohighlight">\(L_b(x)\)</span> におけるCATE推定は</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\tau}_b(x) = \bar{Y}_{1,b} - \bar{Y}_{0,b}
+\]</div>
+<p>ここで、<span class="math notranslate nohighlight">\(\bar{Y}_{1,b}\)</span> はリーフ内の処置群平均、<span class="math notranslate nohighlight">\(\bar{Y}_{0,b}\)</span> はリーフ内の対照群平均である。</p>
+<p>最終的な推定値は、<span class="math notranslate nohighlight">\(B\)</span> 本の木で平均して</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\tau}(x) = \frac{1}{B} \sum_{b=1}^B \hat{\tau}_b(x)
+\]</div>
+<p>とする。</p>
+</section>
+<section id="id5">
+<h3>実装例<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>代表的な実装としては、Rパッケージ <code class="docutils literal notranslate"><span class="pre">grf</span></code> や、Python実装の <code class="docutils literal notranslate"><span class="pre">econml</span></code> ライブラリがある。</p>
+</section>
+</section>
+<section id="id6">
+<h2>応用研究<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <section id="cate">
 <h3>小売業においてクーポン配布のCATEを推定<a class="headerlink" href="#cate" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0278937">How causal machine learning can leverage marketing strategies: Assessing and improving the performance of a coupon campaign | PLOS One</a></p>
@@ -1286,8 +1226,8 @@ honest</div>
 </ul>
 </section>
 </section>
-<section id="id3">
-<h2>参考文献<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h2>参考文献<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://tomtom58.hatenablog.com/entry/2024/07/15/211016">Causal TreeとCausal Forestの理論と実装 - tomtom58’s blog</a></p>
 <ul>
@@ -1296,6 +1236,10 @@ honest</div>
 </li>
 <li><p><a class="reference external" href="https://www.slideshare.net/slideshow/ss-67818872/67818872">計量経済学と 機械学習の交差点入り口 （公開用） | PDF</a></p></li>
 </ul>
+</section>
+<section id="causal-tree-transformed-outcome">
+<h2>Causal Tree-Transformed Outcome<a class="headerlink" href="#causal-tree-transformed-outcome" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://www.it.mgmt.waseda.ac.jp/results/papers/IPSJ-JNL6409034.pdf">坪井優樹, 阪井優太, 鈴木佐俊, &amp; 後藤正幸. (2023). Causal Tree に基づく選択バイアスを考慮した頑健な条件付き平均処置効果推定手法の提案. 情報処理学会論文誌, 64(9), 1399-1412.</a></p>
 </section>
 </section>
 
@@ -1363,25 +1307,22 @@ honest</div>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-tree">Causal Tree</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#random-forest">背景：Random Forestの理論解析の進展</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#notation">前提 / Notation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#honest">Honest</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#honestcart">honestな木はCARTと異なる目的関数をもつ</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">honestな木は過学習しにくい</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hte">HTEの推定</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#random-forest">背景：Random Forestの理論解析の進展</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">理論</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モデルの枠組み</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">推定の流れ</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">数式的表現</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">実装例</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-forest">Causal Forest</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">応用研究</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">応用研究</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cate">小売業においてクーポン配布のCATEを推定</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#amazon">Amazonの顧客ターゲティング</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mcjames-et-al-2024">「少しずつ頻繁に」行う宿題の学習効果 McJames et al. (2024)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-tree-transformed-outcome">Causal Tree-Transformed Outcome</a></li>
 </ul>
   </nav></div>
 
