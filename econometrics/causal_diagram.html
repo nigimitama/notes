@@ -518,21 +518,17 @@
 <li class="toctree-l1"><a class="reference internal" href="synthetic_control.html">Synthetic Control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="causalimpact.html">Causal Impact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gmm.html">一般化モーメント法</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="dml/index.html">Double/Debiased Machine Learning (DML)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="dml/dml.html">Double/Debiased Machine Learning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dml/dml_simulation.html">DoubleMLパッケージによるDMLのシミュレーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dml/dml_simple_simulation.html">シミュレーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dml/dml_example.html">DMLパッケージで試してみる</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="causal_ml/index.html">Causal Machine Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="causal_ml/meta_learner.html">Meta Learner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="causal_ml/applied_research.html">Causal ML系の応用研究</a></li>
+<li class="toctree-l2"><a class="reference internal" href="causal_ml/model_evaluation.html">モデルの評価</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="causal_ml/dml/index.html">Double/Debiased Machine Learning (DML)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="causal_ml/dml/dml.html">Double/Debiased Machine Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="causal_ml/dml/dml_simulation.html">DoubleMLパッケージによるDMLのシミュレーション</a></li>
+<li class="toctree-l3"><a class="reference internal" href="causal_ml/dml/dml_simple_simulation.html">シミュレーション</a></li>
+<li class="toctree-l3"><a class="reference internal" href="causal_ml/dml/dml_example.html">DMLパッケージで試してみる</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="causal_forest/index.html">Causal Forest / GRF</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="causal_forest/causal_forest.html">Casual Forest</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="causal_machine_learning/index.html">Causal Machine Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="causal_machine_learning/meta_learner.html">Meta Learner</a></li>
-<li class="toctree-l2"><a class="reference internal" href="causal_machine_learning/applied_research.html">Causal ML系の応用研究</a></li>
-<li class="toctree-l2"><a class="reference internal" href="causal_machine_learning/model_evaluation.html">モデルの評価</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="causal_discovery.html">統計的因果探索</a></li>
@@ -1054,11 +1050,13 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">調整</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">逆確率重み付け法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">グラフのタイプ</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">バックドア基準</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">フロントドア基準</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d">d分離（有向分離）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">バックドア基準</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">フロントドア基準</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1143,9 +1141,48 @@ P(Y=y \mid do(X=x))=\sum_z P(Y=y \mid X=x, Z=z) P(Z=z)
 \]</div>
 <p>となる。この式は調整化公式とよばれ、このような処理は「<span class="math notranslate nohighlight">\(Z\)</span>による調整」「<span class="math notranslate nohighlight">\(Z\)</span>についてのコントロール」と呼ばれる。</p>
 </section>
-</section>
 <section id="id6">
-<h2>バックドア基準<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<h3>グラフのタイプ<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>ノードとエッジのつながりを部分的に見てみると、次の3パターンで構成される</p>
+<ul class="simple">
+<li><p>連鎖経路（chain, head-to-tail） <span class="math notranslate nohighlight">\(X \to Z \to Y\)</span></p></li>
+<li><p>分岐経路（folk, tail-to-tail） <span class="math notranslate nohighlight">\(X \leftarrow Z \rightarrow Y\)</span></p></li>
+<li><p>合流経路（collider, head-to-head） <span class="math notranslate nohighlight">\(X \rightarrow Z \leftarrow Y\)</span></p></li>
+</ul>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/0b6415698fa8d4339793438f4861bfa513c1cd78646cb6b324be6397d2ce91e3.svg" src="../_images/0b6415698fa8d4339793438f4861bfa513c1cd78646cb6b324be6397d2ce91e3.svg" />
+</div>
+</div>
+<p>直接効果を表す<span class="math notranslate nohighlight">\(X\to Y\)</span>のパスを <strong>直接パス（direct path）</strong> という。</p>
+<p>また、直接つながらないが間接的に接続するパスを <strong>バックドアパス（backdoor path）</strong> という。</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/04ef5e25b85380069a70a0cb9339e441ee512cb7bb2317ef554186be0104e6ff.svg" src="../_images/04ef5e25b85380069a70a0cb9339e441ee512cb7bb2317ef554186be0104e6ff.svg" />
+</div>
+</div>
+</section>
+</section>
+<section id="d">
+<h2>d分離（有向分離）<a class="headerlink" href="#d" title="Link to this heading">#</a></h2>
+<p>ノード<span class="math notranslate nohighlight">\(X, Y\)</span>を別のノード集合<span class="math notranslate nohighlight">\(\mathcal{S}\)</span>でブロックしているとき、<strong>d分離</strong> あるいは <strong>有向分離</strong> されているという</p>
+<div class="admonition-d-separation-directional-separation-d admonition">
+<p class="admonition-title">有向分離（d-separation, directional-separation, d分離）</p>
+<p>パス<span class="math notranslate nohighlight">\(p\)</span>がノードの集合<span class="math notranslate nohighlight">\(\mathcal{S}\)</span>によってブロックされていることは、以下と同値である。</p>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\(p\)</span>は連鎖経路<span class="math notranslate nohighlight">\(X \to Z \to Y\)</span> または分岐経路 <span class="math notranslate nohighlight">\(X \leftarrow Z \rightarrow Y\)</span> を含み、中央のノード<span class="math notranslate nohighlight">\(Z\)</span>が<span class="math notranslate nohighlight">\(\mathcal{S}\)</span>に含まれる</p></li>
+<li><p><span class="math notranslate nohighlight">\(p\)</span>は合流経路<span class="math notranslate nohighlight">\(X \rightarrow Z \leftarrow Y\)</span>を含み、合流点<span class="math notranslate nohighlight">\(Z\)</span>やその子孫が集合<span class="math notranslate nohighlight">\(\mathcal{S}\)</span>に含まれていない</p></li>
+</ol>
+<p><span class="math notranslate nohighlight">\(\mathcal{S}\)</span>がノード<span class="math notranslate nohighlight">\(X\)</span>と<span class="math notranslate nohighlight">\(Y\)</span>の間のすべてのパスをブロックするとき、<span class="math notranslate nohighlight">\(\mathcal{S}\)</span>が与えられたもとで<span class="math notranslate nohighlight">\(X\)</span>と<span class="math notranslate nohighlight">\(Y\)</span>はd分離されている</p>
+<div class="math notranslate nohighlight">
+\[
+(X \perp\!\!\!\perp Y \mid \mathcal{S})_{\text{d-sep}}
+\]</div>
+<p>すなわち、<span class="math notranslate nohighlight">\(\mathcal{S}\)</span>が与えられた下で<span class="math notranslate nohighlight">\(X\)</span>と<span class="math notranslate nohighlight">\(Y\)</span>は条件付き独立である</p>
+</div>
+</section>
+<section id="id7">
+<h2>バックドア基準<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <div class="admonition- admonition">
 <p class="admonition-title">定義（バックドア基準）</p>
 <p>非巡回的有向グラフ<span class="math notranslate nohighlight">\(G\)</span>において変数の順序対<span class="math notranslate nohighlight">\((X, Y)\)</span>が与えられたとき、変数の集合<span class="math notranslate nohighlight">\(Z\)</span>に含まれるいかなるノードも<span class="math notranslate nohighlight">\(X\)</span>の子孫ではなく、かつ<span class="math notranslate nohighlight">\(X\)</span>と<span class="math notranslate nohighlight">\(Y\)</span>の間の道で<span class="math notranslate nohighlight">\(X\)</span>に向かう矢線を含むようなものすべてを<span class="math notranslate nohighlight">\(Z\)</span>がブロックするとき、<span class="math notranslate nohighlight">\(Z\)</span>は<span class="math notranslate nohighlight">\((X,Y)\)</span>についてバックドア基準を満たすという。</p>
@@ -1163,8 +1200,8 @@ P(Y=y \mid do(X=x))=\sum_z P(Y=y \mid X=x, Z=z) P(Z=z)
 <li><p>新たな擬似パスは作成しない</p></li>
 </ol>
 </section>
-<section id="id7">
-<h2>フロントドア基準<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<section id="id8">
+<h2>フロントドア基準<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
 <div class="admonition- admonition">
 <p class="admonition-title">定義（フロントドア）</p>
 <p>変数の集合 <span class="math notranslate nohighlight">\(Z\)</span> が以下の条件を満たすとき, <span class="math notranslate nohighlight">\(Z\)</span> は順序対 <span class="math notranslate nohighlight">\((X, Y)\)</span> についてフロントドア基準を満たす。</p>
@@ -1182,8 +1219,8 @@ P(y \mid d o(x))=\sum_z P(z \mid x) \sum_{x^{\prime}} P\left(y \mid x^{\prime}, 
 \]</div>
 </div>
 </section>
-<section id="id8">
-<h2>参考文献<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id9">
+<h2>参考文献<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.jstage.jst.go.jp/article/jscswabun/17/1/17_KJ00002671410/_pdf/-char/ja">宮川雅巳. (2005). 因果ダイアグラム・構造方程式モデルによる因果推論. 計算機統計学, 17(1), 45-57.</a></p></li>
 <li><p>Pearl（2019）『入門 統計的因果推論』</p></li>
@@ -1263,11 +1300,13 @@ P(y \mid d o(x))=\sum_z P(z \mid x) \sum_{x^{\prime}} P\left(y \mid x^{\prime}, 
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">調整</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">逆確率重み付け法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">グラフのタイプ</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">バックドア基準</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">フロントドア基準</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d">d分離（有向分離）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">バックドア基準</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">フロントドア基準</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考文献</a></li>
 </ul>
   </nav></div>
 
