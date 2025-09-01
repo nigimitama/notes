@@ -1497,17 +1497,56 @@ document.write(`
 <span class="g g-Whitespace">    </span><span class="mi">201</span>         <span class="n">missing_values_in_feature_mask</span><span class="o">=</span><span class="n">missing_values_in_feature_mask</span><span class="p">,</span>
 <span class="g g-Whitespace">    </span><span class="mi">202</span>     <span class="p">)</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/tree/_classes.py:472,</span> in <span class="ni">BaseDecisionTree._fit</span><span class="nt">(self, X, y, sample_weight, check_input, missing_values_in_feature_mask)</span>
-<span class="g g-Whitespace">    </span><span class="mi">461</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">462</span>     <span class="n">builder</span> <span class="o">=</span> <span class="n">BestFirstTreeBuilder</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">463</span>         <span class="n">splitter</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">464</span>         <span class="n">min_samples_split</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">469</span>         <span class="bp">self</span><span class="o">.</span><span class="n">min_impurity_decrease</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">470</span>     <span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">472</span> <span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tree_</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">,</span> <span class="n">missing_values_in_feature_mask</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">474</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_outputs_</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">is_classifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">475</span>     <span class="bp">self</span><span class="o">.</span><span class="n">n_classes_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/tree/_classes.py:361,</span> in <span class="ni">BaseDecisionTree._fit</span><span class="nt">(self, X, y, sample_weight, check_input, missing_values_in_feature_mask)</span>
+<span class="g g-Whitespace">    </span><span class="mi">355</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">356</span>         <span class="s2">&quot;Number of labels=</span><span class="si">%d</span><span class="s2"> does not match number of samples=</span><span class="si">%d</span><span class="s2">&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">357</span>         <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">n_samples</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">358</span>     <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">360</span> <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">361</span>     <span class="n">sample_weight</span> <span class="o">=</span> <span class="n">_check_sample_weight</span><span class="p">(</span><span class="n">sample_weight</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">DOUBLE</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">363</span> <span class="k">if</span> <span class="n">expanded_class_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">364</span>     <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/utils/validation.py:2184,</span> in <span class="ni">_check_sample_weight</span><span class="nt">(sample_weight, X, dtype, ensure_non_negative, copy)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2182</span> <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">2183</span>     <span class="n">dtype</span> <span class="o">=</span> <span class="p">[</span><span class="n">xp</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">xp</span><span class="o">.</span><span class="n">float32</span><span class="p">]</span>
+<span class="ne">-&gt; </span><span class="mi">2184</span> <span class="n">sample_weight</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">2185</span>     <span class="n">sample_weight</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2186</span>     <span class="n">accept_sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2187</span>     <span class="n">ensure_2d</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2188</span>     <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2189</span>     <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2190</span>     <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2191</span>     <span class="n">input_name</span><span class="o">=</span><span class="s2">&quot;sample_weight&quot;</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2192</span> <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2193</span> <span class="k">if</span> <span class="n">sample_weight</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">2194</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sample weights must be 1D array or scalar&quot;</span><span class="p">)</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/utils/validation.py:1105,</span> in <span class="ni">check_array</span><span class="nt">(array, accept_sparse, accept_large_sparse, dtype, order, copy, force_writeable, force_all_finite, ensure_all_finite, ensure_non_negative, ensure_2d, allow_nd, ensure_min_samples, ensure_min_features, estimator, input_name)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1099</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1100</span>         <span class="sa">f</span><span class="s2">&quot;Found array with dim </span><span class="si">{</span><span class="n">array</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">,&quot;</span>
+<span class="g g-Whitespace">   </span><span class="mi">1101</span>         <span class="sa">f</span><span class="s2">&quot; while dim &lt;= 2 is required</span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2">.&quot;</span>
+<span class="g g-Whitespace">   </span><span class="mi">1102</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1104</span> <span class="k">if</span> <span class="n">ensure_all_finite</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">1105</span>     <span class="n">_assert_all_finite</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1106</span>         <span class="n">array</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1107</span>         <span class="n">input_name</span><span class="o">=</span><span class="n">input_name</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1108</span>         <span class="n">estimator_name</span><span class="o">=</span><span class="n">estimator_name</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1109</span>         <span class="n">allow_nan</span><span class="o">=</span><span class="n">ensure_all_finite</span> <span class="o">==</span> <span class="s2">&quot;allow-nan&quot;</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1110</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1112</span> <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1113</span>     <span class="k">if</span> <span class="n">_is_numpy_namespace</span><span class="p">(</span><span class="n">xp</span><span class="p">):</span>
+<span class="g g-Whitespace">   </span><span class="mi">1114</span>         <span class="c1"># only make a copy if `array` and `array_orig` may share memory`</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/sklearn/utils/validation.py:116,</span> in <span class="ni">_assert_all_finite</span><span class="nt">(X, allow_nan, msg_dtype, estimator_name, input_name)</span>
+<span class="g g-Whitespace">    </span><span class="mi">111</span> <span class="c1"># First try an O(n) time, O(1) space solution for the common case that</span>
+<span class="g g-Whitespace">    </span><span class="mi">112</span> <span class="c1"># everything is finite; fall back to O(n) space `np.isinf/isnan` or custom</span>
+<span class="g g-Whitespace">    </span><span class="mi">113</span> <span class="c1"># Cython implementation to prevent false positives and provide a detailed</span>
+<span class="g g-Whitespace">    </span><span class="mi">114</span> <span class="c1"># error message.</span>
+<span class="g g-Whitespace">    </span><span class="mi">115</span> <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">over</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">116</span>     <span class="n">first_pass_isfinite</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">xp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+<span class="g g-Whitespace">    </span><span class="mi">117</span> <span class="k">if</span> <span class="n">first_pass_isfinite</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">118</span>     <span class="k">return</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
