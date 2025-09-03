@@ -1047,19 +1047,26 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モデルの検証</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">クロンバックのα</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">適合度</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">情報量関数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">次元性の仮定の検証</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">スクリープロット</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">局所独立性の仮定の検証</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-3"><span class="math notranslate nohighlight">\(Q_3\)</span>統計量</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">スコアの検証</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#messick">Messickの妥当性概念</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">外的妥当性の検証</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">モデルの検証</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">クロンバックのα</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">適合度</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">情報量関数</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">スコアの検証</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#messick">Messickの妥当性概念</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">外的妥当性の検証</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -1074,9 +1081,170 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>スコアの妥当性検証<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <section id="id2">
-<h2>モデルの検証<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>次元性の仮定の検証<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>IRTでは、そのテストが測ろうとしている構成概念（スコア）の次元数を仮定してモデルを当てはめる。そのため、データがその仮定に合致するかを検討するというもの。</p>
 <section id="id3">
-<h3>クロンバックのα<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<h3>スクリープロット<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>相関行列の固有値を降順に描いたプロット。</p>
+<p>例えば第1成分から第2成分にかけて一気にカーブが下がってそれ以降はなだらかになっている（第1主成分だけで多くを説明できる）場合は1次元だとみなして妥当</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ------------------------------</span>
+<span class="c1"># サンプルデータの生成</span>
+<span class="c1"># ------------------------------</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">n_persons</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">n_items</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># 能力θと項目困難度bを設定</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_persons</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">n_items</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">n_items</span><span class="p">)</span>
+
+<span class="c1"># 2PLMで応答を生成</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">theta</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">)))</span>
+<span class="n">responses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">responses</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;item_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_items</span><span class="p">)])</span>
+<span class="c1"># print(df.head())</span>
+
+<span class="c1"># ------------------------------</span>
+<span class="c1"># スクリープロット</span>
+<span class="c1"># ------------------------------</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ordinalcorr</span><span class="w"> </span><span class="kn">import</span> <span class="n">hetcor</span>
+
+<span class="n">cor_matrix</span> <span class="o">=</span> <span class="n">hetcor</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">eigenvalues</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">cor_matrix</span><span class="p">)</span>
+<span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">eigenvalues</span><span class="p">,</span> <span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Scree Plot&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Component Number&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Eigenvalue&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/d60e305bd453df0c10afa775dec934e89f2b6ed5a51b2c8573ba05f0e0bd1999.png" src="../../_images/d60e305bd453df0c10afa775dec934e89f2b6ed5a51b2c8573ba05f0e0bd1999.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="id4">
+<h2>局所独立性の仮定の検証<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p><strong>局所独立性（local independence）</strong> とは、能力<span class="math notranslate nohighlight">\(\theta\)</span>を1つの値に固定したとき、各テスト項目への反応は互いに独立であるという性質。</p>
+<p>言い換えると「項目間の相関は能力<span class="math notranslate nohighlight">\(\theta\)</span>という因子に起因していて、能力<span class="math notranslate nohighlight">\(\theta\)</span>を固定してその影響を除外（統制）すれば項目間の相関はない」という考え方。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">graphviz</span>
+<span class="n">graphviz</span><span class="o">.</span><span class="n">Source</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">digraph g {</span>
+<span class="s2">    graph [rankdir = TB];</span>
+<span class="s2">    node[shape = circle];</span>
+<span class="s2">        theta [label=&lt;&lt;I&gt;θ&lt;/I&gt;&gt;]</span>
+<span class="s2">    node[shape = square];</span>
+<span class="s2">        u1    [label=&lt;&lt;I&gt;u&lt;SUB&gt;1&lt;/SUB&gt;&lt;/I&gt;&gt;]</span>
+<span class="s2">        u2    [label=&lt;&lt;I&gt;u&lt;SUB&gt;2&lt;/SUB&gt;&lt;/I&gt;&gt;]</span>
+<span class="s2">        u3    [label=&lt;&lt;I&gt;u&lt;SUB&gt;3&lt;/SUB&gt;&lt;/I&gt;&gt;]</span>
+<span class="s2">    edge [];</span>
+<span class="s2">        theta -&gt; {u1, u2, u3}</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/a82d117b66215cd81a015b4bf6d8ea8f08eef9abd895abaadc5c387a911a5885.svg" src="../../_images/a82d117b66215cd81a015b4bf6d8ea8f08eef9abd895abaadc5c387a911a5885.svg" />
+</div>
+</div>
+<section id="q-3">
+<h3><span class="math notranslate nohighlight">\(Q_3\)</span>統計量<a class="headerlink" href="#q-3" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(Q_3\)</span>統計量は局所独立性の検証に使われる統計量で、2つの項目のペアの残差の間の相関である。</p>
+<div class="admonition-q3 admonition">
+<p class="admonition-title">項目ペアの<span class="math notranslate nohighlight">\(Q3\)</span>統計量</p>
+<p><span class="math notranslate nohighlight">\(Q_3\)</span>統計量は任意の項目のペア<span class="math notranslate nohighlight">\(j\)</span>と<span class="math notranslate nohighlight">\(j^\prime\)</span>について次のように定義される。</p>
+<div class="math notranslate nohighlight">
+\[
+Q_{3, j j^{\prime}} := r(d_j, d_{j^{\prime}})
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(r(\cdot, \cdot)\)</span>：相関係数</p></li>
+<li><p><span class="math notranslate nohighlight">\(d_{ij} := u_{ij} - \hat{P}_j(\hat{\theta}_i)\)</span> ：推定したパラメータによるICC<span class="math notranslate nohighlight">\(\hat{P}_j(\hat{\theta}_i)\)</span>と項目反応<span class="math notranslate nohighlight">\(u_{ij}\)</span>の残差得点</p></li>
+</ul>
+</div>
+<p>目安としては、「<span class="math notranslate nohighlight">\(|Q_3| \geq 0.20\)</span>の項目ペアは局所独立性の侵害を疑う必要がある」とされる</p>
+<div class="admonition-q3 admonition">
+<p class="admonition-title">テストの<span class="math notranslate nohighlight">\(Q3\)</span>統計量</p>
+<p>実際には分析全体の評価に、その（絶対値の）最大値が使われる</p>
+<div class="math notranslate nohighlight">
+\[
+Q_{3, max} := \max_{j \neq j^{\prime}} Q_{3, j j^{\prime}}
+\]</div>
+<p>（<span class="math notranslate nohighlight">\(j = j^{\prime}\)</span>は相関行列の対角要素であり1になるので、それ以外の部分での最大値という意味）</p>
+</div>
+<p><span class="math notranslate nohighlight">\(Q_3\)</span>統計量は</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\theta\)</span>によって項目間の相関関係が十分に説明されているとすれば、その影響を除去した残差得点同士の相関は0に近くなるはず</p></li>
+<li><p><span class="math notranslate nohighlight">\(\theta\)</span>以外に項目間に相関をもたらす要因がある場合は<span class="math notranslate nohighlight">\(\theta\)</span>の影響を除いてもなお相関が残る</p></li>
+</ul>
+<p>という考え方をとっている。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<span class="math notranslate nohighlight">\(Q_3\)</span>統計量の短所（<a class="reference external" href="https://doi.org/10.1177/0146621616677520">Christensen et al., 2017</a>）</div>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(Q_3\)</span>は平均がゼロではなく、ややマイナスに偏る負のバイアスが指摘されている（<a class="reference external" href="https://doi.org/10.1177/014662168400800201">Yen, 1984</a>）。</p>
+<ul>
+<li><p class="sd-card-text">バイアスを補正したバージョン（単純にゼロで引く）も検討されている（<a class="reference external" href="https://doi.org/10.1177/0146621616677520">Christensen et al., 2017</a>）</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(Q_{3,*} := Q_{3, max} - \bar{Q_{3}}\)</span></p></li>
+</ul>
+</li>
+<li><p class="sd-card-text">「<span class="math notranslate nohighlight">\(Q_3\)</span>がいくつ以下ならいい」という基準値が不明瞭（慣例的に0.2と言われがちだが実際の論文では0.3以下基準のものがあったり、まちまち）</p></li>
+</ul>
+</div>
+</div>
+<div class="admonition- admonition">
+<p class="admonition-title">とはいえ基準値は0.2でそんなにおかしくはなさそう</p>
+<p><a class="reference external" href="https://doi.org/10.1177/0146621616677520">Christensen et al. (2017)</a> はシミュレーションした結果次のように述べている</p>
+<ul class="simple">
+<li><p>「<span class="math notranslate nohighlight">\(Q_3\)</span>がいくつ以下ならいい」という基準値はデータセットにもよるし一概に言えない</p></li>
+<li><p>しかしシミュレーション上、平均の相関より0.2上回る（<span class="math notranslate nohighlight">\(Q_{3,*}\geq 0.2\)</span>）残差相関は局所依存を示唆する可能性があり、局所独立した項目の<span class="math notranslate nohighlight">\(Q_{3,*}\)</span>が0.3を超える可能性は低かった</p></li>
+</ul>
+</div>
+<p>Q3の標本分布はわからないが、<a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/29881045/">Finch &amp; Jeffers (2016)</a> はpermutation testによりType I errorと検出率を推定する方法を提案している。</p>
+<div class="admonition- admonition">
+<p class="admonition-title">日本語のレビュー論文</p>
+<p><a class="reference external" href="https://www.jstage.jst.go.jp/article/jart/21/1/21_125/_article/-char/ja/">板宮拓巳. (2025). 局所依存構造を持つテストデータの解析法の展望―項目反応理論に注目して―. 日本テスト学会誌, 21(1), 125-152.</a></p>
+<p>局所依存の診断法についての発展をレビューした論文</p>
+</div>
+</section>
+</section>
+<section id="id5">
+<h2>モデルの検証<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h3>クロンバックのα<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
@@ -1092,15 +1260,15 @@ document.write(`
 <li><p>❌️CTTにおける信頼性係数や、その推定量であるクロンバックのαは項目数が増えるとαも上がってしまい、精度が低いことが知られている</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>適合度<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h3>適合度<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>❌️IRTの個人適合度（<span class="math notranslate nohighlight">\(z^3\)</span>統計量） → 正規分布に従い、例えば5%有意水準で適合度が低い受験者を検出できるが、適合していても5%は誤検出する</p></li>
 <li><p>❌️IRTの項目適合度 → 受験者数が増えるとp-valueが5%未満（→適合していない）になりやすく、誤検出が多い</p></li>
 </ul>
 </section>
-<section id="id5">
-<h3>情報量関数<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>情報量関数<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <ul class="simple">
@@ -1118,20 +1286,9 @@ I(\theta) \geq \frac{1}{\operatorname{Var}(\hat{\theta})}
 <p>情報量関数は1つのテストについて検定のような良し悪しを判断する使われ方はされず、<span class="math notranslate nohighlight">\(\theta\)</span>の値に対する情報量の多寡をみる</p>
 <p>また2つのテスト<span class="math notranslate nohighlight">\(A,B\)</span>のどちらがより精度が高いかを相対効率<span class="math notranslate nohighlight">\(\frac{I_A(\theta)}{I_B(\theta)}\)</span>で示すなどといった使われ方をされる。</p>
 </section>
-<section id="q-3">
-<h3><span class="math notranslate nohighlight">\(Q_3\)</span>統計量<a class="headerlink" href="#q-3" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(Q_3\)</span>統計量は局所独立性の検証に使われる統計量</p>
-<p><span class="math notranslate nohighlight">\(Q_3\)</span>統計量は</p>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(\theta\)</span>によって項目間の相関関係が十分に説明されているとすれば、その影響を除去した残差得点同士の相関は0に近くなるはず</p></li>
-<li><p><span class="math notranslate nohighlight">\(\theta\)</span>以外に項目間に相関をもたらす要因がある場合は<span class="math notranslate nohighlight">\(\theta\)</span>の影響を除いてもなお相関が残る</p></li>
-</ul>
-<p>という考え方をとっている。</p>
-<p>目安としては、「<span class="math notranslate nohighlight">\(Q_3 &gt; 0.20\)</span>の項目ペアは局所独立性の侵害を疑う必要がある」とされる。</p>
 </section>
-</section>
-<section id="id6">
-<h2>スコアの検証<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<section id="id9">
+<h2>スコアの検証<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
 <section id="messick">
 <h3>Messickの妥当性概念<a class="headerlink" href="#messick" title="Link to this heading">#</a></h3>
 <p>Messickは妥当性検証のための側面を6つ挙げた。</p>
@@ -1165,16 +1322,17 @@ I(\theta) \geq \frac{1}{\operatorname{Var}(\hat{\theta})}
 </div>
 <p>上記6つの側面にわたる証拠が備えられていることが望ましい。しかし妥当性検証とは尺度が利用されることで明らかになる証拠を積み重ねるプロセスであるため、最初から全部を備えることは不可能。</p>
 </section>
-<section id="id7">
-<h3>外的妥当性の検証<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>外的妥当性の検証<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p>スコアが「人間の肌感覚」など何らかの先行的に存在する指標を模倣している場合は、その模倣具合からある程度妥当性を検証できる</p>
 <p>例えば数件～数十件の受験者をサンプリングし、人間の肌感覚に従って昇順にソートしてもらい、それと推定された<span class="math notranslate nohighlight">\(\hat{\theta}\)</span>の順序相関を確認する</p>
 </section>
 </section>
-<section id="id8">
-<h2>参考<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id11">
+<h2>参考<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.jstage.jst.go.jp/article/arepj/51/0/51_118/_pdf">村山航. (2012). 妥当性概念の歴史的変遷と心理測定学的観点からの考察. 教育心理学年報, 51, 118-130.</a></p></li>
+<li><p><a class="reference external" href="https://www2.kobe-u.ac.jp/~bunji/files/lecture/MVA/html/chapters/08_irt.html">8  項目反応理論</a></p></li>
 </ul>
 </section>
 </section>
@@ -1243,19 +1401,26 @@ I(\theta) \geq \frac{1}{\operatorname{Var}(\hat{\theta})}
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モデルの検証</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">クロンバックのα</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">適合度</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">情報量関数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">次元性の仮定の検証</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">スクリープロット</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">局所独立性の仮定の検証</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-3"><span class="math notranslate nohighlight">\(Q_3\)</span>統計量</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">スコアの検証</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#messick">Messickの妥当性概念</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">外的妥当性の検証</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">モデルの検証</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">クロンバックのα</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">適合度</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">情報量関数</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">スコアの検証</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#messick">Messickの妥当性概念</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">外的妥当性の検証</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考</a></li>
 </ul>
   </nav></div>
 
