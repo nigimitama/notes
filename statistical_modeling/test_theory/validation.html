@@ -1053,6 +1053,7 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">局所独立性の仮定の検証</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-3"><span class="math notranslate nohighlight">\(Q_3\)</span>統計量</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jsi">ジャックナイフ識別力指標（JSI）</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">モデルの検証</a><ul class="nav section-nav flex-column">
@@ -1179,6 +1180,7 @@ document.write(`
 <img alt="../../_images/a82d117b66215cd81a015b4bf6d8ea8f08eef9abd895abaadc5c387a911a5885.svg" src="../../_images/a82d117b66215cd81a015b4bf6d8ea8f08eef9abd895abaadc5c387a911a5885.svg" />
 </div>
 </div>
+<p>局所独立性が満たされない場合はテスト情報量を過大評価するバイアスと、識別力パラメータの推定にバイアスが出ることが知られている</p>
 <section id="q-3">
 <h3><span class="math notranslate nohighlight">\(Q_3\)</span>統計量<a class="headerlink" href="#q-3" title="Link to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(Q_3\)</span>統計量は局所独立性の検証に使われる統計量で、2つの項目のペアの残差の間の相関である。</p>
@@ -1234,6 +1236,30 @@ Q_{3, max} := \max_{j \neq j^{\prime}} Q_{3, j j^{\prime}}
 </ul>
 </div>
 <p>Q3の標本分布はわからないが、<a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/29881045/">Finch &amp; Jeffers (2016)</a> はpermutation testによりType I errorと検出率を推定する方法を提案している。</p>
+</section>
+<section id="jsi">
+<h3>ジャックナイフ識別力指標（JSI）<a class="headerlink" href="#jsi" title="Link to this heading">#</a></h3>
+<p><strong>ジャックナイフ識別力指標</strong>  ( <strong>jackknife slope index, JSI</strong> ; <a class="reference external" href="https://doi.org/10.1177/014662161349145">Houts &amp; Edwards, 2013</a>) はテスト中の項目<span class="math notranslate nohighlight">\(k\)</span>が推定から除外されたときに項目<span class="math notranslate nohighlight">\(j\)</span>の識別力の推定値が受ける影響を定量化する。</p>
+<p>局所依存が発生している項目ペアでは識別力パラメータの推定にバイアスがかかるため、ペアの片方を除外した場合の識別力の変動を定量化する。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[
+JIS_{j(k)} = \frac{a_j - a_{j(k)}}{ se(a_j) }
+\]</div>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(a_{j(k)}\)</span>：項目<span class="math notranslate nohighlight">\(k\)</span>が推定から除外されたときの項目<span class="math notranslate nohighlight">\(j\)</span>の識別力パラメータ</p></li>
+</ul>
+</div>
+</div>
+<p>JSIが大きければ、そのペアにLDが発生しているとみなす。標準誤差<span class="math notranslate nohighlight">\(se(a_j)\)</span>が含まれるためJSIの大小はサンプルサイズにも依存するため、 <strong>テスト中の全JSIの平均から2標準偏差離れた項目を注意項目とみなす</strong> という基準が提案されている。</p>
+<p><a class="reference external" href="https://psycnet.apa.org/buy/2017-14596-001">Edwards et al.(2018)</a> のシミュレーションによれば JSI は𝑄ଷや𝐺ଶといった古典的な指標よりも検出力が高く，誤検知も起こりにくい。</p>
+<p>例えばRだと <code class="docutils literal notranslate"><span class="pre">{mirt}</span></code> パッケージで推定できる</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mirt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="nf">residuals</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;JSI&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>参考：<a class="reference external" href="https://rdrr.io/cran/mirt/man/residuals-method.html">https://rdrr.io/cran/mirt/man/residuals-method.html</a></p>
 <div class="admonition- admonition">
 <p class="admonition-title">日本語のレビュー論文</p>
 <p><a class="reference external" href="https://www.jstage.jst.go.jp/article/jart/21/1/21_125/_article/-char/ja/">板宮拓巳. (2025). 局所依存構造を持つテストデータの解析法の展望―項目反応理論に注目して―. 日本テスト学会誌, 21(1), 125-152.</a></p>
@@ -1407,6 +1433,7 @@ I(\theta) \geq \frac{1}{\operatorname{Var}(\hat{\theta})}
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">局所独立性の仮定の検証</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-3"><span class="math notranslate nohighlight">\(Q_3\)</span>統計量</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jsi">ジャックナイフ識別力指標（JSI）</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">モデルの検証</a><ul class="nav section-nav flex-column">
