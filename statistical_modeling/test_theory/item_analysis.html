@@ -1062,7 +1062,12 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>項目分析<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <p>テストを実施したあと、モデルをあてはめてパラメータを推定する前の段階で簡単に計算できる指標群で項目の良し悪しを考察できる。</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -1075,8 +1080,8 @@ document.write(`
     <span class="c1"># 潜在能力 θ を標準正規分布から生成</span>
     <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">num_persons</span><span class="p">)</span>
 
-    <span class="c1"># 識別力 a ~ lognormal(μ=0, σ=0.2)</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">num_items</span><span class="p">)</span>
+    <span class="c1"># 識別力 a ~ N(0, 1)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">num_items</span><span class="p">)</span>
 
     <span class="c1"># 困難度 b ~ N(0, 1)</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">num_items</span><span class="p">)</span>
@@ -1092,16 +1097,14 @@ document.write(`
     <span class="c1"># DataFrameとして返す（行=受験者, 列=項目）</span>
     <span class="n">responses</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">response_matrix</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;item_</span><span class="si">{</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_items</span><span class="p">)])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">responses</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">theta</span>
+
+
+<span class="c1"># サンプルデータの生成</span>
+<span class="n">responses</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">generate_irt_2pl_data</span><span class="p">(</span><span class="n">num_persons</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">num_items</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">responses</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">generate_irt_2pl_data</span><span class="p">(</span><span class="n">num_persons</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">num_items</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
+</details>
 </div>
 <section id="id2">
 <h2>項目困難度 / 通過率<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
@@ -1109,32 +1112,68 @@ document.write(`
 <p>わかりやすさのために「通過率」と呼ばれることもある。各設問の正答の容易さを示す。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">responses</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">responses</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>item_1     0.430
-item_2     0.516
-item_3     0.538
-item_4     0.720
-item_5     0.634
-item_6     0.364
-item_7     0.382
-item_8     0.674
-item_9     0.466
-item_10    0.396
-dtype: float64
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mean</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>item_1</th>
+      <td>0.788</td>
+    </tr>
+    <tr>
+      <th>item_2</th>
+      <td>0.336</td>
+    </tr>
+    <tr>
+      <th>item_3</th>
+      <td>0.302</td>
+    </tr>
+    <tr>
+      <th>item_4</th>
+      <td>0.422</td>
+    </tr>
+    <tr>
+      <th>item_5</th>
+      <td>0.372</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 </section>
 <section id="id3">
 <h2>項目識別力<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>古典テスト理論における項目識別力は、素点（テスト得点）と各項目得点の相関をみるもの。</p>
 <p>テストで測りたい能力を大まかに表すものである素点に対し、各項目が相関している（能力を測るのに貢献している）ことを確かめる。</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">responses</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">responses</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1147,10 +1186,11 @@ dtype: float64
         <span class="s2">&quot;item&quot;</span><span class="p">:</span> <span class="n">item_col</span><span class="p">,</span>
         <span class="s2">&quot;corr&quot;</span><span class="p">:</span> <span class="n">biserial</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_score&quot;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">item_col</span><span class="p">]),</span>
     <span class="p">})</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
 <style scoped>
@@ -1178,52 +1218,27 @@ dtype: float64
     <tr>
       <th>0</th>
       <td>item_1</td>
-      <td>0.642</td>
+      <td>0.127</td>
     </tr>
     <tr>
       <th>1</th>
       <td>item_2</td>
-      <td>0.747</td>
+      <td>0.024</td>
     </tr>
     <tr>
       <th>2</th>
       <td>item_3</td>
-      <td>0.557</td>
+      <td>0.466</td>
     </tr>
     <tr>
       <th>3</th>
       <td>item_4</td>
-      <td>0.659</td>
+      <td>0.306</td>
     </tr>
     <tr>
       <th>4</th>
       <td>item_5</td>
-      <td>0.597</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>item_6</td>
-      <td>0.625</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>item_7</td>
-      <td>0.633</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>item_8</td>
-      <td>0.715</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>item_9</td>
-      <td>0.536</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>item_10</td>
-      <td>0.620</td>
+      <td>0.346</td>
     </tr>
   </tbody>
 </table>
@@ -1232,16 +1247,79 @@ dtype: float64
 </section>
 <section id="id4">
 <h2>項目特性図 / トレースライン<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
-<p>各被験者の素点を横軸に、素点ごとの各選択肢の選択割合を縦軸にした折れ線グラフ。</p>
-<div class="cell docutils container">
+<p>各被験者の素点やテスト得点（をビンに区切ったもの）を横軸に、素点ごとの各選択肢の選択割合を縦軸にした折れ線グラフ。</p>
+<p>素点が高くなるに従って項目の正答率も上昇していれば識別力の高い項目と判断される。</p>
+<p>逆に、素点が低い受験者のほうが正答率が高いような設問は識別力が低い疑いがある</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib_fontja</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># 1</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;（離散化した）素点&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+    <span class="s2">&quot;選択肢1（正解）&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
+    <span class="s2">&quot;選択肢2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.21</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>
+    <span class="s2">&quot;選択肢3&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.22</span><span class="p">,</span> <span class="mf">0.21</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+    <span class="s2">&quot;選択肢4&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">temp</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="s2">&quot;（離散化した）素点&quot;</span><span class="p">,</span> <span class="n">value_name</span><span class="o">=</span><span class="s2">&quot;pass_rate&quot;</span><span class="p">),</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;（離散化した）素点&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;pass_rate&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;variable&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;識別力が高い項目&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;（離散化した）素点&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+    <span class="s2">&quot;選択肢1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>
+    <span class="s2">&quot;選択肢2（正解）&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+    <span class="s2">&quot;選択肢3&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.22</span><span class="p">,</span> <span class="mf">0.21</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+    <span class="s2">&quot;選択肢4&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">temp</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="s2">&quot;（離散化した）素点&quot;</span><span class="p">,</span> <span class="n">value_name</span><span class="o">=</span><span class="s2">&quot;pass_rate&quot;</span><span class="p">),</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;（離散化した）素点&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;pass_rate&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;variable&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;識別力が低い項目&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Text(0.5, 1.0, &#39;識別力が低い項目&#39;)]
+</pre></div>
+</div>
+<img alt="../../_images/3e85bd7166823eaf9b3b19530acf7ea5be7ff2a01e38b348845ad3f606e7ffc7.png" src="../../_images/3e85bd7166823eaf9b3b19530acf7ea5be7ff2a01e38b348845ad3f606e7ffc7.png" />
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 簡易的に2択の設問と仮定して、正解のほうを選べた率を表している</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">responses</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">responses</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">qcut</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_score&quot;</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">qcut</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_score&quot;</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
 
 <span class="n">item_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">like</span><span class="o">=</span><span class="s2">&quot;item_&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span>
 <span class="n">stats</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;raw_score&quot;</span><span class="p">)[</span><span class="n">item_cols</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+<span class="n">rs</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;raw_score&quot;</span><span class="p">]</span>
+<span class="n">stats</span><span class="p">[</span><span class="s2">&quot;raw_score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;raw_score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">codes</span><span class="p">)))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span>
@@ -1252,11 +1330,20 @@ dtype: float64
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_16163/1452260162.py:7: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  stats = df.groupby(&quot;raw_score&quot;)[item_cols].mean().reset_index()
+/tmp/ipykernel_16163/1452260162.py:10: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option(&#39;future.no_silent_downcasting&#39;, True)`
+  stats[&quot;raw_score&quot;] = stats[&quot;raw_score&quot;].replace(dict(zip(rs.cat.categories, rs.cat.codes))).astype(str)
+/tmp/ipykernel_16163/1452260162.py:10: FutureWarning: The behavior of Series.replace (and DataFrame.replace) with CategoricalDtype is deprecated. In a future version, replace will only be used for cases that preserve the categories. To change the categories, use ser.cat.rename_categories instead.
+  stats[&quot;raw_score&quot;] = stats[&quot;raw_score&quot;].replace(dict(zip(rs.cat.categories, rs.cat.codes))).astype(str)
+</pre></div>
+</div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Axes: xlabel=&#39;raw_score&#39;, ylabel=&#39;pass_rate&#39;&gt;
 </pre></div>
 </div>
-<img alt="../../_images/6958209d3f81766ce49435f2379726c1e5fbf3581b2929ed4928f320e96eed79.png" src="../../_images/6958209d3f81766ce49435f2379726c1e5fbf3581b2929ed4928f320e96eed79.png" />
+<img alt="../../_images/420a73e40b08d878cd080552e4c25d71d614a6c06e8ec296126e50d1bd8fe2ed.png" src="../../_images/420a73e40b08d878cd080552e4c25d71d614a6c06e8ec296126e50d1bd8fe2ed.png" />
 </div>
 </div>
 </section>

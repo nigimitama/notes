@@ -1061,14 +1061,15 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">並行トレンドの仮定の検証</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">並行リード</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">外生性</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-timeperiod">Multiple Timeperiod</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1. 生データを年ごとにプロットする方法</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#t-0">2. 処置の時点をt=0に再中心化する</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-timeperiod">Multiple Timeperiod</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1. 生データを年ごとにプロットする方法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#t-0">2. 処置の時点をt=0に再中心化する</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-way-fixed-effect-event-study">Two Way Fixed Effect Event Study</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#event-study">Event study</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#staggered-did">Staggered DiD</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-difference-in-differences">Synthetic Difference In Differences</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-completion">matrix completion</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">論文</a><ul class="nav section-nav flex-column">
@@ -1256,11 +1257,12 @@ $$</p></li>
 <h3>外生性<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <p>並行トレンドの仮定が明らかに成立しない状況は、処置そのものが内生的である場合である。この場合は処置は潜在的結果に依存し、処置がもしなければ結果も平行じゃない変化をしていたと考えられる。</p>
 </section>
+</section>
 <section id="multiple-timeperiod">
-<h3>Multiple Timeperiod<a class="headerlink" href="#multiple-timeperiod" title="Link to this heading">#</a></h3>
+<h2>Multiple Timeperiod<a class="headerlink" href="#multiple-timeperiod" title="Link to this heading">#</a></h2>
 <p>処置を行う時点が複数ある場合の対処について。</p>
 <section id="id8">
-<h4>1. 生データを年ごとにプロットする方法<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
+<h3>1. 生データを年ごとにプロットする方法<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <p>デメリットは</p>
 <ol class="arabic simple">
 <li><p>グラフが多すぎて、手間がかかり、見栄えが悪い</p></li>
@@ -1272,27 +1274,67 @@ $$</p></li>
 </ol>
 </section>
 <section id="t-0">
-<h4>2. 処置の時点をt=0に再中心化する<a class="headerlink" href="#t-0" title="Link to this heading">#</a></h4>
-<p>デメリットは</p>
-<ol class="arabic simple">
-<li><p>対照群をプロットできるものの、回帰分析で実際につかわれるものと一致しない（Goodman-Bacon, 2021）</p></li>
-</ol>
+<h3>2. 処置の時点をt=0に再中心化する<a class="headerlink" href="#t-0" title="Link to this heading">#</a></h3>
+<p>デメリットは対照群をプロットできるものの、回帰分析で実際につかわれるものと一致しない（Goodman-Bacon, 2021）</p>
+</section>
+<section id="two-way-fixed-effect-event-study">
+<h3>Two Way Fixed Effect Event Study<a class="headerlink" href="#two-way-fixed-effect-event-study" title="Link to this heading">#</a></h3>
+<div class="admonition-two-way-fixed-effect-event-study admonition">
+<p class="admonition-title">Two Way Fixed Effect Event Study</p>
+<div class="math notranslate nohighlight">
+\[
+Y_{i,t} = \beta_i + \eta_t + \sum_l \gamma_l \mathbf{1}[t-s_i = l] + \varepsilon_{i,t}
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\beta_i\)</span>：グループ固定効果</p></li>
+<li><p><span class="math notranslate nohighlight">\(\eta_t\)</span>：時間固定効果</p></li>
+<li><p><span class="math notranslate nohighlight">\(l\)</span>：介入開始からの期数。期間数<span class="math notranslate nohighlight">\(T\)</span>に対し<span class="math notranslate nohighlight">\(l\in [-T, T]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\gamma_l\)</span>：開始からの期数ごとの介入効果</p></li>
+<li><p><span class="math notranslate nohighlight">\(s_i\)</span>：介入開始タイミング</p></li>
+</ul>
+</div>
+<p>別称：Event Study、Dynamic DiD、Dynamic TWFE</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>複数期間についての他の議論</p>
-<p>MEMO</p>
+<p>EventStudyはバイアスを含む</p>
+<p>効果の大きさと介入タイミングに関連があるときにバイアスが生じることが知られている。</p>
+<p>例えば複数の店舗での施策導入で「効果が大きそうな店舗から順に導入を進めるケース」</p>
 <p><a class="reference external" href="https://twitter.com/tkmkmd/status/1304683871871488001">Takuma KamadaさんはTwitterを使っています: 「&#64;RyotaMugiyama 最近のDiD研究だと、イベントを受けるタイミングが異なって、かつトリートメント効果が時間を通じて変動する場合、two way fixed effectsでのevent study推定値はバイアスすることが示されてる。https://t.co/hOtwFhLjWJ」 / Twitter</a></p>
 </div>
-<p>処置の時点が複数あるものはStaggered DID（段階的DID）とも呼ばれる</p>
-<p><a class="reference external" href="http://applied-economics.org/docs/SDID.pdf">小西祥文 (2021) Staggered DIDの近年の動向</a></p>
 </section>
 </section>
-</section>
-<section id="event-study">
-<h2>Event study<a class="headerlink" href="#event-study" title="Link to this heading">#</a></h2>
+<section id="staggered-did">
+<h2>Staggered DiD<a class="headerlink" href="#staggered-did" title="Link to this heading">#</a></h2>
+<p>処置の時点が複数ある場合のDiDで、TWFE Event Studyの課題を解消するタイプのものは総称としてStaggered DID（段階的DID）と呼ばれる</p>
+<div class="admonition-sun-and-abraham-2021 admonition">
+<p class="admonition-title">Sun and Abraham (2021) の手法</p>
+<p>「コーホート×開始からの期数」ごとに推定し、それを集約するのが Sun and Abraham (2021)の提案手法</p>
+<div class="math notranslate nohighlight">
+\[
+Y_{i,t} = \beta_i + \eta_t + \sum_l \gamma_{c,l} \mathbf{1}[t-s_i = l] \cdot \mathbf{1}[\text{Cohort}_i = c] + \varepsilon_{i,t}
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\beta_i\)</span>：グループ固定効果</p></li>
+<li><p><span class="math notranslate nohighlight">\(\eta_t\)</span>：時間固定効果</p></li>
+<li><p><span class="math notranslate nohighlight">\(l\)</span>：介入開始からの期数。期間数<span class="math notranslate nohighlight">\(T\)</span>に対し<span class="math notranslate nohighlight">\(l\in [-T, T]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\gamma_{c,l}\)</span>：コーホート×開始からの期数ごとの介入効果</p></li>
+<li><p><span class="math notranslate nohighlight">\(s_i\)</span>：介入開始タイミング</p></li>
+</ul>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考文献</div>
+<ul class="simple">
+<li><p class="sd-card-text"><a class="reference external" href="https://www.brainpad.co.jp/doors/contents/01_tech_2023-08-22-153000/">介入タイミングが複数あるときの差分の差分法：Staggered DiDの紹介 | DOORS DX</a></p></li>
+<li><p class="sd-card-text"><a class="reference external" href="http://applied-economics.org/docs/SDID.pdf">小西祥文 (2021) Staggered DIDの近年の動向</a></p></li>
+</ul>
+</div>
+</div>
 </section>
 <section id="synthetic-difference-in-differences">
 <h2>Synthetic Difference In Differences<a class="headerlink" href="#synthetic-difference-in-differences" title="Link to this heading">#</a></h2>
+<p>Synthetic Controlとの融合手法</p>
 <p><a class="reference external" href="https://arxiv.org/pdf/2301.11859.pdf">Clarke, D., Pailañir, D., Athey, S., &amp; Imbens, G. (2023). Synthetic Difference In Differences Estimation. arXiv preprint arXiv:2301.11859.</a></p>
 </section>
 <section id="matrix-completion">
@@ -1364,6 +1406,7 @@ s_{\ell k} \hat{\beta}^{DD}_{\ell k} ]
 <h2>参考文献<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://mixtape.scunning.com/09-difference_in_differences">Causal Inference The Mixtape - 9  Difference-in-Differences</a></p></li>
+<li><p><a class="reference external" href="https://www.brainpad.co.jp/doors/contents/01_tech_2023-08-22-153000/">介入タイミングが複数あるときの差分の差分法：Staggered DiDの紹介 | DOORS DX</a></p></li>
 <li><p><a class="reference external" href="http://applied-economics.org/docs/SDID.pdf">小西祥文 (2021) Staggered DIDの近年の動向</a></p>
 <ul>
 <li><p><a class="reference external" href="https://github.com/kazuyanagimoto/staggered_did_tutorial">kazuyanagimoto/staggered_did_tutorial: 2023年5月28日に日本経済学会春季大会にて開催されたチュートリアル・セッション</a></p></li>
@@ -1487,14 +1530,15 @@ s_{\ell k} \hat{\beta}^{DD}_{\ell k} ]
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">並行トレンドの仮定の検証</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">並行リード</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">外生性</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-timeperiod">Multiple Timeperiod</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1. 生データを年ごとにプロットする方法</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#t-0">2. 処置の時点をt=0に再中心化する</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-timeperiod">Multiple Timeperiod</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1. 生データを年ごとにプロットする方法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#t-0">2. 処置の時点をt=0に再中心化する</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-way-fixed-effect-event-study">Two Way Fixed Effect Event Study</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#event-study">Event study</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#staggered-did">Staggered DiD</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-difference-in-differences">Synthetic Difference In Differences</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-completion">matrix completion</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">論文</a><ul class="nav section-nav flex-column">

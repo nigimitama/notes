@@ -1054,9 +1054,6 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estimand">推定するestimand</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">距離尺度</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">マッチングに使うデータの選定</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exact-matching">Exact Matching</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">傾向スコアマッチング</a></li>
 </ul>
 </li>
@@ -1077,9 +1074,14 @@ document.write(`
 <section id="id2">
 <h2>概要<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>マッチング（matching）は、処置群と対照群を「共変量の分布が似ているペア」や「似たサンプル集合」に揃えて因果効果の推定を行う方法。</p>
+<p>推定の流れ：</p>
 <ol class="arabic simple">
 <li><p>マッチングする：似ている処置群と対照群のペアを見つける</p></li>
-<li><p>似ているペアでestimandを推定する</p></li>
+<li><p>似ているペアでestimandを推定する</p>
+<ul class="simple">
+<li><p>ここの推定は単純な平均の差だったり層別で平均の差をとったり、重み付き回帰したりする</p></li>
+</ul>
+</li>
 </ol>
 <section id="id3">
 <h3>仮定<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
@@ -1099,17 +1101,17 @@ document.write(`
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><strong>Nearest Neighbor Matching (最近傍マッチング)</strong></p></td>
-<td><p>処置群の各サンプルに対して、共変量距離が最も近い対照群サンプルを選ぶ</p></td>
-<td><p>実装が簡単、外れ値や多対一対応に注意</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Caliper Matching (キャリパーマッチング)</strong></p></td>
-<td><p>一定の距離（キャリパー）以内のサンプルのみをマッチング</p></td>
-<td><p>極端なペアを除外できる</p></td>
-</tr>
 <tr class="row-even"><td><p><strong>Propensity Score Matching (PSM)</strong></p></td>
 <td><p>ロジスティック回帰などで推定した傾向スコアでマッチング</p></td>
 <td><p>高次元共変量を1つのスコアに要約</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Nearest Neighbor Matching (最近傍マッチング)</strong></p></td>
+<td><p>処置群の各サンプルに対して、共変量距離が最も近い対照群サンプルを選ぶ</p></td>
+<td><p>実装が簡単、外れ値や多対一対応に注意</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Caliper Matching (キャリパーマッチング)</strong></p></td>
+<td><p>一定の距離（キャリパー）以内のサンプルのみをマッチング</p></td>
+<td><p>極端なペアを除外できる</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Full Matching / Optimal Matching</strong></p></td>
 <td><p>全データを使い、最適化的にマッチング</p></td>
@@ -1126,6 +1128,10 @@ document.write(`
 </tbody>
 </table>
 </div>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p><a class="reference external" href="https://kosukeimai.github.io/MatchIt/articles/matching-methods.html">MatchItパッケージの記事</a> で各手法が非常に丁寧に書かれている</p>
+</aside>
 </section>
 <section id="id5">
 <h3>マッチング後の推定<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
@@ -1180,10 +1186,6 @@ document.write(`
 <li><p><strong>Full Matching / Optimal Matching</strong>：全データを使い、最適化的にマッチング</p></li>
 </ul>
 </section>
-</section>
-<section id="exact-matching">
-<h2>Exact Matching<a class="headerlink" href="#exact-matching" title="Link to this heading">#</a></h2>
-<p>共変量<span class="math notranslate nohighlight">\(X\)</span>が完全に一致するペア同士で比較する</p>
 <section id="id8">
 <h3>傾向スコアマッチング<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <p>傾向スコアで近さを求める</p>
@@ -1233,17 +1235,23 @@ document.write(`
 matchitを使ったコード例（R）</div>
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">MatchIt</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">estimatr</span><span class="p">)</span>
+
+<span class="c1"># CEMでマッチング</span>
 <span class="n">m_out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matchit</span><span class="p">(</span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agesq</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agecube</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educsq</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">marr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodegree</span><span class="w"> </span><span class="o">+</span>
 <span class="w">                 </span><span class="n">black</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hisp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re75</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">u74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">u75</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">interaction1</span><span class="p">,</span>
 <span class="w">                 </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nsw_dw_cpscontrol</span><span class="p">,</span>
 <span class="w">                 </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;cem&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ATE&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1"># CEMはATTだけでなくATEも選べる</span>
 <span class="w">                 </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;logit&quot;</span><span class="p">)</span>
+
+<span class="c1"># マッチングした層を示すsubclass列と重みweights列を追加する</span>
 <span class="n">m_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">match.data</span><span class="p">(</span><span class="n">m_out</span><span class="p">)</span>
 
 <span class="c1"># 重みを使って推定</span>
 <span class="n">m_ate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm_robust</span><span class="p">(</span><span class="n">re78</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span>
 <span class="w">                   </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="p">,</span>
-<span class="w">                   </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="o">$</span><span class="n">weights</span><span class="p">)</span>
+<span class="w">                   </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="o">$</span><span class="n">weights</span><span class="p">,</span>
+<span class="w">                   </span><span class="n">clusters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="o">$</span><span class="n">subclass</span><span class="p">)</span><span class="w"> </span><span class="c1"># クラスターロバスト標準誤差を使うことが推奨されているらしい</span>
 </pre></div>
 </div>
 <p class="sd-card-text"><a class="reference external" href="https://mixtape.scunning.com/05-matching_and_subclassification">Causal Inference The Mixtape</a> のサンプルコードより引用</p>
@@ -1305,9 +1313,6 @@ matchitを使ったコード例（R）</div>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estimand">推定するestimand</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">距離尺度</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">マッチングに使うデータの選定</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exact-matching">Exact Matching</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">傾向スコアマッチング</a></li>
 </ul>
 </li>
