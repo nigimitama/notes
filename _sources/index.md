@@ -234,6 +234,7 @@
 - [](software_engineering/frontend/index)
 - [](software_engineering/data_store/index)
 - [](software_engineering/faas/index)
+- [](software_engineering/testing/index)
 - [](software_engineering/security/index)
 - [](software_engineering/pseudorandom_numbers/index)
 - [](software_engineering/web_optimization)

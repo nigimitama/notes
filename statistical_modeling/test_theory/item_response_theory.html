@@ -818,6 +818,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/faas/aws_sam.html">AWS SAM メモ</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/testing/index.html">ソフトウェアのテスト</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/testing/introduction.html">ソフトウェアテストの基本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../software_engineering/testing/test_double.html">テストダブル</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../software_engineering/security/index.html">サイバーセキュリティ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/security/security.html">個人としてのセキュリティ対策</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../software_engineering/security/website.html">ウェブアプリ開発のセキュリティ</a></li>
@@ -1062,14 +1067,16 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">項目パラメータの推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">最尤推定法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">最尤推定法について</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">同時最尤推定法</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">周辺最尤推定法</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#em">EMアルゴリズム</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">参考</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mirt">例：<code class="docutils literal notranslate"><span class="pre">mirt</span></code>パッケージに実装された様々なパラメータ推定法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">EMアルゴリズム</a></li>
 </ul>
 </li>
 </ul>
@@ -1367,9 +1374,14 @@ P_j(\theta)=\frac{1}{1+\exp \left(-1.7 a_j\left(\theta-b_j\right)\right)}, \quad
 </ul>
 </li>
 </ol>
+<p>最尤推定法の場合、1~3PLMではEMアルゴリズムが多く（統計ソフトウェアでもデフォルト）、4PLMや多次元IRTモデルといった複雑なモデルではMHRM（Metropolis–Hastings Robbins–Monro）などが使われる</p>
 <section id="id10">
-<h3>最尤推定法<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
-<p>尤度関数は項目パラメータ<span class="math notranslate nohighlight">\(\mathbf{T}\)</span>、反応パターン行列<span class="math notranslate nohighlight">\(\mathbf{U}\)</span>をもとに</p>
+<h3>最尤推定法について<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>尤度関数は項目パラメータ<span class="math notranslate nohighlight">\(\mathbf{T}\)</span>、反応パターン行列<span class="math notranslate nohighlight">\(\mathbf{U}\)</span>をもとに次のように表される</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+尤度関数</div>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
@@ -1378,7 +1390,8 @@ L(\mathbf{T}, \boldsymbol{\theta} \mid \mathbf{U})
 &amp;=\prod_{i=1}^I \prod_{j=1}^J P_j(\theta_i \mid \mathbf{T})^{u_{i j}} Q_j(\theta_i \mid \mathbf{T})^{1-u_{i j}}
 \end{aligned}
 \end{split}\]</div>
-<p>と表される。</p>
+</div>
+</div>
 <section id="id11">
 <h4>同時最尤推定法<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
 <p>以下の手順で解く。</p>
@@ -1427,14 +1440,51 @@ L_C(\mathbf{T} \mid \mathbf{U}, \boldsymbol{\theta})=\prod_{i=1}^I L_C(\mathbf{T
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
-\ell(\mathbf{T} \mid \mathbf{U}, \boldsymbol{\theta}) &amp; =\ln L_C(\mathbf{T} \mid \mathbf{U}, \boldsymbol{\theta}) \\
-&amp; =\sum_{i=1}^I \ln L_C\left(\mathbf{T} \mid \mathbf{u}_i, \theta_i\right)
+\ell(\mathbf{T} \mid \mathbf{U}, \boldsymbol{\theta})
+&amp;= \ln L_C(\mathbf{T} \mid \mathbf{U}, \boldsymbol{\theta}) \\
+&amp;=\sum_{i=1}^I \ln L_C\left(\mathbf{T} \mid \mathbf{u}_i, \theta_i\right)
 \end{aligned}
 \end{split}\]</div>
 <p>を <strong>対数完全データ尤度関数（log complete data likelihood function）</strong> という。</p>
 <p><span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span>は実際には未知であるため、EMアルゴリズムでは対数完全データ尤度関数の<span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span>に関する期待値をもとめて尤度関数から<span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span>を消去する（このステップはexpectationの頭文字をとって <strong>Eステップ</strong> と呼ばれる）。そして項目パラメータ<span class="math notranslate nohighlight">\(\mathbf{T}\)</span>を最尤推定して求める（maximizationの頭文字を取って <strong>Mステップ</strong> という）。EMアルゴリズムではEステップとMステップを交互に繰り返す。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+E-step (expectation step)</div>
+<p class="sd-card-text">E-step では、項目パラメータの現在の推定値<span class="math notranslate nohighlight">\(\mathbf{T}^{\text{old}}\)</span>とデータで条件づけた能力パラメータ<span class="math notranslate nohighlight">\(\theta\)</span>の条件付き分布<span class="math notranslate nohighlight">\(f(\theta \mid \mathbf{U}, \mathbf{T}^{\text{old}})\)</span> と完全データ対数尤度 <span class="math notranslate nohighlight">\(\ln L_C(\mathbf{T} \mid \mathbf{U}, \boldsymbol{\theta}) \)</span>を用いて、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+Q(\mathbf{T}\mid \mathbf{T}^{\text{old}})
+&amp;= \operatorname{E}_{\theta} \big[ \ln L_C(\mathbf{T} \mid \mathbf{U}, \boldsymbol{\theta})  \big]\\
+&amp;= \int_{-\infty}^{\infty} \ln L_C(\mathbf{T} \mid \mathbf{U}, \boldsymbol{\theta})
+    f(\theta \mid \mathbf{U}, \mathbf{T}^{\text{old}})
+    d \theta
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">という計算を行う。この積分計算はGauss–Hermiteなどの数値積分法で近似される。</p>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+M-step (maximization step)</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(Q(\mathbf{T}\mid \mathbf{T}^{\text{old}})\)</span>を最大化するパラメータ<span class="math notranslate nohighlight">\(\mathbf{T}^{\text{new}}\)</span>を求める</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{T}^{\text{new}} := \operatorname*{\text{arg max}}_{\mathbf{T}} Q(\mathbf{T}\mid \mathbf{T}^{\text{old}})
+\]</div>
+</div>
+</div>
+<p><span class="math notranslate nohighlight">\(\mathbf{T}^{\text{new}}\)</span>は次のE-stepでの<span class="math notranslate nohighlight">\(\mathbf{T}^{\text{old}}\)</span>となる。収束基準が満たされるまで、E-stepとM-stepを繰り返す</p>
 </section>
 </section>
+</section>
+<section id="id13">
+<h2>参考<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.jstage.jst.go.jp/article/jart/18/1/18_103/_article/-char/ja/">項目反応理論モデルのパラメタ推定法の展開</a></p></li>
+</ul>
 <section id="mirt">
 <h3>例：<code class="docutils literal notranslate"><span class="pre">mirt</span></code>パッケージに実装された様々なパラメータ推定法<a class="headerlink" href="#mirt" title="Link to this heading">#</a></h3>
 <p>Rの<code class="docutils literal notranslate"><span class="pre">mirt</span></code>パッケージは多次元IRTモデルも推定可能で、モダンなパラメータ推定方法も実装されている</p>
@@ -1457,9 +1507,6 @@ L_C(\mathbf{T} \mid \mathbf{U}, \boldsymbol{\theta})=\prod_{i=1}^I L_C(\mathbf{T
 <blockquote>
 <div><p>The ‘EM’ is generally effective with 1-3 factors, but methods such as the ‘QMCEM’, ‘MCEM’, ‘SEM’, or ‘MHRM’ should be used when the dimensions are 3 or more.</p>
 </div></blockquote>
-</section>
-<section id="id13">
-<h3>EMアルゴリズム<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 </section>
 </section>
 </section>
@@ -1543,14 +1590,16 @@ L_C(\mathbf{T} \mid \mathbf{U}, \boldsymbol{\theta})=\prod_{i=1}^I L_C(\mathbf{T
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">項目パラメータの推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">最尤推定法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">最尤推定法について</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">同時最尤推定法</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">周辺最尤推定法</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#em">EMアルゴリズム</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">参考</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mirt">例：<code class="docutils literal notranslate"><span class="pre">mirt</span></code>パッケージに実装された様々なパラメータ推定法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">EMアルゴリズム</a></li>
 </ul>
 </li>
 </ul>
