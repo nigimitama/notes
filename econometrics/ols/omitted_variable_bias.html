@@ -1052,11 +1052,17 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">生成データで実験</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">誤差項との関係</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">外生性</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考文献</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">関連論文（積読リスト）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">背景</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">外生性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLS推定量の一致性</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">欠落変数バイアス</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">長いモデルと短いモデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">生成データで実験</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">誤差項との関係</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">関連論文（積読リスト）</a></li>
 </ul>
 </li>
 </ul>
@@ -1072,6 +1078,115 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>欠落変数バイアス<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>線形回帰モデルに含めるべき説明変数を含めず、外生性の仮定が満たされない場合に生じるバイアスのことを <strong>欠落変数バイアス（omitted variable bias）</strong> という。</p>
+<section id="id2">
+<h2>背景<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="id3">
+<h3>外生性<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>単回帰モデル<span class="math notranslate nohighlight">\(Y = \alpha + \beta X + u\)</span>を例にとる。</p>
+<div class="admonition- admonition">
+<p class="admonition-title">外生性</p>
+<p>説明変数<span class="math notranslate nohighlight">\(X\)</span>と誤差項<span class="math notranslate nohighlight">\(u\)</span>が</p>
+<div class="math notranslate nohighlight">
+\[
+E(u | X) = 0
+\]</div>
+<p>を満たすとき、<span class="math notranslate nohighlight">\(X\)</span>は外生変数であるという。</p>
+<p>また、<span class="math notranslate nohighlight">\(X\)</span>が外生変数であるならば、</p>
+<div class="math notranslate nohighlight">
+\[
+E(u) = 0, E(X, u) = 0
+\]</div>
+<p>と、説明変数<span class="math notranslate nohighlight">\(X\)</span>と誤差項<span class="math notranslate nohighlight">\(u\)</span>の無相関</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{Cov}(X, u) = 0
+\]</div>
+<p>が成り立つ</p>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">証明</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+E(X u) = E_{X}[ E(X u | X) ] = E_{X}[ X \underbrace{ E(u|X) }_{ =0 } ] = E_{X}(X\cdot 0) = 0
+\\
+E(u) = E_{X}[ \underbrace{ E(u|X) }_{ =0 } ] = 0
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{Cov}(X, u)
+= \underbrace{ E(X u) }_{ =0 } - E(X) \underbrace{ E(u) }_{ =0 }
+= 0
+\]</div>
+</div>
+</details></section>
+<section id="ols">
+<h3>OLS推定量の一致性<a class="headerlink" href="#ols" title="Link to this heading">#</a></h3>
+<p>単回帰モデル <span class="math notranslate nohighlight">\(Y=\alpha+\beta X+u\)</span> は両辺を<span class="math notranslate nohighlight">\(X\)</span>と共分散をとると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\operatorname{Cov}(X, Y)
+&amp;= \operatorname{Cov}(X, \alpha + \beta X + u)\\
+&amp;= \underbrace{ \operatorname{Cov}(X, \alpha) }_{定数との共分散 → 0}
++ \beta  \underbrace{ \operatorname{Cov}(X, X) }_{=\operatorname{Var}(X) }
++\operatorname{Cov}(X, u) \\
+&amp;= \beta \operatorname{Var}(X) + \operatorname{Cov}(X, u)\\
+\end{aligned}
+\end{split}\]</div>
+<p>傾き係数のOLS推定量に代入すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{\beta} &amp;= \frac{\operatorname{Cov}(X, Y)}{\operatorname{Var}(X)}\\
+&amp;= \frac{ \beta \operatorname{Var}(X) + \operatorname{Cov}(X, u) }{\operatorname{Var}(X)}\\
+&amp;= \beta + \frac{\operatorname{Cov}(X, u)}{\operatorname{Var}(X)}
+\end{aligned}
+\end{split}\]</div>
+<p>という形に整理できる。</p>
+<p><span class="math notranslate nohighlight">\(X\)</span>が外生変数のとき、<span class="math notranslate nohighlight">\(\operatorname{Cov}(X, u) = 0\)</span>より</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\beta} = \beta + \frac{ \overbrace{\operatorname{Cov}(X, u)}^{=0}  }{\operatorname{Var}(X)}
+= \beta
+\]</div>
+<p>となり、OLS推定量<span class="math notranslate nohighlight">\(\hat{\beta}\)</span>と真のパラメータ<span class="math notranslate nohighlight">\(\beta\)</span>は一致する。</p>
+</section>
+</section>
+<section id="id4">
+<h2>欠落変数バイアス<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>単回帰モデル</p>
+<div class="math notranslate nohighlight">
+\[
+Y=\alpha+\beta X+u
+\]</div>
+<p>を構築することを考える。</p>
+<p>説明変数は<span class="math notranslate nohighlight">\(X\)</span>のみであるため、それ以外の<span class="math notranslate nohighlight">\(Y\)</span>の変動は<span class="math notranslate nohighlight">\(u\)</span>に含まれることになる。</p>
+<p>もし、ある変数<span class="math notranslate nohighlight">\(Z\)</span>があり<span class="math notranslate nohighlight">\(Y\)</span>に影響を与えているとすると、<span class="math notranslate nohighlight">\(u\)</span>には<span class="math notranslate nohighlight">\(Z\)</span>が含まれていることになる。</p>
+<div class="math notranslate nohighlight">
+\[
+Y = \alpha + \beta X + \underbrace{ u }_{Z + v}
+\]</div>
+<p>もし<span class="math notranslate nohighlight">\(Z\)</span>が<span class="math notranslate nohighlight">\(Y\)</span>に影響を与えているだけでなく、<span class="math notranslate nohighlight">\(X\)</span>にも影響を与えている（=<span class="math notranslate nohighlight">\(Z\)</span>は交絡因子）であるとすると、<span class="math notranslate nohighlight">\(X\)</span>は外生性を満たさない</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{Cov}(X, u) \neq 0
+\]</div>
+<p>ということになる。そうなるとOLS推定量</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\beta} = \beta + \frac{\operatorname{Cov}(X, u)}{\operatorname{Var}(X)}
+\]</div>
+<p>は</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\operatorname{Cov}(X, u)}{\operatorname{Var}(X)}
+\]</div>
+<p>の項が消えないため、その分真のパラメータからずれることになる</p>
+</section>
+<section id="id5">
+<h2>長いモデルと短いモデル<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <p>結果変数<span class="math notranslate nohighlight">\(Y\)</span>、処置変数<span class="math notranslate nohighlight">\(D\)</span>と、<span class="math notranslate nohighlight">\(Y,D\)</span>に影響を与える共変量（交絡因子）<span class="math notranslate nohighlight">\(X\)</span>があるとし、各変数の間には線形の関係があるとする。</p>
 <p>処置の効果を正しく推定するためには共変量をモデルに含める必要があるため、正しいモデルは次の式の形になる（「長いモデル」ということでLとつけている）。</p>
 <div class="math notranslate nohighlight">
@@ -1106,8 +1221,9 @@ Y &amp;= \alpha^L + \beta^L D + \gamma^L (\alpha + \beta D + \varepsilon) + \var
 \beta^S = \beta^L + \gamma^L \beta
 \]</div>
 <p>であるため、正しいモデルの推定量<span class="math notranslate nohighlight">\(\beta^L\)</span>から<span class="math notranslate nohighlight">\(\gamma^L \beta\)</span>の分だけズレることがわかる。</p>
-<section id="id2">
-<h2>生成データで実験<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+</section>
+<section id="id6">
+<h2>生成データで実験<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <p>実際に回帰分析を行ってみる。乱数で生成する。</p>
 <div class="cell tag_hide-input docutils container">
 <details class="admonition hide above-input">
@@ -1282,8 +1398,8 @@ Y = \underbrace{\alpha^L + \gamma^L \alpha}_{\alpha^S}
 </div>
 <p>となり、「短いモデル」の推定値と同じものが得られた。また、「長いモデル」と比べたときの差（バイアス）も得られた</p>
 </section>
-<section id="id3">
-<h2>誤差項との関係<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h2>誤差項との関係<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <div class="math notranslate nohighlight">
 \[
 \varepsilon^S = \gamma^L \varepsilon + \varepsilon^L
@@ -1330,49 +1446,15 @@ Y = \underbrace{\alpha^L + \gamma^L \alpha}_{\alpha^S}
 </div>
 </div>
 </section>
-<section id="id4">
-<h2>外生性<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
-<p>このことについては外生性・内生性といった言い方もされる。</p>
-<p>次の単回帰モデルを考える。</p>
-<div class="math notranslate nohighlight">
-\[
-Y_i = \alpha + \beta X_i + \varepsilon_i, \quad i=1,2,\dots,n
-\]</div>
-<p>説明変数<span class="math notranslate nohighlight">\(X_i\)</span>と誤差項<span class="math notranslate nohighlight">\(\varepsilon_i\)</span>が相関しないとき、説明変数<span class="math notranslate nohighlight">\(X_i\)</span>が<strong>外生性</strong>（exogeneity）をもつと言われる。またこのような変数は<strong>外生変数</strong>（exogenous variable）と呼ばれる。</p>
-<p>そうでないとき、説明変数<span class="math notranslate nohighlight">\(X_i\)</span>は<strong>内生性</strong>（endogeneity）をもつという。</p>
-<p>モデルの式の両辺の期待値をとって<span class="math notranslate nohighlight">\(\alpha\)</span>について解くと<span class="math notranslate nohighlight">\(\alpha = E[Y_i] - \beta E[X_i]\)</span>であり、これを代入すると</p>
-<div class="math notranslate nohighlight">
-\[
-Y_i - E[Y_i] = \beta (X_i - E[X_i]) + \varepsilon_i
-\]</div>
-<p>と書き換えることができる。両辺に<span class="math notranslate nohighlight">\(X\)</span>を乗じて期待値をとると</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\underbrace{ E[X_i(Y_i - E[Y_i])] }_{ = E[X_i Y_i] - E[X_i] E[Y_i] \\ = Cov(X_i, Y_i) }
-    = \beta \underbrace{ E[X_i (X_i - E[X_i])] }_{ = E[X_i^2] - E[X_i]^2 \\ = Var(X_i) }
-    + \underbrace{ E[X_i \varepsilon_i] }_{ = Cov(X_i, \varepsilon_i) \\ = 0}
-\end{split}\]</div>
-<p>移項するとOLS推定量が得られる</p>
-<div class="math notranslate nohighlight">
-\[
-\beta = \frac{ Cov(X_i, Y_i) }{ Var(X_i) }
-\]</div>
-<p>もし<span class="math notranslate nohighlight">\(E[X_i \varepsilon_i] = Cov(X_i, \varepsilon_i) \neq 0\)</span>であれば、</p>
-<div class="math notranslate nohighlight">
-\[
-\frac{ Cov(X_i, Y_i) }{ Var(X_i) } = \beta + \frac{ Cov(X_i, \varepsilon_i) }{ Var(X_i) }
-\]</div>
-<p>となり、<span class="math notranslate nohighlight">\(Cov(X_i, \varepsilon_i) \ / \ Var(X_i)\)</span>の分だけバイアスのある推定量になる</p>
-</section>
-<section id="id5">
-<h2>参考文献<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id8">
+<h2>参考文献<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="http://www.ner.takushoku-u.ac.jp/masano/class_material/waseda/keiryo/R25_reg8_OBV.html">25. 重回帰分析（脱落変数バイアス・処置後変数バイアス）</a></p></li>
 <li><p>安井翔太. (2020). 効果検証入門: 正しい比較のための因果推論 計量経済学の基礎. Gijutsu hyōronsha.</p></li>
 <li><p>星野匡郎, 田中久稔, &amp; 北川梨津. (2023). R による実証分析: 回帰分析から因果分析へ. 株式会社 オーム社.</p></li>
 </ul>
-<section id="id6">
-<h3>関連論文（積読リスト）<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>関連論文（積読リスト）<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://arxiv.org/abs/2302.06518">[2302.06518] SelectionBias: An R Package for Bounding Selection Bias</a></p>
 <ul>
@@ -1449,11 +1531,17 @@ Y_i - E[Y_i] = \beta (X_i - E[X_i]) + \varepsilon_i
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">生成データで実験</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">誤差項との関係</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">外生性</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考文献</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">関連論文（積読リスト）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">背景</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">外生性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ols">OLS推定量の一致性</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">欠落変数バイアス</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">長いモデルと短いモデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">生成データで実験</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">誤差項との関係</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">参考文献</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">関連論文（積読リスト）</a></li>
 </ul>
 </li>
 </ul>
