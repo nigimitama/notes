@@ -249,6 +249,7 @@
 - [](economics/microeconomics/index)
 - [](economics/macroeconomics/index)
 - [](economics/quantitative_economics)
+- [](economics/housing_economics/index)
 :::
 
 :::{grid-item-card}
