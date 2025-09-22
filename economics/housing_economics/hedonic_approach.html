@@ -1057,7 +1057,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">理論的背景</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">概要</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">理論的背景</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">理論研究</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">応用研究</a></li>
 </ul>
             </nav>
         </div>
@@ -1071,9 +1074,52 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>ヘドニック・アプローチ<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<p><strong>ヘドニック・アプローチ</strong> （Hedonic approach）、あるいは <strong>ヘドニック法</strong> は、ある財の価格をその財の属性・特徴へと回帰する線形モデルを構築し、財の属性の価値を推定する方法である。</p>
 <section id="id2">
-<h2>理論的背景<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>概要<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p><strong>ヘドニック・アプローチ</strong> （Hedonic approach）、あるいは <strong>ヘドニック法</strong> は、ある財の価格をその財の属性・特徴へと回帰する線形モデルを構築し、財の属性の価値を推定する方法である。</p>
+<p>不動産領域で多く使われ、多くの場合、物件の価格や賃料を被説明変数とした線形回帰モデルを構築し、最小二乗法でパラメータを推定する。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+ヘドニックモデルの例</div>
+<div class="math notranslate nohighlight">
+\[
+\ln P_i = \beta_0 + \sum_{j=0}^J \beta_{j} X_{i j} + \varepsilon_i
+\]</div>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(P_i\)</span>：物件<span class="math notranslate nohighlight">\(i\)</span>の価格。</p>
+<ul>
+<li><p class="sd-card-text">被説明変数だけ対数を取る事が多い。その場合、小さい（0.1以下程度）の回帰係数の解釈としては「<span class="math notranslate nohighlight">\(X_{ij}\)</span>が1単位増加すると、価格は<span class="math notranslate nohighlight">\(\beta_j \times 100\)</span>%増加する」となる。</p></li>
+</ul>
+</li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(X_{ij}\)</span>：物件<span class="math notranslate nohighlight">\(i\)</span>の説明変数<span class="math notranslate nohighlight">\(j\)</span>の値</p>
+<ul>
+<li><p class="sd-card-text">例えば物件属性（築年数、専有面積、設備など）、立地特性（最寄り駅への徒歩分数、その都道府県の主要駅への距離など）</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">回帰係数の解釈について補足</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">単純には「<span class="math notranslate nohighlight">\(X_{ij}\)</span>が1単位増加すると<span class="math notranslate nohighlight">\(\ln P_i\)</span> は <span class="math notranslate nohighlight">\(\beta_j\)</span>倍増加する」という意味になる。</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(X_{ij}\)</span>が1のときと0のときの差をとると<span class="math notranslate nohighlight">\(\beta_j - 0\)</span>で、被説明変数の対数を外すために指数関数を適用すると、</p>
+<div class="math notranslate nohighlight">
+\[
+\exp(\beta_j) -\exp(0) = \exp(\beta_j) - 1
+\]</div>
+<p class="sd-card-text">マクローリン展開をつかうと <span class="math notranslate nohighlight">\(\exp(\beta_j) - 1 \approx \beta_j\)</span> であることがわかるので「<span class="math notranslate nohighlight">\(\beta_j \times 100\)</span>%増加」となる。</p>
+<p class="sd-card-text">例えば<span class="math notranslate nohighlight">\(\beta_j = 0.05\)</span>なら</p>
+<div class="math notranslate nohighlight">
+\[
+\underbrace{\exp(0.05)}_{=1.05127\dots} - \underbrace{\exp(0)}_{=1} \approx 0.05
+\]</div>
+<p class="sd-card-text">となり、解釈は「約5%増加」「となる</p>
+</div>
+</details></section>
+<section id="id3">
+<h2>理論的背景<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>つまるところヘドニック・アプローチは価格を属性に回帰する回帰分析なのだが、そのモデルの導出過程には経済学の古典的な理論がある。</p>
 <p>Lancaster (1966) は消費者が得る効用が商品自体からではなく、商品を構成する機能や特性に依存するというモデルを提案</p>
 <p>Rosen (1974)がヘドニック・アプローチの理論的な枠組みの主な提唱者。</p>
@@ -1087,7 +1133,138 @@ document.write(`
 {\partial u(I-P(\mathbf{x}), \mathbf{x}^*; \mathbf{a})/\partial c}
 = P_x(\mathbf{x})
 \]</div>
-<p>ここで<span class="math notranslate nohighlight">\(P_x\)</span>は属性の一階微分で</p>
+<p>ここで<span class="math notranslate nohighlight">\(P_x\)</span>は属性の一階微分を示している。つまり、最適な属性<span class="math notranslate nohighlight">\(\mathbf{x}^*\)</span>の選択は、合成財に対する個々の属性の限界代替率が住宅市場価格の限界的価値に等しいところで決定される。</p>
+<p>住宅市場価格の限界的価値は、需要者がその属性に対して支払ってもよい（willingness to pay）と考える属性価値に等しい。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考文献</div>
+<ul class="simple">
+<li><p class="sd-card-text">清水千弘, &amp; 唐渡広志. (2007). 不動産市場の計量経済分析.</p></li>
+<li><p class="sd-card-text"><a class="reference external" href="https://www.journals.uchicago.edu/doi/abs/10.1086/260169">Rosen, S. (1974). Hedonic prices and implicit markets: product differentiation in pure competition. Journal of political economy, 82(1), 34-55.</a></p></li>
+<li><p class="sd-card-text"><a class="reference external" href="https://www.jstage.jst.go.jp/article/jscej1984/1992/449/1992_449_47/_article/-char/ja/">ヘドニック・アプローチによる便益評価の理論的基礎</a></p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="id4">
+<h2>理論研究<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+欠落変数バイアスの問題の難しさ</div>
+<p class="sd-card-text"><a class="reference external" href="https://www.sciencedirect.com/org/science/article/abs/pii/S1753827019000323">Housing features and rent: estimating the microstructures of rental housing - ScienceDirect</a></p>
+<p class="sd-card-text">近年はSUUMOなどのデータを使えば物件の設備の情報も含めた分析ができる</p>
+<p class="sd-card-text">物件の設備も含んだモデルと、竣工年、面積、立地などの従来通りの最小限の説明変数のモデルとを比較した</p>
+<p class="sd-card-text">その結果、欠落変数バイアスにより符号の逆転現象すら確認された</p>
+</div>
+</div>
+</section>
+<section id="id5">
+<h2>応用研究<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+マンションの管理と市場価値の関係</div>
+<p class="sd-card-text"><a class="reference external" href="https://www.jstage.jst.go.jp/article/uhs/2011/75/2011_90/_article/-char/ja/">菊池 &amp; 瀬田 (2011) 管理水準が高く資産価値を維持する中古マンションの情報開示に関する研究</a></p>
+<p class="sd-card-text"><strong>背景</strong></p>
+<p class="sd-card-text"><a class="reference external" href="https://www.mirainet.org/">マンションみらいネット</a> などで管理情報を開示する動きがでてきたり、管理に注目が高まっている。</p>
+<p class="sd-card-text"><strong>目的</strong></p>
+<p class="sd-card-text">情報開示に積極的で管理水準が高い中古マンションを対象に、市場価値の分析と管理組合・仲介業者へのヒアリングから当該マンションの特徴を把握し、管理と流通の関連に向けた提案を行う。</p>
+<p class="sd-card-text"><strong>方法</strong></p>
+<p class="sd-card-text">以下の要件を満たすマンションを「管理水準が高いマンション」とする：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">管理規約は標準管理規約に準拠している</p></li>
+<li><p class="sd-card-text">長期修繕計画を作成している</p></li>
+<li><p class="sd-card-text">大規模修繕工事を適正に実施している</p></li>
+<li><p class="sd-card-text">管理組合は住民自治で運営している</p></li>
+<li><p class="sd-card-text">共用部を適切に清掃 ・整理・手入れしている</p></li>
+</ol>
+<p class="sd-card-text">5つの管理水準が高いマンションを事例として選び出す。</p>
+<p class="sd-card-text">ヘドニック法を用い、これらのマンションの資産価値（市場価値）のが周辺物件と比べて高いのかを分析</p>
+<p class="sd-card-text"><strong>結果</strong></p>
+<p class="sd-card-text">管理水準が高いマンションのほうが市場価値が高い傾向にあることがわかった</p>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+マンションの管理が市場価格に及ぼす影響</div>
+<p class="sd-card-text"><a class="reference external" href="https://www.jstage.jst.go.jp/article/aija/88/814/88_3197/_article/-char/ja/">太田 &amp; 花里 (2023) 中古マンション市場価格に影響するマンション管理項目とその効果</a></p>
+<p class="sd-card-text">平均的な物件は竣工年が上がるほど価格も下がっているのに、竣工年が上がっても価格が下がらないどころか上がる物件も一部に存在する。この理由は管理の良さではないか？という仮説のもと分析</p>
+<p class="sd-card-text"><strong>方法</strong></p>
+<p class="sd-card-text">大和ライフネクストが管理する39物件について、REINSの成約価格を用いて分析</p>
+<p class="sd-card-text">国交省「マンションの管理の適正化の推進を図るための基本的な方針」などをもとに説明変数を考案</p>
+<ul class="simple">
+<li><p class="sd-card-text">積立金単価</p></li>
+<li><p class="sd-card-text">修繕費単価</p></li>
+<li><p class="sd-card-text">清掃費単価</p></li>
+<li><p class="sd-card-text">毎年の議決数</p></li>
+<li><p class="sd-card-text">賃貸率</p></li>
+</ul>
+<p class="sd-card-text">など</p>
+<p class="sd-card-text">目的変数は主に</p>
+<ul class="simple">
+<li><p class="sd-card-text">平均坪単価：物件ごとに複数回ある取引について平均</p></li>
+<li><p class="sd-card-text">成約坪単価差：物件の2回の取引の価格差</p></li>
+</ul>
+<p class="sd-card-text"><strong>結果</strong></p>
+<p class="sd-card-text">管理費・修繕積立金の単価が価格に正の影響をもつ</p>
+<p class="sd-card-text">※物件の竣工年などは入れず管理項目だけの重回帰</p>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+建物設備の修繕が価格に及ぼす影響</div>
+<p class="sd-card-text"><a class="reference external" href="https://www.jstage.jst.go.jp/article/aija/86/779/86_219/_article/-char/ja/">鈴木 &amp; 新井 (2021) 建物設備の進化に伴う既存住宅の経済的陳腐化</a></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\ln P_i= &amp; \alpha + \beta_1 \text { ReformIn }_i
++ \beta_2 \text { ReformOut }_i
++ \beta_3 \text { Renovation }_i \\
+&amp; +\sum_k Y_k X_{k i}+\text { City }_i+\text { Time }_i+\varepsilon_i
+\end{aligned}
+\end{split}\]</div>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(P_i\)</span>：物件の価格</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\text { ReformIn }_i\)</span>：内装のリフォームの有無</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\text { ReformOut }_i\)</span>：外装のリフォームの有無</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\text { Renovation }_i\)</span>：リノベーションの有無</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(X_{ki}\)</span>：面積や最寄り駅などのコントロール変数</p></li>
+</ul>
+<p class="sd-card-text">というヘドニックモデルを構築し、</p>
+<ul class="simple">
+<li><p class="sd-card-text">内装リフォーム、外装リフォーム、リノベーションによって平均的に2~6%程度の価格の上昇がある</p></li>
+</ul>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+建物設備の修繕が経年減価に及ぼす影響</div>
+<p class="sd-card-text"><a class="reference external" href="https://www.jstage.jst.go.jp/article/aija/86/779/86_219/_article/-char/ja/">鈴木 &amp; 新井 (2021) 建物設備の進化に伴う既存住宅の経済的陳腐化</a></p>
+<p class="sd-card-text">物件のコホート（竣工年を10年刻みにしたカテゴリカル変数）と内装・外装リフォーム、リノベーションの有無の交互作用項を入れたヘドニックモデル</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\ln P_i= &amp; \alpha 
++ \sum_j B_{0 j} \text { Cohort }_{j i}\\
+&amp; +\sum_j B_{1 j}\left(\text { Cohort }_{j i} \times \text { ReformIn }_i\right) \\
+&amp; +\sum_j B_{2 j}\left(\text { Cohort }_{j i} \times \text { ReformOut }_i\right) \\
+&amp; +\sum_j B_{3 j}\left(\text { Cohort }_{j i} \times \text { Renovation }_i\right) \\
+&amp; +\sum_k Y_k X_{k i}+\text { City }_i+\text { Time }_i+\varepsilon_i
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">を構築したところ</p>
+<ul class="simple">
+<li><p class="sd-card-text">築浅の物件に対する修繕では価格が有意に低下する</p></li>
+<li><p class="sd-card-text">築古の物件に対する修繕では価格が有意に上昇する</p></li>
+</ul>
+<p class="sd-card-text">という結果になった</p>
+</div>
+</div>
 </section>
 </section>
 
@@ -1155,7 +1332,10 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">理論的背景</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">概要</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">理論的背景</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">理論研究</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">応用研究</a></li>
 </ul>
   </nav></div>
 
