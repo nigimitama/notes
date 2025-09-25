@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>連続確率分布 &#8212; データサイエンス関連+αのメモ</title>
+    <title>確率 &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -73,11 +73,11 @@
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'statistics/probability/04_continuous_probability_distribution';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'statistics/probability/probability';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="確率分布の性質" href="05_nature_of_distribution.html" />
-    <link rel="prev" title="離散確率分布" href="03_discrete_probability_distribution.html" />
+    <link rel="next" title="確率変数と期待値・分散" href="expectation.html" />
+    <link rel="prev" title="確率" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -359,11 +359,12 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">統計学</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">確率</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="01_probability.html">確率</a></li>
-<li class="toctree-l2"><a class="reference internal" href="02_expectation.html">確率変数と期待値・分散</a></li>
-<li class="toctree-l2"><a class="reference internal" href="03_discrete_probability_distribution.html">離散確率分布</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">連続確率分布</a></li>
-<li class="toctree-l2"><a class="reference internal" href="05_nature_of_distribution.html">確率分布の性質</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">確率</a></li>
+<li class="toctree-l2"><a class="reference internal" href="expectation.html">確率変数と期待値・分散</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moment.html">モーメント、確率母関数、積率母関数、特性関数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discrete_probability_distribution.html">離散確率分布</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_probability_distribution.html">連続確率分布</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nature_of_distribution.html">確率分布の性質</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../statistical_inference/index.html">統計的推測</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -530,7 +531,10 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../econometrics/causal_ml/causal_forest/index.html">Causal Forest / GRF</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../econometrics/causal_ml/causal_forest/causal_tree.html">Causal Tree</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../econometrics/causal_ml/causal_forest/causal_forest.html">Casual Forest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../econometrics/causal_ml/causal_forest/grf.html">Generalized Random Forest (GRF)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../econometrics/causal_ml/causal_forest/causal_bart.html">CausalBART</a></li>
 </ul>
 </details></li>
 </ul>
@@ -963,7 +967,7 @@
       
       
       
-      <li><a href="../../_sources/statistics/probability/04_continuous_probability_distribution.ipynb" target="_blank"
+      <li><a href="../../_sources/statistics/probability/probability.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -1047,7 +1051,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>連続確率分布</h1>
+    <h1>確率</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -1057,9 +1061,11 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">正規分布</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ガンマ分布</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chi-2"><span class="math notranslate nohighlight">\(\chi^2\)</span>分布</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">条件付き確率</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">独立性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#law-of-total-probability">全確率の公式（Law of total probability）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayes">ベイズ（Bayes）の定理</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -1072,215 +1078,118 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>連続確率分布<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<h1>確率<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>可測集合族<span class="math notranslate nohighlight">\(\mathcal{B}\)</span>の元である可測集合<span class="math notranslate nohighlight">\(A\)</span>に対して実数を対応させる関数<span class="math notranslate nohighlight">\(P(\cdot)\)</span>で、次の3つの性質を満たすものを<strong>確率</strong>（probability）という。</p>
+<ol class="arabic simple">
+<li><p>すべての<span class="math notranslate nohighlight">\(A \in \mathcal{B}\)</span>に対して<span class="math notranslate nohighlight">\(P(A) \geq 0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(P(\Omega) = 1\)</span> （<span class="math notranslate nohighlight">\(\Omega\)</span>は全事象もしくは標本空間といい、試行により起こりうるすべての結果）</p></li>
+<li><p><span class="math notranslate nohighlight">\(A_k \in \mathcal{B}, k=1,2,...,\)</span>が互いに排反でるとき、つまり <span class="math notranslate nohighlight">\(A_i \cap A_j = \emptyset, i \neq j\)</span>の場合、<span class="math notranslate nohighlight">\(P(\cup^\infty_{k=1} A_k) = \sum^\infty_{n=1} P(A_k)\)</span></p></li>
+</ol>
 <section id="id2">
-<h2>正規分布<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>確率変数<span class="math notranslate nohighlight">\(X\)</span>が平均<span class="math notranslate nohighlight">\(\mu\)</span>、分散<span class="math notranslate nohighlight">\(\sigma^2\)</span>の正規分布（normal distribution）に従うとは、<span class="math notranslate nohighlight">\(X\)</span>の確率密度関数が</p>
+<h2>条件付き確率<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <div class="math notranslate nohighlight">
 \[
-P(x|\mu, \sigma^2)
- = \frac{1}{\sqrt{2\pi}\sigma}
- \exp \left\{ - \frac{(x-\mu)^2}{2\sigma^2} \right\}
- , \hspace{1em} -\infty &lt; x &lt; \infty
+P(A|B) = \frac{P(A\cap B)}{P(B)}
 \]</div>
-<p>で与えられることをいい、この分布を<span class="math notranslate nohighlight">\(N(\mu, \sigma^2)\)</span>で表す。</p>
-<div class="cell tag_hide-input docutils container">
-<details class="admonition hide above-input">
-<summary aria-label="Toggle hidden content">
-<p class="collapsed admonition-title">Show code cell source</p>
-<p class="expanded admonition-title">Hide code cell source</p>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w">  </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
-
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">pdf</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pdf</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Normal(μ=0, σ^2=1)&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;probability density&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<strong>同時確率の例</strong></div>
+<p class="sd-card-text">性別ごとにゲーム機の所持率を調査した結果、以下の表のようになったとする。</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text"></p></th>
+<th class="head"><p class="sd-card-text">男性</p></th>
+<th class="head"><p class="sd-card-text">女性</p></th>
+<th class="head"><p class="sd-card-text">計</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><strong>所持</strong></p></td>
+<td><p class="sd-card-text">2/6</p></td>
+<td><p class="sd-card-text">1/4</p></td>
+<td><p class="sd-card-text">7/12</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><strong>未所持</strong></p></td>
+<td><p class="sd-card-text">1/6</p></td>
+<td><p class="sd-card-text">1/4</p></td>
+<td><p class="sd-card-text">5/12</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><strong>計</strong></p></td>
+<td><p class="sd-card-text">1/2</p></td>
+<td><p class="sd-card-text">1/2</p></td>
+<td><p class="sd-card-text">1</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">4</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w">  </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
-<span class="ne">----&gt; </span><span class="mi">4</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="n">pdf</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-<span class="ne">NameError</span>: name &#39;np&#39; is not defined
-</pre></div>
-</div>
+<p class="sd-card-text">女性でゲーム機を所持している確率は</p>
+<div class="math notranslate nohighlight">
+\[
+P(所持|女性)= \frac{P(所持\cap 女性)}{P(女性)}
+= \frac{1}{4} ÷ \frac{1}{2} = \frac{1}{2} 
+\]</div>
+<p class="sd-card-text">所持している場合に男性である確率は</p>
+<div class="math notranslate nohighlight">
+\[
+P(男性|所持)=\frac{P(男性\cap 所持)}{P(所持)}
+= \frac{2}{6} ÷ \frac{7}{12} = \frac{4}{7}
+\]</div>
+<p class="sd-card-text">となる。</p>
 </div>
 </div>
 </section>
 <section id="id3">
-<h2>ガンマ分布<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p><strong>ガンマ分布</strong>（gamma distribution）は非負の実数直線上の代表的な確率分布。その確率密度関数は</p>
+<h2>独立性<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>同時確率は条件付き確率の定義</p>
 <div class="math notranslate nohighlight">
 \[
-f(x|\alpha, \beta)
-= \frac{1}{\Gamma(\alpha)}
-\frac{1}{\beta}
-\left( \frac{x}{\beta} \right) ^{\alpha-1}
-e^{-x/\beta}
-, \ x &gt; 0
+P(A|B) = \frac{P(A\cap B)}{P(B)}
 \]</div>
-<p>である。<span class="math notranslate nohighlight">\(\alpha\)</span>はshape parameter、<span class="math notranslate nohighlight">\(\beta\)</span>はscale parameterと呼ばれ、<span class="math notranslate nohighlight">\(\alpha &gt; 0, \beta &gt; 0\)</span>である。</p>
-<p>尺度変換<span class="math notranslate nohighlight">\(Y = X /\beta\)</span>を行うと、<span class="math notranslate nohighlight">\(Y\)</span>の分布は<span class="math notranslate nohighlight">\(\beta f(\beta y|\alpha, \beta)\)</span>となり</p>
+<p>を整理すると、</p>
 <div class="math notranslate nohighlight">
 \[
-f(y|\alpha) = \frac{1}{\Gamma(\alpha)}
-y^{\alpha-1}
-e^{-y}
-,  \ y &gt; 0
+P(A\cap B) = P(A|B)P(B)
 \]</div>
-<p>となる。</p>
-<p>尺度変換<span class="math notranslate nohighlight">\(\lambda = 1 /\beta\)</span>を行った</p>
+<p>と表すことができる。</p>
+<p>2つの事象AとBが独立であるとき、Aが起こる確率はBが起こったという事象とは関係ないため、<span class="math notranslate nohighlight">\(P(A|B) = P(A)\)</span>となるため、</p>
 <div class="math notranslate nohighlight">
 \[
-f(x|\alpha, \lambda) = \frac{\lambda^\alpha}{\Gamma(\alpha)}
-t^{\alpha-1}
-e^{-\lambda x}
-,\quad x &gt; 0
+P(A\cap B) = P(A)P(B)
 \]</div>
-<p>という定義も使われる（<span class="math notranslate nohighlight">\(\lambda\)</span>はrateと呼ばれる）</p>
-<p><span class="math notranslate nohighlight">\(a=1\)</span>のとき、ガンマ分布は指数分布と一致する。指数分布はmemoryless</p>
-<div class="cell tag_hide-input docutils container">
-<details class="admonition hide above-input">
-<summary aria-label="Toggle hidden content">
-<p class="collapsed admonition-title">Show code cell source</p>
-<p class="expanded admonition-title">Hide code cell source</p>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w">  </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">gamma</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]:</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">gamma</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">fr</span><span class="s2">&quot;$\alpha=</span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Gamma distribution&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$x$&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/74748d6319851f84525ba4917189b521363983f47f62ea20e1bacd5db08a7f7a.png" src="../../_images/74748d6319851f84525ba4917189b521363983f47f62ea20e1bacd5db08a7f7a.png" />
-</div>
-</div>
-<div class="cell tag_hide-input docutils container">
-<details class="admonition hide above-input">
-<summary aria-label="Toggle hidden content">
-<p class="collapsed admonition-title">Show code cell source</p>
-<p class="expanded admonition-title">Hide code cell source</p>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w">  </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">gamma</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]:</span>
-    <span class="k">for</span> <span class="n">lambda_</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]:</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">gamma</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">lambda_</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">fr</span><span class="s2">&quot;$\alpha=</span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2">, \lambda=</span><span class="si">{</span><span class="n">lambda_</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Gamma distribution&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$x$&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/3e8193d97e6179dbc931b0b62c0f3676c5ef5b06534c4218027a8bd14a85c8f2.png" src="../../_images/3e8193d97e6179dbc931b0b62c0f3676c5ef5b06534c4218027a8bd14a85c8f2.png" />
-</div>
-</div>
-<p>ここで<span class="math notranslate nohighlight">\(\Gamma(\alpha)\)</span>は<strong>ガンマ関数</strong>（gamma function）</p>
+<p>ということになる。ここから、独立性の定義は次のようになる。</p>
+<div class="admonition- admonition">
+<p class="admonition-title">定義（独立性）</p>
+<p>2つの事象AとBが</p>
 <div class="math notranslate nohighlight">
 \[
-\Gamma(\alpha)
-= \int^{\infty}_0 y^{\alpha-1} e^{-y} dy
+P(A\cap B) = P(A)P(B)
 \]</div>
-<div class="cell tag_hide-input docutils container">
-<details class="admonition hide above-input">
-<summary aria-label="Toggle hidden content">
-<p class="collapsed admonition-title">Show code cell source</p>
-<p class="expanded admonition-title">Hide code cell source</p>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">gamma</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">gamma</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Gamma function $\Gamma(\alpha)$&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\alpha$&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/f28760ef5b7278bd567135e79912a018f1b1d8a5c23c1745cd218194fc85ee74.png" src="../../_images/f28760ef5b7278bd567135e79912a018f1b1d8a5c23c1745cd218194fc85ee74.png" />
-</div>
+<p>を満たすとき、AとBは<strong>独立</strong>であるという。</p>
 </div>
 </section>
-<section id="chi-2">
-<h2><span class="math notranslate nohighlight">\(\chi^2\)</span>分布<a class="headerlink" href="#chi-2" title="Link to this heading">#</a></h2>
-<p>データの二乗和が従う確率分布のこと。標準正規分布に従う確率変数<span class="math notranslate nohighlight">\(X_i\)</span>の二乗和<span class="math notranslate nohighlight">\(Z_i = \sum_i^n X_i^2\)</span>は<strong>自由度<span class="math notranslate nohighlight">\(n\)</span>のカイ2乗分布</strong>（chi-square distribution with n degrees of freedom）に従う（<span class="math notranslate nohighlight">\(n\)</span>は自然数）</p>
+<section id="law-of-total-probability">
+<h2>全確率の公式（Law of total probability）<a class="headerlink" href="#law-of-total-probability" title="Link to this heading">#</a></h2>
+<p><span class="math notranslate nohighlight">\(B_1, B_2, ...\)</span>を互いに排反な事象の列とし、<span class="math notranslate nohighlight">\(P(B_k)&gt;0, P(U^\infty_{k=1} B_k) = \Omega\)</span>を満たすとき、事象<span class="math notranslate nohighlight">\(A\)</span>の確率は次のように分解できる</p>
 <div class="math notranslate nohighlight">
 \[
-Z \sim \chi^2_{(n)}
+P(A) = \sum^\infty_{k=1} P(A|B_k) P(B_k)
 \]</div>
-<p>カイ2乗分布の密度関数は</p>
+</section>
+<section id="bayes">
+<h2>ベイズ（Bayes）の定理<a class="headerlink" href="#bayes" title="Link to this heading">#</a></h2>
+<p><span class="math notranslate nohighlight">\(B_1, B_2, ...\)</span>を互いに排反な事象の列とし、<span class="math notranslate nohighlight">\(P(B_k)&gt;0, P(U^\infty_{k=1} B_k) = \Omega\)</span>を満たすとする。このとき任意の事象Aに対してAを与えたときの<span class="math notranslate nohighlight">\(B_j\)</span>の条件付き確率<span class="math notranslate nohighlight">\(P(B_j|A)\)</span>は次のように表される。</p>
 <div class="math notranslate nohighlight">
 \[
-f(x) = \frac{1}{\Gamma(n/2)} \left( \frac{1}{2} \right)^{n/2} x^{n/2-1} \exp \{ - \frac{x}{2} \}, x &gt; 0
+P(B_j|A)
+= \frac{P(A|B_j)P(B_j)}{\sum^\infty_{k=1} P(A|B_k) P(B_k)}
 \]</div>
-<div class="cell tag_hide-input docutils container">
-<details class="admonition hide above-input">
-<summary aria-label="Toggle hidden content">
-<p class="collapsed admonition-title">Show code cell source</p>
-<p class="expanded admonition-title">Hide code cell source</p>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">chi2</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">dfs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">:</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">chi2</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;df=</span><span class="si">{</span><span class="n">df</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi^2$ distribution&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/ecfba27059a8734223de73f277db69c03068ff4155958daf82148364ec2aa9cd.png" src="../../_images/ecfba27059a8734223de73f277db69c03068ff4155958daf82148364ec2aa9cd.png" />
-</div>
-</div>
+</section>
+<section id="id4">
+<h2>参考<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>久保川 達也（2017）『現代数理統計学の基礎』、共立出版。</p></li>
+</ul>
 </section>
 </section>
 
@@ -1315,20 +1224,20 @@ f(x) = \frac{1}{\Gamma(n/2)} \left( \frac{1}{2} \right)^{n/2} x^{n/2-1} \exp \{ 
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="03_discrete_probability_distribution.html"
+       href="index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">離散確率分布</p>
+        <p class="prev-next-title">確率</p>
       </div>
     </a>
     <a class="right-next"
-       href="05_nature_of_distribution.html"
+       href="expectation.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">確率分布の性質</p>
+        <p class="prev-next-title">確率変数と期待値・分散</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1348,9 +1257,11 @@ f(x) = \frac{1}{\Gamma(n/2)} \left( \frac{1}{2} \right)^{n/2} x^{n/2-1} \exp \{ 
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">正規分布</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ガンマ分布</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chi-2"><span class="math notranslate nohighlight">\(\chi^2\)</span>分布</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">条件付き確率</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">独立性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#law-of-total-probability">全確率の公式（Law of total probability）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayes">ベイズ（Bayes）の定理</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考</a></li>
 </ul>
   </nav></div>
 
