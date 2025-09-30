@@ -1225,14 +1225,29 @@ document.write(`
 <span class="g g-Whitespace">   </span><span class="mi">2139</span>     <span class="n">place</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cdf</span><span class="p">(</span><span class="o">*</span><span class="n">goodargs</span><span class="p">))</span>
 <span class="g g-Whitespace">   </span><span class="mi">2140</span> <span class="k">if</span> <span class="n">output</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 
-<span class="nn">File /usr/local/lib/python3.10/site-packages/scipy/stats/_distn_infrastructure.py:640,</span> in <span class="ni">argsreduce</span><span class="nt">(cond, *args)</span>
-<span class="g g-Whitespace">    </span><span class="mi">636</span> <span class="n">newargs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">638</span> <span class="c1"># np.atleast_1d returns an array if only one argument, or a list of arrays</span>
-<span class="g g-Whitespace">    </span><span class="mi">639</span> <span class="c1"># if more than one argument.</span>
-<span class="ne">--&gt; </span><span class="mi">640</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">newargs</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">)):</span>
+<span class="nn">File /usr/local/lib/python3.10/site-packages/scipy/stats/_distn_infrastructure.py:645,</span> in <span class="ni">argsreduce</span><span class="nt">(cond, *args)</span>
 <span class="g g-Whitespace">    </span><span class="mi">641</span>     <span class="n">newargs</span> <span class="o">=</span> <span class="p">(</span><span class="n">newargs</span><span class="p">,)</span>
 <span class="g g-Whitespace">    </span><span class="mi">643</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">cond</span><span class="p">):</span>
 <span class="g g-Whitespace">    </span><span class="mi">644</span>     <span class="c1"># broadcast arrays with cond</span>
+<span class="ne">--&gt; </span><span class="mi">645</span>     <span class="o">*</span><span class="n">newargs</span><span class="p">,</span> <span class="n">cond</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="o">*</span><span class="n">newargs</span><span class="p">,</span> <span class="n">cond</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">646</span>     <span class="k">return</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">newargs</span><span class="p">]</span>
+<span class="g g-Whitespace">    </span><span class="mi">648</span> <span class="n">s</span> <span class="o">=</span> <span class="n">cond</span><span class="o">.</span><span class="n">shape</span>
+
+<span class="nn">File /usr/local/lib/python3.10/site-packages/numpy/lib/_stride_tricks_impl.py:481,</span> in <span class="ni">broadcast_arrays</span><span class="nt">(subok, *args)</span>
+<span class="g g-Whitespace">    </span><span class="mi">477</span> <span class="k">def</span><span class="w"> </span><span class="nf">_broadcast_arrays_dispatcher</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">subok</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">478</span>     <span class="k">return</span> <span class="n">args</span>
+<span class="ne">--&gt; </span><span class="mi">481</span> <span class="nd">@array_function_dispatch</span><span class="p">(</span><span class="n">_broadcast_arrays_dispatcher</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">482</span> <span class="k">def</span><span class="w"> </span><span class="nf">broadcast_arrays</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">subok</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">483</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">484</span><span class="sd">     Broadcast any number of arrays against each other.</span>
+<span class="g g-Whitespace">    </span><span class="mi">485</span><span class="sd"> </span>
+<span class="sd">   (...)</span>
+<span class="g g-Whitespace">    </span><span class="mi">535</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">536</span><span class="sd">     &quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">537</span>     <span class="c1"># nditer is not used here to avoid the limit of 32 arrays.</span>
+<span class="g g-Whitespace">    </span><span class="mi">538</span>     <span class="c1"># Otherwise, something like the following one-liner would suffice:</span>
+<span class="g g-Whitespace">    </span><span class="mi">539</span>     <span class="c1"># return np.nditer(args, flags=[&#39;multi_index&#39;, &#39;zerosize_ok&#39;],</span>
+<span class="g g-Whitespace">    </span><span class="mi">540</span>     <span class="c1">#                  order=&#39;C&#39;).itviews</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
