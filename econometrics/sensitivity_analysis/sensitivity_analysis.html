@@ -71,12 +71,10 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/sensitivity_analysis/sensitivity_analysis';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="偏決定係数（partial R2）" href="partial_r2.html" />
+    <link rel="next" title="E-value" href="e_value.html" />
     <link rel="prev" title="感度分析" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -561,7 +559,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../uplift_modeling.html">Uplift Modeling</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">感度分析</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">感度分析</a></li>
-<li class="toctree-l2"><a class="reference internal" href="partial_r2.html">偏決定係数（partial R2）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="e_value.html">E-value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partial_r2.html">部分決定係数（partial R2）</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rosenbaum_bound.html">Rosenbaum Bounds</a></li>
 </ul>
 </details></li>
@@ -1160,7 +1159,6 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#e-value">E-value</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#veitch-zaveri-2020">機械学習を利用した感度分析1：Veitch &amp; Zaveri (2020)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chernozhukov-et-al-2022">機械学習を利用した感度分析2：Chernozhukov, et al. (2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semiparametric">Semiparametric</a></li>
@@ -1185,53 +1183,6 @@ document.write(`
 <h1>感度分析<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <p>感度分析（sensitivity analysis）はモデルにさまざまなデータを入力し、推定した因果効果についての妥当性を評価する方法。</p>
 <p>入力を変化させたときの出力の変化の「方向（正負）」と「度合い（強さ）」を測る。</p>
-<section id="e-value">
-<h2>E-value<a class="headerlink" href="#e-value" title="Link to this heading">#</a></h2>
-<p>E-Valueは未観測の交絡因子の影響の強さを簡単に測る方法。</p>
-<div class="math notranslate nohighlight">
-\[
-\text { E-Value }= \text{RR} +\sqrt{ \text{RR} \times( \text{RR} -1)}
-\]</div>
-<p><span class="math notranslate nohighlight">\(\text{RR}\)</span>は相対リスク（relative risk）で、例えば「キャンペーンの有無」が「商品の購入の有無」に与える効果を調べたい場合だと</p>
-<div class="math notranslate nohighlight">
-\[
-\text{RR} =
-\frac{ 処置群での購入の割合 }{ 対照群での購入の割合 }
-\]</div>
-<p>となる。これはRRが1より大きい場合で、もしRRが1より小さくなるなら逆数を用いる。</p>
-<p>E-valueが大きいほど、観測された結果と処置の関係は因果関係に近い（ロバストである）と解釈される。</p>
-<p>例えばRRが1.5（処置で1.5倍改善）だとE-valueは2.37になる。これは、もし未観測の交絡因子でこの推定結果を説明するには、未観測の交絡因子が結果変数と処置変数の両方と2.37倍の相対リスクで関連している必要があることを示す。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 例</span>
-<span class="n">p_treatment</span> <span class="o">=</span> <span class="mf">0.15</span> <span class="c1"># 処置群での購入割合</span>
-<span class="n">p_control</span> <span class="o">=</span> <span class="mf">0.10</span> <span class="c1"># 対照群での購入割合</span>
-
-<span class="n">RR</span> <span class="o">=</span> <span class="n">p_treatment</span> <span class="o">/</span> <span class="n">p_control</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
-<span class="n">E</span> <span class="o">=</span> <span class="n">RR</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">RR</span> <span class="o">*</span> <span class="p">(</span><span class="n">RR</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E-value: </span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s2">.3g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E-value: 2.37
-</pre></div>
-</div>
-</div>
-</div>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-参考文献</div>
-<ul class="simple">
-<li><p class="sd-card-text"><a class="reference external" href="https://www.acpjournals.org/doi/pdf/10.7326/m16-2607?casa_token=eV2YvvqK_ZgAAAAA:VR_9M5eLezZrikd03IZXew8fJjBcPIW3E7QT_ZYrHh6M-shVOxEwmZVWDWGFFWuNH3B9w7inywr6">VanderWeele, T. J., &amp; Ding, P. (2017). Sensitivity analysis in observational research: introducing the E-value. Annals of internal medicine, 167(4), 268-274.</a></p></li>
-<li><p class="sd-card-text"><a class="reference external" href="https://www.degruyter.com/document/doi/10.1515/jci-2018-0007/html">VanderWeele, T. J., Ding, P., &amp; Mathur, M. (2019). Technical considerations in the use of the E-value. Journal of Causal Inference, 7(2), 20180007.</a></p></li>
-</ul>
-</div>
-</div>
-</section>
 <section id="veitch-zaveri-2020">
 <h2>機械学習を利用した感度分析1：Veitch &amp; Zaveri (2020)<a class="headerlink" href="#veitch-zaveri-2020" title="Link to this heading">#</a></h2>
 <p><a class="reference external" href="https://proceedings.neurips.cc/paper/2020/hash/7d265aa7147bd3913fb84c7963a209d1-Abstract.html">Veitch &amp; Zaveri (2020)</a>は機械学習を用いた感度分析を提案した</p>
@@ -1358,11 +1309,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="partial_r2.html"
+       href="e_value.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">偏決定係数（partial R2）</p>
+        <p class="prev-next-title">E-value</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1382,7 +1333,6 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#e-value">E-value</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#veitch-zaveri-2020">機械学習を利用した感度分析1：Veitch &amp; Zaveri (2020)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chernozhukov-et-al-2022">機械学習を利用した感度分析2：Chernozhukov, et al. (2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semiparametric">Semiparametric</a></li>

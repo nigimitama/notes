@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>偏決定係数（partial R2） &#8212; データサイエンス関連+αのメモ</title>
+    <title>部分決定係数（partial R2） &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -77,7 +77,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Rosenbaum Bounds" href="rosenbaum_bound.html" />
-    <link rel="prev" title="感度分析" href="sensitivity_analysis.html" />
+    <link rel="prev" title="E-value" href="e_value.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -561,7 +561,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../uplift_modeling.html">Uplift Modeling</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">感度分析</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="sensitivity_analysis.html">感度分析</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">偏決定係数（partial R2）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="e_value.html">E-value</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">部分決定係数（partial R2）</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rosenbaum_bound.html">Rosenbaum Bounds</a></li>
 </ul>
 </details></li>
@@ -1150,7 +1151,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>偏決定係数（partial R2）</h1>
+    <h1>部分決定係数（partial R2）</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -1160,9 +1161,14 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">実装</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">結果の読み方</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#u">1. 未観測の交絡因子<span class="math notranslate nohighlight">\(U\)</span>のモデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#t">2. 処置変数<span class="math notranslate nohighlight">\(T\)</span>のモデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#y">3. 結果変数<span class="math notranslate nohighlight">\(Y\)</span>のモデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">考え方</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">部分決定係数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実装</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">結果の読み方</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1175,40 +1181,79 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="partial-r2">
-<h1>偏決定係数（partial R2）<a class="headerlink" href="#partial-r2" title="Link to this heading">#</a></h1>
+<h1>部分決定係数（partial R2）<a class="headerlink" href="#partial-r2" title="Link to this heading">#</a></h1>
 <p>Partial <span class="math notranslate nohighlight">\(R^2\)</span> （偏決定係数、部分決定係数、偏重相関 などと呼ばれる）は Rosenbaum (2002) の改良として Imbens (2003)が提案した、未観測の交絡因子の強さを把握する手法。</p>
-<p>共変量<span class="math notranslate nohighlight">\(X\)</span>、結果<span class="math notranslate nohighlight">\(Y\)</span>、処置<span class="math notranslate nohighlight">\(T\)</span>、未観測の交絡因子<span class="math notranslate nohighlight">\(U\)</span>を用いたパラメトリックモデルを考える。</p>
-<p>未観測の交絡因子<span class="math notranslate nohighlight">\(U\)</span>は確率0.5のベルヌーイ分布に従うとする。つまり未観測の交絡因子が影響する/しないの値<span class="math notranslate nohighlight">\({1,0}\)</span>が1/2の確率で決まるとする。</p>
+<p>結果<span class="math notranslate nohighlight">\(Y\)</span>、処置<span class="math notranslate nohighlight">\(T\)</span>、未観測の交絡因子<span class="math notranslate nohighlight">\(U\)</span>それぞれに分布型を仮定してパラメトリックモデルを構築する。</p>
+<section id="u">
+<h2>1. 未観測の交絡因子<span class="math notranslate nohighlight">\(U\)</span>のモデル<a class="headerlink" href="#u" title="Link to this heading">#</a></h2>
+<p>未観測の交絡因子<span class="math notranslate nohighlight">\(U\)</span>は確率0.5のベルヌーイ分布に従うとする。つまり未観測の交絡因子が影響する/しないの値<span class="math notranslate nohighlight">\({1,0}\)</span>が<span class="math notranslate nohighlight">\(1/2\)</span>の確率で決まるとする。</p>
 <div class="math notranslate nohighlight">
 \[
-U_i \stackrel{\text { ind }}{\sim} \operatorname{Bern}(1 / 2)
+U_i \stackrel{\text { ind }}{\sim} \operatorname{Bern} \left(\frac{1}{2} \right)
 \]</div>
-<p>処置<span class="math notranslate nohighlight">\(T\)</span>は二値変数で、ロジスティック回帰モデルで表現できると仮定する。未観測の交絡<span class="math notranslate nohighlight">\(U\)</span>は処置<span class="math notranslate nohighlight">\(T\)</span>へ<span class="math notranslate nohighlight">\(\alpha\)</span>倍の強さで影響すると仮定する。</p>
+</section>
+<section id="t">
+<h2>2. 処置変数<span class="math notranslate nohighlight">\(T\)</span>のモデル<a class="headerlink" href="#t" title="Link to this heading">#</a></h2>
+<p>処置<span class="math notranslate nohighlight">\(T\)</span>は二値変数で、ロジスティック回帰モデルで表現できると仮定する。観測済みの共変量<span class="math notranslate nohighlight">\(X\)</span>だけでなく、未観測の交絡<span class="math notranslate nohighlight">\(U\)</span>も影響するとして、処置<span class="math notranslate nohighlight">\(T\)</span>へ<span class="math notranslate nohighlight">\(\alpha\)</span>倍の強さで影響すると仮定する。</p>
 <div class="math notranslate nohighlight">
 \[
 T_i \mid X_i, U_i \stackrel{\text { ind }}{\sim} \operatorname{Bern}\left(\operatorname{sigmoid}\left(\gamma X_i+\alpha U_i\right)\right)
 \]</div>
+<p>別の書き方をすれば</p>
+<div class="math notranslate nohighlight">
+\[
+P(T_i = 1 \mid X_i, U_i) = \frac{ 1 }{ 1 + \exp( -(\gamma X_i + \alpha U_i) )}
+\]</div>
+</section>
+<section id="y">
+<h2>3. 結果変数<span class="math notranslate nohighlight">\(Y\)</span>のモデル<a class="headerlink" href="#y" title="Link to this heading">#</a></h2>
 <p>結果<span class="math notranslate nohighlight">\(Y\)</span>と他の変数との関係には正規線形回帰モデルを仮定する。未観測の交絡<span class="math notranslate nohighlight">\(U\)</span>は結果<span class="math notranslate nohighlight">\(Y\)</span>へ<span class="math notranslate nohighlight">\(\delta\)</span>倍の強さで影響すると仮定する。</p>
 <div class="math notranslate nohighlight">
 \[
-Y_i \mid X_i, T_i, U_i \stackrel{\text { ind }}{\sim} \operatorname{Norm}\left(\tau T_i+\beta X_i+\delta U_i, \sigma^2\right)
+Y_i \mid X_i, T_i, U_i \stackrel{\text { ind }}{\sim} \mathcal{N}\left(\tau T_i+\beta X_i+\delta U_i, \sigma^2\right)
 \]</div>
+<p>別の書き方をすれば</p>
+<div class="math notranslate nohighlight">
+\[
+Y_i = \tau T_i + \beta X_i + \delta U_i + \varepsilon_i, \quad \varepsilon_i \sim \mathcal{N}(0, \sigma^2)
+\]</div>
+<p>となる。</p>
+</section>
+<section id="id1">
+<h2>考え方<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p><span class="math notranslate nohighlight">\(U\)</span>は未観測だが、<span class="math notranslate nohighlight">\(\alpha, \delta\)</span>をなんらかの値に固定すれば、他のパラメータは最尤推定できる。したがって、<span class="math notranslate nohighlight">\(\alpha, \delta\)</span>をさまざまな値に変えたもとでの推定を行うことで、</p>
 <ol class="arabic simple">
 <li><p>未観測の交絡因子が割当や結果変数にどれくらい影響力があるか</p></li>
 <li><p>因果効果の推定値<span class="math notranslate nohighlight">\(\tau\)</span>がどの程度変化するか</p></li>
 </ol>
 <p>を推定することができる</p>
-<p><span class="math notranslate nohighlight">\(Y\)</span>の部分決定係数<span class="math notranslate nohighlight">\(R^2_{Y, par}(\alpha, \delta)\)</span>は</p>
+</section>
+<section id="id2">
+<h2>部分決定係数<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<div class="admonition- admonition">
+<p class="admonition-title">部分決定係数</p>
+<p><span class="math notranslate nohighlight">\(Y\)</span>の部分決定係数<span class="math notranslate nohighlight">\(R^2_{Y, par}(\alpha, \delta)\)</span>は次のように定義される</p>
 <div class="math notranslate nohighlight">
 \[
 R^2_{Y, par}(\alpha, \delta)
-= 1 - \frac{RSS_{full}}{RSS_{reduced}}
+= 1 - \frac{ \text{RSS}_{\text{full}} }{ \text{RSS}_{\text{reduced}} }
 \]</div>
-<p>ここで<span class="math notranslate nohighlight">\(RSS_{full}\)</span>は<span class="math notranslate nohighlight">\(U\)</span>を含むという意味でfullのモデルの残差平方和。<span class="math notranslate nohighlight">\(RSS_{reduced}\)</span>は観測した変数のみのモデルの残差平方和。</p>
-<p>未観測の交絡因子<span class="math notranslate nohighlight">\(U\)</span>の影響が少ない場合、<span class="math notranslate nohighlight">\(RSS_{full} \approx RSS_{reduced}\)</span>になり<span class="math notranslate nohighlight">\(R^2_{Y, par}(\alpha, \delta)\)</span>は0に近づく。</p>
-<section id="id1">
-<h2>実装<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\text{RSS}_{\text{full}}\)</span>：<span class="math notranslate nohighlight">\(U\)</span>を含むモデルの残差平方和</p></li>
+<li><p><span class="math notranslate nohighlight">\(\text{RSS}_{\text{reduced}}\)</span>：<span class="math notranslate nohighlight">\(U\)</span>を含まない、観測した変数のみのモデルの残差平方和</p></li>
+</ul>
+</div>
+<p>直感的な解釈としては「<span class="math notranslate nohighlight">\(U\)</span>を追加したことで説明できた部分がどれだけあるか」。<span class="math notranslate nohighlight">\(U\)</span>を追加して<span class="math notranslate nohighlight">\(\text{full}\)</span>モデルの説明力が<span class="math notranslate nohighlight">\(\text{reduced}\)</span>モデルより高くなれば、 <span class="math notranslate nohighlight">\(\text{RSS}_{\text{full}} &lt; \text{RSS}_{\text{reduced}}\)</span> になる。</p>
+<p>なので、</p>
+<ul class="simple">
+<li><p>未観測の交絡因子<span class="math notranslate nohighlight">\(U\)</span>の影響が <strong>多い</strong> 場合、<span class="math notranslate nohighlight">\(\text{RSS}_{\text{full}} &lt; \text{RSS}_{\text{reduced}}\)</span>になり<span class="math notranslate nohighlight">\(R^2_{Y, par}(\alpha, \delta)\)</span>は <strong>1に近づく</strong></p></li>
+<li><p>未観測の交絡因子<span class="math notranslate nohighlight">\(U\)</span>の影響が <strong>少ない</strong> 場合、<span class="math notranslate nohighlight">\(\text{RSS}_{\text{full}} \approx \text{RSS}_{\text{reduced}}\)</span>になり<span class="math notranslate nohighlight">\(R^2_{Y, par}(\alpha, \delta)\)</span>は <strong>0に近づく</strong></p></li>
+</ul>
+<p>ということになる。</p>
+<p>→ ⚠️通常の決定係数は1に近いほどいいが、 <strong>部分決定係数は0に近いほどよい</strong> ことになる点に注意。</p>
+</section>
+<section id="id3">
+<h2>実装<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>PySensemakrパッケージが便利。</p>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
@@ -1294,8 +1339,8 @@ Bounds on omitted variable bias:
 </div>
 </div>
 </section>
-<section id="id2">
-<h2>結果の読み方<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="id4">
+<h2>結果の読み方<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <blockquote>
 <div><p>Sensitivity Statistics</p>
 </div></blockquote>
@@ -1369,8 +1414,8 @@ Bounds on omitted variable bias:
 </div>
 </div>
 </section>
-<section id="id3">
-<h2>参考文献<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<section id="id5">
+<h2>参考文献<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://scholar.harvard.edu/imbens/files/sensitivity_to_exogeneity_assumptions_in_program_evaluation.pdf">Imbens, G. W. (2003). Sensitivity to exogeneity assumptions in program evaluation. American Economic Review, 93(2), 126-132.</a></p></li>
 <li><p>星野崇宏. (2009). 調査観察データの統計科学: 因果推論・選択バイアス・データ融合.</p></li>
@@ -1409,12 +1454,12 @@ Bounds on omitted variable bias:
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="sensitivity_analysis.html"
+       href="e_value.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">感度分析</p>
+        <p class="prev-next-title">E-value</p>
       </div>
     </a>
     <a class="right-next"
@@ -1442,9 +1487,14 @@ Bounds on omitted variable bias:
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">実装</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">結果の読み方</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#u">1. 未観測の交絡因子<span class="math notranslate nohighlight">\(U\)</span>のモデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#t">2. 処置変数<span class="math notranslate nohighlight">\(T\)</span>のモデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#y">3. 結果変数<span class="math notranslate nohighlight">\(Y\)</span>のモデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">考え方</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">部分決定係数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実装</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">結果の読み方</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考文献</a></li>
 </ul>
   </nav></div>
 
