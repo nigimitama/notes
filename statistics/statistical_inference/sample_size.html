@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>検定のためのサンプルサイズの決め方 &#8212; データサイエンス関連+αのメモ</title>
+    <title>サンプルサイズの決め方 &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -541,7 +541,6 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/causal_discovery.html">統計的因果探索</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/uplift_modeling.html">Uplift Modeling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../econometrics/sensitivity_analysis.html">感度分析</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/causal_clustering.html">Causal Clustering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/literatures.html">よさそうな文献・サイト</a></li>
 </ul>
@@ -1051,7 +1050,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>検定のためのサンプルサイズの決め方</h1>
+    <h1>サンプルサイズの決め方</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -1061,16 +1060,16 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">シンプルなやつ（母比率の検定の場合）</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statsmodels">statsmodels</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">区間推定のサンプルサイズの決め方</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statsmodels">statsmodelsの関数</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">本格的な実験手順</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">検定のサンプルサイズの決め方（決定力分析）</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">手順1. 事前分析：サンプルサイズの設計</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">効果量</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">手順2. 事後分析：検出力分析</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">手順2. 事後分析：検出力の計算</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">statsmodels</a></li>
 </ul>
 </li>
@@ -1087,10 +1086,10 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>検定のためのサンプルサイズの決め方<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<h1>サンプルサイズの決め方<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <section id="id2">
-<h2>シンプルなやつ（母比率の検定の場合）<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>統計学の入門書にあるようなシンプルなやつ</p>
+<h2>区間推定のサンプルサイズの決め方<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>信頼区間の幅を基準にサンプルサイズを決める方法がある。</p>
 <p>母比率<span class="math notranslate nohighlight">\(p\)</span>の95%信頼区間は、標本比率<span class="math notranslate nohighlight">\(\hat{p}\)</span>を用いて</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1170,7 +1169,7 @@ n \geq (2 \times 1.96 \times \sqrt{\widehat{p}(1-\widehat{p})} \times \frac{1}{w
 </div>
 </div>
 <section id="statsmodels">
-<h3>statsmodels<a class="headerlink" href="#statsmodels" title="Link to this heading">#</a></h3>
+<h3>statsmodelsの関数<a class="headerlink" href="#statsmodels" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://www.statsmodels.org/dev/generated/statsmodels.stats.proportion.samplesize_confint_proportion.html#statsmodels.stats.proportion.samplesize_confint_proportion">samplesize_confint_proportion</a>
 を使うことで、想定される比率、幅、有意水準からサンプル数を推定できる</p>
 <div class="cell docutils container">
@@ -1188,12 +1187,20 @@ n \geq (2 \times 1.96 \times \sqrt{\widehat{p}(1-\widehat{p})} \times \frac{1}{w
 </div>
 </div>
 </div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+参考</div>
+<p class="sd-card-text"><a class="reference external" href="https://bellcurve.jp/statistics/course/9129.html?srsltid=AfmBOorP-vLI7b_x5Fn-qUNdE_NNMRkN9JDIAaybE7u-8a2klw7dOPhD">21-4. 必要なサンプルサイズ1 | 統計学の時間 | 統計WEB</a></p>
+</div>
+</div>
 </section>
 </section>
 <section id="id3">
-<h2>本格的な実験手順<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h2>検定のサンプルサイズの決め方（決定力分析）<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>検定は4つの要因で構成される</p>
 <div class="admonition- admonition">
-<p class="admonition-title">サンプルサイズの4大因子</p>
+<p class="admonition-title">検定の4大因子</p>
 <p>次の4つのうち3つが決まれば残る1つも決まる</p>
 <ol class="arabic simple">
 <li><p>サンプルサイズ（Sample size）</p></li>
@@ -1218,6 +1225,7 @@ n \geq (2 \times 1.96 \times \sqrt{\widehat{p}(1-\widehat{p})} \times \frac{1}{w
 <p>→ サンプルサイズを設計するにはサンプルサイズ以外の3つを設定すればいい</p>
 <p>→ 検出力を推定するには検出力以外の3つを使えばいい</p>
 </div>
+<p>そこで、次の手順で</p>
 <section id="id4">
 <h3>手順1. 事前分析：サンプルサイズの設計<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <p>調査（A/Bテストなど）を行う前のサンプルサイズ設計。</p>
@@ -1378,8 +1386,13 @@ h=2 \cdot \arcsin (\sqrt{p_1})-2 \cdot \arcsin (\sqrt{p_2})
 \]</div>
 <p>ここで：</p>
 <ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(p_1\)</span> ：群1の比率（成約率など）</p></li>
-<li><p><span class="math notranslate nohighlight">\(p_2\)</span> ：群2の比率（成約率など）</p></li>
+<li><p><span class="math notranslate nohighlight">\(p_1\)</span>：群1の比率</p></li>
+<li><p><span class="math notranslate nohighlight">\(p_2\)</span>：群2の比率</p></li>
+<li><p><span class="math notranslate nohighlight">\(\arcsin(\sqrt{p})\)</span>：アークサイン変換</p>
+<ul>
+<li><p>比率の標準誤差は<span class="math notranslate nohighlight">\(p(1-p)/n\)</span>と<span class="math notranslate nohighlight">\(p=0.5\)</span>で最大になるなど比率の値に応じて標準誤差が異なる。標準誤差を安定化させる変換（variance stabilizing transform）がアークサイン変換。</p></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="cell docutils container">
@@ -1403,7 +1416,7 @@ h=2 \cdot \arcsin (\sqrt{p_1})-2 \cdot \arcsin (\sqrt{p_2})
 </section>
 </section>
 <section id="id6">
-<h3>手順2. 事後分析：検出力分析<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<h3>手順2. 事後分析：検出力の計算<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
 <li><p>実測のサンプルサイズ</p></li>
 <li><p>実測の効果量</p></li>
@@ -1599,16 +1612,16 @@ h=2 \cdot \arcsin (\sqrt{p_1})-2 \cdot \arcsin (\sqrt{p_2})
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">シンプルなやつ（母比率の検定の場合）</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statsmodels">statsmodels</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">区間推定のサンプルサイズの決め方</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statsmodels">statsmodelsの関数</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">本格的な実験手順</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">検定のサンプルサイズの決め方（決定力分析）</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">手順1. 事前分析：サンプルサイズの設計</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">効果量</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">手順2. 事後分析：検出力分析</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">手順2. 事後分析：検出力の計算</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">statsmodels</a></li>
 </ul>
 </li>
