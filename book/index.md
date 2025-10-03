@@ -13,8 +13,8 @@
 数学
 
 - [](mathematics/introduction)
+- [](mathematics/math)
 - [](mathematics/set_theory)
-- [](mathematics/factorization)
 - [](mathematics/algebra/index)
 - [](mathematics/linear_algebra/index)
 - [](mathematics/calculus/index)
@@ -22,6 +22,7 @@
 - [](mathematics/applied_math/index)
 - [](mathematics/applied_math/exercise/index)
 - [](mathematics/probability_theory/index)
+- [](mathematics/discrete_mathematics/index)
 :::
 
 :::{grid-item-card}
@@ -30,17 +31,20 @@
 
 - [](statistics/probability/index)
 - [](statistics/statistical_inference/index)
+- [](statistics/correlation/index)
 - [](statistics/divergence)
 - [](statistics/optimal_transport)
 - [](statistics/bootstrap)
 - [](statistics/nonparametric_density_estimation)
-- [](statistics/correlation)
 - [](statistics/missing_data)
 - [](statistics/sandwich_estimator)
 - [](statistics/asymptotic_theory/index)
 - [](statistics/bayes_statistics/index)
 - [](statistics/done_wrong)
 - [](statistics/visualization)
+- [](statistics/price_index)
+- [](statistics/tokei_kentei)
+- [](statistics/variance_stabilizing)
 :::
 
 :::{grid-item-card}
@@ -53,6 +57,7 @@
 - [](statistical_modeling/quantile_regression)
 - [](statistical_modeling/survival_analysis)
 - [](statistical_modeling/sem/index)
+- [](statistical_modeling/test_theory/index)
 - [](statistical_modeling/glm/index)
 - [](statistical_modeling/bayes_modeling/index)
 - [](statistical_modeling/time_series_analysis/index)
@@ -66,27 +71,36 @@
 計量経済学・因果推論
 
 - [](econometrics/structure_estimation/index)
+- [](econometrics/causality)
 - [](econometrics/rubin_causal_model)
 - [](econometrics/selection_bias)
 - [](econometrics/experimental_design)
+- [](econometrics/ab_tests)
 - [](econometrics/pearl_causal_model)
 - [](econometrics/causal_diagram)
 - [](econometrics/ols/index)
+- [](econometrics/panel_data/index)
 - [](econometrics/propensity_score)
+- [](econometrics/matching)
 - [](econometrics/iv/index)
 - [](econometrics/regression_discontinuity)
-- [](econometrics/fixed_effect_model)
 - [](econometrics/difference_in_differences)
+- [](econometrics/change_in_changes)
 - [](econometrics/synthetic_control)
 - [](econometrics/causalimpact)
 - [](econometrics/gmm)
-- [](econometrics/dml/index)
-- [](econometrics/causal_forest/index)
-- [](econometrics/causal_machine_learning/index)
+- [](econometrics/quantile_treatment_effects)
+- [](econometrics/bayes_for_economics)
+- [](econometrics/causal_ml/index)
 - [](econometrics/causal_discovery)
 - [](econometrics/uplift_modeling)
-- [](econometrics/sensitivity_analysis)
+- [](econometrics/sensitivity_analysis/index)
+- [](econometrics/causal_clustering)
+- [](econometrics/simulations)
 - [](econometrics/literatures)
+- [](econometrics/memo/aggregated_data)
+- [](econometrics/memo/chocolate_and_noble_prize)
+- [](econometrics/memo/covariates)
 :::
 
 :::{grid-item-card}
@@ -95,8 +109,10 @@
 
 - [](machine_learning/statistical_learning_theory/index)
 - [](machine_learning/unsupervised_learning/index)
+- [](machine_learning/anomaly_detection/index)
 - [](machine_learning/linear_models/index)
 - [](machine_learning/svm)
+- [](machine_learning/ensemble)
 - [](machine_learning/trees/index)
 - [](machine_learning/knn)
 - [](machine_learning/naive_bayes)
@@ -104,6 +120,8 @@
 - [](machine_learning/imbalanced_data)
 - [](machine_learning/distillation)
 - [](machine_learning/probability_prediction)
+- [](machine_learning/parallelize)
+- [](machine_learning/zero-deep-2/index)
 - [](machine_learning/evaluation/evaluation)
 - [](machine_learning/ml_ops/index)
 - [](machine_learning/overfitting)
@@ -117,6 +135,10 @@
 深層学習
 
 - [](deep_learning/history)
+- [](deep_learning/theory)
+- [](deep_learning/intro_with_keras)
+- [](deep_learning/rola)
+- [](deep_learning/neural_network)
 - [](deep_learning/dl_and_tabular_data)
 - [](deep_learning/dnn/index)
 - [](deep_learning/cnn/index)
@@ -154,9 +176,12 @@
 画像処理
 
 - [](image_processing/introduction)
+- [](image_processing/sample_images)
 - [](image_processing/rotation_correction)
 - [](image_processing/distortion_correction)
 - [](image_processing/similarity_and_hashing)
+- [](image_processing/intensity_transformation)
+- [](image_processing/region_splitting)
 :::
 
 :::{grid-item-card}
@@ -169,12 +194,30 @@
 - [](recommender_system/factorization_machines)
 - [](recommender_system/bayesian_personalized_ranking)
 - [](recommender_system/two_tower)
+- [](recommender_system/causal_inference_in_recommendation)
+- [](recommender_system/evaluation)
+:::
+
+:::{grid-item-card}
+:columns: 6
+マーケティング
+
+- [](marketing/advertisement)
+- [](marketing/marketing_mix_modeling)
+:::
+
+:::{grid-item-card}
+:columns: 6
+強化学習
+
+- [](reinforcement_learning/introduction)
 :::
 
 :::{grid-item-card}
 :columns: 6
 データ分析のビジネス応用
 
+- [](applied_data_science/data_analysis)
 - [](applied_data_science/data_management)
 - [](applied_data_science/type_of_applications)
 :::
@@ -185,9 +228,16 @@
 
 - [](business/revenue_structure)
 - [](business/accounting)
+- [](business/career_of_ds)
+- [](business/data_analysis)
+- [](business/digital_transformation)
+- [](business/hearing)
+- [](business/management_articles)
+- [](business/people_management/index)
 - [](business/product_management/index)
 - [](business/project_management/index)
 - [](business/business_administration/index)
+- [](business/business_administration/competitive_strategy/index)
 - [](business/document_management)
 :::
 
@@ -195,12 +245,26 @@
 :columns: 6
 ソフトスキル
 
+- [](soft_skills/mindset)
 - [](soft_skills/logic/index)
 - [](soft_skills/writing)
 - [](soft_skills/presentation)
 - [](soft_skills/negotiation)
 - [](soft_skills/harvard_negotiation)
-- [](soft_skills/leadership)
+- [](soft_skills/assertion)
+- [](soft_skills/data_analysis)
+- [](soft_skills/research)
+- [](soft_skills/skillup)
+- [](soft_skills/thinking)
+- [](soft_skills/management/index)
+:::
+
+:::{grid-item-card}
+:columns: 6
+外国語
+
+- [](foreign_languages/english/index)
+- [](foreign_languages/chinese/index)
 :::
 
 :::{grid-item-card}
@@ -208,10 +272,14 @@
 ソフトウェア工学
 
 - [](software_engineering/programming)
+- [](software_engineering/practitionars_approach)
+- [](software_engineering/software_process)
 - [](software_engineering/algorithms/index)
 - [](software_engineering/development/index)
+- [](software_engineering/frontend/index)
 - [](software_engineering/data_store/index)
 - [](software_engineering/faas/index)
+- [](software_engineering/testing/index)
 - [](software_engineering/security/index)
 - [](software_engineering/pseudorandom_numbers/index)
 - [](software_engineering/web_optimization)
@@ -223,9 +291,11 @@
 経済学
 
 - [](economics/introduction)
+- [](economics/demand_estimation)
 - [](economics/microeconomics/index)
 - [](economics/macroeconomics/index)
 - [](economics/quantitative_economics)
+- [](economics/housing_economics/index)
 :::
 
 :::{grid-item-card}
@@ -239,6 +309,8 @@
 - [](financial_economics/feature_neutralization)
 - [](financial_economics/statistical_arbitrage)
 - [](financial_economics/asset_pricing)
+- [](financial_economics/finance_ml)
+- [](financial_economics/forex_rate_prediction)
 - [](financial_economics/papers/index)
 - [](financial_economics/financial_time_series/index)
 - [](financial_economics/investment_strategies/index)
