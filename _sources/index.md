@@ -20,7 +20,6 @@
 - [](mathematics/calculus/index)
 - [](mathematics/mathematical_optimization/index)
 - [](mathematics/applied_math/index)
-- [](mathematics/applied_math/exercise/index)
 - [](mathematics/probability_theory/index)
 - [](mathematics/discrete_mathematics/index)
 :::
@@ -56,12 +55,12 @@
 - [](statistical_modeling/gaussian_process)
 - [](statistical_modeling/quantile_regression)
 - [](statistical_modeling/survival_analysis)
+- [](statistical_modeling/symbolic_data_analysis)
 - [](statistical_modeling/sem/index)
 - [](statistical_modeling/test_theory/index)
 - [](statistical_modeling/glm/index)
 - [](statistical_modeling/bayes_modeling/index)
 - [](statistical_modeling/time_series_analysis/index)
-- [](statistical_modeling/symbolic_data_analysis)
 - [](statistical_modeling/semiparametric/index)
 - [](statistical_modeling/evaluation/index)
 :::
@@ -95,6 +94,7 @@
 - [](econometrics/causal_discovery)
 - [](econometrics/uplift_modeling)
 - [](econometrics/sensitivity_analysis/index)
+- [](econometrics/partial_identification/index)
 - [](econometrics/causal_clustering)
 - [](econometrics/simulations)
 - [](econometrics/literatures)
@@ -220,6 +220,7 @@
 - [](applied_data_science/data_analysis)
 - [](applied_data_science/data_management)
 - [](applied_data_science/type_of_applications)
+- [](applied_data_science/business_application_of_ai)
 :::
 
 :::{grid-item-card}
@@ -237,7 +238,6 @@
 - [](business/product_management/index)
 - [](business/project_management/index)
 - [](business/business_administration/index)
-- [](business/business_administration/competitive_strategy/index)
 - [](business/document_management)
 :::
 
