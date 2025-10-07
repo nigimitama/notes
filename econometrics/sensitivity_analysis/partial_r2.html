@@ -1193,6 +1193,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">部分決定係数</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">実装</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">結果の読み方</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#contour-plot">Contour plot</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">発展手法</a></li>
@@ -1364,9 +1365,15 @@ R_{Y \sim U \mid X, T}^2=\frac{R_{Y \sim U+X+T}^2-R_{Y \sim X+T}^2}{1-R_{Y \sim 
 R_{T \sim U \mid X}^2=\frac{R_{T \sim U+X}^2-R_{T \sim X}^2}{1-R_{T \sim X}^2}
 \]</div>
 </div>
-</details><div class="cell docutils container">
+</details><div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 人工データで試したときのメモ</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># 人工データの生成</span>
@@ -1392,38 +1399,20 @@ R_{T \sim U \mid X}^2=\frac{R_{T \sim U+X}^2-R_{T \sim X}^2}{1-R_{T \sim X}^2}
 <span class="n">m_ytx</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s1">&#39;y ~ t + x&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
 <span class="n">m_yx</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s1">&#39;y ~ x&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
 
-<span class="n">rss_ytx</span> <span class="o">=</span> <span class="n">m_ytx</span><span class="o">.</span><span class="n">ssr</span>
-<span class="n">rss_yx</span> <span class="o">=</span> <span class="n">m_yx</span><span class="o">.</span><span class="n">ssr</span>
+<span class="c1"># 金本(2024)の計算を真似したメモ</span>
+<span class="c1"># rss_ytx = m_ytx.ssr</span>
+<span class="c1"># rss_yx = m_yx.ssr</span>
+
+<span class="c1"># r2_yt_x = 1 - rss_ytx / rss_yx</span>
+<span class="c1"># r2_yt_x</span>
+
+<span class="c1"># r2_ytx = 1 - rss_ytx / y.var()</span>
+<span class="c1"># r2_yx = 1 - rss_yx / y.var()</span>
+<span class="c1"># (r2_ytx - r2_yx) / (1 - r2_yx)</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r2_yt_x</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">rss_ytx</span> <span class="o">/</span> <span class="n">rss_yx</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r2_ytx</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">rss_ytx</span> <span class="o">/</span> <span class="n">y</span><span class="o">.</span><span class="n">var</span><span class="p">()</span>
-<span class="n">r2_yx</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">rss_yx</span> <span class="o">/</span> <span class="n">y</span><span class="o">.</span><span class="n">var</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">r2_ytx</span> <span class="o">-</span> <span class="n">r2_yx</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">r2_yx</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7041100119523827
-</pre></div>
-</div>
-</div>
+</details>
 </div>
 </section>
 <section id="id4">
@@ -1526,11 +1515,12 @@ Bounds on omitted variable bias:
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Robustness</span> <span class="pre">Value,</span> <span class="pre">q</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">alpha</span> <span class="pre">=</span> <span class="pre">0.05</span></code>：統計的有意性も加味したもの。</p></li>
 </ul>
+</section>
+<section id="contour-plot">
+<h3>Contour plot<a class="headerlink" href="#contour-plot" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># contour plot for the estimate</span>
-<span class="c1"># x軸が処置変数の部分決定係数</span>
-<span class="c1"># y軸が結果変数の部分決定係数</span>
 <span class="n">darfur_sense</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1539,6 +1529,13 @@ Bounds on omitted variable bias:
 <img alt="../../_images/1596bb7c2e559a87e923c6dba1f9b4943ba20e0b354c43b141b58e3200d06d74.png" src="../../_images/1596bb7c2e559a87e923c6dba1f9b4943ba20e0b354c43b141b58e3200d06d74.png" />
 </div>
 </div>
+<p>contour plotの見方</p>
+<ul class="simple">
+<li><p>x軸が処置変数の部分決定係数</p></li>
+<li><p>y軸が結果変数の部分決定係数</p></li>
+<li><p>等高線：感度パラメーター（\alpha, \delta）の値のもとでのFullモデルで得られる、因果効果の調整済み推定値（adjusted estimate）</p></li>
+<li><p>点：指定したcovariateの1倍、2倍、3倍の影響を持つ未観測の交絡因子のもとでの、因果効果の調整済み推定値（adjusted estimate）</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># extreme scenarios plot</span>
@@ -1641,6 +1638,7 @@ Bounds on omitted variable bias:
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">部分決定係数</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">実装</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">結果の読み方</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#contour-plot">Contour plot</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">発展手法</a></li>
