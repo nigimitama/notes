@@ -42,7 +42,6 @@
 - [](statistics/done_wrong)
 - [](statistics/visualization)
 - [](statistics/price_index)
-- [](statistics/tokei_kentei)
 - [](statistics/variance_stabilizing)
 :::
 
@@ -121,6 +120,7 @@
 - [](machine_learning/distillation)
 - [](machine_learning/probability_prediction)
 - [](machine_learning/parallelize)
+- [](machine_learning/task/index)
 - [](machine_learning/zero-deep-2/index)
 - [](machine_learning/evaluation/evaluation)
 - [](machine_learning/ml_ops/index)
@@ -140,6 +140,7 @@
 - [](deep_learning/rola)
 - [](deep_learning/neural_network)
 - [](deep_learning/dl_and_tabular_data)
+- [](deep_learning/tabpfn)
 - [](deep_learning/dnn/index)
 - [](deep_learning/cnn/index)
 - [](deep_learning/rnn/index)
@@ -232,13 +233,13 @@
 - [](business/career_of_ds)
 - [](business/data_analysis)
 - [](business/digital_transformation)
+- [](business/document_management)
 - [](business/hearing)
 - [](business/management_articles)
 - [](business/people_management/index)
 - [](business/product_management/index)
 - [](business/project_management/index)
 - [](business/business_administration/index)
-- [](business/document_management)
 :::
 
 :::{grid-item-card}
