@@ -13,7 +13,8 @@
 数学
 
 - [](mathematics/introduction)
-- [](mathematics/math)
+- [](mathematics/symbols)
+- [](mathematics/math_for_ds)
 - [](mathematics/set_theory)
 - [](mathematics/algebra/index)
 - [](mathematics/linear_algebra/index)

@@ -192,7 +192,8 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">数学</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../mathematics/introduction.html">数学の初歩</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../mathematics/math.html">データサイエンスのための数学</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mathematics/symbols.html">データサイエンスでよく使う数学記号一覧</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mathematics/math_for_ds.html">データサイエンスのための数学</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../mathematics/set_theory.html">集合論</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../mathematics/algebra/index.html">代数学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../mathematics/algebra/group_theory.html">群論</a></li>
@@ -616,7 +617,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../svm.html">Support Vector Machine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ensemble.html">アンサンブル学習</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Tree-based Algorithms</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">trees / GBDT</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="decision_tree.html">決定木</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extra_trees.html">Extra Trees</a></li>
 <li class="toctree-l2"><a class="reference internal" href="boosting.html">ブースティング</a></li>
@@ -1184,7 +1185,15 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">関連論文</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prediction-shift">Prediction Shift</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#categorical-features">Categorical featuresの扱い</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ラベル統計に基づく方法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">CatBoost における戦略</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">特徴の組み合わせ</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">実装上の重要な詳細</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -1198,7 +1207,47 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="catboost">
 <h1>CatBoost<a class="headerlink" href="#catboost" title="Link to this heading">#</a></h1>
-<p><a class="reference external" href="https://arxiv.org/pdf/1706.09516.pdf">Prokhorenkova et al. (2018). CatBoost: unbiased boosting with categorical features</a></p>
+<p>CatBoostはYandexが中心となって開発しているGBDTのOSSライブラリ</p>
+<section id="id1">
+<h2>関連論文<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://catboost.ai/docs/en/concepts/educational-materials-papers">Reference papers | CatBoost</a></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://arxiv.org/abs/1706.09516">CatBoost: unbiased boosting with categorical features</a></p>
+<ul>
+<li><p>CatBoost の Ordered Boosting と Ordered Categorical Features Statistics の説明</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="http://learningsys.org/nips17/assets/papers/paper_11.pdf">CatBoost: gradient boosting with categorical features support</a></p>
+<ul>
+<li><p>CatBoostの基本的な動作原理の説明</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/1910.13204">Minimal Variance Sampling in Stochastic Gradient Boosting</a></p>
+<ul>
+<li><p>CatBoostのデフォルトのサンプリング手法MVSについて</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/1802.06640">Finding Influential Training Samples for Gradient Boosted Decision Trees</a></p>
+<ul>
+<li><p>あるサンプルに対する予測について影響の大きい訓練データ中の事例を探索するアルゴリズムについて</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/2204.01500">Which Tricks are Important for Learning to Rank?</a></p>
+<ul>
+<li><p>ランキング学習の誤差関数について、LambdaMART, YetiRank, StochasticRankを比較してYetiRankの改良を提案</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/2206.05608">Gradient Boosting Performs Gaussian Process Inference</a></p>
+<ul>
+<li><p>対称決定木（symmetric decision tress）の勾配ブースティングはカーネル法と等価であり、カーネルリッジ回帰問題の解へと変換できることを示した</p></li>
+<li><p>つまり、CatBoostでガウス過程と同様の結果が得られることを示した。</p></li>
+<li><p>実装：<a class="reference external" href="https://catboost.ai/docs/en/concepts/python-reference_sample_gaussian_process">sample_gaussian_process | CatBoost</a></p></li>
+</ul>
+</li>
+</ul>
+<p><a class="reference external" href="https://arxiv.org/pdf/1706.09516.pdf">Prokhorenkova, et al. (2018). CatBoost: unbiased boosting with categorical features. NeurIPS2018</a></p>
+<p><a class="reference external" href="http://learningsys.org/nips17/assets/papers/paper_11.pdf">Dorogush, et al. (2018). CatBoost: gradient boosting with categorical features support. NIPS2017</a></p>
+</section>
 <section id="prediction-shift">
 <h2>Prediction Shift<a class="headerlink" href="#prediction-shift" title="Link to this heading">#</a></h2>
 <p><a class="reference external" href="https://threecourse.hatenablog.com/entry/2020/05/29/204944">CatBoost論文のprediction shiftについて完全に理解する - threecourse’s blog</a></p>
@@ -1207,6 +1256,70 @@ document.write(`
 <li><p>1本目と2本目の木の作成で同じデータセットを使うことにより、予測値の期待値に<span class="math notranslate nohighlight">\(1 / (n − 1)\)</span> に比例する偏りが発生する。</p></li>
 <li><p>prediction shiftの影響を受けないよう、CatBoostではデータ数が少ない場合にはordered boostingというアルゴリズムを使用するようになっている。</p></li>
 </ul>
+</section>
+<section id="categorical-features">
+<h2>Categorical featuresの扱い<a class="headerlink" href="#categorical-features" title="Link to this heading">#</a></h2>
+<section id="id2">
+<h3>ラベル統計に基づく方法<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>別の方法として、ラベル値を用いてカテゴリごとの統計量を計算する手法がある。<br />
+データセット <span class="math notranslate nohighlight">\(\{ (x_i, Y_i) \}\)</span> が与えられており、<span class="math notranslate nohighlight">\(x_i\)</span> は数値的およびカテゴリ的特徴を含むベクトル、<span class="math notranslate nohighlight">\(Y_i\)</span> はラベルであるとする。<br />
+最も単純な方法は、カテゴリ全体の平均ラベル値で置き換えるものである。すなわち、カテゴリ <span class="math notranslate nohighlight">\(x_{i,k}\)</span> は次のように置き換えられる：</p>
+<div class="math notranslate nohighlight">
+\[
+x_{i,k} \to 
+\frac{\sum_{j=1}^n [x_{j,k} = x_{i,k}] \cdot Y_j}
+     {\sum_{j=1}^n [x_{j,k} = x_{i,k}]}
+\]</div>
+<p>ここで、<span class="math notranslate nohighlight">\([\cdot]\)</span> はイベルソン括弧（条件が真なら1、偽なら0）である。<br />
+しかし、この方法は明らかに <strong>過学習</strong> を引き起こす。<br />
+例えば、あるカテゴリがデータ中に1回しか出現しない場合、その数値はそのラベルと等しくなってしまう。</p>
+<p>この問題を避けるための単純な方法は、データセットを2つに分割し、一方で統計量を計算し、もう一方で訓練することである。<br />
+しかしこれはデータ量を減らしてしまう。</p>
+</section>
+<hr class="docutils" />
+<section id="id3">
+<h3>CatBoost における戦略<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>CatBoost は過学習を抑制しつつ、全データを利用できる効率的な戦略を採る。<br />
+すなわち、データセットの <strong>ランダム順列</strong> <span class="math notranslate nohighlight">\(\sigma\)</span> を生成し、各サンプルについて、その順列内で前に出現する同じカテゴリを持つサンプルのラベル平均を計算する：</p>
+<div class="math notranslate nohighlight">
+\[
+x_{\sigma_p, k} \to
+\frac{\sum_{j=1}^{p-1} [x_{\sigma_j, k} = x_{\sigma_p, k}] \cdot Y_{\sigma_j} + a \cdot P}
+     {\sum_{j=1}^{p-1} [x_{\sigma_j, k} = x_{\sigma_p, k}] + a}
+\tag{1}
+\]</div>
+<p>ここで、</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(a &gt; 0\)</span> は <strong>prior の重み</strong>、</p></li>
+<li><p><span class="math notranslate nohighlight">\(P\)</span> は <strong>prior 値</strong>（例えば回帰なら平均ラベル値、二値分類なら正例の事前確率）である。</p></li>
+</ul>
+<p>prior を導入することにより、出現頻度の低いカテゴリから生じるノイズを軽減できる。<br />
+さらに複数の順列を用いることも可能であるが、単純に統計量を併用すると過学習を起こす。<br />
+CatBoost では次節で述べる新しい葉値計算法により、複数順列の利用を安全に行える。</p>
+</section>
+<hr class="docutils" />
+<section id="id4">
+<h3>特徴の組み合わせ<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>複数のカテゴリ特徴を組み合わせて新しい特徴を作ることもできる。<br />
+例えば、音楽推薦タスクにおいて「ユーザーID」と「音楽ジャンル」があるとする。<br />
+ユーザーが特定のジャンルを好む情報（例：「ユーザー123はロックが好き」）は、各特徴を別々に変換すると失われるが、2つを組み合わせることで新たな強力な特徴となる。</p>
+<p>しかし、全ての組み合わせを考慮すると組み合わせ数が指数的に増えるため、CatBoost では <strong>貪欲法 (greedy approach)</strong> により木構築中の分割で生成可能な組み合わせのみを考慮する。</p>
+<ul class="simple">
+<li><p>最初の分割では組み合わせを考慮しない。</p></li>
+<li><p>以降の分割では、現在の木で使われたカテゴリ特徴とデータセット中の他のカテゴリ特徴を組み合わせる。</p></li>
+<li><p>組み合わせ値は「その場で」数値に変換される。</p></li>
+<li><p>数値特徴とカテゴリ特徴の組み合わせも同様に扱われる。</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="id5">
+<h3>実装上の重要な詳細<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>カテゴリを数値に置き換えるもう一つの単純で強力な方法は、<strong>そのカテゴリの出現回数</strong>を計算することである。<br />
+CatBoost ではこの統計も計算し、特徴の組み合わせにも適用している。</p>
+<p>また、CatBoost アルゴリズムの各ステップで最適な prior を適合させるために、複数の prior を試し、それぞれについて特徴を構築する。<br />
+これは前述の標準的手法よりも品質面で優れている。</p>
+<hr class="docutils" />
+</section>
 </section>
 </section>
 
@@ -1274,7 +1387,15 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">関連論文</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prediction-shift">Prediction Shift</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#categorical-features">Categorical featuresの扱い</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ラベル統計に基づく方法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">CatBoost における戦略</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">特徴の組み合わせ</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">実装上の重要な詳細</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
