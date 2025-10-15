@@ -71,6 +71,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'machine_learning/trees/rule_extraction';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -1183,7 +1185,13 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fire-an-optimization-approach-for-fast-interpretable-rule-extraction-kdd2023">Fire: An optimization approach for fast interpretable rule extraction. (KDD2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fire-an-optimization-approach-for-fast-interpretable-rule-extraction-kdd2023">Fire: An optimization approach for fast interpretable rule extraction. (KDD2023)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">前提の考え方</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">目的関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">スパース化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">融合項</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -1206,6 +1214,59 @@ Fire: An optimization approach for fast interpretable rule extraction. (KDD2023)
 <p class="sd-card-text"><a class="reference external" href="https://arxiv.org/pdf/2306.07432">Liu, B., &amp; Mazumder, R. (2023, August). Fire: An optimization approach for fast interpretable rule extraction. In Proceedings of the 29th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (pp. 1396-1405).</a></p>
 </div>
 </div>
+<p><strong>Fire（Fast Interpretable Rule Extraction）</strong> は、決定木アンサンブル（Random Forest や Boosted Trees）から 少数で解釈しやすいルール集合 を抽出するための最適化ベースのフレームワークである。
+Fire は、</p>
+<ul class="simple">
+<li><p>スパース選択（非凸ペナルティ） により代表的なルールを厳選し、</p></li>
+<li><p>融合正則化（fused LASSO） により共通の前提条件（if-then antecedents）を共有するルール群を促す。</p></li>
+</ul>
+<p>これにより、解釈性を保ちながら高性能な小規模モデルを生成できる。</p>
+<p>Fire は問題規模と非凸性のため既存ソルバーでは扱いにくいが、論文では ブロック座標降下（BCD）＋貪欲選択（greedy selection） に基づく専用ソルバーを開発し、既存手法より最大40倍高速に動作することを示した。</p>
+<section id="id1">
+<h3>前提の考え方<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>決定木の葉ノードはif-thenルールの連鎖になる。例えば閾値<span class="math notranslate nohighlight">\(s\)</span>, 入力<span class="math notranslate nohighlight">\(x\)</span>, 葉の値<span class="math notranslate nohighlight">\(v\)</span>について</p>
+<div class="math notranslate nohighlight">
+\[
+r_3(x)=1\left(x_1&gt;s_1\right) \cdot 1\left(x_3 \leq s_3\right) \cdot v_3
+\]</div>
+<p>のように表すことができる。</p>
+<p>アンサンブルは葉の重み付き和</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{y}=\sum_j w_j r_j(x)
+\]</div>
+<p>であるため、重要度の低い葉の重み<span class="math notranslate nohighlight">\(w_j\)</span>をゼロにすることで予測精度への悪影響を抑えつつルールをシンプルにし、人間にとっての解釈可能性を上げることができる。</p>
+</section>
+<section id="id2">
+<h3>目的関数<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>スパース化のための項と、ルールの融合のための項をつけた目的関数を使う</p>
+<div class="math notranslate nohighlight">
+\[
+\min _w \frac{1}{2}\|y-M w\|_2^2+h\left(w, \lambda_s\right)+g\left(w, \lambda_f\right)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+h\left(w, \lambda_s\right)=\sum_{j=1}^R P_\gamma\left(w_j, \lambda_s\right)
+\]</div>
+</section>
+<section id="id3">
+<h3>スパース化<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>正則化項にLASSOではなくMCP（Minimax Concave Penalty）を採用</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+P_\gamma\left(w_j, \lambda_s\right)= \begin{cases}\lambda_s\left|w_j\right|-\frac{w_j^2}{2 \gamma}, &amp; \left|w_j\right| \leq \lambda_s \gamma \\ \frac{1}{2 \gamma} \lambda_s^2, &amp; \left|w_j\right|&gt;\lambda_s \gamma\end{cases}
+\end{split}\]</div>
+<p><span class="math notranslate nohighlight">\(\gamma &gt; 1\)</span> はハイパーパラメータで、<span class="math notranslate nohighlight">\(\gamma \approx 1\)</span>では<span class="math notranslate nohighlight">\(\ell_0\)</span>ペナルティ、<span class="math notranslate nohighlight">\(\gamma\)</span>が無限までの大きいときは<span class="math notranslate nohighlight">\(\ell_1\)</span>ペナルティ（＝LASSO）に近づく</p>
+</section>
+<section id="id4">
+<h3>融合項<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>隣接ノードの重みの差へのペナルティをかける <strong>fused LASSO</strong> を導入</p>
+<div class="math notranslate nohighlight">
+\[
+g\left(w, \lambda_f\right)=\lambda_f \sum_{t=1}^T\left\|D_t w_t\right\|_1
+\]</div>
+<p>近いノードをまとめてグループ化し、ルールの共有や内部ノードの削減を促す</p>
+</section>
 </section>
 </section>
 
@@ -1273,7 +1334,13 @@ Fire: An optimization approach for fast interpretable rule extraction. (KDD2023)
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fire-an-optimization-approach-for-fast-interpretable-rule-extraction-kdd2023">Fire: An optimization approach for fast interpretable rule extraction. (KDD2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fire-an-optimization-approach-for-fast-interpretable-rule-extraction-kdd2023">Fire: An optimization approach for fast interpretable rule extraction. (KDD2023)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">前提の考え方</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">目的関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">スパース化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">融合項</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
