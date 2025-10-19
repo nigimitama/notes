@@ -1189,9 +1189,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">状態について</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statsmodels">statsmodelsの実装</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#state-space-models">State Space Models</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">線形ガウス状態空間モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statsmodels">statsmodels</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5"></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deep-ssms">ディープラーニングベースの状態空間モデル（Deep SSMs）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-space-models">State Space Models</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#s4">構造化状態空間モデル（S4）</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manbda-s6">Manbda（S6）</a></li>
 </ul>
@@ -1227,8 +1231,8 @@ Y_t = g(S_t, v_t)
 \end{split}\]</div>
 <p>関数<span class="math notranslate nohighlight">\(f,g\)</span>が非線形だったりノイズ<span class="math notranslate nohighlight">\(u_t,v_t\)</span>が非ガウス分布の状態空間モデルは <strong>一般化状態空間モデル</strong> と呼ばれる。</p>
 <ul class="simple">
-<li><p>線形・ガウス分布の状態空間モデルは 計算量が低く、statsmodelsなどのパッケージで容易に計算できる。</p></li>
-<li><p>一般化状態空間モデルはMCMCなどで計算することになり学習には多くの時間を要する</p></li>
+<li><p><strong>線形ガウス状態空間モデル（動的線形モデル dynamic linear models: DLM）</strong> は 計算量が低く、statsmodelsなどのパッケージで容易に計算できる。</p></li>
+<li><p>一般化状態空間モデルはカルマンフィルタなど「〇〇フィルタ」系の手法やMCMCなどで計算することになり学習には多くの時間を要する</p></li>
 </ul>
 <section id="id3">
 <h3>状態について<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
@@ -1244,12 +1248,48 @@ Y_t = g(S_t, v_t)
 </div>
 </section>
 </section>
+<section id="id4">
+<h2>線形ガウス状態空間モデル<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{cases}
+s_t = T_t s_{t-1} + R_t u_t, \quad &amp;u_t \sim N(0, Q_t)\\
+y_t = Z_t s_t + v_t, \quad &amp;v_t \sim N(0, H_t)
+\end{cases}
+\end{split}\]</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+例：自己回帰モデル</div>
+<p class="sd-card-text">1次の自己回帰モデル</p>
+<div class="math notranslate nohighlight">
+\[
+y_t=\mathrm{c}+\phi_1 y_{t-1}+w_t, \quad w_t \sim \mathrm{~N}\left(0, \sigma_w^2\right)
+\]</div>
+<p class="sd-card-text">を状態方程式・観測方程式で表すと</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; s_t=\mathrm{c}+\phi_1 s_{t-1}+w_t, \quad w_t \sim \mathrm{~N}\left(0, \sigma_w^2\right) \\
+&amp; y_t=s_t
+\end{aligned}
+\end{split}\]</div>
+</div>
+</div>
 <section id="statsmodels">
-<h2>statsmodelsの実装<a class="headerlink" href="#statsmodels" title="Link to this heading">#</a></h2>
+<h3>statsmodels<a class="headerlink" href="#statsmodels" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://www.statsmodels.org/stable/statespace.html">Time Series Analysis by State Space Methods statespace - statsmodels</a></p>
+<p>statsmodels.tsa.statespace モジュールにSARIMAXなどが入っている</p>
 </section>
+</section>
+<section id="id5">
+<h2><a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+</section>
+<section id="deep-ssms">
+<h2>ディープラーニングベースの状態空間モデル（Deep SSMs）<a class="headerlink" href="#deep-ssms" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://arxiv.org/abs/2404.09516">[2404.09516] State Space Model for New-Generation Network Alternative to Transformers: A Survey</a></p>
 <section id="state-space-models">
-<h2>State Space Models<a class="headerlink" href="#state-space-models" title="Link to this heading">#</a></h2>
+<h3>State Space Models<a class="headerlink" href="#state-space-models" title="Link to this heading">#</a></h3>
 <p>SSMsのうち、DeepSSMsの論文で見かける式</p>
 <p>1次元のinput signal <span class="math notranslate nohighlight">\(x(t)\)</span> を N次元のlatent space <span class="math notranslate nohighlight">\(h(t)\)</span>にしたあとに1次元のoutput signal <span class="math notranslate nohighlight">\(y(y)\)</span>に射影する。</p>
 <div class="math notranslate nohighlight">
@@ -1259,9 +1299,6 @@ y(t) =C h(t) + D x(t)
 \end{split}\]</div>
 <p>ここで<span class="math notranslate nohighlight">\(A,B,C,D\)</span>はパラメータであり勾配降下法で学習される。<span class="math notranslate nohighlight">\(D=0\)</span>とおいて<span class="math notranslate nohighlight">\(y(t) =C h(t)\)</span>とするモデルもある。</p>
 </section>
-<section id="deep-ssms">
-<h2>ディープラーニングベースの状態空間モデル（Deep SSMs）<a class="headerlink" href="#deep-ssms" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="https://arxiv.org/abs/2404.09516">[2404.09516] State Space Model for New-Generation Network Alternative to Transformers: A Survey</a></p>
 <section id="s4">
 <h3>構造化状態空間モデル（S4）<a class="headerlink" href="#s4" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://arxiv.org/abs/2111.00396">[2111.00396] Efficiently Modeling Long Sequences with Structured State Spaces</a></p>
@@ -1363,9 +1400,13 @@ S4の解説</div>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">状態について</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statsmodels">statsmodelsの実装</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#state-space-models">State Space Models</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">線形ガウス状態空間モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statsmodels">statsmodels</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5"></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deep-ssms">ディープラーニングベースの状態空間モデル（Deep SSMs）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-space-models">State Space Models</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#s4">構造化状態空間モデル（S4）</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manbda-s6">Manbda（S6）</a></li>
 </ul>
