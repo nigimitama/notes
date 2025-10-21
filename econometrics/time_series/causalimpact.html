@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Causal Impact &#8212; データサイエンス関連+αのメモ</title>
+    <title>CausalImpact &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -71,6 +71,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/time_series/causalimpact';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -519,7 +521,7 @@
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">時系列データの因果推論</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="assumptions.html">時系列の因果推論での仮定</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Causal Impact</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">CausalImpact</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../propensity_score.html">傾向スコア</a></li>
@@ -1161,7 +1163,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Causal Impact</h1>
+    <h1>CausalImpact</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -1171,8 +1173,13 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bsts">BSTS</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-structural-time-series-bsts">Bayesian Structural Time Series (BSTS)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">特徴</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">参考</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-impact">Causal Impact</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -1184,15 +1191,40 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="causal-impact">
-<h1>Causal Impact<a class="headerlink" href="#causal-impact" title="Link to this heading">#</a></h1>
-<p>BSTS（ベイズ構造時系列モデル）で予測した対照群と処置群（実測値）とを比較するDID</p>
-<section id="bsts">
-<h2>BSTS<a class="headerlink" href="#bsts" title="Link to this heading">#</a></h2>
+  <section class="tex2jax_ignore mathjax_ignore" id="causalimpact">
+<h1>CausalImpact<a class="headerlink" href="#causalimpact" title="Link to this heading">#</a></h1>
+<p>CausalImpact は BSTS（ベイズ構造時系列モデル）で予測した「架空の対照群」と「処置群（実測値）」とを比較することで平均処置効果を推定する手法。</p>
+<section id="bayesian-structural-time-series-bsts">
+<h2>Bayesian Structural Time Series (BSTS)<a class="headerlink" href="#bayesian-structural-time-series-bsts" title="Link to this heading">#</a></h2>
+<p>Scott &amp; Varian (2014) <a class="reference external" href="https://www.inderscienceonline.com/doi/abs/10.1504/IJMMNO.2014.059942">Predicting the present with Bayesian structural time series.</a></p>
+<p>統計学者Steven Scottと経済学者Hal Varianが提案したnowcastingモデル（直近の予測や現時点の欠測値を予測することもできる）</p>
+<section id="id1">
+<h3>特徴<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>構造時系列モデル（状態空間モデル）</p>
+<ul>
+<li><p>観測方程式：<span class="math notranslate nohighlight">\(y_t = Z_t^{\mathrm{T}} \alpha_t+\varepsilon_t, \quad \varepsilon_t \sim \mathcal{N}\left(0, \sigma_t^2\right)\)</span></p></li>
+<li><p>状態方程式：<span class="math notranslate nohighlight">\(\alpha_{t+1} = T_t \alpha_t+R_t \eta_t, \quad \eta_t \sim \mathcal{N}\left(0, Q_t\right)\)</span></p></li>
+</ul>
+</li>
+<li><p>spike and slab 事前分布：多次元データに対応するためモデルの変数選択・モデル平均化</p></li>
+</ul>
+</section>
+<section id="id2">
+<h3>参考<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://ill-identified.hatenablog.com/entry/2017/09/08/001002">[R] bsts (ベイズ構造時系列モデル) パッケージの使い方 - ill-identified diary</a></p>
 </section>
-<section id="id1">
-<h2>参考<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+</section>
+<section id="causal-impact">
+<h2>Causal Impact<a class="headerlink" href="#causal-impact" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>論文：<a class="reference external" href="https://research.google/pubs/inferring-causal-impact-using-bayesian-structural-time-series-models/">Inferring causal impact using Bayesian structural time-series models</a></p></li>
+<li><p>Rパッケージ：<a class="reference external" href="https://google.github.io/CausalImpact/CausalImpact.html">CausalImpact</a></p></li>
+<li><p>一般向け記事：<a class="reference external" href="https://www.thinkwithgoogle.com/intl/ja-jp/marketing-strategies/data-and-measurement/measurementmatters2020/">効果測定に潜むバイアスを避けるには？ 広告を正しく評価するための 4 条件 - Think with Google</a></p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>参考<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://speakerdeck.com/hoxomaxwell/causal-impact-paper-summary">Causal Impact -paper summary- - Speaker Deck</a></p></li>
 <li><p><a class="reference external" href="https://tjo.hatenablog.com/entry/2023/12/04/170000">CausalImpactは実装によって中身に重大な差異がある - 渋谷駅前で働くデータサイエンティストのブログ</a></p></li>
@@ -1264,8 +1296,13 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bsts">BSTS</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-structural-time-series-bsts">Bayesian Structural Time Series (BSTS)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">特徴</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">参考</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#causal-impact">Causal Impact</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
 </ul>
   </nav></div>
 
