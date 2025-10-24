@@ -297,27 +297,6 @@
 - [](economics/macroeconomics/index)
 - [](economics/quantitative_economics)
 - [](economics/housing_economics/index)
-:::
-
-:::{grid-item-card}
-:columns: 6
-金融経済学
-
-- [](financial_economics/introduction)
-- [](financial_economics/optimal_portfolio)
-- [](financial_economics/capm)
-- [](financial_economics/metrics)
-- [](financial_economics/feature_neutralization)
-- [](financial_economics/statistical_arbitrage)
-- [](financial_economics/asset_pricing)
-- [](financial_economics/value_at_risk)
-- [](financial_economics/finance_ml)
-- [](financial_economics/forex_rate_prediction)
-- [](financial_economics/papers/index)
-- [](financial_economics/financial_time_series/index)
-- [](financial_economics/investment_strategies/index)
-- [](financial_economics/libraries)
-- [](financial_economics/random_walk)
-- [](financial_economics/factors/index)
+- [](economics/financial_economics/index)
 :::
 ::::
