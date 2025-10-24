@@ -122,6 +122,7 @@
 - [](machine_learning/probability_prediction)
 - [](machine_learning/parallelize)
 - [](machine_learning/tabular_data)
+- [](machine_learning/zero-deep-2/index)
 - [](machine_learning/evaluation/evaluation)
 - [](machine_learning/ml_ops/index)
 - [](machine_learning/overfitting)
@@ -234,11 +235,6 @@
 - [](business/data_analysis)
 - [](business/digital_transformation)
 - [](business/document_management)
-- [](business/hearing)
-- [](business/management_articles)
-- [](business/people_management/index)
-- [](business/product_management/index)
-- [](business/project_management/index)
 - [](business/business_administration/index)
 :::
 
@@ -255,9 +251,15 @@
 - [](soft_skills/assertion)
 - [](soft_skills/data_analysis)
 - [](soft_skills/research)
-- [](soft_skills/skillup)
-- [](soft_skills/thinking)
+- [](soft_skills/hearing)
+- [](soft_skills/meeting_design)
+- [](soft_skills/task_management)
+- [](soft_skills/growth/skillup)
+- [](soft_skills/thinking/index)
 - [](soft_skills/management/index)
+- [](soft_skills/people_management/index)
+- [](soft_skills/product_management/index)
+- [](soft_skills/project_management/index)
 :::
 
 :::{grid-item-card}
