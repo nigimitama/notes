@@ -59,8 +59,8 @@ if 'parts' in toc:
 # 実際のファイルを取得
 actual_files = set()
 for root, dirs, files in os.walk('/home/mitama/notes/book'):
-    # .ipynb_checkpointsを除外
-    if '.ipynb_checkpoints' in root:
+    # .ipynb_checkpointsと_buildを除外
+    if '.ipynb_checkpoints' in root or '/_build/' in root or root.endswith('/_build'):
         continue
     for file in files:
         if file.endswith('.ipynb'):
