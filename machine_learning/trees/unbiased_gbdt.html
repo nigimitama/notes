@@ -1189,10 +1189,10 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Gain推定のバイアス</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">勾配推定のバイアス</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mse">例：MSE</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">分割点探索におけるバイアス</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">例</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">分割点探索におけるバイアス</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">例</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">バイアスの原因まとめ</a></li>
 </ul>
 </li>
@@ -1383,6 +1383,7 @@ w_I=-\frac{\mu_g(I)}{\mu_h(I)}
 \]</div>
 <p>となる。</p>
 </div>
+<p>また、<span class="math notranslate nohighlight">\(\widetilde{\operatorname{Gain}}(I, \theta) = 0\)</span> になることはめったにない</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">証明（Appendix Aより）</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
@@ -1398,7 +1399,7 @@ w_I=-\frac{\mu_g(I)}{\mu_h(I)}
 \end{aligned}
 \end{split}\]</div>
 <p class="sd-card-text">ここで、<span class="math notranslate nohighlight">\(l_i(w) = \frac{1}{2} h_i w^2 + g_i w\)</span> である。</p>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(I = I_L \cup I_R\)</span> であるため、<span class="math notranslate nohighlight">\(L\)</span> および <span class="math notranslate nohighlight">\(R\)</span> の最適損失の合計は <span class="math notranslate nohighlight">\(I\)</span> の最適損失よりも小さい。したがって、</p>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(I = I_L \cup I_R\)</span> であり、分割して個別に最適化したほうが損失は下げやすいため、<span class="math notranslate nohighlight">\(L\)</span> および <span class="math notranslate nohighlight">\(R\)</span> の最適損失の合計は <span class="math notranslate nohighlight">\(I\)</span> の最適損失よりも小さい。したがって、</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
@@ -1431,7 +1432,7 @@ w^* = w_L^* = w_R^*
 </div>
 </div>
 </div>
-</details><p>定理1により</p>
+</details><p>このため</p>
 <ol class="arabic simple">
 <li><p>有益な情報をもたらさない特徴量の上で不要な分割をする可能性がある（→学習に悪影響）</p></li>
 <li><p>正のgainであっても、その特徴量が本当にモデルに貢献しているとは限らない（→Feature Importanceが不正確になる）</p></li>
@@ -1484,8 +1485,9 @@ w^* = w_L^* = w_R^*
 \end{aligned}
 \end{split}\]</div>
 </section>
+</section>
 <section id="id7">
-<h3>分割点探索におけるバイアス<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<h2>分割点探索におけるバイアス<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <p>木は学習の際に損失をもっとも下げる最適な分割点を探索する。</p>
 <p>この戦略は2つの問題をもたらす：</p>
 <ol class="arabic simple">
@@ -1494,7 +1496,7 @@ w^* = w_L^* = w_R^*
 </ol>
 <p>この問題について、例を使ってさらに説明する</p>
 <section id="id8">
-<h4>例<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
+<h3>例<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <p>合成データを生成するとする。</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(X_1\)</span>は二値変数</p></li>
@@ -1758,7 +1760,6 @@ w^* = w_L^* = w_R^*
 <img alt="../../_images/960e40f284ddf756e3da3083f9b7f9a90d135ce91fecf806646935e13cb7a3d3.png" src="../../_images/960e40f284ddf756e3da3083f9b7f9a90d135ce91fecf806646935e13cb7a3d3.png" />
 </div>
 </div>
-</section>
 </section>
 <section id="id9">
 <h3>バイアスの原因まとめ<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
@@ -2035,10 +2036,10 @@ O(T d n m \log n)
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Gain推定のバイアス</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">勾配推定のバイアス</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mse">例：MSE</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">分割点探索におけるバイアス</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">例</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">分割点探索におけるバイアス</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">例</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">バイアスの原因まとめ</a></li>
 </ul>
 </li>
