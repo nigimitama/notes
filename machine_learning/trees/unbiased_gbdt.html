@@ -1240,6 +1240,8 @@ Unbiased gradient boosting decision tree with unbiased feature importance. (IJCA
 </div>
 <section id="id1">
 <h2>概要<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<div class="admonition- admonition">
+<p class="admonition-title">概要</p>
 <p>GBDTの分割（split）を決めるアルゴリズムには次のような バイアス（偏り） が存在することが問題になっている：</p>
 <ol class="arabic simple">
 <li><p>特徴量の 分割候補の数（例えば連続値やカテゴリ数が多い特徴は多くの分割点を持てる）に依存して、有利になりやすい。</p></li>
@@ -1250,8 +1252,17 @@ Unbiased gradient boosting decision tree with unbiased feature importance. (IJCA
 <li><p>解釈性（interpretability）が低くなる：実際には無関係な特徴量が高く評価されてしまう可能性。</p></li>
 <li><p>過学習（overfitting）の原因となる：訓練データ上でよくなる分割を選びがちで、それが一般化性能を損なうことがある。</p></li>
 </ol>
-<p>これらの問題に対処するために、Unbiased GBMを提唱</p>
-<p>UnbiasedGBMは60個のオープンデータセットのもとでXGBoost, LightGBM, CatBoostを有意に上回るパフォーマンスを出した</p>
+<p>提案手法：</p>
+<ol class="arabic simple">
+<li><p>Unbiased gain：勾配の平均の2乗<span class="math notranslate nohighlight">\(G^2\)</span>を計算する部分を、単一の訓練データではなくランダムに分割した2つのデータセットで計算し <span class="math notranslate nohighlight">\(G\times G'\)</span> としてバイアスを除去</p></li>
+<li><p>Unbiased GBM：データを3つにランダムに分割し、決定木分岐における (1) 特徴量選定、(2) 分割点探索、(3) 分割停止の判断、を別のデータで行う</p></li>
+</ol>
+<p>結果：</p>
+<ul class="simple">
+<li><p>Unbiased gainによる特徴量選択はGain Imporatance、Permutation Importance、SHAPより高い精度をもたらした</p></li>
+<li><p>UnbiasedGBMは60個のオープンデータセットのもとでXGBoost, LightGBM, CatBoostを有意に上回るパフォーマンスを出した</p></li>
+</ul>
+</div>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
