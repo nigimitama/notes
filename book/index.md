@@ -13,14 +13,14 @@
 数学
 
 - [](mathematics/introduction)
-- [](mathematics/math)
+- [](mathematics/symbols)
+- [](mathematics/math_for_ds)
 - [](mathematics/set_theory)
 - [](mathematics/algebra/index)
 - [](mathematics/linear_algebra/index)
 - [](mathematics/calculus/index)
 - [](mathematics/mathematical_optimization/index)
 - [](mathematics/applied_math/index)
-- [](mathematics/applied_math/exercise/index)
 - [](mathematics/probability_theory/index)
 - [](mathematics/discrete_mathematics/index)
 :::
@@ -43,7 +43,6 @@
 - [](statistics/done_wrong)
 - [](statistics/visualization)
 - [](statistics/price_index)
-- [](statistics/tokei_kentei)
 - [](statistics/variance_stabilizing)
 :::
 
@@ -56,12 +55,12 @@
 - [](statistical_modeling/gaussian_process)
 - [](statistical_modeling/quantile_regression)
 - [](statistical_modeling/survival_analysis)
+- [](statistical_modeling/symbolic_data_analysis)
 - [](statistical_modeling/sem/index)
 - [](statistical_modeling/test_theory/index)
 - [](statistical_modeling/glm/index)
 - [](statistical_modeling/bayes_modeling/index)
 - [](statistical_modeling/time_series_analysis/index)
-- [](statistical_modeling/symbolic_data_analysis)
 - [](statistical_modeling/semiparametric/index)
 - [](statistical_modeling/evaluation/index)
 :::
@@ -80,6 +79,7 @@
 - [](econometrics/causal_diagram)
 - [](econometrics/ols/index)
 - [](econometrics/panel_data/index)
+- [](econometrics/time_series/index)
 - [](econometrics/propensity_score)
 - [](econometrics/matching)
 - [](econometrics/iv/index)
@@ -87,7 +87,6 @@
 - [](econometrics/difference_in_differences)
 - [](econometrics/change_in_changes)
 - [](econometrics/synthetic_control)
-- [](econometrics/causalimpact)
 - [](econometrics/gmm)
 - [](econometrics/quantile_treatment_effects)
 - [](econometrics/bayes_for_economics)
@@ -95,6 +94,7 @@
 - [](econometrics/causal_discovery)
 - [](econometrics/uplift_modeling)
 - [](econometrics/sensitivity_analysis/index)
+- [](econometrics/partial_identification/index)
 - [](econometrics/causal_clustering)
 - [](econometrics/simulations)
 - [](econometrics/literatures)
@@ -121,6 +121,7 @@
 - [](machine_learning/distillation)
 - [](machine_learning/probability_prediction)
 - [](machine_learning/parallelize)
+- [](machine_learning/tabular_data)
 - [](machine_learning/zero-deep-2/index)
 - [](machine_learning/evaluation/evaluation)
 - [](machine_learning/ml_ops/index)
@@ -140,6 +141,7 @@
 - [](deep_learning/rola)
 - [](deep_learning/neural_network)
 - [](deep_learning/dl_and_tabular_data)
+- [](deep_learning/tabpfn)
 - [](deep_learning/dnn/index)
 - [](deep_learning/cnn/index)
 - [](deep_learning/rnn/index)
@@ -220,6 +222,7 @@
 - [](applied_data_science/data_analysis)
 - [](applied_data_science/data_management)
 - [](applied_data_science/type_of_applications)
+- [](applied_data_science/business_application_of_ai)
 :::
 
 :::{grid-item-card}
@@ -231,14 +234,8 @@
 - [](business/career_of_ds)
 - [](business/data_analysis)
 - [](business/digital_transformation)
-- [](business/hearing)
-- [](business/management_articles)
-- [](business/people_management/index)
-- [](business/product_management/index)
-- [](business/project_management/index)
-- [](business/business_administration/index)
-- [](business/business_administration/competitive_strategy/index)
 - [](business/document_management)
+- [](business/business_administration/index)
 :::
 
 :::{grid-item-card}
@@ -254,9 +251,15 @@
 - [](soft_skills/assertion)
 - [](soft_skills/data_analysis)
 - [](soft_skills/research)
-- [](soft_skills/skillup)
-- [](soft_skills/thinking)
+- [](soft_skills/hearing)
+- [](soft_skills/meeting_design)
+- [](soft_skills/task_management)
+- [](soft_skills/growth/skillup)
+- [](soft_skills/thinking/index)
 - [](soft_skills/management/index)
+- [](soft_skills/people_management/index)
+- [](soft_skills/product_management/index)
+- [](soft_skills/project_management/index)
 :::
 
 :::{grid-item-card}
@@ -296,26 +299,6 @@
 - [](economics/macroeconomics/index)
 - [](economics/quantitative_economics)
 - [](economics/housing_economics/index)
-:::
-
-:::{grid-item-card}
-:columns: 6
-金融経済学
-
-- [](financial_economics/introduction)
-- [](financial_economics/optimal_portfolio)
-- [](financial_economics/capm)
-- [](financial_economics/metrics)
-- [](financial_economics/feature_neutralization)
-- [](financial_economics/statistical_arbitrage)
-- [](financial_economics/asset_pricing)
-- [](financial_economics/finance_ml)
-- [](financial_economics/forex_rate_prediction)
-- [](financial_economics/papers/index)
-- [](financial_economics/financial_time_series/index)
-- [](financial_economics/investment_strategies/index)
-- [](financial_economics/libraries)
-- [](financial_economics/random_walk)
-- [](financial_economics/factors/index)
+- [](economics/financial_economics/index)
 :::
 ::::
