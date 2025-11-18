@@ -17,20 +17,17 @@ jobs:
           age: "1 months"
           skip-recent: 2
 
-      - name: Clean unused files
+  deploy-book:
+    needs: remove-old-artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cleanup unused files
         run: |
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf "/usr/local/share/boost"
 
-  deploy-book:
-    needs: remove-old-artifacts
-    runs-on: ubuntu-latest
-    container:
-      image: python:3.10
-      volumes:
-        - .:/workdir
-    steps:
       - name: Checkout
         uses: actions/checkout@v5
 
