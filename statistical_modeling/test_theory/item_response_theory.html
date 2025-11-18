@@ -1180,30 +1180,32 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#irt">IRTの考え方</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">項目特性曲線</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">局所独立性</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-3"><span class="math notranslate nohighlight">\(Q_3\)</span>統計量</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">IRTモデルの仮定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">局所独立性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">一次元性</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1パラメータ正規累積モデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2パラメータ正規累積モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">1パラメータ正規累積モデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">2パラメータ正規累積モデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">能力パラメータの推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">最尤推定法による推定</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">能力パラメータの推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">最尤推定法による推定</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">項目パラメータの推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">最尤推定法について</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">同時最尤推定法</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">周辺最尤推定法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">項目パラメータの推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">最尤推定法について</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">同時最尤推定法</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">周辺最尤推定法</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#em">EMアルゴリズム</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">参考</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">参考</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mirt">例：<code class="docutils literal notranslate"><span class="pre">mirt</span></code>パッケージに実装された様々なパラメータ推定法</a></li>
 </ul>
 </li>
@@ -1222,6 +1224,58 @@ document.write(`
 <h1>項目反応理論<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <p>古典的テスト理論（CTT）では項目の指標（困難度、識別力）や信頼性係数、測定の標準誤差などのいずれもがテストの受験者集団の性質に依存する問題があった。</p>
 <p>IRTではテストに含まれる項目の難易度と受験者の能力を分離して表現できる。</p>
+<section id="irt">
+<h2>IRTの考え方<a class="headerlink" href="#irt" title="Link to this heading">#</a></h2>
+<p>IRTでは受験者の能力と項目（設問）の特徴を分離する。</p>
+<p>テストを例にすると、IRTで使う観測データは「ある受験者<span class="math notranslate nohighlight">\(i\)</span>が、ある設問<span class="math notranslate nohighlight">\(j\)</span>について、正解したかどうか<span class="math notranslate nohighlight">\(u_{ij} \in \{0, 1\}\)</span>」。<br />
+この観測値<span class="math notranslate nohighlight">\(u_{ij}\)</span>の背後には潜在的に「正解する確率（このくらいの能力の人たちのN%はこの設問に正解する）<span class="math notranslate nohighlight">\(P(u_{ij} = 1)\)</span>」が存在すると考える。<br />
+そして正解する確率<span class="math notranslate nohighlight">\(P(u_{ij}=1)\)</span>に影響を与える要因として、 <strong>受験者の能力<span class="math notranslate nohighlight">\(\theta_i\)</span></strong> 、 <strong>設問の識別力<span class="math notranslate nohighlight">\(a_j\)</span></strong> 、 <strong>設問の困難度<span class="math notranslate nohighlight">\(b\)</span></strong> といったパラメータがあると考える。</p>
+<div class="cell tag_hide-input tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_html">
+        <div class="mermaid-1a7c9f8b-1444-4575-b1ca-dbe51e5da2ba"></div>
+        <script type="module">
+            import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.1.0/+esm'
+            const graphDefinition = 'graph BT\n    theta(("能力θ")) --> P("正解する確率P(u=1)")\n    a(("識別力a")) --> P\n    b(("困難度b")) --> P\n    P --> u["正解したかどうかu"]\n';
+            const element = document.querySelector('.mermaid-1a7c9f8b-1444-4575-b1ca-dbe51e5da2ba');
+            const { svg } = await mermaid.render('graphDiv-1a7c9f8b-1444-4575-b1ca-dbe51e5da2ba', graphDefinition);
+            element.innerHTML = svg;
+        </script>
+        </div></div>
+</div>
+<p>正解する確率 <span class="math notranslate nohighlight">\(P(u_{ij}=1)\)</span> はロジスティック・シグモイド関数を使うモデル（logistic model）が一般的。</p>
+<div class="admonition-parameters-logistic-model-2plm admonition">
+<p class="admonition-title">2 parameters logistic model (2PLM)</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+P(u_{ij} \mid a_j, b_j, \theta_i)
+&amp;= \frac{1}{1+\exp (- a_j(\theta_i - b_j))}
+\end{aligned}
+\]</div>
+</div>
+<p>この<span class="math notranslate nohighlight">\(a_j, b_j, \theta_i\)</span>は未知の値（モデル上のパラメータ）なので、ベルヌーイ分布を仮定してデータ<span class="math notranslate nohighlight">\(u_{ij}\)</span>から最尤推定法などを使って推定する。</p>
+<div class="admonition- admonition">
+<p class="admonition-title">ロジスティック回帰との比較</p>
+<p>2PLMは、ロジスティック回帰の説明変数<span class="math notranslate nohighlight">\(x\)</span> を <span class="math notranslate nohighlight">\(\theta\)</span>に置き換えたものである</p>
+<p>2PLMを整理すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+P(u_{ij} \mid a_j, b_j, \theta_i)
+&amp;= \frac{1}{1+\exp (- a_j(\theta_i - b_j))}\\
+&amp;= \frac{1}{1+\exp (- (- a_jb_j + a_j \theta_i))}
+\end{aligned}
+\end{split}\]</div>
+<p>で、傾き係数<span class="math notranslate nohighlight">\(a_j\)</span>を<span class="math notranslate nohighlight">\(\beta\)</span>とおき、<span class="math notranslate nohighlight">\(-a_j b_j\)</span>を切片項<span class="math notranslate nohighlight">\(\alpha\)</span>として <span class="math notranslate nohighlight">\(\theta_i\)</span> の代わりに説明変数 <span class="math notranslate nohighlight">\(x_i\)</span> とおけばロジスティック回帰モデルになる。</p>
+<div class="math notranslate nohighlight">
+\[
+P(y_i = 1 \mid \alpha, \beta)=\frac{1}{1+\exp (- (\alpha + \beta x_i))}
+\]</div>
+<p>ロジスティック回帰モデルでは観測値である説明変数<span class="math notranslate nohighlight">\(x_i\)</span>を使うが、IRTではそれにあたる<span class="math notranslate nohighlight">\(\theta_i\)</span>も未観測の潜在変数であり、データから推定するパラメータ、という違いがある。<br />
+「2PLモデルは潜在変数によるロジスティック回帰モデル」といえる。</p>
+</div>
+</section>
 <section id="id2">
 <h2>項目特性曲線<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>IRTでは <strong>項目特性曲線（item characteristic curve: ICC）</strong> を使うことで受験者の能力と項目の困難度を分離する。</p>
@@ -1254,19 +1308,17 @@ P_j(\theta)=\frac{1}{1+\exp \left(-1.7 a_j\left(\theta-b_j\right)\right)}, \quad
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">beta</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
     <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">a</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$a$ = &quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\theta_i$&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$P(y_</span><span class="si">{ij}</span><span class="s2"> = 1)$&quot;</span><span class="p">,</span> <span class="n">xticklabels</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticklabels</span><span class="o">=</span><span class="p">[])</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/2a0f992e5a789a6d6cf6c1eb60807988965f6af257b479e51cdd13fa02820755.png" src="../../_images/2a0f992e5a789a6d6cf6c1eb60807988965f6af257b479e51cdd13fa02820755.png" />
+<img alt="../../_images/fdee948459878fcbbd8c50fa603637234b4b50f0d6ad01aaa36fe0175bc4b5bb.png" src="../../_images/fdee948459878fcbbd8c50fa603637234b4b50f0d6ad01aaa36fe0175bc4b5bb.png" />
 </div>
 </div>
 <p>困難度<span class="math notranslate nohighlight">\(b\)</span>が能力値<span class="math notranslate nohighlight">\(\theta\)</span>と等しくなる点で正答率<span class="math notranslate nohighlight">\(P(y=1)=0.5\)</span>となるようになっている</p>
@@ -1284,13 +1336,21 @@ P_j(\theta)=\frac{1}{1+\exp \left(-1.7 a_j\left(\theta-b_j\right)\right)}, \quad
 </ul>
 <p>ICCは2種類の解釈がある</p>
 <ol class="arabic simple">
-<li><p>能力値が<span class="math notranslate nohighlight">\(\theta\)</span>である個々の受験者の正答確率</p></li>
-<li><p>能力値が<span class="math notranslate nohighlight">\(\theta\)</span>である受験者母集団における正答者の比率</p></li>
+<li><p>能力値が<span class="math notranslate nohighlight">\(\theta\)</span>である個々の受験者の（設問<span class="math notranslate nohighlight">\(j\)</span>に対する）正答<strong>確率</strong></p></li>
+<li><p>能力値が<span class="math notranslate nohighlight">\(\theta\)</span>である受験者母集団における（設問<span class="math notranslate nohighlight">\(j\)</span>に対する）正答者の<strong>比率</strong></p></li>
 </ol>
 <p>後者が頻度主義的であり一般的で無理のない解釈</p>
 </section>
 <section id="id3">
-<h2>局所独立性<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h2>IRTモデルの仮定<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>主な仮定</p>
+<ol class="arabic simple">
+<li><p><strong>局所独立性</strong> ：<span class="math notranslate nohighlight">\(\theta\)</span>で条件づけた下での項目間の独立性。尤度関数の構築のために仮定。</p></li>
+<li><p><strong>一次元性</strong> ：データの主成分は1次元で（1次元のスコアで）概ね表せる</p></li>
+</ol>
+<p>詳細：<a class="reference internal" href="validation.html"><span class="std std-doc">validation</span></a></p>
+<section id="id4">
+<h3>局所独立性<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <p>最尤推定を使う場合、尤度関数（≒反応パターンの同時分布）を各項目の積</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1301,20 +1361,92 @@ L(\mathbf{T}, \boldsymbol{\theta} \mid \mathbf{U})
 \]</div>
 <p>とするために、<span class="math notranslate nohighlight">\(\theta\)</span>で条件づけた下での項目間の独立性を仮定している。
 （なお<span class="math notranslate nohighlight">\(\mathbf{T}\)</span>は項目パラメータ、<span class="math notranslate nohighlight">\(u_{i j}\)</span>は二値の反応、<span class="math notranslate nohighlight">\(\mathbf{U}\)</span>は反応パターン行列、<span class="math notranslate nohighlight">\(P_j(\theta_i \mid \mathbf{T})\)</span>はICC）</p>
-<section id="q-3">
-<h3><span class="math notranslate nohighlight">\(Q_3\)</span>統計量<a class="headerlink" href="#q-3" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(Q_3\)</span>統計量は局所独立性の検証に使われる統計量</p>
+<p>局所独立性の正確な検証は難しいが、<span class="math notranslate nohighlight">\(Q_3\)</span>統計量が参考によく用いられる。</p>
+<div class="admonition-q-3 admonition">
+<p class="admonition-title"><span class="math notranslate nohighlight">\(Q_3\)</span>統計量</p>
+<p><span class="math notranslate nohighlight">\(Q_3\)</span>統計量は任意の項目のペア<span class="math notranslate nohighlight">\(j\)</span>と<span class="math notranslate nohighlight">\(j^\prime\)</span>の間の局所独立性の指標として次のように定義される。</p>
+<div class="math notranslate nohighlight">
+\[
+Q_{3, j j^{\prime}} := r(e_j, e_{j^{\prime}})
+\]</div>
+<p>ここで：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(r(\cdot, \cdot)\)</span>：相関係数</p></li>
+<li><p><span class="math notranslate nohighlight">\(e_{ij} := u_{ij} - \hat{P}_j(\hat{\theta}_i)\)</span> ：推定値によるICC<span class="math notranslate nohighlight">\(\hat{P}_j(\hat{\theta}_i)\)</span>と実測値<span class="math notranslate nohighlight">\(u_{ij}\)</span>の残差得点</p></li>
+</ul>
+</div>
 <p><span class="math notranslate nohighlight">\(Q_3\)</span>統計量は</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\theta\)</span>によって項目間の相関関係が十分に説明されているとすれば、その影響を除去した残差得点同士の相関は0に近くなるはず</p></li>
 <li><p><span class="math notranslate nohighlight">\(\theta\)</span>以外に項目間に相関をもたらす要因がある場合は<span class="math notranslate nohighlight">\(\theta\)</span>の影響を除いてもなお相関が残る</p></li>
 </ul>
 <p>という考え方をとっている。</p>
-<p>目安としては、「<span class="math notranslate nohighlight">\(Q_3 &gt; 0.20\)</span>の項目ペアは局所独立性の侵害を疑う必要がある」とされる。</p>
+<p>目安としては、「<span class="math notranslate nohighlight">\(Q_3 &gt; 0.20\)</span>の項目ペアは局所独立性の侵害を疑う必要がある」とされるが0.20も絶対の閾値ではない。</p>
+</section>
+<section id="id5">
+<h3>一次元性<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>スクリープロットを描き、第1主成分が突出して高ければ一次元性を満たすと判断する。厳密な判断基準はない。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ------------------------------</span>
+<span class="c1"># サンプルデータの生成</span>
+<span class="c1"># ------------------------------</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">n_persons</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">n_items</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># 能力θと項目困難度bを設定</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_persons</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">n_items</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">n_items</span><span class="p">)</span>
+
+<span class="c1"># 2PLMで応答を生成</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">theta</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">)))</span>
+<span class="n">responses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">responses</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;item_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_items</span><span class="p">)])</span>
+<span class="c1"># print(df.head())</span>
+
+<span class="c1"># ------------------------------</span>
+<span class="c1"># スクリープロット</span>
+<span class="c1"># ------------------------------</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ordinalcorr</span><span class="w"> </span><span class="kn">import</span> <span class="n">hetcor</span>
+
+<span class="n">cor_matrix</span> <span class="o">=</span> <span class="n">hetcor</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">eigenvalues</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">cor_matrix</span><span class="p">)</span>
+<span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">eigenvalues</span><span class="p">,</span> <span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Scree Plot&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Component Number&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Eigenvalue&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/d60e305bd453df0c10afa775dec934e89f2b6ed5a51b2c8573ba05f0e0bd1999.png" src="../../_images/d60e305bd453df0c10afa775dec934e89f2b6ed5a51b2c8573ba05f0e0bd1999.png" />
+</div>
+</div>
 </section>
 </section>
-<section id="id4">
-<h2>モデル<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h2>モデル<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <p><span class="math notranslate nohighlight">\(i\)</span>番目の被験者の<span class="math notranslate nohighlight">\(j\)</span>番目の項目の値<span class="math notranslate nohighlight">\(y_{ij}\)</span>が二値<span class="math notranslate nohighlight">\(\{0, 1\}\)</span>であるとする（例えば正解・不正解だったり、アンケートの「あてはまる」「あてはまらない」という2件法など）。</p>
 <p><span class="math notranslate nohighlight">\(y_{ij}\)</span>の背後には潜在的な能力の連続量<span class="math notranslate nohighlight">\(\theta_i \in \mathbb{R}\)</span>が存在し、<span class="math notranslate nohighlight">\(\theta_i\)</span>が閾値<span class="math notranslate nohighlight">\(b_j\)</span>を超えていたら1、超えていなければ0が観測されるとする。つまり<span class="math notranslate nohighlight">\(y_{ij}\)</span>が以下のように決まるとする。</p>
 <div class="math notranslate nohighlight">
@@ -1325,8 +1457,8 @@ y_{ij}
 1 &amp; \text{ if } \theta_i \geq b_j\\
 \end{cases}
 \end{split}\]</div>
-<section id="id5">
-<h3>1パラメータ正規累積モデル<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h3>1パラメータ正規累積モデル<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <p>しかし、実際には被験者<span class="math notranslate nohighlight">\(i\)</span>の体調や運（たまたま正解できた）などにより、常にこのようにきれいに正解・不正解が決まるわけではないと考えられる。こうした誤差を表すパラメータ<span class="math notranslate nohighlight">\(\varepsilon_{ij} \sim N(0, \sigma^2_{\varepsilon})\)</span>も追加して</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1399,12 +1531,12 @@ P(y_{ij} = 1)
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/a949ca679157a2003c80109acfdf5f0e790b3ede5573e318890f4a5e003c0900.png" src="../../_images/a949ca679157a2003c80109acfdf5f0e790b3ede5573e318890f4a5e003c0900.png" />
+<img alt="../../_images/90a9430f1f38f572f4a295f1e9172e587a0d0499a00ef20effaa74abe97c9a6a.png" src="../../_images/90a9430f1f38f572f4a295f1e9172e587a0d0499a00ef20effaa74abe97c9a6a.png" />
 </div>
 </div>
 </section>
-<section id="id6">
-<h3>2パラメータ正規累積モデル<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>2パラメータ正規累積モデル<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(\sigma^2_{\varepsilon}\)</span>が項目ごとに異なる場合を考える。<span class="math notranslate nohighlight">\(\sigma^2_{\varepsilon}=1/a_j\)</span>とすると、誤差の確率分布は</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1460,16 +1592,16 @@ P(y_{ij} = 1)
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/2a0f992e5a789a6d6cf6c1eb60807988965f6af257b479e51cdd13fa02820755.png" src="../../_images/2a0f992e5a789a6d6cf6c1eb60807988965f6af257b479e51cdd13fa02820755.png" />
+<img alt="../../_images/55a6de0b852e33a1b33b248f564bc78cb248904c0447556bc64667f0b413ef9f.png" src="../../_images/55a6de0b852e33a1b33b248f564bc78cb248904c0447556bc64667f0b413ef9f.png" />
 </div>
 </div>
 <p>なお横軸に<span class="math notranslate nohighlight">\(\theta_i\)</span>、縦軸に<span class="math notranslate nohighlight">\(P(y_{ij}=1)\)</span>をとったグラフは <strong>項目特性曲線 （item characteristic curve: ICC）</strong> と呼ばれる。</p>
 </section>
 </section>
-<section id="id7">
-<h2>能力パラメータの推定<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
-<section id="id8">
-<h3>最尤推定法による推定<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h2>能力パラメータの推定<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<section id="id10">
+<h3>最尤推定法による推定<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p>例として2PLMを考え、項目パラメータ<span class="math notranslate nohighlight">\(a,b\)</span>が既知であり、<span class="math notranslate nohighlight">\(\theta\)</span>を推定したい場合であるとする。</p>
 <p>局所独立性の仮定のもとで、受験者<span class="math notranslate nohighlight">\(i\)</span>の能力値<span class="math notranslate nohighlight">\(\theta_i\)</span>のもとでの項目反応<span class="math notranslate nohighlight">\(\mathbf{u}_i\)</span>の同時分布は</p>
 <div class="math notranslate nohighlight">
@@ -1485,8 +1617,8 @@ P_j(\theta)=\frac{1}{1+\exp \left(-1.7 a_j\left(\theta-b_j\right)\right)}, \quad
 <p>項目反応が既知であれば<span class="math notranslate nohighlight">\(P(\mathbf{u}_i \mid \theta_i)\)</span>は尤度<span class="math notranslate nohighlight">\(L(\theta_i \mid \mathbf{u}_i)\)</span>となる。</p>
 </section>
 </section>
-<section id="id9">
-<h2>項目パラメータの推定<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<section id="id11">
+<h2>項目パラメータの推定<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
 <p>主に2つのアプローチがある</p>
 <ol class="arabic simple">
 <li><p>能力パラメータ<span class="math notranslate nohighlight">\(\theta\)</span>と項目パラメータ<span class="math notranslate nohighlight">\(a,b\)</span>を同時に推定する方法（主に1PLM）</p>
@@ -1503,8 +1635,8 @@ P_j(\theta)=\frac{1}{1+\exp \left(-1.7 a_j\left(\theta-b_j\right)\right)}, \quad
 </li>
 </ol>
 <p>最尤推定法の場合、1~3PLMではEMアルゴリズムが多く（統計ソフトウェアでもデフォルト）、4PLMや多次元IRTモデルといった複雑なモデルではMHRM（Metropolis–Hastings Robbins–Monro）などが使われる</p>
-<section id="id10">
-<h3>最尤推定法について<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>最尤推定法について<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <p>尤度関数は項目パラメータ<span class="math notranslate nohighlight">\(\mathbf{T}\)</span>、反応パターン行列<span class="math notranslate nohighlight">\(\mathbf{U}\)</span>をもとに次のように表される</p>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
@@ -1520,8 +1652,8 @@ L(\mathbf{T}, \boldsymbol{\theta} \mid \mathbf{U})
 \end{split}\]</div>
 </div>
 </div>
-<section id="id11">
-<h4>同時最尤推定法<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
+<section id="id13">
+<h4>同時最尤推定法<a class="headerlink" href="#id13" title="Link to this heading">#</a></h4>
 <p>以下の手順で解く。</p>
 <ol class="arabic simple">
 <li><p>パラメータの初期値を与える</p></li>
@@ -1532,8 +1664,8 @@ L(\mathbf{T}, \boldsymbol{\theta} \mid \mathbf{U})
 <p>同時最尤推定法は1PLMでは十分機能するが、2PLM以上だと解が収束しないことがあったり、項目パラメータが一致性をもたないなどの問題がある。
 そのため、実際に多くのIRTソフトウェア（IRTPRO, BILOG-MG, ICLなど）で用いられているのは周辺最尤推定法である。</p>
 </section>
-<section id="id12">
-<h4>周辺最尤推定法<a class="headerlink" href="#id12" title="Link to this heading">#</a></h4>
+<section id="id14">
+<h4>周辺最尤推定法<a class="headerlink" href="#id14" title="Link to this heading">#</a></h4>
 <p>Bock &amp; Lieberman (1970)が提案した周辺最尤推定法では尤度関数から<span class="math notranslate nohighlight">\(\theta\)</span>を積分消去した尤度関数（周辺尤度関数）を使用して項目パラメータを求める。周辺尤度関数<span class="math notranslate nohighlight">\(L_M\)</span>は次のように定義される。</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1608,8 +1740,8 @@ M-step (maximization step)</div>
 </section>
 </section>
 </section>
-<section id="id13">
-<h2>参考<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<section id="id15">
+<h2>参考<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.jstage.jst.go.jp/article/jart/18/1/18_103/_article/-char/ja/">項目反応理論モデルのパラメタ推定法の展開</a></p></li>
 </ul>
@@ -1703,30 +1835,32 @@ M-step (maximization step)</div>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#irt">IRTの考え方</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">項目特性曲線</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">局所独立性</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-3"><span class="math notranslate nohighlight">\(Q_3\)</span>統計量</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">IRTモデルの仮定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">局所独立性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">一次元性</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1パラメータ正規累積モデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2パラメータ正規累積モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">1パラメータ正規累積モデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">2パラメータ正規累積モデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">能力パラメータの推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">最尤推定法による推定</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">能力パラメータの推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">最尤推定法による推定</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">項目パラメータの推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">最尤推定法について</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">同時最尤推定法</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">周辺最尤推定法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">項目パラメータの推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">最尤推定法について</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">同時最尤推定法</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">周辺最尤推定法</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#em">EMアルゴリズム</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">参考</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">参考</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mirt">例：<code class="docutils literal notranslate"><span class="pre">mirt</span></code>パッケージに実装された様々なパラメータ推定法</a></li>
 </ul>
 </li>
@@ -1754,7 +1888,7 @@ By mitama
 
   <p class="copyright">
     
-      © Copyright 2024.
+      © Copyright 2025.
       <br/>
     
   </p>
