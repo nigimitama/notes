@@ -246,6 +246,7 @@
 ソフトスキル
 
 - [](soft_skills/mindset)
+- [](soft_skills/learning)
 - [](soft_skills/logic/index)
 - [](soft_skills/writing)
 - [](soft_skills/presentation)
