@@ -76,6 +76,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'machine_learning/unsupervised_learning/ica';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="t-SNE" href="t_sne.html" />
+    <link rel="prev" title="主成分分析" href="pca.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -137,8 +139,6 @@
     <div class="bd-container__inner bd-page-width">
       
       
-      
-        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -401,6 +401,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../../statistics/correlation/correlation_for_ordinal_scale/kendall.html">ケンドールの順位相関係数（Kendall’s tau）</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../statistics/correlation/nonlinear_correlation/index.html">非線形データの相関係数</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../statistics/correlation/nonlinear_correlation/spearman.html">Spearman の順位相関係数（Spearman’s ρ）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../statistics/correlation/nonlinear_correlation/kendall.html">Kendall の順位相関係数（Kendall’s τ）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../statistics/correlation/nonlinear_correlation/chatterjee.html">Chatterjee’s <span class="math notranslate nohighlight">\(\xi\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../statistics/correlation/nonlinear_correlation/mic.html">MIC（Maximal Information Coefficient）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../statistics/correlation/nonlinear_correlation/hsic.html">HSIC</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/divergence.html">ダイバージェンス</a></li>
@@ -600,7 +608,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/memo/covariates.html">なぜ共変量をモデルに入れるのか</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">機械学習</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../statistical_learning_theory/index.html">統計的学習理論</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../statistical_learning_theory/introduction.html">統計的学習理論</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../statistical_learning_theory/loss.html">学習アルゴリズムの評価</a></li>
@@ -610,11 +618,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../statistical_learning_theory/curse_of_dimensionality.html">次元の呪い</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="index.html">教師なし学習</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">教師なし学習</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="distance.html">距離や類似度の関数</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="k_means.html">k-means</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pca.html">主成分分析</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">独立成分分析</a></li>
 <li class="toctree-l2"><a class="reference internal" href="t_sne.html">t-SNE</a></li>
 </ul>
 </details></li>
@@ -1224,6 +1233,7 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Pythonでの実装</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a">Aの推定</a></li>
 </ul>
             </nav>
         </div>
@@ -1326,62 +1336,126 @@ I(s_1,\ldots,s_d)
 <section id="python">
 <h2>Pythonでの実装<a class="headerlink" href="#python" title="Link to this heading">#</a></h2>
 <p>scikit-learnにはFastICAなどの高速なアルゴリズムが実装されている</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 適当にデータを生成する</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastICA</span>
 
-<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="c1"># -----------------------</span>
+<span class="c1"># 1) 元の独立信号を作る</span>
+<span class="c1"># -----------------------</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
 
-<span class="c1"># 非ガウスの誤差</span>
-<span class="n">e1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
-<span class="n">e2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
-<span class="n">e3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">s1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>                          <span class="c1"># 独立信号1: 正弦波</span>
+<span class="n">s2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span>                 <span class="c1"># 独立信号2: 矩形波（sign）</span>
 
-<span class="c1"># 各変数の生成</span>
-<span class="n">x1</span> <span class="o">=</span> <span class="n">e1</span>
-<span class="n">x2</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">x1</span> <span class="o">+</span> <span class="n">e2</span>
-<span class="n">x3</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">x1</span> <span class="o">+</span> <span class="mi">5</span><span class="o">*</span><span class="n">x2</span> <span class="o">+</span> <span class="n">e3</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">]</span>
+<span class="n">S</span> <span class="o">/=</span> <span class="n">S</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># 標準化（ICAの慣習）</span>
 
-<span class="c1"># DFにする</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;x1&quot;</span><span class="p">:</span> <span class="n">x1</span><span class="p">,</span> <span class="s2">&quot;x2&quot;</span><span class="p">:</span> <span class="n">x2</span><span class="p">,</span> <span class="s2">&quot;x3&quot;</span><span class="p">:</span> <span class="n">x3</span><span class="p">})</span>
+<span class="c1"># -----------------------</span>
+<span class="c1"># 2) 混合行列Aで混合する</span>
+<span class="c1"># -----------------------</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">]])</span>   <span class="c1"># 任意の mixing matrix</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">S</span> <span class="o">@</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># 観測信号（ミックスされた信号）</span>
+
+<span class="c1"># -----------------------</span>
+<span class="c1"># 3) FastICA で分離</span>
+<span class="c1"># -----------------------</span>
+<span class="n">ica</span> <span class="o">=</span> <span class="n">FastICA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">S_ica</span> <span class="o">=</span> <span class="n">ica</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>  <span class="c1"># 推定された独立成分</span>
+<span class="n">A_est</span> <span class="o">=</span> <span class="n">ica</span><span class="o">.</span><span class="n">mixing_</span>           <span class="c1"># 推定 mixing matrix</span>
+<span class="n">W_est</span> <span class="o">=</span> <span class="n">ica</span><span class="o">.</span><span class="n">components_</span>       <span class="c1"># unmixing (分離) 行列</span>
+
+<span class="c1"># -----------------------</span>
+<span class="c1"># 4) 図示</span>
+<span class="c1"># -----------------------</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Original independent signals (S)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;s1&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;s2&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Mixed signals (X)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;x1&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;x2&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Recovered signals by FastICA (S_ica)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">S_ica</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ica1&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">S_ica</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ica2&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastICA</span>
-<span class="n">ica</span> <span class="o">=</span> <span class="n">FastICA</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-
-<span class="c1"># ICAで求めた行列A</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">ica</span><span class="o">.</span><span class="n">mixing_</span>
-<span class="n">A_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-
-<span class="n">A_inv</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
+</details>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 13.8,  17.5,  -3.5],
-       [  2.9,  -0.7,   0.1],
-       [-10.1,   3.3,   0. ]])
-</pre></div>
+<img alt="../../_images/972a901996d34d8facedc0e99fc2d2e54f3958e195b33dda69f456f1156b7405.png" src="../../_images/972a901996d34d8facedc0e99fc2d2e54f3958e195b33dda69f456f1156b7405.png" />
 </div>
 </div>
-</div>
-<div class="cell docutils container">
+</section>
+<section id="a">
+<h2>Aの推定<a class="headerlink" href="#a" title="Link to this heading">#</a></h2>
+<p>混合行列<span class="math notranslate nohighlight">\(A\)</span>の推定結果</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ======================</span>
+<span class="c1"># 列の最適割当（Permutation 補正）</span>
+<span class="c1"># ======================</span>
+<span class="c1"># Frobenius 距離のコスト行列を作る</span>
+<span class="n">cost</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+        <span class="c1"># A_est の列 j を A の列 i に合わせたときの誤差</span>
+        <span class="n">cost</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">A_est</span><span class="p">[:,</span> <span class="n">j</span><span class="p">])</span>
+
+<span class="c1"># Hungarian algorithm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">linear_sum_assignment</span>
+<span class="n">row_ind</span><span class="p">,</span> <span class="n">col_ind</span> <span class="o">=</span> <span class="n">linear_sum_assignment</span><span class="p">(</span><span class="n">cost</span><span class="p">)</span>
+
+<span class="c1"># 列を並べ替え</span>
+<span class="n">A_est</span> <span class="o">=</span> <span class="n">A_est</span><span class="p">[:,</span> <span class="n">col_ind</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">予測値：</span>
+<span class="si">{</span><span class="n">A_est</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span>
+
+<span class="s2">真値：</span>
+<span class="si">{</span><span class="n">A</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 0. ,  0.3,  0. ],
-       [ 0. ,  0.9,  0.3],
-       [-0.1,  5.5,  1.5]])
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>予測値：
+[[0.53 0.93]
+ [0.32 0.72]]
+
+真値：
+[[0.5 0.9]
+ [0.3 0.7]]
 </pre></div>
 </div>
 </div>
@@ -1419,6 +1493,24 @@ I(s_1,\ldots,s_d)
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="pca.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">主成分分析</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="t_sne.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">t-SNE</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -1447,6 +1539,7 @@ I(s_1,\ldots,s_d)
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Pythonでの実装</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a">Aの推定</a></li>
 </ul>
   </nav></div>
 
