@@ -76,8 +76,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'statistics/correlation/nonlinear_correlation/chatterjee';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="MIC（Maximal Information Coefficient）" href="mic.html" />
-    <link rel="prev" title="Kendall の順位相関係数（Kendall’s τ）" href="kendall.html" />
+    <link rel="next" title="ダイバージェンス" href="../../divergence.html" />
+    <link rel="prev" title="MIC（Maximal Information Coefficient）" href="mic.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -404,9 +404,9 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">非線形データの相関係数</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="spearman.html">Spearman の順位相関係数（Spearman’s ρ）</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kendall.html">Kendall の順位相関係数（Kendall’s τ）</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Chatterjee’s <span class="math notranslate nohighlight">\(\xi\)</span></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mic.html">MIC（Maximal Information Coefficient）</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hsic.html">HSIC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mic.html">MIC（Maximal Information Coefficient）</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Chatterjee’s <span class="math notranslate nohighlight">\(\xi\)</span></a></li>
 </ul>
 </details></li>
 </ul>
@@ -1222,9 +1222,14 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概要</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">アルゴリズム</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実装</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">アルゴリズム</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1">Step 1. データの並び替え</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-xi-n">Step 2. 相関係数<span class="math notranslate nohighlight">\(\xi_n\)</span>を計算する</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">性質</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">実装</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -1253,10 +1258,13 @@ document.write(`
 <section id="id2">
 <h2>アルゴリズム<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p><span class="math notranslate nohighlight">\((X, Y)\)</span>を確率変数のペアとし、<span class="math notranslate nohighlight">\(n\geq 2\)</span>のiidな標本があるとする。</p>
-<p><strong>Step 1. データの並び替え</strong></p>
+<section id="step-1">
+<h3>Step 1. データの並び替え<a class="headerlink" href="#step-1" title="Link to this heading">#</a></h3>
 <p>データ <span class="math notranslate nohighlight">\((X_{(1)}, Y_{(1)}), \ldots,(X_{(n)}, Y_{(n)})\)</span> を <span class="math notranslate nohighlight">\(X\)</span> で昇順 <span class="math notranslate nohighlight">\(X_{(1)} \leq \cdots \leq X_{(n)}\)</span> に並べ替える。</p>
 <p>同値がいれば一様にランダムに選ぶ。</p>
-<p><strong>Step 2. 相関係数<span class="math notranslate nohighlight">\(\xi_n\)</span>を計算する</strong></p>
+</section>
+<section id="step-2-xi-n">
+<h3>Step 2. 相関係数<span class="math notranslate nohighlight">\(\xi_n\)</span>を計算する<a class="headerlink" href="#step-2-xi-n" title="Link to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(Y_{(j)} \leq Y_{(i)}\)</span>の<span class="math notranslate nohighlight">\(j\)</span>、すなわち<span class="math notranslate nohighlight">\(Y_{(i)}\)</span>の順位を<span class="math notranslate nohighlight">\(r_i\)</span>とする。<br />
 <span class="math notranslate nohighlight">\(Y_{(j)} \geq Y_{(i)}\)</span>の<span class="math notranslate nohighlight">\(j\)</span>、すなわち<span class="math notranslate nohighlight">\(Y_{(i)}\)</span>の逆順位を<span class="math notranslate nohighlight">\(l_i\)</span>とする。</p>
 <p>同順位がいない場合：</p>
@@ -1270,8 +1278,32 @@ document.write(`
 \xi_n(X, Y):=1-\frac{n \sum_{i=1}^{n-1}\left|r_{i+1}-r_i\right|}{2 \sum_{i=1}^n l_i\left(n-l_i\right)}
 \]</div>
 </section>
+</section>
 <section id="id3">
-<h2>実装<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h2>性質<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<div class="admonition- admonition">
+<p class="admonition-title">定理 1.1</p>
+<p>もし <span class="math notranslate nohighlight">\(Y\)</span> がほとんど確実に定数でないなら、<span class="math notranslate nohighlight">\(n \to \infty\)</span> のとき、<span class="math notranslate nohighlight">\(\xi_n(X, Y)\)</span> はほとんど確実に次の決定論的極限に収束する：</p>
+<div class="math notranslate nohighlight">
+\[
+\xi(X, Y) := 
+\frac{\int \mathrm{Var}\!\left( \mathbb{E}(1_{\{Y \ge t\}} \mid X )\right)\, d\mu(t)}
+{\int \mathrm{Var}(1_{\{Y \ge t\}})\, d\mu(t)},
+\]</div>
+<p>ただし <span class="math notranslate nohighlight">\(\mu\)</span> は <span class="math notranslate nohighlight">\(Y\)</span> の分布である。この極限は区間 <span class="math notranslate nohighlight">\([0, 1]\)</span> に属する。</p>
+<p><span class="math notranslate nohighlight">\(X\)</span> と <span class="math notranslate nohighlight">\(Y\)</span> が独立であることと、<span class="math notranslate nohighlight">\(\xi(X, Y) = 0\)</span> は同値である。<br />
+また、<span class="math notranslate nohighlight">\(\xi(X, Y) = 1\)</span> であることと、ある可測関数 <span class="math notranslate nohighlight">\(f : \mathbb{R} \to \mathbb{R}\)</span> が存在して<span class="math notranslate nohighlight">\(Y = f(X)\)</span> がほとんど確実に成り立つことは同値である。</p>
+</div>
+<p>「<span class="math notranslate nohighlight">\(Y = f(X)\)</span> という関係のとき <span class="math notranslate nohighlight">\(\xi(X, Y) = 1\)</span> になる」という性質・コンセプトが他の相関係数とは異なる。</p>
+<div class="important admonition">
+<p class="admonition-title">対称性はない</p>
+<p><strong>多くの相関係数とは異なり、<span class="math notranslate nohighlight">\(\xi_n\)</span> は <span class="math notranslate nohighlight">\(X\)</span> と <span class="math notranslate nohighlight">\(Y\)</span> の順序に対して対称ではない（すなわち <span class="math notranslate nohighlight">\(\xi_n(X, Y) \ne \xi_n(Y, X)\)</span> の可能性がある）。</strong></p>
+<p>目的として、単に「二つの変数のどちらかが他方の関数か」を知りたいのではなく、「<span class="math notranslate nohighlight">\(Y\)</span> が <span class="math notranslate nohighlight">\(X\)</span> の関数か」を知りたいため、この性質は意図的なものである。もし「<span class="math notranslate nohighlight">\(X\)</span> が <span class="math notranslate nohighlight">\(Y\)</span> の関数か」を知りたいのであれば、<span class="math notranslate nohighlight">\(\xi_n(Y, X)\)</span> を用いればよい。</p>
+<p>また、対称な依存度の尺度が必要であれば、<span class="math notranslate nohighlight">\(\xi_n(X, Y)\)</span> と <span class="math notranslate nohighlight">\(\xi_n(Y, X)\)</span> の最大値を取ればよい。対称化された係数は確率収束により <span class="math notranslate nohighlight">\(\max\{\xi(X, Y), \xi(Y, X)\}\)</span> に収束するが、これは「独立なら 0」、「少なくとも一方が他方の可測関数なら 1」である。</p>
+</div>
+</section>
+<section id="id4">
+<h2>実装<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <p>scipyに実装されている</p>
 <p><a class="reference external" href="https://docs.scipy.org/doc/scipy-1.16.2/reference/generated/scipy.stats.chatterjeexi.html">chatterjeexi — SciPy v1.16.2 Manual</a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">chatterjee</span>
@@ -1350,12 +1382,12 @@ document.write(`
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../../_images/28dc2acb00c6c8b33ff3fe492720645470f2f7de1ef6421347f87646e3f8a123.png" src="../../../_images/28dc2acb00c6c8b33ff3fe492720645470f2f7de1ef6421347f87646e3f8a123.png" />
+<img alt="../../../_images/31b12bd172b523cdd23eb5a9ebbfac13d0c6af2e4cc1df0ba8f7abf751cd9a5d.png" src="../../../_images/31b12bd172b523cdd23eb5a9ebbfac13d0c6af2e4cc1df0ba8f7abf751cd9a5d.png" />
 </div>
 </div>
 </section>
-<section id="id4">
-<h2>参考<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<section id="id5">
+<h2>参考<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://souravchatterjee.su.domains/beam-correlation-trans.pdf">著者のスライド</a></p></li>
 <li><p>Sourav Chatterjee (2021) A New Coefficient of Correlation, Journal of theAmerican Statistical Association, 116:536, 2009-2022 <a class="reference external" href="https://doi.org/10.1080/01621459.2020.1758115">https://doi.org/10.1080/01621459.2020.1758115</a></p></li>
@@ -1394,20 +1426,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="kendall.html"
+       href="mic.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Kendall の順位相関係数（Kendall’s τ）</p>
+        <p class="prev-next-title">MIC（Maximal Information Coefficient）</p>
       </div>
     </a>
     <a class="right-next"
-       href="mic.html"
+       href="../../divergence.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">MIC（Maximal Information Coefficient）</p>
+        <p class="prev-next-title">ダイバージェンス</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1428,9 +1460,14 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概要</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">アルゴリズム</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実装</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">アルゴリズム</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1">Step 1. データの並び替え</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-xi-n">Step 2. 相関係数<span class="math notranslate nohighlight">\(\xi_n\)</span>を計算する</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">性質</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">実装</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">参考</a></li>
 </ul>
   </nav></div>
 
