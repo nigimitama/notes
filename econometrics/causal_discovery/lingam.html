@@ -579,8 +579,9 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">因果探索</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">統計的因果探索</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="introduction.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">因果探索の精度指標</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pc.html">PCアルゴリズム</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ges.html">GESアルゴリズム</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">LiNGAM</a></li>
@@ -1238,6 +1239,7 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">LiNGAMの計算手順のイメージ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gcastle">gCastleパッケージで実装</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">lingamパッケージで実践</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">LiNGAMの派生手法</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">参考文献</a></li>
@@ -1553,6 +1555,50 @@ x = A_{ica} x_{ica}
 </div>
 </div>
 </section>
+<section id="gcastle">
+<h2>gCastleパッケージで実装<a class="headerlink" href="#gcastle" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://gcastle.readthedocs.io/en/latest/castle/castle.algorithms.html#module-2">gCastle</a>パッケージには ICAベースのLiNGAMも実装されている</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">castle.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">GraphDAG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">castle.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetricsDAG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">castle.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dataset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">castle.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">ICALiNGAM</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">true_dag</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;IID_Test&#39;</span><span class="p">)</span>
+<span class="n">algo</span> <span class="o">=</span> <span class="n">ICALiNGAM</span><span class="p">()</span>
+<span class="n">algo</span><span class="o">.</span><span class="n">learn</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="c1"># plot DAG</span>
+<span class="n">GraphDAG</span><span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">causal_matrix</span><span class="p">,</span> <span class="n">true_dag</span><span class="p">)</span>
+
+<span class="c1"># calc Metrics</span>
+<span class="n">met</span> <span class="o">=</span> <span class="n">MetricsDAG</span><span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">causal_matrix</span><span class="p">,</span> <span class="n">true_dag</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">met</span><span class="o">.</span><span class="n">metrics</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2025-12-09 13:54:31,275 - /home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/castle/backend/__init__.py[line:36] - INFO: You can use `os.environ[&#39;CASTLE_BACKEND&#39;] = backend` to set the backend(`pytorch` or `mindspore`).
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2025-12-09 13:54:31,357 - /home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/castle/algorithms/__init__.py[line:36] - INFO: You are using ``pytorch`` as the backend.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2025-12-09 13:54:31,361 - /home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/castle/datasets/simulator.py[line:270] - INFO: Finished synthetic dataset
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/decomposition/_fastica.py:127: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../../_images/e9d85a29aa797eea6a0d4728bcd2723647908d48b73028d794b036873fbab26e.png" src="../../_images/e9d85a29aa797eea6a0d4728bcd2723647908d48b73028d794b036873fbab26e.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;fdr&#39;: 0.2857, &#39;tpr&#39;: 0.75, &#39;fpr&#39;: 0.24, &#39;shd&#39;: 7, &#39;nnz&#39;: 21, &#39;precision&#39;: 0.7143, &#39;recall&#39;: 0.75, &#39;F1&#39;: 0.7317, &#39;gscore&#39;: 0.45}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 <section id="id11">
 <h2>lingamパッケージで実践<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
 <p>Pythonだと<a class="reference external" href="https://pypi.org/project/lingam/">lingam</a>パッケージがある</p>
@@ -1700,6 +1746,7 @@ True:
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">LiNGAMの計算手順のイメージ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gcastle">gCastleパッケージで実装</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">lingamパッケージで実践</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">LiNGAMの派生手法</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">参考文献</a></li>

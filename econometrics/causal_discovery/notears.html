@@ -579,8 +579,9 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">因果探索</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">統計的因果探索</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="introduction.html">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">因果探索の精度指標</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pc.html">PCアルゴリズム</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ges.html">GESアルゴリズム</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lingam.html">LiNGAM</a></li>
@@ -1224,7 +1225,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sem">モデル：線形 SEM</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dag">DAGを連続最適化問題へ転換</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">最適化</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実践</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -1308,7 +1310,67 @@ h(W) = \mathrm{tr}(e^{W \circ W}) - d = 0
 <p>を連続最適化の枠組みで求める手法である。</p>
 </section>
 <section id="id2">
-<h2>参考<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>実践<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://gcastle.readthedocs.io/en/latest/castle/castle.html">gCastle</a> パッケージにはNOTEARSの計算を効率化させたGOLEMの実装がある</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">castle.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">GraphDAG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">castle.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetricsDAG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">castle.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dataset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">castle.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">GOLEM</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">true_dag</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;IID_Test&#39;</span><span class="p">)</span>
+
+<span class="n">algo</span> <span class="o">=</span> <span class="n">GOLEM</span><span class="p">()</span>
+<span class="n">algo</span><span class="o">.</span><span class="n">learn</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="c1"># plot DAG</span>
+<span class="n">GraphDAG</span><span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">causal_matrix</span><span class="p">,</span> <span class="n">true_dag</span><span class="p">)</span>
+
+<span class="c1"># calc Metrics</span>
+<span class="n">met</span> <span class="o">=</span> <span class="n">MetricsDAG</span><span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">causal_matrix</span><span class="p">,</span> <span class="n">true_dag</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">met</span><span class="o">.</span><span class="n">metrics</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2025-12-09 22:41:34,080 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/backend/__init__.py[line:36] - INFO: You can use `os.environ[&#39;CASTLE_BACKEND&#39;] = backend` to set the backend(`pytorch` or `mindspore`).
+2025-12-09 22:41:34,110 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/__init__.py[line:36] - INFO: You are using ``pytorch`` as the backend.
+2025-12-09 22:41:34,117 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/datasets/simulator.py[line:270] - INFO: Finished synthetic dataset
+2025-12-09 22:41:34,505 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:119] - INFO: GPU is available.
+2025-12-09 22:41:35,734 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:190] - INFO: Started training for 100000 iterations.
+2025-12-09 22:41:35,794 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 0] score=67.199, likelihood=67.199, h=0.0e+00
+2025-12-09 22:41:41,158 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 5000] score=50.079, likelihood=49.589, h=5.0e-04
+2025-12-09 22:41:46,999 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 10000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:41:52,102 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 15000] score=50.070, likelihood=49.577, h=3.9e-04
+2025-12-09 22:41:58,330 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 20000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:42:11,319 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 25000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:42:14,703 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 30000] score=50.070, likelihood=49.577, h=3.7e-04
+2025-12-09 22:42:20,293 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 35000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:42:25,940 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 40000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:42:30,515 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 45000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:42:36,018 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 50000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:42:41,082 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 55000] score=50.070, likelihood=49.577, h=3.9e-04
+2025-12-09 22:42:46,971 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 60000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:42:51,895 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 65000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:42:55,574 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 70000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:43:00,584 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 75000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:43:06,060 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 80000] score=50.070, likelihood=49.577, h=3.7e-04
+2025-12-09 22:43:20,247 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 85000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:43:23,749 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 90000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:43:28,990 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 95000] score=50.070, likelihood=49.577, h=3.8e-04
+2025-12-09 22:43:34,254 - /home/mitama/notes/.venv/lib/python3.10/site-packages/castle/algorithms/gradient/notears/torch/golem.py[line:203] - INFO: [Iter 100000] score=50.070, likelihood=49.577, h=3.6e-04
+</pre></div>
+</div>
+<img alt="../../_images/94f4f20fd33f250c44209de810e87e664314c15e035b3a1ca1238eeb5967be2e.png" src="../../_images/94f4f20fd33f250c44209de810e87e664314c15e035b3a1ca1238eeb5967be2e.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;fdr&#39;: 0.0, &#39;tpr&#39;: 1.0, &#39;fpr&#39;: 0.0, &#39;shd&#39;: 0, &#39;nnz&#39;: 20, &#39;precision&#39;: 1.0, &#39;recall&#39;: 1.0, &#39;F1&#39;: 1.0, &#39;gscore&#39;: 1.0}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id3">
+<h2>参考<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://arxiv.org/abs/1803.01422">Zheng, X., Aragam, B., Ravikumar, P. K., &amp; Xing, E. P. (2018). Dags with no tears: Continuous optimization for structure learning. Advances in neural information processing systems, 31.</a></p></li>
 <li><p>著者のGithubリポジトリ： <a class="reference external" href="https://github.com/xunzheng/notears">xunzheng/notears: DAGs with NO TEARS: Continuous Optimization for Structure Learning</a></p></li>
@@ -1383,7 +1445,8 @@ h(W) = \mathrm{tr}(e^{W \circ W}) - d = 0
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sem">モデル：線形 SEM</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dag">DAGを連続最適化問題へ転換</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">最適化</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実践</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
 </ul>
   </nav></div>
 
