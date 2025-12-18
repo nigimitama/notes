@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>&lt;no title&gt; &#8212; データサイエンス関連+αのメモ</title>
+    <title>VAR-LiNGAM &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -71,6 +71,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'econometrics/causal_discovery/var_lingam';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -498,7 +500,7 @@
 </details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">計量経済学・因果推論</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../structure_estimation/index.html">構造推定</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../structure_estimation/discrete_choice_models.html">離散選択モデル</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../structure_estimation/blp_model.html">BLPモデル</a></li>
@@ -577,7 +579,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="index.html">統計的因果探索</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">統計的因果探索</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="introduction.html">概要</a></li>
 <li class="toctree-l2"><a class="reference internal" href="metrics.html">因果探索の精度指標</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pc.html">PCアルゴリズム</a></li>
@@ -585,6 +587,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lingam.html">LiNGAM</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notears.html">NOTEARS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pcmci.html">PCMCI</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">VAR-LiNGAM</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../uplift_modeling.html">Uplift Modeling</a></li>
@@ -1211,7 +1214,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1><no title></h1>
+    <h1>VAR-LiNGAM</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -1220,9 +1223,21 @@ document.write(`
                 <h2> Contents </h2>
             </div>
             <nav aria-label="Page">
-                <ul class="simple visible nav section-nav flex-column">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#var">VARモデルについて</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">VAR-LiNGAM</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">構造 VAR 表現</a></li>
 </ul>
-
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">アルゴリズム</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-var">Step 1: VAR 部分の推定</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-lingam">Step 2: 残差に LiNGAM を適用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
             </nav>
         </div>
     </div>
@@ -1233,7 +1248,185 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  
+  <section class="tex2jax_ignore mathjax_ignore" id="var-lingam">
+<h1>VAR-LiNGAM<a class="headerlink" href="#var-lingam" title="Link to this heading">#</a></h1>
+<p>LiNGAMにVAR（Vector Autoregression）モデルを組み合わせて時系列に拡張したもの。LiNGAMと同様な仮定を置いている。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+仮定</div>
+<ol class="arabic simple">
+<li><p class="sd-card-text">誤差変数は非ガウス分布</p></li>
+<li><p class="sd-card-text">線形の構造方程式モデル</p></li>
+<li><p class="sd-card-text">非巡回性</p></li>
+<li><p class="sd-card-text">隠れた共通原因がない</p></li>
+</ol>
+</div>
+</div>
+<p>通常の VAR は「過去が未来を予測できるか」という グレンジャー因果性（Granger causality） に基づくが、</p>
+<ul class="simple">
+<li><p>同時刻内の因果方向は識別できない</p></li>
+<li><p>構造的（介入的）因果解釈が弱い</p></li>
+</ul>
+<p>という制約がある。VAR-LiNGAM はこれに対し、</p>
+<ul class="simple">
+<li><p>同時刻の因果構造（DAG）</p></li>
+<li><p>時間遅れの因果効果</p></li>
+</ul>
+<p>を同一モデル内で明示的に推定する。</p>
+<section id="var">
+<h2>VARモデルについて<a class="headerlink" href="#var" title="Link to this heading">#</a></h2>
+<p>変数が<span class="math notranslate nohighlight">\(n\)</span>次元、ラグの次数が<span class="math notranslate nohighlight">\(p\)</span>だとする。（例えば時点<span class="math notranslate nohighlight">\(t\)</span>の観測値は <span class="math notranslate nohighlight">\(x_{1,t}, x_{2,t}, \dots, x_{n,t}\)</span> となる。）</p>
+<p>VAR(<span class="math notranslate nohighlight">\(p\)</span>) では、各変数 <span class="math notranslate nohighlight">\(x_{i,t}\)</span> は、すべての変数の過去 <span class="math notranslate nohighlight">\(p\)</span> 期分の線形結合で表される。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+VAR(<span class="math notranslate nohighlight">\(p\)</span>)</div>
+<div class="math notranslate nohighlight">
+\[
+x_{i,t}
+=
+\sum_{k=1}^{p}
+\sum_{j=1}^{n}
+a_{ij}^{(k)} \, x_{j,t-k}
++
+\varepsilon_{i,t}
+\quad
+(i = 1,\dots,n)
+\]</div>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(a_{ij}^{(k)}\)</span>：変数 <span class="math notranslate nohighlight">\(j\)</span> の <span class="math notranslate nohighlight">\(k\)</span> 期前」が「変数 <span class="math notranslate nohighlight">\(i\)</span> の現在」に与える影響</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\varepsilon_{i,t}\)</span>：変数 <span class="math notranslate nohighlight">\(i\)</span> に対応する誤差項</p></li>
+</ul>
+</div>
+</div>
+<p>状態ベクトル <span class="math notranslate nohighlight">\(\mathbf{x}_t \in \mathbb{R}^n\)</span> 、
+ラグ <span class="math notranslate nohighlight">\(k\)</span> の係数行列 <span class="math notranslate nohighlight">\(\mathbf{A}_k \in \mathbb{R}^{n \times n}\)</span>、
+誤差ベクトル <span class="math notranslate nohighlight">\(\boldsymbol{\varepsilon}_t\)</span> をそれぞれ</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\mathbf{x}_t
+=
+\begin{pmatrix}
+x_{1,t} \\
+x_{2,t} \\
+\vdots \\
+x_{n,t}
+\end{pmatrix}
+,\quad
+\mathbf{A}_k
+=
+\begin{pmatrix}
+a_{11}^{(k)} &amp; a_{12}^{(k)} &amp; \cdots &amp; a_{1n}^{(k)} \\
+a_{21}^{(k)} &amp; a_{22}^{(k)} &amp; \cdots &amp; a_{2n}^{(k)} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+a_{n1}^{(k)} &amp; a_{n2}^{(k)} &amp; \cdots &amp; a_{nn}^{(k)}
+\end{pmatrix}
+,\quad
+\boldsymbol{\varepsilon}_t
+=
+\begin{pmatrix}
+\varepsilon_{1,t} \\
+\varepsilon_{2,t} \\
+\vdots \\
+\varepsilon_{n,t}
+\end{pmatrix}
+\end{split}\]</div>
+<p>とおくと、VAR(<span class="math notranslate nohighlight">\(p\)</span>) は次のように表現できる。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+VAR(<span class="math notranslate nohighlight">\(p\)</span>) （行列を使った表現）</div>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{x}_t
+=
+\sum_{k=1}^{p}
+\mathbf{A}_k \mathbf{x}_{t-k}
++
+\boldsymbol{\varepsilon}_t
+\]</div>
+</div>
+</div>
+<p>※切片を含めた表現もされる</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{x}_t
+=
+\mathbf{c}
++
+\sum_{k=1}^{p}
+\mathbf{A}_k \mathbf{x}_{t-k}
++
+\boldsymbol{\varepsilon}_t
+\]</div>
+</section>
+<section id="id1">
+<h2>VAR-LiNGAM<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="id2">
+<h3>モデル<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(p\)</span> 次元の時系列 <span class="math notranslate nohighlight">\(\mathbf{x}_t\)</span> に対し、VAR-LiNGAM は以下を仮定する。</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{x}_t
+= \mathbf{B}_0 \mathbf{x}_t
++ \sum_{k=1}^{K} \mathbf{B}_k \mathbf{x}_{t-k}
++ \mathbf{e}_t
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbf{B}_0\)</span>：同時（instantaneous）因果効果行列。DAG構造。</p>
+<ul>
+<li><p>有向非巡回グラフ（DAG）構造</p></li>
+</ul>
+</li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{B}_k\)</span>：ラグ <span class="math notranslate nohighlight">\(k\)</span> における因果効果</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{e}_t\)</span>：成分間で独立な非ガウス分布に従う誤差</p></li>
+</ul>
+<section id="id3">
+<h4>構造 VAR 表現<a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
+<div class="math notranslate nohighlight">
+\[
+(\mathbf{I} - \mathbf{B}_0)\mathbf{x}_t
+= \sum_{k=1}^{K} \mathbf{B}_k \mathbf{x}_{t-k}
++ \mathbf{e}_t
+\]</div>
+<p><span class="math notranslate nohighlight">\(\mathbf{I} - \mathbf{B}_0\)</span> は、変数の並び替えにより下三角行列にできる（＝因果順序が存在）ことが仮定される。</p>
+</section>
+</section>
+<section id="id4">
+<h3>アルゴリズム<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>VAR-LiNGAM は <strong>2段階推定</strong>で実装されることが多い。</p>
+<section id="step-1-var">
+<h4>Step 1: VAR 部分の推定<a class="headerlink" href="#step-1-var" title="Link to this heading">#</a></h4>
+<p>通常の VAR を推定する。</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{x}_t
+= \sum_{k=1}^{K} \mathbf{A}_k \mathbf{x}_{t-k}
++ \mathbf{r}_t
+\]</div>
+<ul class="simple">
+<li><p>OLS 等で推定</p></li>
+<li><p>残差 <span class="math notranslate nohighlight">\(\mathbf{r}_t\)</span> を取得</p></li>
+</ul>
+</section>
+<section id="step-2-lingam">
+<h4>Step 2: 残差に LiNGAM を適用<a class="headerlink" href="#step-2-lingam" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbf{r}_t\)</span> に <strong>i.i.d. LiNGAM</strong> を適用</p></li>
+<li><p>ICA（Independent Component Analysis）により</p>
+<ul>
+<li><p>変数の因果順序</p></li>
+<li><p>同時因果行列 <span class="math notranslate nohighlight">\(\mathbf{B}_0\)</span></p></li>
+</ul>
+</li>
+</ul>
+<p>を推定する。</p>
+</section>
+</section>
+</section>
+</section>
+
     <script type="text/x-thebe-config">
     {
         requestKernel: true,
@@ -1297,9 +1490,21 @@ document.write(`
     <i class="fa-solid fa-list"></i> Contents
   </div>
   <nav class="bd-toc-nav page-toc">
-    <ul class="simple visible nav section-nav flex-column">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#var">VARモデルについて</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">VAR-LiNGAM</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">構造 VAR 表現</a></li>
 </ul>
-
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">アルゴリズム</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-var">Step 1: VAR 部分の推定</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-lingam">Step 2: 残差に LiNGAM を適用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
   </nav></div>
 
 </div></div>
