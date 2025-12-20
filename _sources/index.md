@@ -283,6 +283,7 @@
 - [](software_engineering/development_methods)
 - [](software_engineering/practitionars_approach)
 - [](software_engineering/software_process)
+- [](software_engineering/solo_project)
 - [](software_engineering/algorithms/index)
 - [](software_engineering/development/index)
 - [](software_engineering/frontend/index)
