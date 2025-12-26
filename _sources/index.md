@@ -247,7 +247,6 @@
 
 - [](soft_skills/mindset)
 - [](soft_skills/learning)
-- [](soft_skills/logic/index)
 - [](soft_skills/writing)
 - [](soft_skills/presentation)
 - [](soft_skills/negotiation)
@@ -260,6 +259,7 @@
 - [](soft_skills/task_management)
 - [](soft_skills/growth/skillup)
 - [](soft_skills/thinking/index)
+- [](soft_skills/logic/index)
 - [](soft_skills/leadership/index)
 - [](soft_skills/team_management/index)
 - [](soft_skills/people_management/index)
