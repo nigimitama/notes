@@ -10,23 +10,6 @@
 
 :::{grid-item-card}
 :columns: 6
-数学
-
-- [](mathematics/introduction)
-- [](mathematics/symbols)
-- [](mathematics/math_for_ds)
-- [](mathematics/set_theory)
-- [](mathematics/algebra/index)
-- [](mathematics/linear_algebra/index)
-- [](mathematics/calculus/index)
-- [](mathematics/mathematical_optimization/index)
-- [](mathematics/applied_math/index)
-- [](mathematics/probability_theory/index)
-- [](mathematics/discrete_mathematics/index)
-:::
-
-:::{grid-item-card}
-:columns: 6
 統計学
 
 - [](statistics/probability/index)
@@ -222,25 +205,19 @@
 
 :::{grid-item-card}
 :columns: 6
-ビジネス関連知識
+数学
 
-- [](business/revenue_structure)
-- [](business/accounting)
-- [](business/career_of_ds)
-- [](business/data_analysis)
-- [](business/digital_transformation)
-- [](business/document_management)
-- [](business/business_administration/index)
-:::
-
-:::{grid-item-card}
-:columns: 6
-プロダクト開発
-
-- [](product_development/index)
-- [](product_development/product_management/index)
-- [](product_development/marketing/advertisement)
-- [](product_development/marketing/marketing_mix_modeling)
+- [](mathematics/introduction)
+- [](mathematics/symbols)
+- [](mathematics/math_for_ds)
+- [](mathematics/set_theory)
+- [](mathematics/algebra/index)
+- [](mathematics/linear_algebra/index)
+- [](mathematics/calculus/index)
+- [](mathematics/mathematical_optimization/index)
+- [](mathematics/applied_math/index)
+- [](mathematics/probability_theory/index)
+- [](mathematics/discrete_mathematics/index)
 :::
 
 :::{grid-item-card}
@@ -256,7 +233,6 @@
 - [](soft_skills/assertion)
 - [](soft_skills/data_analysis)
 - [](soft_skills/research)
-- [](soft_skills/hearing)
 - [](soft_skills/meeting_design)
 - [](soft_skills/task_management)
 - [](soft_skills/growth/skillup)
@@ -270,10 +246,25 @@
 
 :::{grid-item-card}
 :columns: 6
-外国語
+ビジネス関連知識
 
-- [](foreign_languages/english/index)
-- [](foreign_languages/chinese/index)
+- [](business/revenue_structure)
+- [](business/accounting)
+- [](business/career_of_ds)
+- [](business/data_analysis)
+- [](business/digital_transformation)
+- [](business/document_management)
+- [](business/business_administration/index)
+:::
+
+:::{grid-item-card}
+:columns: 6
+プロダクト開発
+
+- [](product_development/product_management/index)
+- [](product_development/marketing/advertisement)
+- [](product_development/marketing/marketing_mix_modeling)
+- [](product_development/hearing)
 :::
 
 :::{grid-item-card}
@@ -296,6 +287,14 @@
 - [](software_engineering/pseudorandom_numbers/index)
 - [](software_engineering/web_optimization)
 - [](software_engineering/linux)
+:::
+
+:::{grid-item-card}
+:columns: 6
+外国語
+
+- [](foreign_languages/english/index)
+- [](foreign_languages/chinese/index)
 :::
 
 :::{grid-item-card}
