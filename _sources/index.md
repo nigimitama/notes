@@ -205,14 +205,6 @@
 
 :::{grid-item-card}
 :columns: 6
-マーケティング
-
-- [](marketing/advertisement)
-- [](marketing/marketing_mix_modeling)
-:::
-
-:::{grid-item-card}
-:columns: 6
 強化学習
 
 - [](reinforcement_learning/introduction)
@@ -243,6 +235,16 @@
 
 :::{grid-item-card}
 :columns: 6
+プロダクト開発
+
+- [](product_development/index)
+- [](product_development/product_management/index)
+- [](product_development/marketing/advertisement)
+- [](product_development/marketing/marketing_mix_modeling)
+:::
+
+:::{grid-item-card}
+:columns: 6
 ソフトスキル
 
 - [](soft_skills/mindset)
@@ -263,7 +265,6 @@
 - [](soft_skills/leadership/index)
 - [](soft_skills/team_management/index)
 - [](soft_skills/people_management/index)
-- [](soft_skills/product_management/index)
 - [](soft_skills/project_management/index)
 :::
 
