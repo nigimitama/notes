@@ -235,6 +235,7 @@
 - [](soft_skills/research)
 - [](soft_skills/meeting_design)
 - [](soft_skills/task_management)
+- [](soft_skills/document_management)
 - [](soft_skills/growth/skillup)
 - [](soft_skills/thinking/index)
 - [](soft_skills/logic/index)
@@ -253,7 +254,6 @@
 - [](business/career_of_ds)
 - [](business/data_analysis)
 - [](business/digital_transformation)
-- [](business/document_management)
 - [](business/business_administration/index)
 :::
 
@@ -262,8 +262,7 @@
 プロダクト開発
 
 - [](product_development/product_management/index)
-- [](product_development/marketing/advertisement)
-- [](product_development/marketing/marketing_mix_modeling)
+- [](product_development/marketing/index)
 - [](product_development/hearing)
 - [](product_development/solo_project)
 :::
