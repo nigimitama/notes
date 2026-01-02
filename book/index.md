@@ -1,7 +1,6 @@
-# データサイエンス関連+αのメモ
+# データサイエンス関連+α のメモ
 
 統計学・機械学習（+その他の気になった分野）の教科書や論文を読み、自分で理解した範囲の理論と実装をメモしていく場所
-
 
 ::::{grid}
 :gutter: 2
@@ -23,7 +22,7 @@
 - [](mathematics/applied_math/index)
 - [](mathematics/probability_theory/index)
 - [](mathematics/discrete_mathematics/index)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -34,6 +33,7 @@
 - [](statistics/correlation/index)
 - [](statistics/divergence)
 - [](statistics/optimal_transport)
+- [](statistics/quantile)
 - [](statistics/bootstrap)
 - [](statistics/nonparametric_density_estimation)
 - [](statistics/missing_data)
@@ -44,7 +44,7 @@
 - [](statistics/visualization)
 - [](statistics/price_index)
 - [](statistics/variance_stabilizing)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -52,6 +52,7 @@
 
 - [](statistical_modeling/lowess)
 - [](statistical_modeling/factor_analysis)
+- [](statistical_modeling/mmm)
 - [](statistical_modeling/gaussian_process)
 - [](statistical_modeling/quantile_regression)
 - [](statistical_modeling/survival_analysis)
@@ -63,7 +64,7 @@
 - [](statistical_modeling/time_series_analysis/index)
 - [](statistical_modeling/semiparametric/index)
 - [](statistical_modeling/evaluation/index)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -76,7 +77,7 @@
 - [](econometrics/experimental_design)
 - [](econometrics/ab_tests)
 - [](econometrics/pearl_causal_model)
-- [](econometrics/causal_diagram)
+- [](econometrics/causal_diagram/index)
 - [](econometrics/ols/index)
 - [](econometrics/panel_data/index)
 - [](econometrics/time_series/index)
@@ -91,7 +92,7 @@
 - [](econometrics/quantile_treatment_effects)
 - [](econometrics/bayes_for_economics)
 - [](econometrics/causal_ml/index)
-- [](econometrics/causal_discovery)
+- [](econometrics/causal_discovery/index)
 - [](econometrics/uplift_modeling)
 - [](econometrics/sensitivity_analysis/index)
 - [](econometrics/partial_identification/index)
@@ -101,7 +102,7 @@
 - [](econometrics/memo/aggregated_data)
 - [](econometrics/memo/chocolate_and_noble_prize)
 - [](econometrics/memo/covariates)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -129,7 +130,7 @@
 - [](machine_learning/feature_engineering)
 - [](machine_learning/explainability/introduction)
 - [](machine_learning/uncertainty/index)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -146,7 +147,7 @@
 - [](deep_learning/cnn/index)
 - [](deep_learning/rnn/index)
 - [](deep_learning/transformer/index)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -156,7 +157,7 @@
 - [](generative_models/autoencoder)
 - [](generative_models/gan)
 - [](generative_models/diffusion_models)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -171,7 +172,7 @@
 - [](natural_language_processing/latent_dirichlet_allocation)
 - [](natural_language_processing/task/index)
 - [](natural_language_processing/large_language_models/index)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -184,7 +185,7 @@
 - [](image_processing/similarity_and_hashing)
 - [](image_processing/intensity_transformation)
 - [](image_processing/region_splitting)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -198,22 +199,14 @@
 - [](recommender_system/two_tower)
 - [](recommender_system/causal_inference_in_recommendation)
 - [](recommender_system/evaluation)
-:::
-
-:::{grid-item-card}
-:columns: 6
-マーケティング
-
-- [](marketing/advertisement)
-- [](marketing/marketing_mix_modeling)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
 強化学習
 
 - [](reinforcement_learning/introduction)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -223,7 +216,7 @@
 - [](applied_data_science/data_management)
 - [](applied_data_science/type_of_applications)
 - [](applied_data_science/business_application_of_ai)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -236,14 +229,24 @@
 - [](business/digital_transformation)
 - [](business/document_management)
 - [](business/business_administration/index)
-:::
+  :::
+
+:::{grid-item-card}
+:columns: 6
+プロダクト開発
+
+- [](product_development/index)
+- [](product_development/product_management/index)
+- [](product_development/marketing/advertisement)
+- [](product_development/marketing/marketing_mix_modeling)
+  :::
 
 :::{grid-item-card}
 :columns: 6
 ソフトスキル
 
 - [](soft_skills/mindset)
-- [](soft_skills/logic/index)
+- [](soft_skills/learning)
 - [](soft_skills/writing)
 - [](soft_skills/presentation)
 - [](soft_skills/negotiation)
@@ -256,11 +259,12 @@
 - [](soft_skills/task_management)
 - [](soft_skills/growth/skillup)
 - [](soft_skills/thinking/index)
-- [](soft_skills/management/index)
+- [](soft_skills/logic/index)
+- [](soft_skills/leadership/index)
+- [](soft_skills/team_management/index)
 - [](soft_skills/people_management/index)
-- [](soft_skills/product_management/index)
 - [](soft_skills/project_management/index)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -268,15 +272,18 @@
 
 - [](foreign_languages/english/index)
 - [](foreign_languages/chinese/index)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
 ソフトウェア工学
 
 - [](software_engineering/programming)
+- [](software_engineering/development_methods)
 - [](software_engineering/practitionars_approach)
 - [](software_engineering/software_process)
+- [](software_engineering/solo_project)
+- [](software_engineering/software_architecture/index)
 - [](software_engineering/algorithms/index)
 - [](software_engineering/development/index)
 - [](software_engineering/frontend/index)
@@ -287,7 +294,7 @@
 - [](software_engineering/pseudorandom_numbers/index)
 - [](software_engineering/web_optimization)
 - [](software_engineering/linux)
-:::
+  :::
 
 :::{grid-item-card}
 :columns: 6
@@ -300,5 +307,5 @@
 - [](economics/quantitative_economics)
 - [](economics/housing_economics/index)
 - [](economics/financial_economics/index)
-:::
-::::
+  :::
+  ::::
