@@ -265,6 +265,7 @@
 - [](product_development/marketing/advertisement)
 - [](product_development/marketing/marketing_mix_modeling)
 - [](product_development/hearing)
+- [](product_development/solo_project)
 :::
 
 :::{grid-item-card}
@@ -275,7 +276,6 @@
 - [](software_engineering/development_methods)
 - [](software_engineering/practitionars_approach)
 - [](software_engineering/software_process)
-- [](software_engineering/solo_project)
 - [](software_engineering/software_architecture/index)
 - [](software_engineering/algorithms/index)
 - [](software_engineering/development/index)
