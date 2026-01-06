@@ -18,10 +18,7 @@
 - [](statistics/divergence)
 - [](statistics/optimal_transport)
 - [](statistics/quantile)
-- [](statistics/bootstrap)
-- [](statistics/nonparametric_density_estimation)
 - [](statistics/missing_data)
-- [](statistics/sandwich_estimator)
 - [](statistics/asymptotic_theory/index)
 - [](statistics/bayes_statistics/index)
 - [](statistics/done_wrong)
@@ -185,6 +182,7 @@
 - [](applied_data_science/data_management)
 - [](applied_data_science/type_of_applications)
 - [](applied_data_science/business_application_of_ai)
+- [](applied_data_science/decision_focused_learning/index)
 :::
 
 :::{grid-item-card}
@@ -227,6 +225,7 @@
 - [](soft_skills/team_management/index)
 - [](soft_skills/people_management/index)
 - [](soft_skills/project_management/index)
+- [](soft_skills/health_management/index)
 :::
 
 :::{grid-item-card}
@@ -236,7 +235,6 @@
 - [](business/revenue_structure)
 - [](business/accounting)
 - [](business/career_of_ds)
-- [](business/data_analysis)
 - [](business/digital_transformation)
 - [](business/business_administration/index)
 :::
