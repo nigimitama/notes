@@ -1255,16 +1255,21 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">エントロピー</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">エントロピー</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">交差エントロピー</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">自己情報量</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">エントロピー</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">交差エントロピー</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kullback-leibler-divergance">Kullback-Leibler Divergance</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">交差エントロピーとの関係</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kl">KLダイバージェンス</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">交差エントロピーとの関係</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">KLダイバージェンスの最小化 = 交差エントロピーの最小化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">式変形・エントロピーとの関係</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#density-power-divergence">Density Power Divergence</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">積分を回避する案</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">積分を回避する案</a></li>
 </ul>
 </li>
 </ul>
@@ -1280,62 +1285,192 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>ダイバージェンス<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>情報理論において <strong>ダイバージェンス（divergence）</strong> とは、2つの確率分布がどれだけ異なっているかを数量化する指標</p>
 <section id="id2">
 <h2>エントロピー<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <section id="id3">
-<h3>エントロピー<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<h3>自己情報量<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>情報理論において、ある事象<span class="math notranslate nohighlight">\(x\)</span>が起こる確率<span class="math notranslate nohighlight">\(P(x)\)</span>が小さい（めったに起こらない事象）ほど「情報量が多い」と考える。</p>
+<p>そこで、確率の逆数の対数を surpriseあるいは <strong>自己情報量（self-information）</strong> という。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+Self-Information</div>
 <div class="math notranslate nohighlight">
 \[
-H(p) = - \int p(x) \log p(x) dx
+I(x) = \log \frac{1}{P(x)} = - \log P(x)
 \]</div>
+</div>
+</div>
+<p>（対数を取ることで独立な事象の同時確率を確率の積として計算するときに計算しやすい）</p>
 </section>
 <section id="id4">
-<h3>交差エントロピー<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<h3>エントロピー<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>自己情報量の期待値を <strong>エントロピー（entropy）</strong> 、 <strong>期待情報量</strong> 、 <strong>シャノン情報量</strong> などと呼ぶ。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+Entropy</div>
+<p class="sd-card-text">離散型確率変数の場合：</p>
 <div class="math notranslate nohighlight">
 \[
-H(p, q) = - \int p(x) \log q(x) dx
+H(P) = \sum_i P(x_i) \log \frac{1}{P(x_i)}
 \]</div>
+<p class="sd-card-text">連続型確率変数の場合：</p>
+<div class="math notranslate nohighlight">
+\[
+H(P) = \int_{-\infty}^{\infty} P(x) \log \frac{1}{P(x)} dx
+\]</div>
+</div>
+</div>
+</section>
+<section id="id5">
+<h3>交差エントロピー<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+Cross-Entropy</div>
+<p class="sd-card-text">離散型確率変数の場合：</p>
+<div class="math notranslate nohighlight">
+\[
+H(P, Q) = \sum_i P(x_i) \log \frac{1}{Q(x_i)}
+\]</div>
+<p class="sd-card-text">連続型確率変数の場合：</p>
+<div class="math notranslate nohighlight">
+\[
+H(P, Q) = \int_{-\infty}^{\infty}  P(x) \log \frac{1}{P(x)}
+\]</div>
+</div>
+</div>
+<aside class="margin sidebar">
+<p class="sidebar-title"></p>
+<p><span class="math notranslate nohighlight">\(\log \frac{1}{P(x)} = - \log P(x)\)</span>なので書籍によっては</p>
+<div class="math notranslate nohighlight">
+\[
+H(p,q) = - \int_{-\infty}^{\infty}  P(x) \log Q(x) dx
+\]</div>
+<p>という定義で表されるが、同じものである</p>
+</aside>
 </section>
 </section>
-<section id="kullback-leibler-divergance">
-<h2>Kullback-Leibler Divergance<a class="headerlink" href="#kullback-leibler-divergance" title="Link to this heading">#</a></h2>
+<section id="kl">
+<h2>KLダイバージェンス<a class="headerlink" href="#kl" title="Link to this heading">#</a></h2>
+<p><strong>KLダイバージェンス（Kullback-Leibler Divergance）</strong> は 2つの確率分布の間の距離を測る関数。</p>
+<div class="admonition-kullback-leibler-divergance admonition">
+<p class="admonition-title">Kullback-Leibler Divergance</p>
 <p>離散の場合</p>
 <div class="math notranslate nohighlight">
 \[
-D_{KL} (P||Q) = \sum_i P(i) \log \frac{P(i)}{Q(i)}
+D_{KL} (P||Q) = \sum_i P(x_i) \log \frac{P(x_i)}{Q(x_i)}
 \]</div>
 <p>連続の場合</p>
 <div class="math notranslate nohighlight">
 \[
 D_{KL} (P||Q) = \int_{-\infty}^{\infty}
-p(x) \log \frac{ p(x) } { q(x) } dx
+P(x) \log \frac{ P(x) } { Q(x) } dx
 \]</div>
-<section id="id5">
-<h3>交差エントロピーとの関係<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(\log \frac{M}{N} = \log M - \log N\)</span>より、</p>
+<p>期待値の記号を使って次のように書くこともできる</p>
+<div class="math notranslate nohighlight">
+\[
+D_{KL} (P||Q) = \mathbb{E}_{x\sim P}\left[ \log \frac{P(x_i)}{Q(x_i)} \right]
+\]</div>
+</div>
+<p><strong>特徴</strong></p>
+<ul class="simple">
+<li><p>対称性をもたない：<span class="math notranslate nohighlight">\(D_{KL} (P||Q) \neq D_{KL} (Q||P)\)</span></p>
+<ul>
+<li><p>→ KLダイバージェンスは厳密な意味での距離ではない</p></li>
+</ul>
+</li>
+</ul>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+別表現</div>
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(\log \frac{M}{N} = \log M - \log N\)</span>より、KLダイバージェンスは</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+D_{KL} (P||Q)
+&amp;= \sum_i P(x_i) \log \frac{P(x_i)}{Q(x_i)}\\
+&amp;= \sum_i P(x_i) \log P(x_i) - \sum_i P(x_i) \log Q(x_i)
+\end{aligned}
+\end{split}\]</div>
+<p class="sd-card-text">と変形できる。</p>
+</div>
+</div>
+<section id="id6">
+<h3>交差エントロピーとの関係<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h4>KLダイバージェンスの最小化 = 交差エントロピーの最小化<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
+<p>KLダイバージェンスは2つの分布<span class="math notranslate nohighlight">\(P,Q\)</span>の違いを定量評価する関数であるが、仮に<span class="math notranslate nohighlight">\(P\)</span>が観測データで<span class="math notranslate nohighlight">\(Q\)</span>が予測モデルの出力だとすると<span class="math notranslate nohighlight">\(P\)</span>の部分は定数なので</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+D_{KL} (P||Q)
+&amp;= \underbrace{ \sum_i P(x_i) \log P(x_i) }_{\text{定数}} - \sum_i P(x_i) \log Q(x_i)\\
+&amp;= - \sum_i P(x_i) \log Q(x_i)\\
+&amp;= H(P, Q)
+\end{aligned}
+\end{split}\]</div>
+<p>となる。よって、<span class="math notranslate nohighlight">\(\min D_{KL} (P||Q) = \min H(P,Q)\)</span>、つまり、ダイバージェンスの最小化をしたい場合は交差エントロピーを最小化すればよいことになる。</p>
+</section>
+<section id="id8">
+<h4>式変形・エントロピーとの関係<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[
+H(P, Q) = H(P) + D_{KL}(P||Q)
+\]</div>
+<p class="sd-card-text">が成り立つ</p>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">導出</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><span class="math notranslate nohighlight">\(\log \frac{M}{N} = \log M - \log N\)</span>より、</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
-H(p, q) &amp;= H(p) + D_{KL}(p||q)
+H(P, Q) &amp;= H(P) + D_{KL}(p||q)
 \\
-&amp;= - \int p(x) \log p(x) dx
-  + \int p(x) \log \frac{ p(x) } { q(x) } dx\\
-&amp;= - \int p(x) \log p(x) dx
-  + \int p(x) \big\{ \log p(x) - \log q(x) \big\} dx
+&amp;= - \int P(x) \log P(x) dx
+  + \int P(x) \log \frac{ P(x) } { Q(x) } dx\\
+&amp;= - \int P(x) \log P(x) dx
+  + \int P(x) \big\{ \log P(x) - \log Q(x) \big\} dx
 \\
-&amp;= - \underbrace{ \int p(x) \log p(x) dx }_{ H(p) }
-  + \underbrace{ \int p(x) \log p(x) dx }_{ H(p) }
-  - \underbrace{ \int p(x) \log q(x) dx }_{ H(p, q) }
+&amp;= \underbrace{ - \int P(x) \log P(x) dx }_{ H(P) }
+  + \underbrace{ \int P(x) \log P(x) dx }_{ -H(P) }
+  \underbrace{ - \int P(x) \log Q(x) dx }_{ H(P, Q) }
+\\
+&amp;= H(P, Q)
 \end{align}
 \end{split}\]</div>
+</div>
+</details><div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="math notranslate nohighlight">
+\[
+D_{KL}(p||q) = H(P, Q) - H(P)
+\]</div>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">導出</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
-D_{KL}(p||q) &amp;= H(p, q) - H(p)\\
-&amp;= - \int p(x) \log q(x) dx
-   - \int p(x) \log p(x) dx
+D_{KL}(p||q) &amp;= H(P, Q) - H(P)\\
+&amp;= - \int P(x) \log Q(x) dx
+   + \int P(x) \log P(x) dx\\
+&amp;= \int P(x) \log P(x) dx - \int P(x) \log Q(x) dx\\
+&amp;= \int P(x) \log \frac{P(x)}{Q(x)} dx\\
 \end{align}
 \end{split}\]</div>
+</div>
+</details></section>
 </section>
 </section>
 <section id="density-power-divergence">
@@ -1346,10 +1481,10 @@ D_{KL}(p||q) &amp;= H(p, q) - H(p)\\
 <div class="math notranslate nohighlight">
 \[\begin{split}
 D_{\beta}(Q, P) = d_{\beta}(Q, P) - d_{\beta}(Q, Q)\\
-d_{\beta}(Q, P) = - \frac{1}{\beta} \int p(x)^{\beta} dQ(x) + r
+d_{\beta}(Q, P) = - \frac{1}{\beta} \int P(x)^{\beta} dQ(x) + r
 \end{split}\]</div>
-<section id="id6">
-<h3>積分を回避する案<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>積分を回避する案<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>paper: <a class="reference external" href="https://arxiv.org/abs/2307.05251">[2307.05251] A stochastic optimization approach to minimize robust density power-based divergences for general parametric density models</a></p></li>
 <li><p>著者tweet: <a class="reference external" href="https://twitter.com/public_aokn/status/1678938719414554624?t=fPhnFiLFTQbWT0o0tS-Chw&amp;amp;s=19">A. OkunoさんはTwitterを使っています: 「公開しました．ざっくりいうと，悪名高い累乗の積分項があり今まで正規分布や一部の確率モデルでしか最適化ができなかったロバストダイバージェンスを”一般の”確率モデルに対して最適化する方法を提案しています．個人的にはかなり非自明で，言われれば当たり前だけど，思いつくまで10年かかりました．」 / Twitter</a></p></li>
@@ -1423,16 +1558,21 @@ d_{\beta}(Q, P) = - \frac{1}{\beta} \int p(x)^{\beta} dQ(x) + r
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">エントロピー</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">エントロピー</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">交差エントロピー</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">自己情報量</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">エントロピー</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">交差エントロピー</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kullback-leibler-divergance">Kullback-Leibler Divergance</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">交差エントロピーとの関係</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kl">KLダイバージェンス</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">交差エントロピーとの関係</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">KLダイバージェンスの最小化 = 交差エントロピーの最小化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">式変形・エントロピーとの関係</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#density-power-divergence">Density Power Divergence</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">積分を回避する案</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">積分を回避する案</a></li>
 </ul>
 </li>
 </ul>
