@@ -1362,10 +1362,134 @@ document.write(`
 </section>
 <section id="id5">
 <h2>連結リスト<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<p><strong>連結リスト（Linked List）</strong> は、各要素（ノード）がデータと次の要素への参照（ポインタ）を持つデータ構造</p>
+<p>配列と異なり、メモリ上に連続して配置される必要がない</p>
+<p>特徴：</p>
+<ul class="simple">
+<li><p>要素の挿入・削除が<span class="math notranslate nohighlight">\(O(1)\)</span>で可能（位置がわかっている場合）</p></li>
+<li><p>任意の位置へのアクセスは<span class="math notranslate nohighlight">\(O(n)\)</span>（先頭から順にたどる必要がある）</p></li>
+<li><p>メモリの動的な割り当てが可能</p></li>
+</ul>
+<p>操作：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">insert(x)</span></code>: リストに要素<code class="docutils literal notranslate"><span class="pre">x</span></code>を挿入する</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delete(x)</span></code>: リストから要素<code class="docutils literal notranslate"><span class="pre">x</span></code>を削除する</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search(x)</span></code>: リストから要素<code class="docutils literal notranslate"><span class="pre">x</span></code>を検索する</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#TODO</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Node</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">LinkedList</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;先頭に要素を挿入&quot;&quot;&quot;</span>
+        <span class="n">new_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">new_node</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">new_node</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;指定した値を持つ最初のノードを削除&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># 先頭ノードが削除対象の場合</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">next</span>
+            <span class="k">return</span>
+
+        <span class="c1"># 削除対象のノードを探す</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+        <span class="k">while</span> <span class="n">current</span><span class="o">.</span><span class="n">next</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">current</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">current</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">next</span>
+                <span class="k">return</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="n">next</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;指定した値を持つノードを検索&quot;&quot;&quot;</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+        <span class="k">while</span> <span class="n">current</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">current</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="n">next</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;リストの全要素を表示&quot;&quot;&quot;</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+        <span class="k">while</span> <span class="n">current</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="n">next</span>
+        <span class="k">return</span> <span class="n">elements</span>
 </pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用例</span>
+<span class="n">ll</span> <span class="o">=</span> <span class="n">LinkedList</span><span class="p">()</span>
+<span class="n">ll</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ll</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ll</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;リスト:&quot;</span><span class="p">,</span> <span class="n">ll</span><span class="o">.</span><span class="n">display</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2を検索:&quot;</span><span class="p">,</span> <span class="n">ll</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">ll</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2を削除後:&quot;</span><span class="p">,</span> <span class="n">ll</span><span class="o">.</span><span class="n">display</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>リスト: [1, 2, 3]
+2を検索: True
+2を削除後: [1, 3]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+NOTE: Pythonの<code class="docutils literal notranslate"><span class="pre">list</span></code>は動的配列</div>
+<p class="sd-card-text">そのため<code class="docutils literal notranslate"><span class="pre">list[i]</span></code>での参照は<span class="math notranslate nohighlight">\(O(1)\)</span>で速く、挿入・削除が遅い</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">特性</p></th>
+<th class="head"><p class="sd-card-text">Python <code class="docutils literal notranslate"><span class="pre">list</span></code></p></th>
+<th class="head"><p class="sd-card-text">連結リスト</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text">メモリ配置</p></td>
+<td><p class="sd-card-text">連続</p></td>
+<td><p class="sd-card-text">非連続</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">lst[i]</span></code> の計算量</p></td>
+<td><p class="sd-card-text">O(1)</p></td>
+<td><p class="sd-card-text">O(n)</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text">末尾 <code class="docutils literal notranslate"><span class="pre">append</span></code></p></td>
+<td><p class="sd-card-text">平均 O(1)（償却）</p></td>
+<td><p class="sd-card-text">O(1)</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text">途中挿入・削除</p></td>
+<td><p class="sd-card-text">O(n)（シフトが必要）</p></td>
+<td><p class="sd-card-text">O(1)（参照があれば）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text">キャッシュ効率</p></td>
+<td><p class="sd-card-text">良い</p></td>
+<td><p class="sd-card-text">悪い</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
