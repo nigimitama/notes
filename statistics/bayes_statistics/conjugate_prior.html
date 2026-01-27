@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ベイズ推定 &#8212; データサイエンス関連+αのメモ</title>
+    <title>共役事前分布 &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -73,14 +73,9 @@
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script type="application/vnd.jupyter.widget-state+json">{"state": {"ba4aad25eb0b44948935f7966d126057": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "73fc91045e754680abc07e904e7abe92": {"model_name": "OutputModel", "model_module": "@jupyter-widgets/output", "model_module_version": "1.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/output", "_model_module_version": "1.0.0", "_model_name": "OutputModel", "_view_count": null, "_view_module": "@jupyter-widgets/output", "_view_module_version": "1.0.0", "_view_name": "OutputView", "layout": "IPY_MODEL_ba4aad25eb0b44948935f7966d126057", "msg_id": "", "outputs": [{"output_type": "display_data", "metadata": {}, "data": {"text/plain": "MAP \u001b[38;5;237m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m \u001b[35m  0%\u001b[0m 0:00:01 logp = -6.9315, ||grad|| = 1\n", "text/html": "<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\">MAP <span style=\"color: #3a3a3a; text-decoration-color: #3a3a3a\">\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501</span> <span style=\"color: #800080; text-decoration-color: #800080\">  0%</span> 0:00:01 logp = -6.9315, ||grad|| = 1\n</pre>\n"}}], "tabbable": null, "tooltip": null}}}, "version_major": 2, "version_minor": 0}</script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script crossorigin="anonymous" data-jupyter-widgets-cdn="https://cdn.jsdelivr.net/npm/" src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@1.0.6/dist/embed-amd.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'statistics/bayes_statistics/bayes_estimation';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'statistics/bayes_statistics/conjugate_prior';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="マルコフ連鎖モンテカルロ（MCMC）法" href="mcmc.html" />
-    <link rel="prev" title="ベイズ統計学" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -143,6 +138,8 @@
       
       
       
+        
+      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -193,7 +190,7 @@
             </li>
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">統計学</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../probability/index.html">確率・確率分布・期待値</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../probability/probability.html">確率</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../probability/expectation.html">確率変数と期待値・分散</a></li>
@@ -262,8 +259,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../asymptotic_theory/empirical_processes.html">経験過程</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">ベイズ統計学</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">ベイズ推定</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="index.html">ベイズ統計学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="bayes_estimation.html">ベイズ推定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mcmc.html">マルコフ連鎖モンテカルロ（MCMC）法</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prior.html">事前分布</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pymc.html">PyMC</a></li>
@@ -1169,7 +1166,7 @@
       
       
       
-      <li><a href="../../_sources/statistics/bayes_statistics/bayes_estimation.ipynb" target="_blank"
+      <li><a href="../../_sources/statistics/bayes_statistics/conjugate_prior.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -1253,7 +1250,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>ベイズ推定</h1>
+    <h1>共役事前分布</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -1263,23 +1260,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ベイズ更新</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">例：コイン投げ</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">点推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eap-expected-a-posteriori">EAP (expected a posteriori, 事後期待値)</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#map-maximum-a-posteriori">MAP (maximum a posteriori, 事後確率最大値）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#med-posterior-median">MED (posterior median, 事後中央値）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">事後分散</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">予測分布</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">条件付き予測分布</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">事後予測分布</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">変分ベイズ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">代表的な組み合わせ</a></li>
 </ul>
             </nav>
         </div>
@@ -1292,184 +1273,59 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>ベイズ推定<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<h1>共役事前分布<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<div class="admonition-conjugate-prior admonition">
+<p class="admonition-title">共役事前分布（conjugate prior）</p>
+<p>ある尤度関数と組み合わせたときに、事後分布が事前分布と同じ分布族に属するような事前分布のことを <strong>共役事前分布（conjugate prior）</strong> という。</p>
+</div>
+<p>つまり、事前分布<span class="math notranslate nohighlight">\(p(\theta)\)</span> と尤度 <span class="math notranslate nohighlight">\(p(y \mid \theta)\)</span>、事後分布<span class="math notranslate nohighlight">\(p(\theta \mid y)\)</span>について</p>
+<div class="math notranslate nohighlight">
+\[
+p(\theta \mid y) \propto p(y \mid \theta) p(\theta)
+\]</div>
+<p>の結果、</p>
+<div class="math notranslate nohighlight">
+\[
+p(\theta \mid y) \in \{ p(\theta) \text { と同じ分布族  } \}
+\]</div>
+<p>となるような事前分布のこと。</p>
 <section id="id2">
-<h2>ベイズ更新<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<section id="id3">
-<h3>例：コイン投げ<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
-<p>表が出たら1、裏が出たら0として以下のようなデータがとれたとする。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
-<p>事前分布にベータ分布、尤度をベルヌーイ分布とする</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pymc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pm</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">arviz</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">az</span>
-
-<span class="c1"># 観測データ</span>
-<span class="n">y_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># 0/1</span>
-<span class="n">N</span> <span class="o">=</span> <span class="n">y_obs</span><span class="o">.</span><span class="n">size</span>
-
-<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Bernoulli</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">y_obs</span><span class="p">)</span>
-    <span class="n">idata</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="n">tune</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">chains</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">progressbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-
-<span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initializing NUTS using jitter+adapt_diag...
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multiprocess sampling (4 chains in 2 jobs)
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>NUTS: [p]
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 2_000 draw iterations (4_000 + 8_000 draws total) took 2 seconds.
-</pre></div>
-</div>
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>mean</th>
-      <th>sd</th>
-      <th>hdi_3%</th>
-      <th>hdi_97%</th>
-      <th>mcse_mean</th>
-      <th>mcse_sd</th>
-      <th>ess_bulk</th>
-      <th>ess_tail</th>
-      <th>r_hat</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>p</th>
-      <td>0.579</td>
-      <td>0.137</td>
-      <td>0.324</td>
-      <td>0.83</td>
-      <td>0.002</td>
-      <td>0.001</td>
-      <td>3260.0</td>
-      <td>4711.0</td>
-      <td>1.0</td>
-    </tr>
-  </tbody>
+<h2>代表的な組み合わせ<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>尤度</p></th>
+<th class="head"><p>共役事前分布</p></th>
+<th class="head"><p>事後分布</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Bernoulli / Binomial</p></td>
+<td><p>Beta</p></td>
+<td><p>Beta</p></td>
+</tr>
+<tr class="row-odd"><td><p>Poisson</p></td>
+<td><p>Gamma</p></td>
+<td><p>Gamma</p></td>
+</tr>
+<tr class="row-even"><td><p>Exponential</p></td>
+<td><p>Gamma</p></td>
+<td><p>Gamma</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal（<span class="math notranslate nohighlight">\(\sigma^2\)</span>既知）</p></td>
+<td><p>Normal</p></td>
+<td><p>Normal</p></td>
+</tr>
+<tr class="row-even"><td><p>Normal（<span class="math notranslate nohighlight">\(\mu,\sigma^2\)</span>未知）</p></td>
+<td><p>Normal–Inverse-Gamma</p></td>
+<td><p>Normal–Inverse-Gamma</p></td>
+</tr>
+<tr class="row-odd"><td><p>Multinomial</p></td>
+<td><p>Dirichlet</p></td>
+<td><p>Dirichlet</p></td>
+</tr>
+</tbody>
 </table>
-</div></div></div>
 </div>
-</section>
-</section>
-<section id="id4">
-<h2>点推定<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
-<section id="eap-expected-a-posteriori">
-<h3>EAP (expected a posteriori, 事後期待値)<a class="headerlink" href="#eap-expected-a-posteriori" title="Link to this heading">#</a></h3>
-<p>事後分布の期待値を推定値とする方法</p>
-<div class="math notranslate nohighlight">
-\[
-\hat{\theta}_{\text {eap }}
-=E[\theta \mid \boldsymbol{x}]
-=\int \theta f(\theta \mid \boldsymbol{x}) d \theta=\int \theta \frac{f(\boldsymbol{x} \mid \theta) f(\theta)}{f(\boldsymbol{x})} d \theta
-\]</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eap</span> <span class="o">=</span> <span class="n">idata</span><span class="o">.</span><span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chain&quot;</span><span class="p">,</span> <span class="s2">&quot;draw&quot;</span><span class="p">])</span>
-<span class="nb">float</span><span class="p">(</span><span class="n">eap</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5793009566171891
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="map-maximum-a-posteriori">
-<h3>MAP (maximum a posteriori, 事後確率最大値）<a class="headerlink" href="#map-maximum-a-posteriori" title="Link to this heading">#</a></h3>
-<p>事後分布の最大値（mode）を推定値とする</p>
-<div class="math notranslate nohighlight">
-\[
-\hat{\theta}_{\text {map }}=\max _\theta f(\theta \mid \boldsymbol{x})
-\]</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
-    <span class="n">map_est</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">find_MAP</span><span class="p">()</span>
-<span class="nb">float</span><span class="p">(</span><span class="n">map_est</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "73fc91045e754680abc07e904e7abe92"}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
-</div><div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5999999988336109
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="med-posterior-median">
-<h3>MED (posterior median, 事後中央値）<a class="headerlink" href="#med-posterior-median" title="Link to this heading">#</a></h3>
-<p>事後分布の中央値、すなわち、累積分布関数が0.5になる点を推定値とするもの</p>
-<div class="math notranslate nohighlight">
-\[
-F\left(\hat{\theta}_{m e d} \mid x\right)=\int^{\hat{\theta}_{\text {med }}} f(\theta \mid \boldsymbol{x}) d \theta=1 / 2
-\]</div>
-</section>
-<section id="id5">
-<h3>事後分散<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
-<p>EAP推定量の散らばりの目安には、事後分布の分散である <strong>事後分散（posterior variance）</strong> と、その平方根をとった <strong>事後標準偏差（posterior standard deviation）</strong> が用いられる。</p>
-<div class="math notranslate nohighlight">
-\[
-V[\theta]
-=V[\theta \mid \boldsymbol{x}]
-=E\left[\left(\theta-\hat{\theta}_{e a p}\right)^2 \mid \boldsymbol{x}\right]
-=\int\left(\theta-\hat{\theta}_{e a p}\right)^2 f(\theta \mid \boldsymbol{x}) d \theta
-\]</div>
-</section>
-<section id="id6">
-<h3>予測分布<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
-<p>パラメータの分布ではなく、データの予測値を出すもの。</p>
-<section id="id7">
-<h4>条件付き予測分布<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
-<p>モデルの分布を<span class="math notranslate nohighlight">\(f(x\mid \theta)\)</span> とした場合、 <strong>条件付き予測分布（conditional predictive distribution）</strong> は <span class="math notranslate nohighlight">\(f(x^* \mid \hat\theta)\)</span> である。<span class="math notranslate nohighlight">\(\hat\theta\)</span>はEAP推定量など事後分布からの推定量を用いる。</p>
-</section>
-<section id="id8">
-<h4>事後予測分布<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
-<p><strong>事後予測分布（posterior predictive distribution）</strong></p>
-<div class="math notranslate nohighlight">
-\[
-f(x^* \mid \boldsymbol{x})=\int_{-\infty}^{+\infty} f(x^* \mid \theta) f(\theta \mid \boldsymbol{x}) d \theta
-\]</div>
-<p>事後分布 <span class="math notranslate nohighlight">\(f(\theta \mid \boldsymbol{x})\)</span> におけるモデル分布 <span class="math notranslate nohighlight">\(f(x^* \mid \theta)\)</span> の期待値</p>
-</section>
-</section>
-</section>
-<section id="id9">
-<h2>変分ベイズ<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="https://academ-aid.com/ml/vb">【徹底解説】変分ベイズをはじめからていねいに | Academaid</a></p>
 </section>
 </section>
 
@@ -1503,24 +1359,6 @@ f(x^* \mid \boldsymbol{x})=\int_{-\infty}^{+\infty} f(x^* \mid \theta) f(\theta 
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="index.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">ベイズ統計学</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="mcmc.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">マルコフ連鎖モンテカルロ（MCMC）法</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -1537,23 +1375,7 @@ f(x^* \mid \boldsymbol{x})=\int_{-\infty}^{+\infty} f(x^* \mid \theta) f(\theta 
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ベイズ更新</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">例：コイン投げ</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">点推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eap-expected-a-posteriori">EAP (expected a posteriori, 事後期待値)</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#map-maximum-a-posteriori">MAP (maximum a posteriori, 事後確率最大値）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#med-posterior-median">MED (posterior median, 事後中央値）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">事後分散</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">予測分布</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">条件付き予測分布</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">事後予測分布</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">変分ベイズ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">代表的な組み合わせ</a></li>
 </ul>
   </nav></div>
 
