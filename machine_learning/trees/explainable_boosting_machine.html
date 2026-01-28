@@ -1259,9 +1259,13 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">アルゴリズム</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">統計的推論</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実装</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fast">FAST</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-importance">Feature Importance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実装</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">統計的推論</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考文献</a></li>
 </ul>
             </nav>
@@ -1282,26 +1286,40 @@ document.write(`
 <li><p>解釈性の高さ</p></li>
 </ul>
 <p>が特徴</p>
+<p>EBM（<a class="reference external" href="https://arxiv.org/abs/1909.09223">Nori et al., 2019</a>）はGA<span class="math notranslate nohighlight">\(^2\)</span>M（<a class="reference external" href="https://www.cs.cornell.edu/~yinlou/papers/lou-kdd13.pdf">Lou et al., 2013</a>）の実装を並列可能にして高速化したもの。</p>
 <section id="id1">
-<h2>アルゴリズム<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>EBMはboostingないし一般化加法モデル（GAM）の形式をとる：</p>
+<h2>モデル<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>通常のGAM</p>
+<div class="math notranslate nohighlight">
+\[
+g(E[y])= \beta_0 + \sum f_i(x_i)
+\]</div>
+<p>に交互作用項を追加した</p>
 <div class="math notranslate nohighlight">
 \[
 g(E[y])=\beta_0+\sum f_i(x_i)+\sum f_{i, j}(x_i, x_j)
 \]</div>
-<p>ここで<span class="math notranslate nohighlight">\(g()\)</span>は回帰や分類の設定にGAMを適用するためのlink function。</p>
-<p>EBMは伝統的なGAMからの進化点として</p>
+<p>というモデルを <strong>Generalized Additive Model plus Interactions (GA<span class="math notranslate nohighlight">\(^2\)</span>M)</strong> という。</p>
+<p>なお、ここで<span class="math notranslate nohighlight">\(g(\cdot)\)</span>は回帰や分類の設定にGAMを適用するためのlink functionで、<span class="math notranslate nohighlight">\(x_i\)</span>は<span class="math notranslate nohighlight">\(i\)</span>番目の特徴量、<span class="math notranslate nohighlight">\(f_i(\cdot)\)</span>は特徴量ごとの関数（feature function）</p>
+<p>GA<span class="math notranslate nohighlight">\(^2\)</span>MやEBMは伝統的なGAMからの進化点として</p>
 <ol class="arabic simple">
-<li><p>特徴関数（feature function）<span class="math notranslate nohighlight">\(f_j\)</span>にbaggingや勾配ブースティングを使用する</p></li>
-<li><p>交互作用項 <span class="math notranslate nohighlight">\(f_{i,j}(x_i,x_j)\)</span> の自動検知ができる</p></li>
+<li><p>特徴関数（feature function）<span class="math notranslate nohighlight">\(f_i\)</span>にbaggingや勾配ブースティングを使用する</p></li>
+<li><p>交互作用項 <span class="math notranslate nohighlight">\(f_{i,j}(x_i,x_j)\)</span> の自動検知をする、「FAST」というアルゴリズムを備える</p></li>
 </ol>
+<p>という特徴がある。</p>
+<section id="fast">
+<h3>FAST<a class="headerlink" href="#fast" title="Link to this heading">#</a></h3>
+<p>交互作用項は、特徴量の数を<span class="math notranslate nohighlight">\(n\)</span>とすると <span class="math notranslate nohighlight">\(O(n^2)\)</span> の組み合わせ・計算量になり、高次元データでは計算コストが高くなる。</p>
+<p>FASTは <span class="math notranslate nohighlight">\(O(N+b^2)\)</span>、<span class="math notranslate nohighlight">\(N\)</span>はサンプルサイズで<span class="math notranslate nohighlight">\(b\)</span>は特徴量のbinの数（例えば<span class="math notranslate nohighlight">\(b=256\)</span>）</p>
+</section>
+<section id="feature-importance">
+<h3>Feature Importance<a class="headerlink" href="#feature-importance" title="Link to this heading">#</a></h3>
+<p>モデルのfeature function <span class="math notranslate nohighlight">\(f_i\)</span> は各特徴量が予測にどれくらい寄与したかが明確にわかる</p>
+</section>
 </section>
 <section id="id2">
-<h2>統計的推論<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="https://arxiv.org/abs/2601.18857v1">[2601.18857v1] Statistical Inference for Explainable Boosting Machines</a></p>
-</section>
-<section id="id3">
-<h2>実装<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h2>実装<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>InterpretMLパッケージに実装されている</p>
 <p><a class="reference external" href="https://interpret.ml/docs/ebm.html">Explainable Boosting Machine — InterpretML documentation</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1440,9 +1458,14 @@ g(E[y])=\beta_0+\sum f_i(x_i)+\sum f_{i, j}(x_i, x_j)
 </div>
 </div>
 </section>
+<section id="id3">
+<h2>統計的推論<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://arxiv.org/abs/2601.18857v1">[2601.18857v1] Statistical Inference for Explainable Boosting Machines</a></p>
+</section>
 <section id="id4">
 <h2>参考文献<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <ul class="simple">
+<li><p><a class="reference external" href="https://arxiv.org/abs/1909.09223">[1909.09223] InterpretML: A Unified Framework for Machine Learning Interpretability</a></p></li>
 <li><p><a class="reference external" href="https://www.cs.cornell.edu/~yinlou/papers/lou-kdd13.pdf">Lou, Y., Caruana, R., Gehrke, J., &amp; Hooker, G. (2013, August). Accurate intelligible models with pairwise interactions. In <em>Proceedings of the 19th ACM SIGKDD international conference on Knowledge discovery and data mining</em> (pp. 623-631).</a></p></li>
 </ul>
 </section>
@@ -1494,9 +1517,13 @@ g(E[y])=\beta_0+\sum f_i(x_i)+\sum f_{i, j}(x_i, x_j)
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">アルゴリズム</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">統計的推論</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">実装</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fast">FAST</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-importance">Feature Importance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実装</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">統計的推論</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考文献</a></li>
 </ul>
   </nav></div>
