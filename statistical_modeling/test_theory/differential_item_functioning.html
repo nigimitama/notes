@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>項目反応理論のモデル群 &#8212; データサイエンス関連+αのメモ</title>
+    <title>Differential Item Functioning (DIF) &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -73,11 +73,9 @@
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'statistical_modeling/test_theory/irt_models';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'statistical_modeling/test_theory/differential_item_functioning';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="近年のIRTのトピック" href="recent_irt.html" />
-    <link rel="prev" title="項目反応理論" href="item_response_theory.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -139,6 +137,8 @@
     <div class="bd-container__inner bd-page-width">
       
       
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -271,7 +271,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../statistics/variance_stabilizing.html">分散安定化変換</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">統計モデリング</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../lowess.html">LOWESS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../factor_analysis.html">因子分析</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mmm.html">MMM (marketing mix modeling)</a></li>
@@ -291,12 +291,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../sem/independence_model.html">Lavaanの独立モデル</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">テスト理論・項目反応理論・スコアリング</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="index.html">テスト理論・項目反応理論・スコアリング</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="introduction.html">テスト理論（スコアリング）</a></li>
 <li class="toctree-l2"><a class="reference internal" href="item_analysis.html">項目分析</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classical_test_theory.html">古典的テスト理論</a></li>
 <li class="toctree-l2"><a class="reference internal" href="item_response_theory.html">項目反応理論</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">項目反応理論のモデル群</a></li>
 <li class="toctree-l2"><a class="reference internal" href="recent_irt.html">近年のIRTのトピック</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validation.html">スコアの妥当性検証</a></li>
 </ul>
@@ -1165,7 +1164,7 @@
       
       
       
-      <li><a href="../../_sources/statistical_modeling/test_theory/irt_models.ipynb" target="_blank"
+      <li><a href="../../_sources/statistical_modeling/test_theory/differential_item_functioning.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -1249,7 +1248,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>項目反応理論のモデル群</h1>
+    <h1>Differential Item Functioning (DIF)</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -1259,51 +1258,25 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">正規累積モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">1パラメータ正規累積モデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">2パラメータ正規累積モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概要</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dif">DIFの種類</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">ロジスティックモデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pl">2PLモデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">3PLモデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">4PLモデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">5PLモデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">DIF検出手法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantel-haenszel">Mantel-Haenszel法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ロジスティック回帰法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#irt">IRT法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sibtest">SIBTEST</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">多値型モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">段階反応モデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">名義反応モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Pythonでの実装</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#difnlr-r">difNLR パッケージ（R）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Pythonによる実装例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">シミュレーションデータによる検証</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">連続反応モデル</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">多次元モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">補償型と非補償型</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#irt">拡張されたIRTモデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#latent-regression-model">Latent Regression Model</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">実装方法</a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multilevel-irt">Multilevel IRT</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">種類</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">実装方法</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">適合度の評価</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">局所独立性の確認</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">個人適合度</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">IRTの前提条件・仮定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-independence">局所独立性（local independence）の仮定</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">一次元性</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">DIFの解釈と対処</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1315,530 +1288,703 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>項目反応理論のモデル群<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="differential-item-functioning-dif">
+<h1>Differential Item Functioning (DIF)<a class="headerlink" href="#differential-item-functioning-dif" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>概要<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p><strong>Differential Item Functioning (DIF: 特異項目機能)</strong> とは、同じ能力を持つ異なる集団の受験者が、特定のテスト項目に対して異なる正答確率を示す現象である。</p>
+<p>例えば、同じ数学的能力を持つ男女が、ある文章題に対して異なる正答率を示す場合、その項目にはDIFが存在する可能性がある。これは項目の内容が一方の集団に有利に働いていることを示唆し、テストの公平性（fairness）に関わる重要な問題である。</p>
+<section id="dif">
+<h3>DIFの種類<a class="headerlink" href="#dif" title="Link to this heading">#</a></h3>
+<p>DIFには2種類ある：</p>
+<p><strong>1. Uniform DIF（均一DIF）</strong></p>
+<p>能力レベルに関わらず、一方の集団が常に有利（または不利）である場合。IRTの文脈では、項目困難度パラメータ <span class="math notranslate nohighlight">\(b\)</span> が集団間で異なる状況に対応する。</p>
+<p><strong>2. Non-uniform DIF（非均一DIF）</strong></p>
+<p>集団間の差が能力レベルによって変化する場合。低能力では集団Aが有利だが、高能力では集団Bが有利になるなど。IRTでは識別力パラメータ <span class="math notranslate nohighlight">\(a\)</span> が集団間で異なる状況に対応する。</p>
+</section>
+</section>
 <section id="id2">
-<h2>正規累積モデル<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p><span class="math notranslate nohighlight">\(i\)</span>番目の被験者の<span class="math notranslate nohighlight">\(j\)</span>番目の項目の値<span class="math notranslate nohighlight">\(y_{ij}\)</span>が二値<span class="math notranslate nohighlight">\(\{0, 1\}\)</span>であるとする（例えば正解・不正解だったり、アンケートの「あてはまる」「あてはまらない」という2件法など）。</p>
-<p><span class="math notranslate nohighlight">\(y_{ij}\)</span>の背後には潜在的な能力の連続量<span class="math notranslate nohighlight">\(\theta_i \in \mathbb{R}\)</span>が存在し、<span class="math notranslate nohighlight">\(\theta_i\)</span>が閾値<span class="math notranslate nohighlight">\(b_j\)</span>を超えていたら1、超えていなければ0が観測されるとする。つまり<span class="math notranslate nohighlight">\(y_{ij}\)</span>が以下のように決まるとする。</p>
+<h2>DIF検出手法<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="mantel-haenszel">
+<h3>Mantel-Haenszel法<a class="headerlink" href="#mantel-haenszel" title="Link to this heading">#</a></h3>
+<p>最も広く使用されているDIF検出手法の一つ。能力の代理指標として総得点を用い、各得点層で2×2の分割表を作成し、集団間の正答オッズ比を検定する。</p>
+<p>Mantel-Haenszel統計量：</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}
-y_{ij}
-= \begin{cases}
-0 &amp; \text{ if } \theta_i &lt; b_j\\
-1 &amp; \text{ if } \theta_i \geq b_j\\
-\end{cases}
-\end{split}\]</div>
+\[
+\chi^2_{MH} = \frac{\left[ \left| \sum_k (A_k - E(A_k)) \right| - 0.5 \right]^2}{\sum_k \text{Var}(A_k)}
+\]</div>
+<p>ここで <span class="math notranslate nohighlight">\(A_k\)</span> は得点層 <span class="math notranslate nohighlight">\(k\)</span> における参照群の正答者数、<span class="math notranslate nohighlight">\(E(A_k)\)</span> はその期待値。</p>
+<p>共通オッズ比の推定値：</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\alpha}_{MH} = \frac{\sum_k A_k D_k / N_k}{\sum_k B_k C_k / N_k}
+\]</div>
+<p>ETSでは、この対数を変換したDelta尺度（MH D-DIF）がよく使われる：</p>
+<div class="math notranslate nohighlight">
+\[
+\text{MH D-DIF} = -2.35 \ln(\hat{\alpha}_{MH})
+\]</div>
+</section>
 <section id="id3">
-<h3>1パラメータ正規累積モデル<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
-<p>しかし、実際には被験者<span class="math notranslate nohighlight">\(i\)</span>の体調や運（たまたま正解できた）などにより、常にこのようにきれいに正解・不正解が決まるわけではないと考えられる。こうした誤差を表すパラメータ<span class="math notranslate nohighlight">\(\varepsilon_{ij} \sim N(0, \sigma^2_{\varepsilon})\)</span>も追加して</p>
+<h3>ロジスティック回帰法<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>項目への正答を目的変数、能力（総得点）と集団を説明変数とするロジスティック回帰を用いる方法。</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}
-y_{ij}
-= \begin{cases}
-0 &amp; \text{ if } (\theta_i - \varepsilon_{ij}) &lt; b_j\\
-1 &amp; \text{ if } (\theta_i - \varepsilon_{ij}) \geq b_j\\
-\end{cases}
-\end{split}\]</div>
-<p>とする。誤差が確率変数のため、<span class="math notranslate nohighlight">\(y_{ij}\)</span>のとる値も確率変数として考えることができるようになる。<span class="math notranslate nohighlight">\(b_j\)</span>を移項すると</p>
+\[
+\log \left( \frac{P(Y=1)}{1-P(Y=1)} \right) = \beta_0 + \beta_1 \theta + \beta_2 G + \beta_3 (\theta \times G)
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\theta\)</span>: 能力（または総得点）</p></li>
+<li><p><span class="math notranslate nohighlight">\(G\)</span>: 集団を示すダミー変数</p></li>
+<li><p><span class="math notranslate nohighlight">\(\beta_2 \neq 0\)</span>: Uniform DIFの存在</p></li>
+<li><p><span class="math notranslate nohighlight">\(\beta_3 \neq 0\)</span>: Non-uniform DIFの存在</p></li>
+</ul>
+<p>この方法の利点は、Uniform DIFとNon-uniform DIFを同時に検出できることである。</p>
+</section>
+<section id="irt">
+<h3>IRT法<a class="headerlink" href="#irt" title="Link to this heading">#</a></h3>
+<p>各集団で別々にIRTモデルを推定し、等化して尺度を揃えたのち、項目パラメータの差を検定する方法。</p>
+<p>Lord’s <span class="math notranslate nohighlight">\(\chi^2\)</span> 検定：</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}
-y_{ij}
-= \begin{cases}
-0 &amp; \text{ if } (\theta_i - \varepsilon_{ij} - b_j) &lt; 0\\
-1 &amp; \text{ if } (\theta_i - \varepsilon_{ij} - b_j) \geq 0\\
-\end{cases}
-\end{split}\]</div>
-<p>となる。<span class="math notranslate nohighlight">\(\theta_i - \varepsilon_{ij} - b_j \sim N(\theta_i - b_j, \sigma^2_{\varepsilon})\)</span>である。
-<span class="math notranslate nohighlight">\(\varepsilon_{ij}\)</span>を移項すれば</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-y_{ij}
-= \begin{cases}
-0 &amp; \text{ if } (\theta_i - b_j) &lt; \varepsilon_{ij}\\
-1 &amp; \text{ if } (\theta_i - b_j) \geq \varepsilon_{ij}\\
-\end{cases}
-\end{split}\]</div>
-<p>でもあるので「<span class="math notranslate nohighlight">\(y_{ij}=1\)</span>となるのは誤差<span class="math notranslate nohighlight">\(\varepsilon_{ij}\)</span>が<span class="math notranslate nohighlight">\(\theta_i - b_j\)</span>以下のとき」とわかる。</p>
-<p>仮に<span class="math notranslate nohighlight">\(\varepsilon_{ij}\)</span>が標準正規分布（<span class="math notranslate nohighlight">\(\sigma^2_{\varepsilon} = 1\)</span>の正規分布）に従うならば、特性値<span class="math notranslate nohighlight">\(\theta_i\)</span>の人が項目<span class="math notranslate nohighlight">\(j\)</span>に当てはまると回答する確率は</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
-P(y_{ij} = 1)
-&amp;= P(\varepsilon_{ij} \leq \theta_i - b_j)\\
-&amp;= \int_{-\infty}^{\left(\theta_i-b_j\right)} \frac{1}{\sqrt{2 \pi}} \exp \left(-\frac{z^2}{2}\right) d z
-\end{aligned}
-\end{split}\]</div>
-<p>となる（最後のは、<span class="math notranslate nohighlight">\(\varepsilon_{ij}\)</span>が従う標準正規分布のうち <span class="math notranslate nohighlight">\(-\infty\)</span> から <span class="math notranslate nohighlight">\(ｋ\theta_i-b_j\)</span> までの範囲の面積が<span class="math notranslate nohighlight">\(P(\varepsilon_{ij} \leq \theta_i - b_j)\)</span>ということ）。</p>
-<div class="cell tag_hide-input docutils container">
-<details class="admonition hide above-input">
-<summary aria-label="Toggle hidden content">
-<p class="collapsed admonition-title">Show code cell source</p>
-<p class="expanded admonition-title">Hide code cell source</p>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
-<span class="n">epsilon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">epsilon</span><span class="p">)</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+\[
+\chi^2 = (\hat{\boldsymbol{\xi}}_R - \hat{\boldsymbol{\xi}}_F)' \hat{\boldsymbol{\Sigma}}^{-1} (\hat{\boldsymbol{\xi}}_R - \hat{\boldsymbol{\xi}}_F)
+\]</div>
+<p>ここで <span class="math notranslate nohighlight">\(\hat{\boldsymbol{\xi}}\)</span> は項目パラメータのベクトル、<span class="math notranslate nohighlight">\(\hat{\boldsymbol{\Sigma}}\)</span> はその共分散行列の推定値。</p>
+</section>
+<section id="sibtest">
+<h3>SIBTEST<a class="headerlink" href="#sibtest" title="Link to this heading">#</a></h3>
+<p>Shealy &amp; Stout (1993) が開発した、多次元性に基づくDIF検出法。項目をアンカー項目（DIFがないと仮定）と検討項目に分け、条件付き期待得点の差を検定する。</p>
+</section>
+</section>
+<section id="python">
+<h2>Pythonでの実装<a class="headerlink" href="#python" title="Link to this heading">#</a></h2>
+<section id="difnlr-r">
+<h3>difNLR パッケージ（R）<a class="headerlink" href="#difnlr-r" title="Link to this heading">#</a></h3>
+<p>Rには <code class="docutils literal notranslate"><span class="pre">difR</span></code> や <code class="docutils literal notranslate"><span class="pre">difNLR</span></code> など、DIF分析に特化したパッケージがある。</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">difNLR</span><span class="p">)</span>
 
-<span class="n">c</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="c1"># Mantel-Haenszel法</span>
+<span class="nf">difMH</span><span class="p">(</span><span class="n">Data</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="n">focal.name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">epsilon</span> <span class="o">&lt;</span> <span class="n">c</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$P(y_</span><span class="si">{ij}</span><span class="s1"> = 1)$&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">epsilon</span> <span class="o">&gt;=</span> <span class="n">c</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$P(y_</span><span class="si">{ij}</span><span class="s1"> = 0)$&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\theta_i - b_j$&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-    <span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\varepsilon_</span><span class="si">{ij}</span><span class="s1"> \sim N(0, 1)$&#39;</span><span class="p">,</span>
-    <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\varepsilon_</span><span class="si">{ij}</span><span class="s2">$&quot;</span><span class="p">,</span>
-    <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;density&quot;</span>
-<span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1"># ロジスティック回帰法</span>
+<span class="nf">difLogistic</span><span class="p">(</span><span class="n">Data</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="n">focal.name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;both&quot;</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/a949ca679157a2003c80109acfdf5f0e790b3ede5573e318890f4a5e003c0900.png" src="../../_images/a949ca679157a2003c80109acfdf5f0e790b3ede5573e318890f4a5e003c0900.png" />
-</div>
 </div>
 </section>
 <section id="id4">
-<h3>2パラメータ正規累積モデル<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(\sigma^2_{\varepsilon}\)</span>が項目ごとに異なる場合を考える。<span class="math notranslate nohighlight">\(\sigma^2_{\varepsilon}=1/a_j\)</span>とすると、誤差の確率分布は</p>
-<div class="math notranslate nohighlight">
-\[
-\varepsilon_{ij} \sim N\left(0, \frac{1}{a_j}\right)
-\]</div>
-<p>となる。両辺を<span class="math notranslate nohighlight">\(a_j\)</span>倍すると、<span class="math notranslate nohighlight">\(a_j \varepsilon_{ij} \sim N(0, 1)\)</span>と表すことができ、引き続き標準正規分布を使うことができる。そのためモデルは<span class="math notranslate nohighlight">\(a_i\)</span>が追加され</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
-P(y_{ij} = 1)
-&amp;= P(a_j \varepsilon_{ij} \leq \theta_i - b_j)\\
-&amp;= \int_{-\infty}^{ a_j  (\theta_i-b_j)} \frac{1}{\sqrt{2 \pi}} \exp \left(-\frac{z^2}{2}\right) d z
-\end{aligned}
-\end{split}\]</div>
-<p>となる。</p>
-<div class="info admonition">
-<p class="admonition-title">パラメータの意味</p>
-<p><span class="math notranslate nohighlight">\(b_j\)</span>が大きくなると<span class="math notranslate nohighlight">\(\theta_i - b_j\)</span>の値は小さくなり、<span class="math notranslate nohighlight">\(P(y_{ij} = 1)\)</span>の面積が小さくなる。<span class="math notranslate nohighlight">\(y_{ij} = 1\)</span>が正解を表しているとするなら、正答率が低くなる方向に作用する。そのため<span class="math notranslate nohighlight">\(b_j\)</span>は <strong>項目困難度（item difficulty）</strong> と呼ばれる。</p>
-<p>項目特性曲線（ICC）との関係でいうと、ICCが0.5になる点が<span class="math notranslate nohighlight">\(b_j = \theta_i\)</span>となる。つまり、困難度が高いほど正答率50%の点にくる<span class="math notranslate nohighlight">\(\theta_i\)</span>も高くなる</p>
-<p>また<span class="math notranslate nohighlight">\(a_j\)</span>は値が大きくなると<span class="math notranslate nohighlight">\(\varepsilon_{ij}\)</span>の分散を下げて分布がより尖っていく。また横軸に<span class="math notranslate nohighlight">\(\theta_i - b_j\)</span>、縦軸に<span class="math notranslate nohighlight">\(P(y_{ij} = 1)\)</span>のグラフを書くとき、この曲線の傾きを急にして、<span class="math notranslate nohighlight">\(\theta_i\)</span>が低い人と高い人の間で<span class="math notranslate nohighlight">\(P(y_{ij} = 1)\)</span>の変化を大きくする。例えば、<span class="math notranslate nohighlight">\(\theta_i\)</span>のある点を境にして正解/不正解がはっきり分かれるデータならICCの傾きは急になり、<span class="math notranslate nohighlight">\(a_j\)</span>は高くなる。
-そのため<span class="math notranslate nohighlight">\(a_j\)</span>は <strong>項目識別力（item discrimination）</strong> と呼ばれる。</p>
-</div>
-<div class="cell tag_hide-input docutils container">
-<details class="admonition hide above-input">
-<summary aria-label="Toggle hidden content">
-<p class="collapsed admonition-title">Show code cell source</p>
-<p class="expanded admonition-title">Hide code cell source</p>
-</summary>
+<h3>Pythonによる実装例<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>PythonでのDIF分析は、<code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> を用いたロジスティック回帰や、<code class="docutils literal notranslate"><span class="pre">scipy.stats</span></code> を用いたMantel-Haenszel検定で実装できる。</p>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-
-<span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="k">for</span> <span class="n">beta</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
-    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">a</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$b$ = &quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\theta_i$&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$P(y_</span><span class="si">{ij}</span><span class="s2"> = 1)$&quot;</span><span class="p">,</span> <span class="n">xticklabels</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticklabels</span><span class="o">=</span><span class="p">[])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">beta</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
-    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">a</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$a$ = &quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\theta_i$&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$P(y_</span><span class="si">{ij}</span><span class="s2"> = 1)$&quot;</span><span class="p">,</span> <span class="n">xticklabels</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticklabels</span><span class="o">=</span><span class="p">[])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">statsmodels.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.formula.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">logit</span>
 </pre></div>
 </div>
 </div>
-</details>
-<div class="cell_output docutils container">
-<img alt="../../_images/2a0f992e5a789a6d6cf6c1eb60807988965f6af257b479e51cdd13fa02820755.png" src="../../_images/2a0f992e5a789a6d6cf6c1eb60807988965f6af257b479e51cdd13fa02820755.png" />
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">mantel_haenszel_dif</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">total_score</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mantel-Haenszel法によるDIF検出</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    response : np.ndarray</span>
+<span class="sd">        項目への応答（0/1）</span>
+<span class="sd">    group : np.ndarray</span>
+<span class="sd">        集団（0: 参照群, 1: 焦点群）</span>
+<span class="sd">    total_score : np.ndarray</span>
+<span class="sd">        総得点（能力の代理指標）</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        MH統計量、p値、共通オッズ比、MH D-DIF</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 得点層ごとに分割表を作成</span>
+    <span class="n">unique_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">total_score</span><span class="p">)</span>
+    
+    <span class="n">A_sum</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 参照群・正答</span>
+    <span class="n">B_sum</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 参照群・誤答</span>
+    <span class="n">C_sum</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 焦点群・正答</span>
+    <span class="n">D_sum</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 焦点群・誤答</span>
+    
+    <span class="n">numerator</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">denominator</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">expected_A</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">var_A</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">unique_scores</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">total_score</span> <span class="o">==</span> <span class="n">score</span>
+        
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># 参照群・正答</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>  <span class="c1"># 参照群・誤答</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># 焦点群・正答</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>  <span class="c1"># 焦点群・誤答</span>
+        
+        <span class="n">N</span> <span class="o">=</span> <span class="n">A</span> <span class="o">+</span> <span class="n">B</span> <span class="o">+</span> <span class="n">C</span> <span class="o">+</span> <span class="n">D</span>
+        <span class="k">if</span> <span class="n">N</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        
+        <span class="n">n1</span> <span class="o">=</span> <span class="n">A</span> <span class="o">+</span> <span class="n">B</span>  <span class="c1"># 参照群の人数</span>
+        <span class="n">n2</span> <span class="o">=</span> <span class="n">C</span> <span class="o">+</span> <span class="n">D</span>  <span class="c1"># 焦点群の人数</span>
+        <span class="n">m1</span> <span class="o">=</span> <span class="n">A</span> <span class="o">+</span> <span class="n">C</span>  <span class="c1"># 正答者数</span>
+        <span class="n">m2</span> <span class="o">=</span> <span class="n">B</span> <span class="o">+</span> <span class="n">D</span>  <span class="c1"># 誤答者数</span>
+        
+        <span class="c1"># オッズ比の計算用</span>
+        <span class="n">numerator</span> <span class="o">+=</span> <span class="n">A</span> <span class="o">*</span> <span class="n">D</span> <span class="o">/</span> <span class="n">N</span>
+        <span class="n">denominator</span> <span class="o">+=</span> <span class="n">B</span> <span class="o">*</span> <span class="n">C</span> <span class="o">/</span> <span class="n">N</span>
+        
+        <span class="c1"># MH統計量の計算用</span>
+        <span class="n">expected_A</span> <span class="o">+=</span> <span class="n">n1</span> <span class="o">*</span> <span class="n">m1</span> <span class="o">/</span> <span class="n">N</span>
+        <span class="n">var_A</span> <span class="o">+=</span> <span class="n">n1</span> <span class="o">*</span> <span class="n">n2</span> <span class="o">*</span> <span class="n">m1</span> <span class="o">*</span> <span class="n">m2</span> <span class="o">/</span> <span class="p">(</span><span class="n">N</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="k">if</span> <span class="n">N</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+    
+    <span class="c1"># 共通オッズ比</span>
+    <span class="n">alpha_mh</span> <span class="o">=</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span> <span class="k">if</span> <span class="n">denominator</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    
+    <span class="c1"># MH D-DIF（ETS Delta尺度）</span>
+    <span class="n">mh_d_dif</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.35</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">alpha_mh</span><span class="p">)</span> <span class="k">if</span> <span class="n">alpha_mh</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    
+    <span class="c1"># MHカイ二乗統計量</span>
+    <span class="n">observed_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">group</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">response</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">chi2_mh</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">observed_A</span> <span class="o">-</span> <span class="n">expected_A</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">var_A</span> <span class="k">if</span> <span class="n">var_A</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">p_value</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">chi2</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">chi2_mh</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;chi2_mh&#39;</span><span class="p">:</span> <span class="n">chi2_mh</span><span class="p">,</span>
+        <span class="s1">&#39;p_value&#39;</span><span class="p">:</span> <span class="n">p_value</span><span class="p">,</span>
+        <span class="s1">&#39;alpha_mh&#39;</span><span class="p">:</span> <span class="n">alpha_mh</span><span class="p">,</span>
+        <span class="s1">&#39;mh_d_dif&#39;</span><span class="p">:</span> <span class="n">mh_d_dif</span>
+    <span class="p">}</span>
+</pre></div>
 </div>
 </div>
-<p>なお横軸に<span class="math notranslate nohighlight">\(\theta_i\)</span>、縦軸に<span class="math notranslate nohighlight">\(P(y_{ij}=1)\)</span>をとったグラフは <strong>項目特性曲線 （item characteristic curve: ICC）</strong> と呼ばれる。</p>
-<div class="tip admonition">
-<p class="admonition-title">因子分析と2P正規累積モデルは等価</p>
-<p>因子分析と2パラメータ正規累積モデルは数学的に等価であると知られている。標準化していない（切片が0でない）1因子モデルは、切片<span class="math notranslate nohighlight">\(\tau_j\)</span>、因子負荷量<span class="math notranslate nohighlight">\(a_j\)</span>、因子スコア<span class="math notranslate nohighlight">\(f_i\)</span>で</p>
-<div class="math notranslate nohighlight">
-\[
-y_{ij} = \tau_j +  a_j f_i - \varepsilon_{ij}
-\quad (\varepsilon_{ij}\sim N(0, \sigma_{\varepsilon}))
-\]</div>
-<p>となる（IRTの説明に合わせて誤差の符号をマイナスにしている）</p>
-<p>カテゴリカル因子分析では「離散的な観測変数<span class="math notranslate nohighlight">\(y_{ij}\)</span>はその背後にある潜在的な連続変数によって決まる」という考え方をするため、IRTの冒頭の説明と同じで</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-y_{ij}
-= \begin{cases}
-0 &amp; \text{ if } (\tau_j +  a_j f_i) &lt; \varepsilon_{ij}\\
-1 &amp; \text{ if } (\tau_j +  a_j f_i) \geq \varepsilon_{ij}\\
-\end{cases}
-\end{split}\]</div>
-<p>つまり標準正規分布に従う誤差<span class="math notranslate nohighlight">\(\varepsilon_{ij}\)</span>が<span class="math notranslate nohighlight">\(\tau_j +  a_j f_i\)</span>より小さいときに<span class="math notranslate nohighlight">\(y_{ij}=1\)</span>となると考えるため、その確率<span class="math notranslate nohighlight">\(P(y_{ij}=1)\)</span>は</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
-P(y_{ij} = 1)
-&amp;= P(\varepsilon_{ij} \leq \tau_j +  a_j f_i)\\
-&amp;= \int_{-\infty}^{ (\tau_j +  a_j f_i)} \frac{1}{\sqrt{2 \pi}} \exp \left(-\frac{z^2}{2}\right) d z
-\end{aligned}
-\end{split}\]</div>
-<p>となる。2つのモデルのパラメータを<span class="math notranslate nohighlight">\((f_i, a_j, \tau_j) = (\theta_i, a_j, a_j b_j)\)</span>と対応させると</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
-\tau_j +  a_j f_i
-&amp;= a_j \left( f_i + \frac{\tau_j}{a_j} \right) \\
-&amp;= a_j (\theta_i - b_i)
-\end{aligned}
-\end{split}\]</div>
-<p>となる。</p>
 </div>
-</section>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">logistic_regression_dif</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">total_score</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ロジスティック回帰法によるDIF検出</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    response : np.ndarray</span>
+<span class="sd">        項目への応答（0/1）</span>
+<span class="sd">    group : np.ndarray</span>
+<span class="sd">        集団（0: 参照群, 1: 焦点群）</span>
+<span class="sd">    total_score : np.ndarray</span>
+<span class="sd">        総得点（能力の代理指標）</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Uniform DIF検定結果、Non-uniform DIF検定結果</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="s1">&#39;response&#39;</span><span class="p">:</span> <span class="n">response</span><span class="p">,</span>
+        <span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="n">group</span><span class="p">,</span>
+        <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="n">total_score</span><span class="p">,</span>
+        <span class="s1">&#39;interaction&#39;</span><span class="p">:</span> <span class="n">group</span> <span class="o">*</span> <span class="n">total_score</span>
+    <span class="p">})</span>
+    
+    <span class="c1"># Model 1: 能力のみ</span>
+    <span class="n">model1</span> <span class="o">=</span> <span class="n">logit</span><span class="p">(</span><span class="s1">&#39;response ~ score&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">disp</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="c1"># Model 2: 能力 + 集団（Uniform DIFの検定）</span>
+    <span class="n">model2</span> <span class="o">=</span> <span class="n">logit</span><span class="p">(</span><span class="s1">&#39;response ~ score + group&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">disp</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="c1"># Model 3: 能力 + 集団 + 交互作用（Non-uniform DIFの検定）</span>
+    <span class="n">model3</span> <span class="o">=</span> <span class="n">logit</span><span class="p">(</span><span class="s1">&#39;response ~ score + group + score:group&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">disp</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="c1"># Uniform DIF: Model 1 vs Model 2</span>
+    <span class="n">lr_uniform</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">model1</span><span class="o">.</span><span class="n">llf</span> <span class="o">-</span> <span class="n">model2</span><span class="o">.</span><span class="n">llf</span><span class="p">)</span>
+    <span class="n">p_uniform</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">chi2</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">lr_uniform</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># Non-uniform DIF: Model 2 vs Model 3</span>
+    <span class="n">lr_nonuniform</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">model2</span><span class="o">.</span><span class="n">llf</span> <span class="o">-</span> <span class="n">model3</span><span class="o">.</span><span class="n">llf</span><span class="p">)</span>
+    <span class="n">p_nonuniform</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">chi2</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">lr_nonuniform</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># Total DIF: Model 1 vs Model 3</span>
+    <span class="n">lr_total</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">model1</span><span class="o">.</span><span class="n">llf</span> <span class="o">-</span> <span class="n">model3</span><span class="o">.</span><span class="n">llf</span><span class="p">)</span>
+    <span class="n">p_total</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">chi2</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">lr_total</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;uniform_dif&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;chi2&#39;</span><span class="p">:</span> <span class="n">lr_uniform</span><span class="p">,</span>
+            <span class="s1">&#39;p_value&#39;</span><span class="p">:</span> <span class="n">p_uniform</span><span class="p">,</span>
+            <span class="s1">&#39;coefficient&#39;</span><span class="p">:</span> <span class="n">model2</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;nonuniform_dif&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;chi2&#39;</span><span class="p">:</span> <span class="n">lr_nonuniform</span><span class="p">,</span>
+            <span class="s1">&#39;p_value&#39;</span><span class="p">:</span> <span class="n">p_nonuniform</span><span class="p">,</span>
+            <span class="s1">&#39;coefficient&#39;</span><span class="p">:</span> <span class="n">model3</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;score:group&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;total_dif&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;chi2&#39;</span><span class="p">:</span> <span class="n">lr_total</span><span class="p">,</span>
+            <span class="s1">&#39;p_value&#39;</span><span class="p">:</span> <span class="n">p_total</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 <section id="id5">
-<h2>ロジスティックモデル<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
-<p>正規累積モデルはプロビット回帰と同様のことをするので、コンピュータで積分計算をするのがやや難しいという問題がある。そこでロジスティック分布に置き換えたものが使われる。</p>
-<p>ロジスティック分布の確率密度関数と累積分布関数は</p>
-<div class="math notranslate nohighlight">
-\[
-f(x)=\frac{\exp (-x)}{[1+\exp (-x)]^2}, \quad F(x)=\frac{1}{1+\exp (-x)}
-\]</div>
-<p>となる。とくに<span class="math notranslate nohighlight">\(x\)</span>を約1.7倍したロジスティック分布は累積分布関数が正規分布と非常に近くなることが知られている。</p>
-<div class="cell tag_hide-input docutils container">
-<details class="admonition hide above-input">
-<summary aria-label="Toggle hidden content">
-<p class="collapsed admonition-title">Show code cell source</p>
-<p class="expanded admonition-title">Hide code cell source</p>
-</summary>
+<h3>シミュレーションデータによる検証<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">logistic</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Normal Distribution&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">logistic</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>  <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Logistic Distribution&#39;</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Normal Distribution vs Logistic Distribution&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Probability Density&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;CDF of $Normal(x)$&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">logistic</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;CDF of $Logistic(x)$&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">logistic</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mf">1.704</span><span class="p">),</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;CDF of $Logistic(1.7 x)$&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Normal Distribution vs Logistic Distribution (CDF)&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Probability&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">simulate_dif_data</span><span class="p">(</span>
+    <span class="n">n_reference</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="n">n_focal</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="n">n_items</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="n">dif_items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">dif_magnitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DIFを含むシミュレーションデータを生成</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_reference : int</span>
+<span class="sd">        参照群の人数</span>
+<span class="sd">    n_focal : int</span>
+<span class="sd">        焦点群の人数</span>
+<span class="sd">    n_items : int</span>
+<span class="sd">        項目数</span>
+<span class="sd">    dif_items : list[int]</span>
+<span class="sd">        DIFを持つ項目のインデックス</span>
+<span class="sd">    dif_magnitude : float</span>
+<span class="sd">        DIFの大きさ（困難度パラメータの差）</span>
+<span class="sd">    seed : int</span>
+<span class="sd">        乱数シード</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        応答データ、集団、総得点、真のDIF項目</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">dif_items</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dif_items</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># 最初の2項目にDIFを設定</span>
+    
+    <span class="n">n_total</span> <span class="o">=</span> <span class="n">n_reference</span> <span class="o">+</span> <span class="n">n_focal</span>
+    
+    <span class="c1"># 能力パラメータ（両群とも標準正規分布）</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_reference</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_focal</span><span class="p">)</span>
+    <span class="p">])</span>
+    
+    <span class="c1"># 集団</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_reference</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_focal</span><span class="p">)])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    
+    <span class="c1"># 項目パラメータ（1PLMを仮定）</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n_items</span><span class="p">)</span>
+    
+    <span class="c1"># 応答データの生成</span>
+    <span class="n">responses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_total</span><span class="p">,</span> <span class="n">n_items</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_items</span><span class="p">):</span>
+        <span class="n">b_j</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        
+        <span class="c1"># DIF項目の場合、焦点群に対して困難度を変更</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">dif_items</span><span class="p">:</span>
+            <span class="n">b_effective</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">group</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b_j</span> <span class="o">+</span> <span class="n">dif_magnitude</span><span class="p">,</span> <span class="n">b_j</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">b_effective</span> <span class="o">=</span> <span class="n">b_j</span>
+        
+        <span class="c1"># 正答確率（1PLM）</span>
+        <span class="n">prob</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">theta</span> <span class="o">-</span> <span class="n">b_effective</span><span class="p">)))</span>
+        <span class="n">responses</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_total</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">prob</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    
+    <span class="c1"># 総得点</span>
+    <span class="n">total_score</span> <span class="o">=</span> <span class="n">responses</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">responses</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">total_score</span><span class="p">,</span> <span class="n">dif_items</span>
 </pre></div>
 </div>
 </div>
-</details>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># シミュレーションデータの生成</span>
+<span class="n">responses</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">total_score</span><span class="p">,</span> <span class="n">true_dif_items</span> <span class="o">=</span> <span class="n">simulate_dif_data</span><span class="p">(</span>
+    <span class="n">n_reference</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">n_focal</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">n_items</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">dif_items</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">dif_magnitude</span><span class="o">=</span><span class="mf">0.8</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;データサイズ: </span><span class="si">{</span><span class="n">responses</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;参照群: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2">, 焦点群: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;真のDIF項目: </span><span class="si">{</span><span class="n">true_dif_items</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="cell_output docutils container">
-<img alt="../../_images/be1480d3d184ef42d63b818995b7efdef53b7fb5a1b31b8b494df28edcfe3682.png" src="../../_images/be1480d3d184ef42d63b818995b7efdef53b7fb5a1b31b8b494df28edcfe3682.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>データサイズ: (1000, 20)
+参照群: 500, 焦点群: 500
+真のDIF項目: [0, 1]
+</pre></div>
 </div>
 </div>
-<section id="pl">
-<h3>2PLモデル<a class="headerlink" href="#pl" title="Link to this heading">#</a></h3>
-<p>正規分布の代わりにロジスティック分布を使った <strong>2パラメータロジスティック（2PL）モデル</strong> は以下のように表される。</p>
-<div class="admonition-pl admonition">
-<p class="admonition-title">2PLモデル</p>
-<div class="math notranslate nohighlight">
-\[
-P(y_{ij} = 1)
-= \frac{1}{1+ \exp(-D a_j \big( \theta_i - b_j) \big)}
-\]</div>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(a_j\)</span>：項目識別力</p></li>
-<li><p><span class="math notranslate nohighlight">\(b_j\)</span>：項目困難度</p></li>
-</ul>
 </div>
-<p>なお<span class="math notranslate nohighlight">\(D\)</span>はロジスティック・シグモイド関数を正規累積モデルの関数に近づけるための定数（通常は<span class="math notranslate nohighlight">\(D=1.7\)</span>か<span class="math notranslate nohighlight">\(D=1\)</span>にする）なので、正規累積モデルと比較する必要がなければ不要（<span class="math notranslate nohighlight">\(D=1\)</span>でいい）。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 各項目についてDIF検出を実行</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">responses</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="c1"># 検討項目を除いた総得点を計算</span>
+    <span class="n">score_without_item</span> <span class="o">=</span> <span class="n">total_score</span> <span class="o">-</span> <span class="n">responses</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]</span>
+    
+    <span class="n">mh_result</span> <span class="o">=</span> <span class="n">mantel_haenszel_dif</span><span class="p">(</span><span class="n">responses</span><span class="p">[:,</span> <span class="n">j</span><span class="p">],</span> <span class="n">group</span><span class="p">,</span> <span class="n">score_without_item</span><span class="p">)</span>
+    <span class="n">lr_result</span> <span class="o">=</span> <span class="n">logistic_regression_dif</span><span class="p">(</span><span class="n">responses</span><span class="p">[:,</span> <span class="n">j</span><span class="p">],</span> <span class="n">group</span><span class="p">,</span> <span class="n">score_without_item</span><span class="p">)</span>
+    
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;true_dif&#39;</span><span class="p">:</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">true_dif_items</span><span class="p">,</span>
+        <span class="s1">&#39;mh_chi2&#39;</span><span class="p">:</span> <span class="n">mh_result</span><span class="p">[</span><span class="s1">&#39;chi2_mh&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;mh_p&#39;</span><span class="p">:</span> <span class="n">mh_result</span><span class="p">[</span><span class="s1">&#39;p_value&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;mh_d_dif&#39;</span><span class="p">:</span> <span class="n">mh_result</span><span class="p">[</span><span class="s1">&#39;mh_d_dif&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;lr_uniform_p&#39;</span><span class="p">:</span> <span class="n">lr_result</span><span class="p">[</span><span class="s1">&#39;uniform_dif&#39;</span><span class="p">][</span><span class="s1">&#39;p_value&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;lr_nonuniform_p&#39;</span><span class="p">:</span> <span class="n">lr_result</span><span class="p">[</span><span class="s1">&#39;nonuniform_dif&#39;</span><span class="p">][</span><span class="s1">&#39;p_value&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;lr_total_p&#39;</span><span class="p">:</span> <span class="n">lr_result</span><span class="p">[</span><span class="s1">&#39;total_dif&#39;</span><span class="p">][</span><span class="s1">&#39;p_value&#39;</span><span class="p">]</span>
+    <span class="p">})</span>
+
+<span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="n">results_df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>item</th>
+      <th>true_dif</th>
+      <th>mh_chi2</th>
+      <th>mh_p</th>
+      <th>mh_d_dif</th>
+      <th>lr_uniform_p</th>
+      <th>lr_nonuniform_p</th>
+      <th>lr_total_p</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>True</td>
+      <td>20.471697</td>
+      <td>0.000006</td>
+      <td>-1.572459</td>
+      <td>0.000002</td>
+      <td>0.159701</td>
+      <td>0.000004</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>True</td>
+      <td>12.660260</td>
+      <td>0.000374</td>
+      <td>-1.321688</td>
+      <td>0.000183</td>
+      <td>0.080293</td>
+      <td>0.000198</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>False</td>
+      <td>0.107729</td>
+      <td>0.742745</td>
+      <td>0.130585</td>
+      <td>0.586662</td>
+      <td>0.569574</td>
+      <td>0.733820</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>False</td>
+      <td>0.001341</td>
+      <td>0.970788</td>
+      <td>-0.036401</td>
+      <td>0.984099</td>
+      <td>0.284134</td>
+      <td>0.563379</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>False</td>
+      <td>4.178016</td>
+      <td>0.040952</td>
+      <td>0.909406</td>
+      <td>0.037480</td>
+      <td>0.638891</td>
+      <td>0.102866</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>6</td>
+      <td>False</td>
+      <td>1.783816</td>
+      <td>0.181681</td>
+      <td>0.579566</td>
+      <td>0.074110</td>
+      <td>0.983400</td>
+      <td>0.202909</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>7</td>
+      <td>False</td>
+      <td>2.191538</td>
+      <td>0.138771</td>
+      <td>-0.701271</td>
+      <td>0.157806</td>
+      <td>0.908294</td>
+      <td>0.366339</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>8</td>
+      <td>False</td>
+      <td>0.212713</td>
+      <td>0.644649</td>
+      <td>-0.172390</td>
+      <td>0.632513</td>
+      <td>0.614073</td>
+      <td>0.785466</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>9</td>
+      <td>False</td>
+      <td>0.246610</td>
+      <td>0.619472</td>
+      <td>0.191956</td>
+      <td>0.515535</td>
+      <td>0.009744</td>
+      <td>0.028667</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>10</td>
+      <td>False</td>
+      <td>1.824608</td>
+      <td>0.176766</td>
+      <td>0.564910</td>
+      <td>0.085535</td>
+      <td>0.128068</td>
+      <td>0.071639</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>11</td>
+      <td>False</td>
+      <td>0.078840</td>
+      <td>0.778876</td>
+      <td>-0.119255</td>
+      <td>0.893427</td>
+      <td>0.634899</td>
+      <td>0.885404</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>12</td>
+      <td>False</td>
+      <td>0.216141</td>
+      <td>0.641996</td>
+      <td>-0.190395</td>
+      <td>0.648446</td>
+      <td>0.206498</td>
+      <td>0.405823</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>13</td>
+      <td>False</td>
+      <td>0.000356</td>
+      <td>0.984946</td>
+      <td>0.017220</td>
+      <td>0.982344</td>
+      <td>0.084932</td>
+      <td>0.226685</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>14</td>
+      <td>False</td>
+      <td>0.192954</td>
+      <td>0.660469</td>
+      <td>0.190035</td>
+      <td>0.580818</td>
+      <td>0.693265</td>
+      <td>0.794340</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>15</td>
+      <td>False</td>
+      <td>1.025178</td>
+      <td>0.311294</td>
+      <td>-0.426142</td>
+      <td>0.257368</td>
+      <td>0.422961</td>
+      <td>0.381949</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>16</td>
+      <td>False</td>
+      <td>0.552185</td>
+      <td>0.457426</td>
+      <td>0.323263</td>
+      <td>0.384877</td>
+      <td>0.823719</td>
+      <td>0.668750</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>17</td>
+      <td>False</td>
+      <td>0.686234</td>
+      <td>0.407448</td>
+      <td>0.288933</td>
+      <td>0.255636</td>
+      <td>0.435721</td>
+      <td>0.386787</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>18</td>
+      <td>False</td>
+      <td>0.888507</td>
+      <td>0.345882</td>
+      <td>0.380064</td>
+      <td>0.254879</td>
+      <td>0.342980</td>
+      <td>0.333601</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>19</td>
+      <td>False</td>
+      <td>0.109320</td>
+      <td>0.740919</td>
+      <td>-0.127927</td>
+      <td>0.533438</td>
+      <td>0.333930</td>
+      <td>0.516481</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>20</td>
+      <td>False</td>
+      <td>0.454359</td>
+      <td>0.500272</td>
+      <td>0.247549</td>
+      <td>0.346342</td>
+      <td>0.931933</td>
+      <td>0.639508</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># DIFが検出された項目</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Mantel-Haenszel法で検出されたDIF項目 ===&quot;</span><span class="p">)</span>
+<span class="n">detected_mh</span> <span class="o">=</span> <span class="n">results_df</span><span class="p">[</span><span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;mh_p&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">alpha</span><span class="p">][</span><span class="s1">&#39;item&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;検出された項目: </span><span class="si">{</span><span class="n">detected_mh</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;真のDIF項目: </span><span class="si">{</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">true_dif_items</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== ロジスティック回帰法で検出されたDIF項目 ===&quot;</span><span class="p">)</span>
+<span class="n">detected_lr</span> <span class="o">=</span> <span class="n">results_df</span><span class="p">[</span><span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;lr_total_p&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">alpha</span><span class="p">][</span><span class="s1">&#39;item&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;検出された項目: </span><span class="si">{</span><span class="n">detected_lr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;真のDIF項目: </span><span class="si">{</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">true_dif_items</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== Mantel-Haenszel法で検出されたDIF項目 ===
+検出された項目: [1, 2, 5]
+真のDIF項目: [1, 2]
+
+=== ロジスティック回帰法で検出されたDIF項目 ===
+検出された項目: [1, 2, 9]
+真のDIF項目: [1, 2]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 <section id="id6">
-<h3>3PLモデル<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
-<p>例えば4択問題では、正解がわからなくて適当に選んだとしても1/4は当たることになる。こうした影響を「当て推量」パラメータ<span class="math notranslate nohighlight">\(c_j\)</span>として取り入れたモデル。</p>
-<div class="admonition-pl admonition">
-<p class="admonition-title">3PLモデル</p>
-<div class="math notranslate nohighlight">
-\[
-P(y_{ij} = 1)
-= c_j + \frac{1 - c_j}{1 - \exp(-a_j \big( \theta_i - b_j) \big)}
-\]</div>
+<h2>DIFの解釈と対処<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<p>DIFが検出された場合、以下のステップで対処する：</p>
+<ol class="arabic simple">
+<li><p><strong>統計的有意性の確認</strong>: 多重比較の補正（Bonferroni補正など）を考慮</p></li>
+<li><p><strong>効果量の評価</strong>: MH D-DIFの絶対値が1.0以上で「中程度」、1.5以上で「大きい」とされる（ETS基準）</p></li>
+<li><p><strong>項目内容の精査</strong>: 専門家による項目レビューを実施し、DIFの原因を特定</p></li>
+<li><p><strong>対処の決定</strong>:</p>
 <ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(a_j\)</span>：項目識別力</p></li>
-<li><p><span class="math notranslate nohighlight">\(b_j\)</span>：項目困難度</p></li>
-<li><p><span class="math notranslate nohighlight">\(c_j\)</span>：当て推量</p></li>
+<li><p>項目の削除</p></li>
+<li><p>項目の修正</p></li>
+<li><p>集団別の項目パラメータを使用</p></li>
+<li><p>DIFの影響を考慮したスコアリング</p></li>
 </ul>
-</div>
-<p><span class="math notranslate nohighlight">\(c_j\)</span>は項目特性曲線の下限となる。<span class="math notranslate nohighlight">\(\theta_i\)</span>がどんなに低い人でも必ず<span class="math notranslate nohighlight">\(c_j\)</span>以上の<span class="math notranslate nohighlight">\(P(y_{ij} = 1)\)</span>になるということ。</p>
+</li>
+</ol>
 </section>
 <section id="id7">
-<h3>4PLモデル<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
-<p>項目特性曲線の上限を表すパラメータ<span class="math notranslate nohighlight">\(d_j\)</span>を追加したもの。<span class="math notranslate nohighlight">\(\theta_i\)</span>がどんなに高い人でも100%の正答率にはできない高難度な状況（運ゲー）を想定したモデル。</p>
-<div class="admonition-pl admonition">
-<p class="admonition-title">4PLモデル</p>
-<div class="math notranslate nohighlight">
-\[
-P(y_{ij} = 1)
-= c_j + \frac{d_j - c_j}{1 - \exp(-a_j \big( \theta_i - b_j) \big)}
-\]</div>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(a_j\)</span>：項目識別力</p></li>
-<li><p><span class="math notranslate nohighlight">\(b_j\)</span>：項目困難度</p></li>
-<li><p><span class="math notranslate nohighlight">\(c_j\)</span>：当て推量。項目特性曲線の下限</p></li>
-<li><p><span class="math notranslate nohighlight">\(d_j\)</span>：項目特性曲線の上限</p></li>
-</ul>
-</div>
-<p>4PLMになるとかなりモデルが複雑になりパラメータの推定も不安定になるので、1~3PLMほど一般的ではない。対応していないライブラリも多い。</p>
-</section>
-<section id="id8">
-<h3>5PLモデル<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
-<p>「非対称性」のパラメータ<span class="math notranslate nohighlight">\(e_j\)</span>を追加したもの。4PLまでは項目特性曲線の動き方が0.5を中心に対称になっている。5PLでは「最初は<span class="math notranslate nohighlight">\(\theta_i\)</span>があがるほど急激に<span class="math notranslate nohighlight">\(P(y_{ij}=1)\)</span>が上がるが、徐々に上がりにくくなる」などの状況を表すことができる。</p>
-<div class="admonition-pl admonition">
-<p class="admonition-title">5PLモデル</p>
-<div class="math notranslate nohighlight">
-\[
-P(y_{ij} = 1)
-= c_j + \frac{d_j - c_j}{\left[ 1 - \exp(-a_j \big( \theta_i - b_j) \big) \right]^{e_j}}
-\]</div>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(a_j\)</span>：項目識別力</p></li>
-<li><p><span class="math notranslate nohighlight">\(b_j\)</span>：項目困難度</p></li>
-<li><p><span class="math notranslate nohighlight">\(c_j\)</span>：当て推量。項目特性曲線の下限</p></li>
-<li><p><span class="math notranslate nohighlight">\(d_j\)</span>：項目特性曲線の上限</p></li>
-<li><p><span class="math notranslate nohighlight">\(e_j\)</span>：非対称性</p></li>
-</ul>
-</div>
-</section>
-</section>
-<section id="id9">
-<h2>多値型モデル<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
-<p>項目の反応<span class="math notranslate nohighlight">\(y_{ij}\)</span>が多値になった場合のモデルも存在する。</p>
-<section id="id10">
-<h3>段階反応モデル<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
-<p><strong>段階反応モデル（graded response model: GRM）</strong> は複数の二値IRTモデルを組み合わせて多値反応を表現する。</p>
-<p>回答者<span class="math notranslate nohighlight">\(i\)</span>の項目<span class="math notranslate nohighlight">\(j\)</span>に対する回答<span class="math notranslate nohighlight">\(y_{ij} = k \quad (k=1,2,\dots,K)\)</span>について、「<span class="math notranslate nohighlight">\(k\)</span>以上のカテゴリを選ぶ確率」を考えると、これはまだ「<span class="math notranslate nohighlight">\(k\)</span>未満 or <span class="math notranslate nohighlight">\(k\)</span>以上」の二値なので2PLなどで表せる。例えば以下のようになる。</p>
-<div class="math notranslate nohighlight">
-\[
-P(y_{ij} \geq k)
-= \frac{1}{1+ \exp \big(-a_j ( \theta_i - b_{jk}) \big)}
-\]</div>
-<p>なお、困難度は項目<span class="math notranslate nohighlight">\(j\)</span>のカテゴリ<span class="math notranslate nohighlight">\(k\)</span>ごとに用意されるため<span class="math notranslate nohighlight">\(b_{jk}\)</span>に変更している。</p>
-<p>このモデルを組み合わせると、「ちょうど<span class="math notranslate nohighlight">\(k\)</span>番目のカテゴリを選ぶ確率」は</p>
-<div class="math notranslate nohighlight">
-\[
-P(y_{ij} = k) = P(y_{ij} \geq k) - P(y_{ij} \geq k + 1)
-\]</div>
-<p>と表すことができる。ただし端のカテゴリは<span class="math notranslate nohighlight">\(P(y_{ij} \geq 1) = 1, P(y_{ij} \geq K + 1) = 0\)</span>とする。また確率100%の困難度は低くて当然なので<span class="math notranslate nohighlight">\(b_{j1} = -\infty\)</span>とする。</p>
-<div class="admonition- admonition">
-<p class="admonition-title">段階反応モデル</p>
-<div class="math notranslate nohighlight">
-\[
-P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j \big( \theta_i - b_{jk}) \big)} - \frac{1}{1+ \exp(-a_j \big( \theta_i - b_{jk+1}) \big)}
-\]</div>
-</div>
-</section>
-<section id="id11">
-<h3>名義反応モデル<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
-<p>順序のないカテゴリカル変数を名義尺度（nominal scale）という。名義尺度の反応を扱えるのが <strong>名義反応モデル（nominal response model: NRM）</strong> 。softmax関数のような形で多値化する。</p>
-<div class="math notranslate nohighlight">
-\[
-P(y_{ij} = k)
-= \frac{ \exp (a_{jk} \theta_i + \gamma_{jk}) }{ \sum_{\kappa=1}^K \exp (- a_{j\kappa} \theta_i + \gamma_{j\kappa}) }
-\]</div>
-</section>
-</section>
-<section id="id12">
-<h2>連続反応モデル<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
-<p>連続反応モデル（Continuous Response Model, CRM）は連続的な反応（例：時間、強度、割合）を扱うことができる。</p>
-<p>CRMは段階反応モデル（GRM）をさらに多段階に拡張していって連続値を扱う。</p>
-<p>受験者<span class="math notranslate nohighlight">\(i\)</span>が項目<span class="math notranslate nohighlight">\(j\)</span>において<span class="math notranslate nohighlight">\(x_j\)</span>点以上をとる確率は、次のようにロジスティック関数で表すことができる</p>
-<div class="math notranslate nohighlight">
-\[
-p_i^*(x_j)=\frac{1}{ 1 + \exp \big(- a_j (\theta_i - b_{x_j}) \big)}
-\]</div>
-<p>これを使うと、受験者<span class="math notranslate nohighlight">\(i\)</span>が項目<span class="math notranslate nohighlight">\(j\)</span>において<span class="math notranslate nohighlight">\(x_j\)</span>点をとる確率 <span class="math notranslate nohighlight">\(p_i(x_j)\)</span> を次のように定義できる</p>
-<div class="math notranslate nohighlight">
-\[
-p_i(x_j) = \lim _{\Delta x_j \to 0} \frac{p_i^*(x_j)-p_i^*(x_j+\Delta x_j)}{\Delta x_j}
-\]</div>
-<p><span class="math notranslate nohighlight">\(b_{x_j}\)</span>は項目<span class="math notranslate nohighlight">\(j\)</span>において<span class="math notranslate nohighlight">\(x_j\)</span>以上の点を取る困難度で、ロジスティック関数の逆関数を用いて以下のように定義される</p>
-<div class="math notranslate nohighlight">
-\[
-b_{x_j} = \beta_j + \frac{1}{\alpha_j} \log \frac{x_j}{K_j-x_j}
-\]</div>
-<p>ここで<span class="math notranslate nohighlight">\(\alpha_j, \beta_j\)</span>はロジスティック関数の逆関数における識別力と困難度を表現するパラメータ、<span class="math notranslate nohighlight">\(K_j\)</span>は<span class="math notranslate nohighlight">\(x_j\)</span>のとる最大値（<span class="math notranslate nohighlight">\(x_j \in [0, K_j]\)</span>）</p>
+<h2>参考文献<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-参考</div>
-<ul class="simple">
-<li><p class="sd-card-text">初出：<a class="reference external" href="https://www.cambridge.org/core/journals/psychometrika/article/abs/homogeneous-case-of-the-continuous-response-model/C3D71D20E8485F67ACF3A72740FC2009">Samejima, F. (1973). Homogeneous case of the continuous response model. Psychometrika, 38(2), 203-219.</a></p></li>
-<li><p class="sd-card-text">応用研究の例：<a class="reference external" href="https://www.jstage.jst.go.jp/article/jbhmk/39/2/39_93/_pdf">秋山隆, 尾崎幸謙, &amp; 豊田秀樹. (2012). 項目反応理論における連続反応モデルを用いた顧客の価格感度測定—ID-POS データへの適用例を通じて—. 行動計量学, 39(2), 93-101.</a></p></li>
-</ul>
+<p class="sd-card-text">Holland, P. W., &amp; Wainer, H. (Eds.). (1993). <em>Differential item functioning</em>. Lawrence Erlbaum Associates.</p>
+<p class="sd-card-text">DIFに関する包括的な教科書</p>
 </div>
 </div>
-</section>
-<section id="id13">
-<h2>多次元モデル<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
-<p>多次元因子分析モデルでは項目反応<span class="math notranslate nohighlight">\(y_{ij}\)</span>を</p>
-<div class="math notranslate nohighlight">
-\[
-y_{i j} = \tau_j + \sum_{t=1}^T f_{i t} b_{t j} - \varepsilon_{ij}
-\]</div>
-<p>のように表す。ここから考えると、多次元IRTモデル（の2PLM）の項目反応関数は</p>
-<div class="math notranslate nohighlight">
-\[
-P(y_{ij}=1) = \frac{1}{ 1 + \exp \left[ -\sum_{t=1}^T \alpha_{j t} \theta_{i t} - \tau_j \right]}
-\]</div>
-<p>のように考えられる。<span class="math notranslate nohighlight">\(\tau_j\)</span>は切片のパラメータで、これを困難度に変換するには、次元ごとの識別力を一つにまとめた <strong>多次元識別力</strong> である</p>
-<div class="math notranslate nohighlight">
-\[
-\operatorname{MDISC}_j=\sqrt{\sum_{t=1}^T \alpha_{t j}^2}
-\]</div>
-<p>を使って</p>
-<div class="math notranslate nohighlight">
-\[
-\beta_j=\frac{-\tau_j}{\mathrm{MDISC}_j}
-\]</div>
-<p>と変換する（豊田 2013 『項目反応理論［中級編]』） 。</p>
-<section id="id14">
-<h3>補償型と非補償型<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
-<p>ある次元の特性値が低くても、別の次元の特性値がとても高い場合は反応確率が高くなるようなモデルは <strong>補償型 (compensatory) モデル</strong> と呼ばれる。例えば先述の</p>
-<div class="math notranslate nohighlight">
-\[
-P(y_{ij}=1) = \frac{1}{ 1 + \exp \left[ -\sum_{t=1}^T \alpha_{j t} \theta_{i t} - \tau_j \right]}
-\]</div>
-<p>は補償型モデルである。</p>
-<p>一方で複数の次元の特性値がそろわないと高くならない多次元IRTモデルは <strong>非補償 (noncompensatory) モデル</strong> あるいは <strong>部分補償(partially compensatory)モデル</strong> と呼ばれる（例：「総合学力」に対して「数学力スコア」と「英語力スコア」はそれぞれ独立していると考える）。最もシンプルな非補償モデルの項目反応関数は</p>
-<div class="math notranslate nohighlight">
-\[
-P(y_{ij}=1) = \prod_{t=1}^T \frac{1}{1+\exp \left[-\alpha_{j t}\left(\theta_{i t}-\beta_{j t}\right)\right]}
-\]</div>
-<p>である。それぞれの次元の特性値<span class="math notranslate nohighlight">\(\theta_{i t}\)</span>で説明される確率の積にして同時確率のようになっている。</p>
-<p>推定の難しさなどの観点から補償型のほうがよく使われるらしい</p>
-</section>
-</section>
-<section id="irt">
-<h2>拡張されたIRTモデル<a class="headerlink" href="#irt" title="Link to this heading">#</a></h2>
-<section id="latent-regression-model">
-<h3>Latent Regression Model<a class="headerlink" href="#latent-regression-model" title="Link to this heading">#</a></h3>
-<p>被験者の潜在能力 <span class="math notranslate nohighlight">\(\theta\)</span> を観測共変量 <span class="math notranslate nohighlight">\(x\)</span> の関数としてモデル化する拡張。能力分布を固定（例：<span class="math notranslate nohighlight">\(\mathcal N(0,1)\)</span>）とせず、説明変数で条件付ける。</p>
-<div class="math notranslate nohighlight">
-\[
-\theta_i=\beta_0+\boldsymbol{\beta}^{\top} \mathbf{x}_i+\varepsilon_i, \quad \varepsilon_i \sim \mathcal{N}(0, \sigma_\theta^2)
-\]</div>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span>：年齢・性別・学歴・SES 等の共変量</p></li>
-<li><p><span class="math notranslate nohighlight">\(\boldsymbol{\beta}\)</span>：能力に対する回帰係数</p></li>
-<li><p><span class="math notranslate nohighlight">\(\sigma_\theta^2\)</span>：共変量で説明しきれない能力分散</p></li>
-</ul>
-<section id="id15">
-<h4>実装方法<a class="headerlink" href="#id15" title="Link to this heading">#</a></h4>
-<p>例えばRの <code class="docutils literal notranslate"><span class="pre">mirt</span></code> パッケージで推定できる</p>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">mirt</span><span class="p">)</span>
-<span class="n">mod</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mirt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span>
-<span class="w">            </span><span class="n">covdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cov_df</span><span class="p">,</span>
-<span class="w">            </span><span class="n">formula</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">x1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x2</span><span class="p">)</span>
-</pre></div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text">Magis, D., Béland, S., Tuerlinckx, F., &amp; De Boeck, P. (2010). <a class="reference external" href="https://doi.org/10.3758/BRM.42.3.847">A general framework and an R package for the detection of dichotomous differential item functioning</a>. Behavior Research Methods, 42(3), 847-862.</p>
+<p class="sd-card-text">Rの<code class="docutils literal notranslate"><span class="pre">difR</span></code>パッケージの論文。DIF検出手法の比較も行っている</p>
 </div>
-</section>
-</section>
-<section id="multilevel-irt">
-<h3>Multilevel IRT<a class="headerlink" href="#multilevel-irt" title="Link to this heading">#</a></h3>
-<p><strong>Multilevel IRT（階層IRT／マルチレベルIRT）</strong> は、被験者や項目が階層構造（クラス・学校・施設・テストフォーム等）にネストされている状況を明示的にモデル化するIRTの拡張。</p>
-<section id="id16">
-<h4>種類<a class="headerlink" href="#id16" title="Link to this heading">#</a></h4>
-<p><strong>1. 能力パラメータ<span class="math notranslate nohighlight">\(\theta\)</span>の階層化</strong></p>
-<p>受験者<span class="math notranslate nohighlight">\(i\)</span>の能力がグループ<span class="math notranslate nohighlight">\(g\)</span>（例：学校）ごとに異なる</p>
-<div class="math notranslate nohighlight">
-\[
-\theta_{i g}=\mu_g+\eta_{i g}, \quad \mu_g \sim \mathcal{N}\left(\mu_0, \tau^2\right), \eta_{i g} \sim \mathcal{N}\left(0, \sigma^2\right)
-\]</div>
-<p><strong>2. 項目パラメータ<span class="math notranslate nohighlight">\(a,b\)</span>の階層化</strong></p>
-<p>項目困難度・識別力がグループごとに異なるとするもの（例えばオンラインのテストで、同じ設問でもPCとスマホで見るのとで違うとか？？）</p>
-<div class="math notranslate nohighlight">
-\[
-a_{j g} \sim \mathcal{N}\left(\bar{a}_j, \omega_a^2\right), \quad 
-b_{j g} \sim \mathcal{N}\left(\bar{b}_j, \omega_b^2\right)
-\]</div>
-<p><strong>3. 両方</strong></p>
-<p>被験者×項目×群の三層（例：学生×問題×学校）</p>
-</section>
-<section id="id17">
-<h4>実装方法<a class="headerlink" href="#id17" title="Link to this heading">#</a></h4>
-<ul class="simple">
-<li><p>ベイズ（MCMC）が主流（階層が深いほど有利）。</p></li>
-<li><p>Rのmirtパッケージでの最尤推定： <code class="docutils literal notranslate"><span class="pre">multipleGroup()</span></code> 関数</p></li>
-</ul>
-</section>
-</section>
-</section>
-<section id="id18">
-<h2>適合度の評価<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
-<section id="id19">
-<h3>局所独立性の確認<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(\chi^2\)</span>統計量</p></li>
-</ul>
-</section>
-<section id="id20">
-<h3>個人適合度<a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
-<p>「<span class="math notranslate nohighlight">\(\theta_i\)</span>が高い人なのに困難度が低い項目で間違えるのはおかしい」といった考え方から、特性<span class="math notranslate nohighlight">\(\theta_i\)</span>と困難度<span class="math notranslate nohighlight">\(b_j\)</span>の関係性を見る。</p>
-<ul class="simple">
-<li><p><strong><span class="math notranslate nohighlight">\(z_h\)</span>（<span class="math notranslate nohighlight">\(l_z\)</span>）統計量</strong> ：ある回答者の反応パターン<span class="math notranslate nohighlight">\(\boldsymbol{y}_i = (y_{i1}, y_{i2}, \dots, y_{iJ})\)</span> と「考えられる全反応パターン」での尤度を比較する</p></li>
-</ul>
-</section>
-</section>
-<section id="id21">
-<h2>IRTの前提条件・仮定<a class="headerlink" href="#id21" title="Link to this heading">#</a></h2>
-<section id="local-independence">
-<h3>局所独立性（local independence）の仮定<a class="headerlink" href="#local-independence" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(\theta_i\)</span>で条件づけたとき、項目<span class="math notranslate nohighlight">\(j\)</span>と項目<span class="math notranslate nohighlight">\(l\)</span> （<span class="math notranslate nohighlight">\(j \neq l\)</span>） への回答は完全に独立であるという仮定。最尤推定の計算の簡易化のために必要になる。</p>
-<p><strong>仮定を満たすか確認する方法：</strong></p>
-<ul class="simple">
-<li><p>例えばデータから<span class="math notranslate nohighlight">\(\theta_i\)</span>が特定の値の人を集めて（<span class="math notranslate nohighlight">\(\theta_i\)</span>で条件づけたデータを用意して）、項目<span class="math notranslate nohighlight">\(j,l\)</span>の回答のクロス表を作ったとき、関連性がない場合は局所独立性が満たされていることがわかる。</p></li>
-</ul>
-</section>
-<section id="id22">
-<h3>一次元性<a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
-<p>もともとのIRTは単一のテストに対する単一の能力を測定することが主たる目的のため、推定する因子数は1である（因子数を拡張したモデルも存在するが、基本は1）。そのため、すべての項目が同じ能力・特性のみを反映していることが必要となる。</p>
-<p><strong>仮定を満たすか確認する方法：</strong></p>
-<ul class="simple">
-<li><p>例えば、1因子の確認的因子分析を行い、適合度指標（RMSEAやCFA、AGFIなど）が許容範囲内かどうかで確認する。</p></li>
-<li><p>DIMTEST（Stout et al., 1996）や DETECT（Zhang &amp; Stout, 1999）といった手法もある</p></li>
-</ul>
-</section>
-</section>
-<section id="id23">
-<h2>参考<a class="headerlink" href="#id23" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www2.kobe-u.ac.jp/~bunji/files/lecture/MVA/mva-08-item-response-theory.pdf">Chapter 8 項目反応理論 1</a></p></li>
-<li><p><a class="reference external" href="https://ytake2.github.io/IRT_stan_adventcalendar/irt_document.html#content">項目反応理論やってみよう</a></p></li>
-</ul>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text">Swaminathan, H., &amp; Rogers, H. J. (1990). <a class="reference external" href="https://doi.org/10.3102/10769986015002117">Detecting differential item functioning using logistic regression procedures</a>. Journal of Educational Measurement, 27(4), 361-370.</p>
+<p class="sd-card-text">ロジスティック回帰法によるDIF検出の基礎論文</p>
+</div>
+</div>
 </section>
 </section>
 
@@ -1872,24 +2018,6 @@ b_{j g} \sim \mathcal{N}\left(\bar{b}_j, \omega_b^2\right)
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="item_response_theory.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">項目反応理論</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="recent_irt.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">近年のIRTのトピック</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -1906,51 +2034,25 @@ b_{j g} \sim \mathcal{N}\left(\bar{b}_j, \omega_b^2\right)
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">正規累積モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">1パラメータ正規累積モデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">2パラメータ正規累積モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概要</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dif">DIFの種類</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">ロジスティックモデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pl">2PLモデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">3PLモデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">4PLモデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">5PLモデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">DIF検出手法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantel-haenszel">Mantel-Haenszel法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ロジスティック回帰法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#irt">IRT法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sibtest">SIBTEST</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">多値型モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">段階反応モデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">名義反応モデル</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Pythonでの実装</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#difnlr-r">difNLR パッケージ（R）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Pythonによる実装例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">シミュレーションデータによる検証</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">連続反応モデル</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">多次元モデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">補償型と非補償型</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#irt">拡張されたIRTモデル</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#latent-regression-model">Latent Regression Model</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">実装方法</a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multilevel-irt">Multilevel IRT</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">種類</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">実装方法</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">適合度の評価</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">局所独立性の確認</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">個人適合度</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">IRTの前提条件・仮定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-independence">局所独立性（local independence）の仮定</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">一次元性</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">DIFの解釈と対処</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
 </ul>
   </nav></div>
 
