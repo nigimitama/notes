@@ -298,6 +298,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../item_analysis.html">項目分析</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../classical_test_theory.html">古典的テスト理論</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../item_response_theory.html">項目反応理論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../identifiability.html">IRTモデルの識別性</a></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">項目反応理論のモデル群</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="normal_ogive_model.html">正規累積モデル</a></li>
 <li class="toctree-l3"><a class="reference internal" href="logistic_model.html">ロジスティックモデル</a></li>
@@ -1280,7 +1281,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">同値変換</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">多次元バージョン</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1295,15 +1298,70 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>名義反応モデル<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <p>順序のないカテゴリカル変数を名義尺度（nominal scale）という。</p>
-<p>名義尺度の反応を扱えるのが <strong>名義反応モデル（nominal response model: NRM）</strong> 。softmax関数のような形で多値化する。</p>
+<p>名義尺度の反応を扱えるのが <strong>名義反応モデル（nominal response model: NRM）</strong>
+softmax関数の形で多値化する。</p>
+<div class="admonition-nominal-response-model-nrm admonition">
+<p class="admonition-title">名義反応モデル（nominal response model: NRM）</p>
+<p>個人 <span class="math notranslate nohighlight">\(i\)</span>、項目 <span class="math notranslate nohighlight">\(j\)</span>、カテゴリ <span class="math notranslate nohighlight">\(k \in \{1, \dots, K_j\}\)</span> に対して、反応確率が次のように定義されるモデル</p>
 <div class="math notranslate nohighlight">
 \[
 P(y_{ij} = k)
-= \frac{ \exp (a_{jk} \theta_i + \gamma_{jk}) }{ \sum_{\kappa=1}^K \exp (- a_{j\kappa} \theta_i + \gamma_{j\kappa}) }
+= \operatorname{softmax}(a_{jk} \theta_i + b_{jk})
+= \frac{ \exp (a_{jk} \theta_i + b_{jk}) }{ \sum_{l=1}^K \exp (a_{jl} \theta_i + b_{jl}) }
 \]</div>
+</div>
 <p><strong>名義カテゴリモデル（nominal categories model）</strong> という呼ばれ方もする</p>
 <section id="id2">
-<h2>参考文献<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>同値変換<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>NRMのモデル</p>
+<div class="math notranslate nohighlight">
+\[
+P(y_{ij} = k) = \operatorname{softmax}(a_{jk} \theta_i + b_{jk})
+\]</div>
+<p>は</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(a_{jk}' = -a_{jk}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\theta_i' = -\theta_i\)</span></p></li>
+</ul>
+<p>と置き換えても</p>
+<div class="math notranslate nohighlight">
+\[
+a_{jk}' \theta_i' + b_{jk}
+= (-a_{jk}) (-\theta_i) + b_{jk}
+= a_{jk} \theta_i + b_{jk}
+\]</div>
+<p>となるため、推定に使うライブラリの違いなどで推定結果が真逆になることがある</p>
+</section>
+<section id="id3">
+<h2>多次元バージョン<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>Thissen et al. (2010) の <strong>General-Purpose Multidimensional Nominal Model (GPMNM)</strong> は名義反応モデルで多次元の特性パラメータ<span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span>と識別力<span class="math notranslate nohighlight">\(\mathbf a_{jk}\)</span>を扱えるよう一般化したモデル</p>
+<div class="admonition-general-purpose-multidimensional-nominal-model-gpmnm admonition">
+<p class="admonition-title">General-Purpose Multidimensional Nominal Model (GPMNM)</p>
+<div class="math notranslate nohighlight">
+\[
+P(Y_{ij} = k \mid \boldsymbol{\theta}_i)
+=
+\frac{
+\exp\!\left(
+\mathbf a_{jk}^\top \boldsymbol{\theta}_i + b_{jk}
+\right)
+}{
+\sum_{c=1}^{K_j}
+\exp\!\left(
+\mathbf a_{jc}^\top \boldsymbol{\theta}_i + b_{jc}
+\right)
+}
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\boldsymbol{\theta}_i \in \mathbb{R}^D\)</span>：個人 <span class="math notranslate nohighlight">\(i\)</span> の 多次元潜在特性（能力ベクトル）</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf a_{jk} \in \mathbb{R}^D\)</span>：項目 <span class="math notranslate nohighlight">\(j\)</span> のカテゴリ <span class="math notranslate nohighlight">\(k\)</span> に固有な識別力ベクトル</p></li>
+<li><p><span class="math notranslate nohighlight">\(b_{jk} \in \mathbb{R}\)</span>：項目 <span class="math notranslate nohighlight">\(j\)</span> のカテゴリ <span class="math notranslate nohighlight">\(k\)</span> に固有な困難度</p></li>
+<li><p><span class="math notranslate nohighlight">\(K_j\)</span>：項目 <span class="math notranslate nohighlight">\(j\)</span> のカテゴリ数</p></li>
+</ul>
+</div>
+</section>
+<section id="id4">
+<h2>参考文献<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Lipovetsky, S. (2021). Handbook of Item Response Theory, Volume 1, Models. Technometrics, 63(3), 428-431.</p></li>
 </ul>
@@ -1374,7 +1432,9 @@ P(y_{ij} = k)
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">同値変換</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">多次元バージョン</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考文献</a></li>
 </ul>
   </nav></div>
 
