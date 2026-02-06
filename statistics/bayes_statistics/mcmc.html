@@ -1281,19 +1281,23 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">MCMCとベイズ統計学の関係</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">なぜMCMCが必要か</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">積分計算の大変さ</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">事後分布から乱数を発生させて解く</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">マルコフ連鎖</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">定常分布</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">マルコフ連鎖の重要な性質</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">遷移核</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ergodicity">エルゴード性（ergodicity）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">定常分布</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">詳細つり合い条件</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mh">メトロポリス・ヘイスティング（MH）法</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">対称提案分布の場合（重要）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">対数空間での実装（実務上必須）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">なぜ正しい分布に収束するか</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">対称提案分布の場合（重要）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">対数空間での実装（実務上必須）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">なぜ正しい分布に収束するか</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hmc">ハミルトニアン・モンテカルロ（HMC）法</a><ul class="nav section-nav flex-column">
@@ -1313,8 +1317,9 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="mcmc">
 <h1>マルコフ連鎖モンテカルロ（MCMC）法<a class="headerlink" href="#mcmc" title="Link to this heading">#</a></h1>
+<p><strong>MCMC（Markov Chain Monte Carlo）法</strong> は事後分布を不変分布（定常分布）にもつマルコフ連鎖を人工的に作り、その連鎖から得たサンプルを使って事後分布を推定する方法。</p>
 <section id="id1">
-<h2>MCMCとベイズ統計学の関係<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<h2>なぜMCMCが必要か<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <section id="id2">
 <h3>積分計算の大変さ<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <p>ベイズ統計学では事後分布を推定してEAP推定量などの推定量を得るが、その際は積分の計算が出てくる（例えばEAPのための期待値計算での積分）</p>
@@ -1352,30 +1357,113 @@ d \theta_d d \theta_{d-1} \cdots d \theta_1 \\
 <li><p>連鎖はずっと続く（0%/100%がない）</p></li>
 </ul>
 <p>という確率過程。</p>
+<p><span class="math notranslate nohighlight">\(t\)</span>期の確率変数を<span class="math notranslate nohighlight">\(Y_t\)</span>とし、その確率過程を<span class="math notranslate nohighlight">\(\{Y_t\}^\infty_{t=0}\)</span>と表すことにする。また確率変数の実現値を<span class="math notranslate nohighlight">\(y_t\)</span>と表すことにする。</p>
+<p>一般の確率過程においては、ある時点<span class="math notranslate nohighlight">\(T\)</span>の確率変数<span class="math notranslate nohighlight">\(Y_T\)</span>の確率密度関数は <span class="math notranslate nohighlight">\(f(y_T|y_0,y_1,\cdots,y_{T-1})\)</span> と、過去の<span class="math notranslate nohighlight">\(\{y_t\}^{T-1}_{t=0}\)</span>に依存した条件付き確率密度となる。</p>
+<p>しかし、マルコフ連鎖においては1期前の確率変数の実現値にのみ依存する。</p>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
-数式</div>
-<p class="sd-card-text"><span class="math notranslate nohighlight">\(t\)</span>期の確率変数を<span class="math notranslate nohighlight">\(y_t\)</span>とし、確率過程を<span class="math notranslate nohighlight">\(\{y_t\}^\infty_{t=0}\)</span>と表すことにする。</p>
-<p class="sd-card-text">マルコフ過程では、確率変数<span class="math notranslate nohighlight">\(y_t\)</span>の確率密度関数が一期前にのみ依存するため</p>
+マルコフ連鎖（Markov chain）</div>
+<p class="sd-card-text">ある時点<span class="math notranslate nohighlight">\(T\)</span>の確率変数<span class="math notranslate nohighlight">\(Y_T\)</span>の確率密度関数が、一期前の実現値<span class="math notranslate nohighlight">\(y_{t-1}\)</span>にのみ依存する、すなわち</p>
 <div class="math notranslate nohighlight">
 \[
-f(y_t|y_{t-1})
+f(y_t|y_0,y_1,\cdots,y_{t-1}) = f(y_t|y_{t-1})
 \]</div>
-<p class="sd-card-text">と表される</p>
+<p class="sd-card-text">を満たす確率過程を <strong>マルコフ連鎖（Markov chain）</strong> という。</p>
 </div>
 </div>
 <section id="id5">
-<h3>定常分布<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
-<p>各状態にたどり着く確率が変化しなくなってくる。これを<strong>定常分布</strong>という</p>
-<p>任意の状態A,Bについて、Aが生じる確率<span class="math notranslate nohighlight">\(S(A)\)</span>とAからBに遷移する確率<span class="math notranslate nohighlight">\(T(B|A)\)</span>が一致すること</p>
+<h3>マルコフ連鎖の重要な性質<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>MCMC法に関わる性質</p>
+<ol class="arabic simple">
+<li><p>既約性（irreducibility）</p>
+<ul class="simple">
+<li><p>どこから開始しても、有限回の連鎖で、確率密度が正であるすべての状態に必ずたどり着く（全空間を探索できる）</p></li>
+</ul>
+</li>
+<li><p>非周期性（aperiodicity）</p>
+<ul class="simple">
+<li><p>一定に間隔で必ず訪れる状態がない（収束する）</p></li>
+</ul>
+</li>
+<li><p>正再帰性（positive recurrence）</p>
+<ul class="simple">
+<li><p>平均的に、有限時間で戻って来る ⇔ 定常分布が存在する</p></li>
+<li><p>遷移核が既約性と非周期性を満たすとき、<span class="math notranslate nohighlight">\(t\to\infty\)</span>で<span class="math notranslate nohighlight">\(y_t\)</span>の定常分布（不変分布）に収束する。そしてその定常分布は連鎖の均衡分布である。（→この性質で事後分布を近似する）</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id6">
+<h3>遷移核<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(\{Y_t\}^T_{t=0}\)</span>の同時確率密度関数は、<span class="math notranslate nohighlight">\(Y_0\)</span>の周辺確率密度関数を<span class="math notranslate nohighlight">\(f_0\)</span>とすると、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+f(y_0, y_1, \ldots, y_T) &amp; =f_0(y_0) f(y_1 \mid y_0) f(y_2 \mid y_0, y_1) \times \ldots \times f(y_T \mid y_0, \ldots, y_{T-1}) \\
+&amp; =f_0(y_0) f(y_1 \mid y_0) f(y_2 \mid y_1) \times \ldots \times f(y_T \mid y_{T-1}) \\
+&amp; =f_0(y_0) \prod_{t=1}^T f(y_t \mid y_{t-1})
+\end{aligned}
+\end{split}\]</div>
+<p>となり、 <span class="math notranslate nohighlight">\(f_0\)</span> と <span class="math notranslate nohighlight">\(f(y_t \mid y_{t-1})\)</span> が与えられれば <span class="math notranslate nohighlight">\(f(y_0, y_1, \ldots, y_T)=f_0(y_0) \prod_{t=1}^T f(y_t \mid y_{t-1})\)</span> で一意に決まる。</p>
+<p>この <span class="math notranslate nohighlight">\(f(y_t \mid y_{t-1})\)</span> のことを <strong>遷移核（transition kernel, 推移核とも）</strong> という。</p>
+</section>
+<section id="ergodicity">
+<h3>エルゴード性（ergodicity）<a class="headerlink" href="#ergodicity" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>既約性（irreducibility）</p></li>
+<li><p>非周期性（aperiodicity）</p></li>
+<li><p>正再帰性（positive recurrence）</p></li>
+</ol>
+<p>を満たす連鎖においては、次の性質を持つ</p>
+<ul class="simple">
+<li><p>定常分布<span class="math notranslate nohighlight">\(\pi\)</span>が一意に存在する</p></li>
+<li><p>初期値によらず、<span class="math notranslate nohighlight">\(\operatorname{Law}(X_t) \to \pi\)</span> （<span class="math notranslate nohighlight">\(\operatorname{Law}(X_t)\)</span>は確率変数<span class="math notranslate nohighlight">\(X_t\)</span>の従う分布の意味）</p></li>
+<li><p>連鎖の時間についての平均が分布の平均と等しくなる</p></li>
+</ul>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+エルゴード定理</div>
+<p class="sd-card-text">連鎖の時間についての平均が分布の平均と等しくなる</p>
 <div class="math notranslate nohighlight">
 \[
-T(B|A)S(A) = T(A|B)S(B)
+\frac{1}{T} \sum_{t=1}^T f(X_t) \xrightarrow{\text { a.s. }} \mathbb{E}_\pi[f(X)]
+\]</div>
+<p class="sd-card-text">→ MCMCでサンプリングした連鎖の実現値の標本期待値で事後期待値（EAP推定値）が推定できる</p>
+</div>
+</div>
+</section>
+<section id="id7">
+<h3>定常分布<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>マルコフ連鎖において、各状態に遷移していっても同じ分布のまま変わらなくなったときの分布を <strong>定常分布</strong>という。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+定常分布</div>
+<p class="sd-card-text">ある特定の確率密度関数を<span class="math notranslate nohighlight">\(f\)</span>で表し、状態 <span class="math notranslate nohighlight">\(A\)</span> から状態 <span class="math notranslate nohighlight">\(B\)</span> へ移る確率（遷移核）を <span class="math notranslate nohighlight">\(K(A, B)\)</span>で表すとする。  このとき</p>
+<div class="math notranslate nohighlight">
+\[
+f(x^{\prime})=\int^{+\infty}_{-\infty} f(x) K(x, x^{\prime}) d x
+\]</div>
+<p class="sd-card-text">が成り立つとき、確率密度関数<span class="math notranslate nohighlight">\(f\)</span>をもつ確率分布をマルコフ連鎖の <strong>定常分布 (stationary distribution)</strong> あるいは <strong>不変分布 (invariant distribution)</strong> という。</p>
+</div>
+</div>
+<p><span class="math notranslate nohighlight">\(t\to\infty\)</span>において<span class="math notranslate nohighlight">\(f\)</span>が定常分布に収束するとき、そのようなマルコフ連鎖は <strong>エルゴード性（ergodicity）</strong> を持つという。</p>
+</section>
+<section id="id8">
+<h3>詳細つり合い条件<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>マルコフ連鎖が定常分布に収束するための十分条件に詳細釣り合い条件というものがある。</p>
+<div class="admonition-detailed-balance-condition admonition">
+<p class="admonition-title">詳細つり合い条件（detailed balance condition）</p>
+<p>任意の状態A,Bについて、Aが生じる確率<span class="math notranslate nohighlight">\(f(A)\)</span>とAからBに遷移する確率<span class="math notranslate nohighlight">\(K(A, B)\)</span>が一致すること</p>
+<div class="math notranslate nohighlight">
+\[
+K(A, B) f(A) = K(A, B) f(B)
 \]</div>
 <p>を**詳細つり合い条件（detailed balance condition）**という。</p>
-<p>詳細釣り合い条件はマルコフ連鎖が定常分布に収束するための十分条件とされる。</p>
-<p>MCMCを使う場合は，この条件を満たすように 推移確率<span class="math notranslate nohighlight">\(T(𝜃'|𝜃)\)</span>を作りたい</p>
+</div>
+<p>MCMCを使う場合は，この条件を満たすように 推移確率<span class="math notranslate nohighlight">\(K(A, B)\)</span>を作りたい</p>
 </section>
 </section>
 <section id="mh">
@@ -1470,8 +1558,8 @@ p(y \mid \theta^{(t)})\, p(\theta^{(t)})\, q(\theta' \mid \theta^{(t)})
 <li><p>それ以外は <strong>棄却</strong>： <span class="math notranslate nohighlight">\(\theta^{(t+1)} = \theta^{(t)}\)</span></p></li>
 </ul>
 </div>
-<section id="id6">
-<h3>対称提案分布の場合（重要）<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>対称提案分布の場合（重要）<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <p>もし
 $<span class="math notranslate nohighlight">\(
 q(\theta' \mid \theta) = q(\theta \mid \theta')
@@ -1492,8 +1580,8 @@ p(y \mid \theta^{(t)})\, p(\theta^{(t)})
 \]</div>
 <p>→ <strong>Metropolis アルゴリズム</strong>になる。</p>
 </section>
-<section id="id7">
-<h3>対数空間での実装（実務上必須）<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>対数空間での実装（実務上必須）<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p>数値安定性のため、通常は対数を用いる。</p>
 <p><strong>対数事後分布</strong></p>
 <div class="math notranslate nohighlight">
@@ -1515,8 +1603,8 @@ p(y \mid \theta^{(t)})\, p(\theta^{(t)})
 \]</div>
 <p>実装では<span class="math notranslate nohighlight">\(\log u &lt; \log \alpha\)</span>で比較する。</p>
 </section>
-<section id="id8">
-<h3>なぜ正しい分布に収束するか<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3>なぜ正しい分布に収束するか<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <p>Metropolis–Hastings で作られるマルコフ連鎖は：</p>
 <ul class="simple">
 <li><p><strong>詳細釣り合い条件（detailed balance）</strong>
@@ -1754,19 +1842,23 @@ posterior sd    = 0.140
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">MCMCとベイズ統計学の関係</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">なぜMCMCが必要か</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">積分計算の大変さ</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">事後分布から乱数を発生させて解く</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">マルコフ連鎖</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">定常分布</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">マルコフ連鎖の重要な性質</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">遷移核</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ergodicity">エルゴード性（ergodicity）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">定常分布</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">詳細つり合い条件</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mh">メトロポリス・ヘイスティング（MH）法</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">対称提案分布の場合（重要）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">対数空間での実装（実務上必須）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">なぜ正しい分布に収束するか</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">対称提案分布の場合（重要）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">対数空間での実装（実務上必須）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">なぜ正しい分布に収束するか</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hmc">ハミルトニアン・モンテカルロ（HMC）法</a><ul class="nav section-nav flex-column">
