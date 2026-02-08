@@ -1294,14 +1294,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">詳細つり合い条件</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mh">メトロポリス・ヘイスティング（MH）法</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">対称提案分布の場合（重要）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">対数空間での実装（実務上必須）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">なぜ正しい分布に収束するか</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mh">メトロポリス・ヘイスティング（MH）法</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hmc">ハミルトニアン・モンテカルロ（HMC）法</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nuts">NUTS</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">サンプリングの妥当性検証</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hat-r-r-hat-gelmanrubin"><span class="math notranslate nohighlight">\(\hat R\)</span>（R-hat, Gelman–Rubin統計量）</a></li>
 </ul>
 </li>
 </ul>
@@ -1461,22 +1460,21 @@ f(x^{\prime})=\int^{+\infty}_{-\infty} f(x) K(x, x^{\prime}) d x
 \[
 K(A, B) f(A) = K(A, B) f(B)
 \]</div>
-<p>を**詳細つり合い条件（detailed balance condition）**という。</p>
+<p>を <strong>詳細つり合い条件（detailed balance condition）</strong> という。</p>
 </div>
-<p>MCMCを使う場合は，この条件を満たすように 推移確率<span class="math notranslate nohighlight">\(K(A, B)\)</span>を作りたい</p>
+<p>MCMCのアルゴリズムは、この条件を満たすように遷移確率<span class="math notranslate nohighlight">\(K(A, B)\)</span>を作り、事後分布をサンプリングする。</p>
 </section>
 </section>
 <section id="mh">
 <h2>メトロポリス・ヘイスティング（MH）法<a class="headerlink" href="#mh" title="Link to this heading">#</a></h2>
 <aside class="margin sidebar">
-<p class="sidebar-title"></p>
+<p class="sidebar-title">Metropolis–Hastings（MH）法の名前について</p>
 <p>ベイズ統計学とは無関係の物理化学の分野でMetropolisによって1953年に提案され、1970年にHastingsが統計学向けにアルゴリズムの形式に整理してBiometrikaに投稿したのでこの名前で呼ばれる</p>
 </aside>
 <p>Metropolis–Hastings（MH）は、<strong>正規化定数が分からない確率分布</strong>からサンプルを生成するための <strong>MCMC（Markov Chain Monte Carlo）</strong> アルゴリズムである。</p>
 <ul class="simple">
-<li><p>最も単純な方法</p></li>
-<li><p>だいたいうまくいかない</p></li>
-<li><p>事後分布 <span class="math notranslate nohighlight">\(p(\theta \mid y)\)</span> の <strong>正規化定数</strong> <span class="math notranslate nohighlight">\(Z = \int p(y \mid \theta)p(\theta)\, d\theta\)</span> は不要で、比率 <span class="math notranslate nohighlight">\(p(\theta' \mid y) / p(\theta \mid y)\)</span> だけ使う</p></li>
+<li><p>最も単純な方法で、イメージを掴むのにちょうどいいが、実用上はうまく収束しないことも多い様子。</p></li>
+<li><p>事後分布 <span class="math notranslate nohighlight">\(p(\theta \mid y)\)</span> の <strong>正規化定数</strong> <span class="math notranslate nohighlight">\(Z = \int p(y \mid \theta)p(\theta)\, d\theta\)</span> は不要で、比率 <span class="math notranslate nohighlight">\(p(\theta' \mid y) / p(\theta \mid y)\)</span> だけ使って事後分布をサンプリングできる</p></li>
 </ul>
 <p>基本アイデア</p>
 <ul class="simple">
@@ -1558,65 +1556,6 @@ p(y \mid \theta^{(t)})\, p(\theta^{(t)})\, q(\theta' \mid \theta^{(t)})
 <li><p>それ以外は <strong>棄却</strong>： <span class="math notranslate nohighlight">\(\theta^{(t+1)} = \theta^{(t)}\)</span></p></li>
 </ul>
 </div>
-<section id="id9">
-<h3>対称提案分布の場合（重要）<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
-<p>もし
-$<span class="math notranslate nohighlight">\(
-q(\theta' \mid \theta) = q(\theta \mid \theta')
-\)</span>$
-（例：正規分布によるランダムウォーク）なら、</p>
-<div class="math notranslate nohighlight">
-\[
-\alpha
-=
-\min\left(
-1,\;
-\frac{
-p(y \mid \theta')\, p(\theta')
-}{
-p(y \mid \theta^{(t)})\, p(\theta^{(t)})
-}
-\right)
-\]</div>
-<p>→ <strong>Metropolis アルゴリズム</strong>になる。</p>
-</section>
-<section id="id10">
-<h3>対数空間での実装（実務上必須）<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
-<p>数値安定性のため、通常は対数を用いる。</p>
-<p><strong>対数事後分布</strong></p>
-<div class="math notranslate nohighlight">
-\[
-\log p(\theta \mid y)
-=
-\log p(y \mid \theta) + \log p(\theta) + C
-\]</div>
-<p><strong>対数受理確率</strong></p>
-<div class="math notranslate nohighlight">
-\[
-\log \alpha
-=
-\log p(y \mid \theta') + \log p(\theta')
--
-\left[
-\log p(y \mid \theta^{(t)}) + \log p(\theta^{(t)})
-\right]
-\]</div>
-<p>実装では<span class="math notranslate nohighlight">\(\log u &lt; \log \alpha\)</span>で比較する。</p>
-</section>
-<section id="id11">
-<h3>なぜ正しい分布に収束するか<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
-<p>Metropolis–Hastings で作られるマルコフ連鎖は：</p>
-<ul class="simple">
-<li><p><strong>詳細釣り合い条件（detailed balance）</strong>
-$<span class="math notranslate nohighlight">\(
-p(\theta \mid y)\, T(\theta \to \theta')
-=
-p(\theta' \mid y)\, T(\theta' \to \theta)
-\)</span>$
-を満たす</p></li>
-</ul>
-<p>→ <span class="math notranslate nohighlight">\(p(\theta \mid y)\)</span> が <strong>定常分布</strong>になる<br />
-→ 長く回すとサンプルは事後分布に従う</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
@@ -1758,7 +1697,6 @@ posterior sd    = 0.140
 </div>
 </div>
 </section>
-</section>
 <section id="hmc">
 <h2>ハミルトニアン・モンテカルロ（HMC）法<a class="headerlink" href="#hmc" title="Link to this heading">#</a></h2>
 <p>ハミルトニアン方程式を使って推移確率行列を構成
@@ -1774,6 +1712,79 @@ posterior sd    = 0.140
 </ul>
 </li>
 </ul>
+</section>
+</section>
+<section id="id9">
+<h2>サンプリングの妥当性検証<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<section id="hat-r-r-hat-gelmanrubin">
+<h3><span class="math notranslate nohighlight">\(\hat R\)</span>（R-hat, Gelman–Rubin統計量）<a class="headerlink" href="#hat-r-r-hat-gelmanrubin" title="Link to this heading">#</a></h3>
+<p>R-hatは複数チェーン間の分散と各チェーン内の分散の比によって定義される。</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{R} = \sqrt{\frac{チェーン間の分散}{チェーン内の分散}}
+\]</div>
+<p>直感的には「チェーン同士が同じ分布を見ているか」。</p>
+<p><span class="math notranslate nohighlight">\(\hat R \le 1.01\)</span> であれば収束しているとみなされる</p>
+<div class="admonition-hat-r-r-hat-gelmanrubin admonition">
+<p class="admonition-title"><span class="math notranslate nohighlight">\(\hat R\)</span>（R-hat, Gelman–Rubin統計量）</p>
+<p><span class="math notranslate nohighlight">\(j\ (j=1,\cdots,m)\)</span> 本目のチェーンの <span class="math notranslate nohighlight">\(i\ (i=1,\cdots,n)\)</span> 番目サンプルの値を <span class="math notranslate nohighlight">\(\theta_{ij}\)</span> と表す。
+チェーン<span class="math notranslate nohighlight">\(j\)</span>の平均 <span class="math notranslate nohighlight">\(\bar{\theta}_{. j}\)</span> と全体平均 <span class="math notranslate nohighlight">\(\bar{\theta}_{. .}\)</span> をそれぞれ次のように定義する。</p>
+<div class="math notranslate nohighlight">
+\[
+\bar{\theta}_{. j}=\frac{1}{n} \sum_{i=1}^n \theta_{i j}
+, \quad
+\bar{\theta}_{. .}=\frac{1}{m} \sum_{j=1}^m \bar{\theta}_{. j}
+\]</div>
+<p><strong>チェーン内分散（within-chain variance）</strong></p>
+<p>各チェーンの標本分散</p>
+<div class="math notranslate nohighlight">
+\[
+s_j^2=\frac{1}{n-1} \sum_{i=1}^n\left(\theta_{i j}-\bar{\theta}_{. j}\right)^2
+\]</div>
+<p>の平均を<span class="math notranslate nohighlight">\(W\)</span>とする。</p>
+<div class="math notranslate nohighlight">
+\[
+W=\frac{1}{m} \sum_{j=1}^m s_j^2
+\]</div>
+<p><strong>チェーン間分散（between-chain variance）</strong></p>
+<div class="math notranslate nohighlight">
+\[
+B=\frac{n}{m-1} \sum_{j=1}^m\left(\bar{\theta}_{. j}-\bar{\theta}_{. .}\right)^2
+\]</div>
+<p>※係数 <span class="math notranslate nohighlight">\(n\)</span> は「チェーン平均の分散」を元のスケールに戻すため。</p>
+<p><strong>事後分散の推定量</strong></p>
+<p>有限標本補正を入れた事後分散の推定量</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{V}=\frac{n-1}{n} W+\frac{1}{n} B
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(W\)</span>：チェーン内のばらつき</p></li>
+<li><p><span class="math notranslate nohighlight">\(B\)</span>：チェーン間のばらつき</p></li>
+</ul>
+<p><strong>R-hat</strong></p>
+<p><span class="math notranslate nohighlight">\(\hat{R}\)</span>統計量は次のように定義される</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{R}=\sqrt{\frac{\hat{V}}{W}}
+\]</div>
+<p>チェーンが別々の領域を探索しているならチェーン間分散が多くなり<span class="math notranslate nohighlight">\(B&gt;W\)</span> となり <span class="math notranslate nohighlight">\(\hat{R} &gt; 1\)</span>となる。</p>
+<p>各チェーンが同じ分布をサンプリングしているなら <span class="math notranslate nohighlight">\(B\approx W\)</span> となり <span class="math notranslate nohighlight">\(\hat{R} \approx 1\)</span>となる</p>
+</div>
+<p>古典的 <span class="math notranslate nohighlight">\(\hat R\)</span> の問題点として、</p>
+<ol class="arabic simple">
+<li><p>非対称分布・重い裾に弱い</p></li>
+<li><p>平均と分散しか見ていない</p></li>
+</ol>
+<p>があった。</p>
+<p>そこで</p>
+<ol class="arabic simple">
+<li><p>rank-normalization: サンプルを順位変換 → 正規スケール</p></li>
+<li><p>folding: 中心からの距離を使い、裾の混合を検出</p></li>
+<li><p>split chains: 各チェーンを前半・後半に分割し <span class="math notranslate nohighlight">\(m\)</span> を倍増</p></li>
+</ol>
+<p>といった改良がされている（Stan/PyMCなど今のライブラリはこちらを使っている）</p>
+<p><a class="reference external" href="https://arxiv.org/abs/1903.08008">[1903.08008] Rank-normalization, folding, and localization: An improved <span class="math notranslate nohighlight">\(\widehat{R}\)</span> for assessing convergence of MCMC</a></p>
 </section>
 </section>
 </section>
@@ -1855,14 +1866,13 @@ posterior sd    = 0.140
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">詳細つり合い条件</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mh">メトロポリス・ヘイスティング（MH）法</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">対称提案分布の場合（重要）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">対数空間での実装（実務上必須）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">なぜ正しい分布に収束するか</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mh">メトロポリス・ヘイスティング（MH）法</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hmc">ハミルトニアン・モンテカルロ（HMC）法</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nuts">NUTS</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">サンプリングの妥当性検証</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hat-r-r-hat-gelmanrubin"><span class="math notranslate nohighlight">\(\hat R\)</span>（R-hat, Gelman–Rubin統計量）</a></li>
 </ul>
 </li>
 </ul>
