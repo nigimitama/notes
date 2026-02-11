@@ -262,7 +262,13 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../statistics/bayes_statistics/index.html">ベイズ統計学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../statistics/bayes_statistics/bayesian_inference.html">ベイズ推定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../statistics/bayes_statistics/conjugate_prior.html">共役事前分布</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../statistics/bayes_statistics/mcmc.html">マルコフ連鎖モンテカルロ（MCMC）法</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../statistics/bayes_statistics/mcmc/index.html">マルコフ連鎖モンテカルロ（MCMC）法</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../statistics/bayes_statistics/mcmc/introduction.html">MCMC法の概要</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../statistics/bayes_statistics/mcmc/metropolis_hastings.html">メトロポリス・ヘイスティング（MH）法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../statistics/bayes_statistics/mcmc/hamiltonian_monte_carlo.html">ハミルトニアンモンテカルロ（HMC）法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../statistics/bayes_statistics/mcmc/validation.html">サンプリングの妥当性検証</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../statistics/bayes_statistics/prior.html">事前分布</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../statistics/bayes_statistics/pymc.html">PyMC</a></li>
 </ul>
@@ -1299,7 +1305,16 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">DIFの解釈と対処</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">DIFを考慮したスコアリング</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">アプローチ1: DIF項目の除外</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">アプローチ2: 集団別IRTパラメータによるスコアリング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">アプローチ3: 期待得点調整</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">アプローチ4: 多母集団IRTモデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">実装例: 各スコアリング手法の比較</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">手法の選択指針</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1989,7 +2004,440 @@ document.write(`
 </ol>
 </section>
 <section id="id7">
-<h2>参考文献<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<h2>DIFを考慮したスコアリング<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<p>DIFが検出された場合、従来の単純な総得点（素点）は集団間の公平な比較を歪める可能性がある。ここでは、DIFの影響を適切に扱うスコアリング手法を紹介する。</p>
+<section id="id8">
+<h3>アプローチ1: DIF項目の除外<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>最も単純な方法は、DIFが検出された項目を除外して得点を算出することである。</p>
+<div class="math notranslate nohighlight">
+\[
+X_{\text{purified}} = \sum_{j \notin \mathcal{D}} X_j
+\]</div>
+<p>ここで <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> はDIF項目の集合である。この方法は直感的で実装が容易だが、項目数が減ることでテストの信頼性・測定精度が低下するという欠点がある。</p>
+</section>
+<section id="id9">
+<h3>アプローチ2: 集団別IRTパラメータによるスコアリング<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p>DIF項目については集団ごとに異なるパラメータを用い、非DIF項目については共通パラメータを用いて能力値を推定する方法である。2PLMの場合、受験者 <span class="math notranslate nohighlight">\(i\)</span> が集団 <span class="math notranslate nohighlight">\(g\)</span> に属するとき、各項目 <span class="math notranslate nohighlight">\(j\)</span> の正答確率は：</p>
+<div class="math notranslate nohighlight">
+\[
+P_j(\theta_i \mid g) = \frac{1}{1 + \exp(-a_j(\theta_i - b_{jg}))}
+\]</div>
+<ul class="simple">
+<li><p>非DIF項目: <span class="math notranslate nohighlight">\(b_{jR} = b_{jF} = b_j\)</span>（共通パラメータ）</p></li>
+<li><p>DIF項目: <span class="math notranslate nohighlight">\(b_{jR} \neq b_{jF}\)</span>（集団固有パラメータ）</p></li>
+</ul>
+<p>能力値の推定には、集団に応じた適切なパラメータセットを用いてMLE（最尤推定）やEAP（期待事後推定）を行う。</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\theta}_{\text{MLE}} = \arg\max_\theta \sum_{j=1}^{J} \left[ x_j \log P_j(\theta \mid g) + (1-x_j) \log (1-P_j(\theta \mid g)) \right]
+\]</div>
+<p>この方法は全項目の情報を活用でき、DIFの影響を適切にモデル化できる。</p>
+</section>
+<section id="id10">
+<h3>アプローチ3: 期待得点調整<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>Dorans &amp; Holland (1993) に基づく方法で、DIF項目について参照群のパラメータで期待される得点に置き換えることで、焦点群に対するDIFの影響を補正する。</p>
+<p>焦点群の受験者 <span class="math notranslate nohighlight">\(i\)</span> について、DIF項目 <span class="math notranslate nohighlight">\(j\)</span> の調整済みスコアは：</p>
+<div class="math notranslate nohighlight">
+\[
+X_{ij}^{*} = X_{ij} - P_j(\hat{\theta}_i \mid F) + P_j(\hat{\theta}_i \mid R)
+\]</div>
+<p>すなわち、焦点群パラメータでの期待得点と参照群パラメータでの期待得点の差だけ調整を加える。テスト全体の調整済み得点は：</p>
+<div class="math notranslate nohighlight">
+\[
+X_i^{*} = \sum_{j \notin \mathcal{D}} X_{ij} + \sum_{j \in \mathcal{D}} X_{ij}^{*}
+\]</div>
+<p>この方法は項目を除外せずにDIFの影響のみを除去でき、かつ非DIF項目からの情報を保持できる。</p>
+</section>
+<section id="id11">
+<h3>アプローチ4: 多母集団IRTモデル<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>最も理論的に洗練されたアプローチは、多母集団（multiple-group）IRTモデルを用いて全集団のデータを同時に推定することである。</p>
+<p>このモデルでは：</p>
+<ul class="simple">
+<li><p><strong>アンカー項目</strong>（非DIF項目）：全集団で共通の項目パラメータを推定</p></li>
+<li><p><strong>DIF項目</strong>：集団ごとに固有の項目パラメータを推定</p></li>
+<li><p><strong>能力分布</strong>：参照群を <span class="math notranslate nohighlight">\(\theta_R \sim N(0, 1)\)</span> に固定し、焦点群の能力分布 <span class="math notranslate nohighlight">\(\theta_F \sim N(\mu_F, \sigma_F^2)\)</span> を推定</p></li>
+</ul>
+<p>全集団のデータを同時に用いるため推定精度が高く、等化が不要で、DIFの有無に関わらずすべての項目を活用できる。</p>
+</section>
+<section id="id12">
+<h3>実装例: 各スコアリング手法の比較<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<p>先のシミュレーションデータを用いて、各スコアリング手法の効果を比較する。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize_scalar</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">irt_1pl_prob</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;1PLMの正答確率&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">theta</span> <span class="o">-</span> <span class="n">b</span><span class="p">)))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">estimate_item_params_1pl</span><span class="p">(</span><span class="n">responses</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dif_items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    集団別の項目パラメータを推定（1PLM、簡易版）</span>
+
+<span class="sd">    DIF項目は集団ごとに困難度を推定し、非DIF項目は全データで推定する。</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    responses : np.ndarray</span>
+<span class="sd">        応答行列 (n_persons x n_items)</span>
+<span class="sd">    group : np.ndarray</span>
+<span class="sd">        集団ラベル (0: 参照群, 1: 焦点群)</span>
+<span class="sd">    dif_items : list[int]</span>
+<span class="sd">        DIF項目のインデックス</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        集団ごとの困難度パラメータ</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_items</span> <span class="o">=</span> <span class="n">responses</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">b_reference</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_items</span><span class="p">)</span>
+    <span class="n">b_focal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_items</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_items</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">dif_items</span><span class="p">:</span>
+            <span class="c1"># DIF項目: 集団別に推定</span>
+            <span class="n">p_r</span> <span class="o">=</span> <span class="n">responses</span><span class="p">[</span><span class="n">group</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">p_f</span> <span class="o">=</span> <span class="n">responses</span><span class="p">[</span><span class="n">group</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="c1"># ロジット変換で困難度を近似</span>
+            <span class="n">b_reference</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_r</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p_r</span><span class="p">))</span> <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">p_r</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">b_focal</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_f</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p_f</span><span class="p">))</span> <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">p_f</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 非DIF項目: 全データで推定</span>
+            <span class="n">p_all</span> <span class="o">=</span> <span class="n">responses</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">b_common</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_all</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p_all</span><span class="p">))</span> <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">p_all</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">b_reference</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">b_common</span>
+            <span class="n">b_focal</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">b_common</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;reference&#39;</span><span class="p">:</span> <span class="n">b_reference</span><span class="p">,</span> <span class="s1">&#39;focal&#39;</span><span class="p">:</span> <span class="n">b_focal</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">estimate_theta_mle</span><span class="p">(</span><span class="n">response_vector</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    1PLMのMLEによる能力推定</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    response_vector : np.ndarray</span>
+<span class="sd">        個人の応答パターン (n_items,)</span>
+<span class="sd">    b : np.ndarray</span>
+<span class="sd">        困難度パラメータ (n_items,)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        推定能力値</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">neg_log_lik</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">irt_1pl_prob</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mf">1e-10</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="mf">1e-10</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">response_vector</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">response_vector</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">minimize_scalar</span><span class="p">(</span><span class="n">neg_log_lik</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;bounded&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 項目パラメータの推定</span>
+<span class="n">detected_dif_items</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">detected_mh</span><span class="p">]</span>  <span class="c1"># MH法で検出されたDIF項目（0-indexed）</span>
+<span class="n">item_params</span> <span class="o">=</span> <span class="n">estimate_item_params_1pl</span><span class="p">(</span><span class="n">responses</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">detected_dif_items</span><span class="p">)</span>
+
+<span class="n">n_persons</span> <span class="o">=</span> <span class="n">responses</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">n_items</span> <span class="o">=</span> <span class="n">responses</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># --- 方法0: 素点（ベースライン）---</span>
+<span class="n">raw_scores</span> <span class="o">=</span> <span class="n">total_score</span>
+
+<span class="c1"># --- 方法1: DIF項目除外 ---</span>
+<span class="n">non_dif_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_items</span><span class="p">)</span> <span class="k">if</span> <span class="n">j</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">detected_dif_items</span><span class="p">]</span>
+<span class="n">purified_scores</span> <span class="o">=</span> <span class="n">responses</span><span class="p">[:,</span> <span class="n">non_dif_mask</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># --- 方法2: 集団別IRTパラメータによるMLE推定 ---</span>
+<span class="n">theta_group_specific</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_persons</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_persons</span><span class="p">):</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">item_params</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">group</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">item_params</span><span class="p">[</span><span class="s1">&#39;focal&#39;</span><span class="p">]</span>
+    <span class="n">theta_group_specific</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">estimate_theta_mle</span><span class="p">(</span><span class="n">responses</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b</span><span class="p">)</span>
+
+<span class="c1"># --- 方法3: 期待得点調整 ---</span>
+<span class="c1"># まず共通パラメータでθを推定</span>
+<span class="n">b_common</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_items</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_items</span><span class="p">):</span>
+    <span class="n">p_all</span> <span class="o">=</span> <span class="n">responses</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">b_common</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_all</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p_all</span><span class="p">))</span> <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">p_all</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+
+<span class="n">theta_common</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">estimate_theta_mle</span><span class="p">(</span><span class="n">responses</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b_common</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_persons</span><span class="p">)])</span>
+
+<span class="c1"># 焦点群のDIF項目について調整</span>
+<span class="n">adjusted_scores</span> <span class="o">=</span> <span class="n">total_score</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">detected_dif_items</span><span class="p">:</span>
+    <span class="n">focal_mask</span> <span class="o">=</span> <span class="n">group</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="n">p_focal</span> <span class="o">=</span> <span class="n">irt_1pl_prob</span><span class="p">(</span><span class="n">theta_common</span><span class="p">[</span><span class="n">focal_mask</span><span class="p">],</span> <span class="n">item_params</span><span class="p">[</span><span class="s1">&#39;focal&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+    <span class="n">p_reference</span> <span class="o">=</span> <span class="n">irt_1pl_prob</span><span class="p">(</span><span class="n">theta_common</span><span class="p">[</span><span class="n">focal_mask</span><span class="p">],</span> <span class="n">item_params</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+    <span class="n">adjusted_scores</span><span class="p">[</span><span class="n">focal_mask</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">p_reference</span> <span class="o">-</span> <span class="n">p_focal</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;検出されたDIF項目: </span><span class="si">{</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">detected_dif_items</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;項目数: 全</span><span class="si">{</span><span class="n">n_items</span><span class="si">}</span><span class="s2">項目, DIF除外後</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">non_dif_mask</span><span class="p">)</span><span class="si">}</span><span class="s2">項目&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>検出されたDIF項目: [1, 2, 5]
+項目数: 全20項目, DIF除外後17項目
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+<span class="c1"># 真の能力値を再構成</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">theta_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="p">])</span>
+
+<span class="n">scoring_methods</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;Raw Score (素点)&quot;</span><span class="p">,</span> <span class="n">raw_scores</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Purified Score (DIF項目除外)&quot;</span><span class="p">,</span> <span class="n">purified_scores</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Group-Specific IRT (集団別IRT)&quot;</span><span class="p">,</span> <span class="n">theta_group_specific</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Adjusted Score (期待得点調整)&quot;</span><span class="p">,</span> <span class="n">adjusted_scores</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="n">scoring_methods</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">theta_true</span><span class="p">[</span><span class="n">group</span> <span class="o">==</span> <span class="mi">0</span><span class="p">],</span> <span class="n">scores</span><span class="p">[</span><span class="n">group</span> <span class="o">==</span> <span class="mi">0</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Reference&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">theta_true</span><span class="p">[</span><span class="n">group</span> <span class="o">==</span> <span class="mi">1</span><span class="p">],</span> <span class="n">scores</span><span class="p">[</span><span class="n">group</span> <span class="o">==</span> <span class="mi">1</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Focal&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;True θ&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Score&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;各スコアリング手法と真の能力値の関係&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.01</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 32032 (\N{CJK UNIFIED IDEOGRAPH-7D20}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 38917 (\N{CJK UNIFIED IDEOGRAPH-9805}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 30446 (\N{CJK UNIFIED IDEOGRAPH-76EE}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 38500 (\N{CJK UNIFIED IDEOGRAPH-9664}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 22806 (\N{CJK UNIFIED IDEOGRAPH-5916}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 38598 (\N{CJK UNIFIED IDEOGRAPH-96C6}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 22243 (\N{CJK UNIFIED IDEOGRAPH-56E3}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 21029 (\N{CJK UNIFIED IDEOGRAPH-5225}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 26399 (\N{CJK UNIFIED IDEOGRAPH-671F}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 24453 (\N{CJK UNIFIED IDEOGRAPH-5F85}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 24471 (\N{CJK UNIFIED IDEOGRAPH-5F97}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 35519 (\N{CJK UNIFIED IDEOGRAPH-8ABF}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 25972 (\N{CJK UNIFIED IDEOGRAPH-6574}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 21508 (\N{CJK UNIFIED IDEOGRAPH-5404}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 12473 (\N{KATAKANA LETTER SU}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 12467 (\N{KATAKANA LETTER KO}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 12450 (\N{KATAKANA LETTER A}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 12522 (\N{KATAKANA LETTER RI}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 12531 (\N{KATAKANA LETTER N}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 12464 (\N{KATAKANA LETTER GU}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 25163 (\N{CJK UNIFIED IDEOGRAPH-624B}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 27861 (\N{CJK UNIFIED IDEOGRAPH-6CD5}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 12392 (\N{HIRAGANA LETTER TO}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 30495 (\N{CJK UNIFIED IDEOGRAPH-771F}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 12398 (\N{HIRAGANA LETTER NO}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 33021 (\N{CJK UNIFIED IDEOGRAPH-80FD}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 21147 (\N{CJK UNIFIED IDEOGRAPH-529B}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 20516 (\N{CJK UNIFIED IDEOGRAPH-5024}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 38306 (\N{CJK UNIFIED IDEOGRAPH-95A2}) missing from current font.
+  plt.tight_layout()
+/tmp/ipykernel_9115/3640317213.py:28: UserWarning: Glyph 20418 (\N{CJK UNIFIED IDEOGRAPH-4FC2}) missing from current font.
+  plt.tight_layout()
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 32032 (\N{CJK UNIFIED IDEOGRAPH-7D20}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 38917 (\N{CJK UNIFIED IDEOGRAPH-9805}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 30446 (\N{CJK UNIFIED IDEOGRAPH-76EE}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 38500 (\N{CJK UNIFIED IDEOGRAPH-9664}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 22806 (\N{CJK UNIFIED IDEOGRAPH-5916}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 38598 (\N{CJK UNIFIED IDEOGRAPH-96C6}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 22243 (\N{CJK UNIFIED IDEOGRAPH-56E3}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 21029 (\N{CJK UNIFIED IDEOGRAPH-5225}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 26399 (\N{CJK UNIFIED IDEOGRAPH-671F}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 24453 (\N{CJK UNIFIED IDEOGRAPH-5F85}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 24471 (\N{CJK UNIFIED IDEOGRAPH-5F97}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 35519 (\N{CJK UNIFIED IDEOGRAPH-8ABF}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 25972 (\N{CJK UNIFIED IDEOGRAPH-6574}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 21508 (\N{CJK UNIFIED IDEOGRAPH-5404}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 12473 (\N{KATAKANA LETTER SU}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 12467 (\N{KATAKANA LETTER KO}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 12450 (\N{KATAKANA LETTER A}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 12522 (\N{KATAKANA LETTER RI}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 12531 (\N{KATAKANA LETTER N}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 12464 (\N{KATAKANA LETTER GU}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 25163 (\N{CJK UNIFIED IDEOGRAPH-624B}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 27861 (\N{CJK UNIFIED IDEOGRAPH-6CD5}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 12392 (\N{HIRAGANA LETTER TO}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 30495 (\N{CJK UNIFIED IDEOGRAPH-771F}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 12398 (\N{HIRAGANA LETTER NO}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 33021 (\N{CJK UNIFIED IDEOGRAPH-80FD}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 21147 (\N{CJK UNIFIED IDEOGRAPH-529B}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 20516 (\N{CJK UNIFIED IDEOGRAPH-5024}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 38306 (\N{CJK UNIFIED IDEOGRAPH-95A2}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 20418 (\N{CJK UNIFIED IDEOGRAPH-4FC2}) missing from current font.
+  fig.canvas.print_figure(bytes_io, **kw)
+</pre></div>
+</div>
+<img alt="../../_images/2d15793e929d2036a7c13497ed71deeaebcf2180abae924e94f7a2a25ec8f40e.png" src="../../_images/2d15793e929d2036a7c13497ed71deeaebcf2180abae924e94f7a2a25ec8f40e.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 各手法の評価: 集団間の得点差（同じ能力を持つ場合の公平性）</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== 各スコアリング手法の集団間比較 ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">title</span><span class="p">,</span> <span class="n">scores</span> <span class="ow">in</span> <span class="n">scoring_methods</span><span class="p">:</span>
+    <span class="n">mean_r</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="n">group</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">mean_f</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="n">group</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">corr_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">theta_true</span><span class="p">[</span><span class="n">group</span> <span class="o">==</span> <span class="mi">0</span><span class="p">],</span> <span class="n">scores</span><span class="p">[</span><span class="n">group</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">corr_f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">theta_true</span><span class="p">[</span><span class="n">group</span> <span class="o">==</span> <span class="mi">1</span><span class="p">],</span> <span class="n">scores</span><span class="p">[</span><span class="n">group</span> <span class="o">==</span> <span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--- </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2"> ---&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  平均得点: 参照群=</span><span class="si">{</span><span class="n">mean_r</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, 焦点群=</span><span class="si">{</span><span class="n">mean_f</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, 差=</span><span class="si">{</span><span class="n">mean_r</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mean_f</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  θとの相関: 参照群=</span><span class="si">{</span><span class="n">corr_r</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, 焦点群=</span><span class="si">{</span><span class="n">corr_f</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== 各スコアリング手法の集団間比較 ===
+
+--- Raw Score (素点) ---
+  平均得点: 参照群=9.296, 焦点群=9.120, 差=0.176
+  θとの相関: 参照群=0.879, 焦点群=0.871
+
+--- Purified Score (DIF項目除外) ---
+  平均得点: 参照群=6.936, 焦点群=6.956, 差=-0.020
+  θとの相関: 参照群=0.863, 焦点群=0.861
+
+--- Group-Specific IRT (集団別IRT) ---
+  平均得点: 参照群=-0.041, 焦点群=-0.048, 差=0.008
+  θとの相関: 参照群=0.877, 焦点群=0.866
+
+--- Adjusted Score (期待得点調整) ---
+  平均得点: 参照群=9.296, 焦点群=9.288, 差=0.008
+  θとの相関: 参照群=0.879, 焦点群=0.871
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id13">
+<h3>手法の選択指針<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>手法</p></th>
+<th class="head"><p>利点</p></th>
+<th class="head"><p>欠点</p></th>
+<th class="head"><p>推奨場面</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>DIF項目除外</p></td>
+<td><p>実装が容易</p></td>
+<td><p>情報損失、信頼性低下</p></td>
+<td><p>DIF項目が少数の場合</p></td>
+</tr>
+<tr class="row-odd"><td><p>集団別IRTパラメータ</p></td>
+<td><p>全項目の情報を活用</p></td>
+<td><p>等化が必要、推定が複雑</p></td>
+<td><p>IRTモデルが適合する場合</p></td>
+</tr>
+<tr class="row-even"><td><p>期待得点調整</p></td>
+<td><p>素点スケールで調整可能</p></td>
+<td><p>能力推定の精度に依存</p></td>
+<td><p>素点での報告が必要な場合</p></td>
+</tr>
+<tr class="row-odd"><td><p>多母集団IRT</p></td>
+<td><p>理論的に最も適切</p></td>
+<td><p>実装が複雑、大標本が必要</p></td>
+<td><p>大規模テスト</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>実務的には、DIFが少数の項目にのみ見られ効果量が小さい場合には素点のままでも許容される場合がある。一方、DIFが多くの項目に見られるか効果量が大きい場合には、集団別IRTパラメータや多母集団IRTモデルの利用を検討すべきである。</p>
+</section>
+</section>
+<section id="id14">
+<h2>参考文献<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <p class="sd-card-text">Holland, P. W., &amp; Wainer, H. (Eds.). (1993). <em>Differential item functioning</em>. Lawrence Erlbaum Associates.</p>
@@ -2093,7 +2541,16 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">DIFの解釈と対処</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">DIFを考慮したスコアリング</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">アプローチ1: DIF項目の除外</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">アプローチ2: 集団別IRTパラメータによるスコアリング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">アプローチ3: 期待得点調整</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">アプローチ4: 多母集団IRTモデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">実装例: 各スコアリング手法の比較</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">手法の選択指針</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">参考文献</a></li>
 </ul>
   </nav></div>
 

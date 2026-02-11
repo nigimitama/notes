@@ -262,7 +262,13 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../statistics/bayes_statistics/index.html">ベイズ統計学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../statistics/bayes_statistics/bayesian_inference.html">ベイズ推定</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../statistics/bayes_statistics/conjugate_prior.html">共役事前分布</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../statistics/bayes_statistics/mcmc.html">マルコフ連鎖モンテカルロ（MCMC）法</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../statistics/bayes_statistics/mcmc/index.html">マルコフ連鎖モンテカルロ（MCMC）法</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../statistics/bayes_statistics/mcmc/introduction.html">MCMC法の概要</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../statistics/bayes_statistics/mcmc/metropolis_hastings.html">メトロポリス・ヘイスティング（MH）法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../statistics/bayes_statistics/mcmc/hamiltonian_monte_carlo.html">ハミルトニアンモンテカルロ（HMC）法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../statistics/bayes_statistics/mcmc/validation.html">サンプリングの妥当性検証</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../statistics/bayes_statistics/prior.html">事前分布</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../statistics/bayes_statistics/pymc.html">PyMC</a></li>
 </ul>
@@ -1296,7 +1302,11 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">項目特性曲線</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">部分得点モデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">一般化部分得点モデル</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">実装</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bugs">BUGS</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1702,7 +1712,45 @@ P(y_{ij}=k)
 </ul>
 </section>
 <section id="id11">
-<h2>参考文献<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<h2>実装<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<p>最尤推定ならRの<code class="docutils literal notranslate"><span class="pre">mirt</span></code>パッケージで<code class="docutils literal notranslate"><span class="pre">gpcm</span></code>を選ぶだけだが、ベイズモデリングはややこしい</p>
+<section id="bugs">
+<h3>BUGS<a class="headerlink" href="#bugs" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3926129/">Using R and WinBUGS to fit a Generalized Partial Credit Model for developing and evaluating patient-reported outcomes assessments</a></p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="m">1</span><span class="w">	</span><span class="n">model</span><span class="w"> </span><span class="p">{</span>
+<span class="m">2</span><span class="w">	    </span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="m">3</span><span class="w">	        </span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="m">4</span><span class="w">	                </span><span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">dcat</span><span class="p">(</span><span class="n">prob</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">K</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span>
+<span class="m">5</span><span class="w">	                </span><span class="p">}</span>
+<span class="m">6</span><span class="w">	                </span><span class="n">theta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">dnorm</span><span class="p">(</span><span class="n">mu0</span><span class="p">,</span><span class="w"> </span><span class="n">tau0</span><span class="p">)</span>
+<span class="m">7</span><span class="w">	    </span><span class="p">}</span>
+<span class="m">8</span><span class="w">	    </span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="m">9</span><span class="w">	        </span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="m">10</span><span class="w">	            </span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">k</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">K</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="m">11</span><span class="w">	                </span><span class="n">eta</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">alpha</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">beta</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">])</span>
+<span class="m">12</span><span class="w">	                </span><span class="n">psum</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">eta</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">k</span><span class="p">])</span>
+<span class="m">13</span><span class="w">	                </span><span class="n">exp.psum</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="n">psum</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">])</span>
+<span class="m">14</span><span class="w">	                </span><span class="n">prob</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">exp.psum</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">exp.psum</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">K</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span>
+<span class="m">15</span><span class="w">	    </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="m">16</span><span class="w">	    </span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="m">17</span><span class="w">	        </span><span class="n">alpha</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">dlnorm</span><span class="p">(</span><span class="n">m.alpha</span><span class="p">,</span><span class="w"> </span><span class="n">pr.alpha</span><span class="p">)</span>
+<span class="m">18</span><span class="w">	        </span><span class="n">beta</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0.0</span>
+<span class="m">19</span><span class="w">	        </span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">k</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="m">2</span><span class="o">:</span><span class="n">K</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="m">20</span><span class="w">	                </span><span class="n">beta</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">dnorm</span><span class="p">(</span><span class="n">m.beta</span><span class="p">,</span><span class="w"> </span><span class="n">pr.beta</span><span class="p">)</span>
+<span class="m">21</span><span class="w">	        </span><span class="p">}</span>
+<span class="m">22</span><span class="w">	    </span><span class="p">}</span>
+<span class="m">23</span><span class="w">	    </span><span class="n">pr.alpha</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">pow</span><span class="p">(</span><span class="n">s.alpha</span><span class="p">,</span><span class="w"> </span>−<span class="m">2</span><span class="p">)</span>
+<span class="m">24</span><span class="w">	    </span><span class="n">pr.beta</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">pow</span><span class="p">(</span><span class="n">s.beta</span><span class="p">,</span><span class="w"> </span>−<span class="m">2</span><span class="p">)</span>
+<span class="m">25</span><span class="w">	</span><span class="n">mu0</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">dnorm</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.01</span><span class="p">)</span>
+<span class="m">26</span><span class="w">	</span><span class="n">tau0</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">dgamma</span><span class="p">(</span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span>
+<span class="m">27</span><span class="w">	</span><span class="n">var0</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="o">/</span><span class="n">tau0</span>
+<span class="m">28</span><span class="w">	</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id12">
+<h2>参考文献<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://link.springer.com/article/10.1007/BF02296272?utm_source=chatgpt.com">Masters, G. N. (1982). A Rasch model for partial credit scoring. Psychometrika, 47(2), 149-174.</a></p></li>
 <li><p><a class="reference external" href="https://doi.org/10.1002/j.2333-8504.1992.tb01436.x">Muraki, E. (1992). A generalized partial credit model: Application of an EM algorithm. ETS Research Report Series, 1992(1), i-30.</a></p></li>
@@ -1789,7 +1837,11 @@ P(y_{ij}=k)
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">項目特性曲線</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">部分得点モデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">一般化部分得点モデル</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">実装</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bugs">BUGS</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">参考文献</a></li>
 </ul>
   </nav></div>
 
