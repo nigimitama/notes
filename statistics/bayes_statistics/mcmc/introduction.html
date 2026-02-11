@@ -1295,8 +1295,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">マルコフ連鎖</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">マルコフ連鎖の重要な性質</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">遷移核</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ergodicity">エルゴード性（ergodicity）</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">定常分布</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ergodicity">エルゴード性（ergodicity）</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">詳細つり合い条件</a></li>
 </ul>
 </li>
@@ -1306,6 +1306,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nuts">NUTS</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -1319,8 +1320,14 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="mcmc">
 <h1>MCMC法の概要<a class="headerlink" href="#mcmc" title="Link to this heading">#</a></h1>
-<p><strong>MCMC（Markov Chain Monte Carlo）法</strong> は事後分布を不変分布（定常分布）にもつマルコフ連鎖を人工的に作り、その連鎖から得たサンプルを使って事後分布を推定する方法。</p>
-<p>一定の条件を満たしたマルコフ連鎖は定常分布を持ち、分布のサンプリングができる。そこで「事後分布を定常分布にもつマルコフ連鎖を作ってサンプリングしよう」という考え方。</p>
+<div class="admonition- admonition">
+<p class="admonition-title">要約</p>
+<ul class="simple">
+<li><p>ベイズ推定の際に必要になる多重積分の計算は難しいので避けたい</p></li>
+<li><p><strong>MCMC（Markov Chain Monte Carlo）法</strong> は事後分布を不変分布（定常分布）にもつマルコフ連鎖を人工的に作り、その連鎖から得たサンプルを使って事後分布を推定する方法。</p></li>
+<li><p>一定の条件を満たしたマルコフ連鎖は定常分布を持ち、サンプリングができる。そこで「事後分布を定常分布にもつマルコフ連鎖を作ってサンプリングしよう」という考え方がMCMC法。</p></li>
+</ul>
+</div>
 <section id="id1">
 <h2>なぜMCMCが必要か<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <section id="id2">
@@ -1345,15 +1352,24 @@ d \theta_d d \theta_{d-1} \cdots d \theta_1 \\
 <p>そこで、事後分布 <span class="math notranslate nohighlight">\(f(\theta \mid x) \propto f(x \mid \theta)\, f(\theta)\)</span> から母数の乱数 <span class="math notranslate nohighlight">\(\theta^{(1)}, \theta^{(2)}, \dots\)</span> を発生させて、母数の実現値を取得することにする。
 母数の実現値たちが事後分布を十分に近似できていれば、その標本平均をEAPの推定値とすることができる。</p>
 <p>ただし、このアプローチをとるにあたっては課題が2つある</p>
-<p><strong>1. どうやって乱数を発生させるか？</strong></p>
-<p>疑似乱数を発生させるプログラムでは、所与の分布のもとでの実現値 <span class="math notranslate nohighlight">\(f(x \mid \boldsymbol{\theta})\)</span>  を発生させるようにできており、事後分布 <span class="math notranslate nohighlight">\(f(\boldsymbol{\theta} \mid \boldsymbol{x})\)</span> の生成のために作られては居ない</p>
-<p><strong>2. 事後分布の正規化定数は評価できないことが多い</strong></p>
-<p>正規化定数 <span class="math notranslate nohighlight">\(\int_{\mathbb{R}^d} f(x)\,dx\)</span> は <span class="math notranslate nohighlight">\(d\)</span>次元の積分計算を含み、簡単には評価できない。
-正規化定数が不明だと事後確率密度そのものは計算できないが、その状態でカーネルだけで事後分布をどう計算するか？という課題がある。</p>
+<ol class="arabic simple">
+<li><p><strong>どうやって乱数を発生させるか？</strong></p>
+<ul class="simple">
+<li><p>疑似乱数を発生させるプログラムでは、所与の分布のもとでの実現値 <span class="math notranslate nohighlight">\(f(x \mid \boldsymbol{\theta})\)</span>  を発生させるようにできており、事後分布 <span class="math notranslate nohighlight">\(f(\boldsymbol{\theta} \mid \boldsymbol{x})\)</span> の生成のために作られていない</p></li>
+</ul>
+</li>
+<li><p><strong>事後分布の正規化定数は評価できないことが多い</strong></p>
+<ul class="simple">
+<li><p>正規化定数 <span class="math notranslate nohighlight">\(\int_{\mathbb{R}^d} f(x)\,dx\)</span> は <span class="math notranslate nohighlight">\(d\)</span>次元の積分計算を含み、簡単には評価できない。</p></li>
+<li><p>正規化定数が不明だと事後確率密度そのものは計算できないが、その状態で <strong>カーネルだけで事後分布をどう計算するか？</strong> という課題がある。</p></li>
+</ul>
+</li>
+</ol>
 </section>
 </section>
 <section id="id4">
 <h2>マルコフ連鎖<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>MCMC法では <strong>マルコフ連鎖（Markov chain）</strong> という確率過程を使う。マルコフ連鎖は</p>
 <ul class="simple">
 <li><p>ある状態から、別の状態に推移する確率だけが決まっている</p></li>
 <li><p>1期前だけが次の状態に影響する</p></li>
@@ -1361,8 +1377,13 @@ d \theta_d d \theta_{d-1} \cdots d \theta_1 \\
 </ul>
 <p>という確率過程。</p>
 <p><span class="math notranslate nohighlight">\(t\)</span>期の確率変数を<span class="math notranslate nohighlight">\(Y_t\)</span>とし、その確率過程を<span class="math notranslate nohighlight">\(\{Y_t\}^\infty_{t=0}\)</span>と表すことにする。また確率変数の実現値を<span class="math notranslate nohighlight">\(y_t\)</span>と表すことにする。</p>
-<p>一般の確率過程においては、ある時点<span class="math notranslate nohighlight">\(T\)</span>の確率変数<span class="math notranslate nohighlight">\(Y_T\)</span>の確率密度関数は <span class="math notranslate nohighlight">\(f(y_T|y_0,y_1,\cdots,y_{T-1})\)</span> と、過去の<span class="math notranslate nohighlight">\(\{y_t\}^{T-1}_{t=0}\)</span>に依存した条件付き確率密度となる。</p>
-<p>しかし、マルコフ連鎖においては1期前の確率変数の実現値にのみ依存する。</p>
+<p>一般の確率過程においては、ある時点<span class="math notranslate nohighlight">\(T\)</span>の確率変数<span class="math notranslate nohighlight">\(Y_T\)</span>の確率密度関数は</p>
+<div class="math notranslate nohighlight">
+\[
+f(y_T|y_0,y_1,\cdots,y_{T-1})
+\]</div>
+<p>と、過去の<span class="math notranslate nohighlight">\(\{y_t\}^{T-1}_{t=0}\)</span>に依存した条件付き確率密度となる。
+しかし、マルコフ連鎖においては1期前の確率変数の実現値にのみ依存する。</p>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
@@ -1411,6 +1432,23 @@ f(y_0, y_1, \ldots, y_T) &amp; =f_0(y_0) f(y_1 \mid y_0) f(y_2 \mid y_0, y_1) \t
 <p>となり、 <span class="math notranslate nohighlight">\(f_0\)</span> と <span class="math notranslate nohighlight">\(f(y_t \mid y_{t-1})\)</span> が与えられれば <span class="math notranslate nohighlight">\(f(y_0, y_1, \ldots, y_T)=f_0(y_0) \prod_{t=1}^T f(y_t \mid y_{t-1})\)</span> で一意に決まる。</p>
 <p>この <span class="math notranslate nohighlight">\(f(y_t \mid y_{t-1})\)</span> のことを <strong>遷移核（transition kernel, 推移核とも）</strong> という。</p>
 </section>
+<section id="id7">
+<h3>定常分布<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>マルコフ連鎖において、各状態に遷移していっても同じ分布のまま変わらなくなったときの分布を <strong>定常分布</strong>という。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+定常分布</div>
+<p class="sd-card-text">ある特定の確率密度関数を<span class="math notranslate nohighlight">\(f\)</span>で表し、状態 <span class="math notranslate nohighlight">\(\theta\)</span> から状態 <span class="math notranslate nohighlight">\(\theta'\)</span> へ移る確率（遷移核）を <span class="math notranslate nohighlight">\(f(\theta' \mid \theta)\)</span>で表すとする。  このとき</p>
+<div class="math notranslate nohighlight">
+\[
+f(\theta^{\prime})=\int^{+\infty}_{-\infty} f(\theta) f(\theta^{\prime} \mid \theta) d \theta
+\]</div>
+<p class="sd-card-text">が成り立つとき、確率密度関数<span class="math notranslate nohighlight">\(f\)</span>をもつ確率分布をマルコフ連鎖の <strong>定常分布 (stationary distribution)</strong> あるいは <strong>不変分布 (invariant distribution)</strong> という。</p>
+</div>
+</div>
+<p><span class="math notranslate nohighlight">\(t\to\infty\)</span>において<span class="math notranslate nohighlight">\(f\)</span>が定常分布に収束するとき、そのようなマルコフ連鎖は <strong>エルゴード性（ergodicity）</strong> を持つという。</p>
+</section>
 <section id="ergodicity">
 <h3>エルゴード性（ergodicity）<a class="headerlink" href="#ergodicity" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
@@ -1420,7 +1458,7 @@ f(y_0, y_1, \ldots, y_T) &amp; =f_0(y_0) f(y_1 \mid y_0) f(y_2 \mid y_0, y_1) \t
 </ol>
 <p>を満たす連鎖においては、次の性質を持つ</p>
 <ul class="simple">
-<li><p>定常分布<span class="math notranslate nohighlight">\(\pi\)</span>が一意に存在する</p></li>
+<li><p><strong>定常分布<span class="math notranslate nohighlight">\(\pi\)</span>が一意に存在する</strong></p></li>
 <li><p>初期値によらず、<span class="math notranslate nohighlight">\(\operatorname{Law}(X_t) \to \pi\)</span> （<span class="math notranslate nohighlight">\(\operatorname{Law}(X_t)\)</span>は確率変数<span class="math notranslate nohighlight">\(X_t\)</span>の従う分布の意味）</p></li>
 <li><p>連鎖の時間についての平均が分布の平均と等しくなる</p></li>
 </ul>
@@ -1437,55 +1475,51 @@ f(y_0, y_1, \ldots, y_T) &amp; =f_0(y_0) f(y_1 \mid y_0) f(y_2 \mid y_0, y_1) \t
 </div>
 </div>
 </section>
-<section id="id7">
-<h3>定常分布<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
-<p>マルコフ連鎖において、各状態に遷移していっても同じ分布のまま変わらなくなったときの分布を <strong>定常分布</strong>という。</p>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-定常分布</div>
-<p class="sd-card-text">ある特定の確率密度関数を<span class="math notranslate nohighlight">\(f\)</span>で表し、状態 <span class="math notranslate nohighlight">\(A\)</span> から状態 <span class="math notranslate nohighlight">\(B\)</span> へ移る確率（遷移核）を <span class="math notranslate nohighlight">\(K(A, B)\)</span>で表すとする。  このとき</p>
-<div class="math notranslate nohighlight">
-\[
-f(x^{\prime})=\int^{+\infty}_{-\infty} f(x) K(x, x^{\prime}) d x
-\]</div>
-<p class="sd-card-text">が成り立つとき、確率密度関数<span class="math notranslate nohighlight">\(f\)</span>をもつ確率分布をマルコフ連鎖の <strong>定常分布 (stationary distribution)</strong> あるいは <strong>不変分布 (invariant distribution)</strong> という。</p>
-</div>
-</div>
-<p><span class="math notranslate nohighlight">\(t\to\infty\)</span>において<span class="math notranslate nohighlight">\(f\)</span>が定常分布に収束するとき、そのようなマルコフ連鎖は <strong>エルゴード性（ergodicity）</strong> を持つという。</p>
-</section>
 <section id="id8">
 <h3>詳細つり合い条件<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <p>マルコフ連鎖が定常分布に収束するための十分条件に詳細釣り合い条件というものがある。</p>
 <div class="admonition-detailed-balance-condition admonition">
 <p class="admonition-title">詳細つり合い条件（detailed balance condition）</p>
-<p>任意の状態A,Bについて、Aが生じる確率<span class="math notranslate nohighlight">\(f(A)\)</span>とAからBに遷移する確率<span class="math notranslate nohighlight">\(K(A, B)\)</span>が一致すること</p>
+<p>任意の状態<span class="math notranslate nohighlight">\(\theta, \theta'\)</span>について、<span class="math notranslate nohighlight">\(\theta\)</span>が生じる確率<span class="math notranslate nohighlight">\(f(\theta)\)</span>と<span class="math notranslate nohighlight">\(\theta\)</span>から<span class="math notranslate nohighlight">\(\theta'\)</span>に遷移する確率<span class="math notranslate nohighlight">\(f(\theta' \mid \theta)\)</span>の積が一致すること</p>
 <div class="math notranslate nohighlight">
 \[
-K(A, B) f(A) = K(A, B) f(B)
+f(\theta \mid \theta') f(\theta') = f(\theta' \mid \theta) f(\theta) \quad \forall \theta, \theta'
 \]</div>
 <p>を <strong>詳細つり合い条件（detailed balance condition）</strong> という。</p>
 </div>
-<p>MCMCのアルゴリズムは、この条件を満たすように遷移確率<span class="math notranslate nohighlight">\(K(A, B)\)</span>を作り、事後分布をサンプリングする。</p>
+<p>詳細釣り合い条件の式の両辺を<span class="math notranslate nohighlight">\(\theta'\)</span>で積分すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\int f(\theta \mid \theta') f(\theta') \, d\theta'
+&amp;= \int f(\theta' \mid \theta) f(\theta) \, d\theta' \\
+&amp;= f(\theta) \int f(\theta' \mid \theta) \, d\theta' \\
+% 
+&amp;= f(\theta) \int \frac{f(\theta',\theta)}{f(\theta)}\, d\theta'\\
+&amp;= f(\theta) \frac{1}{f(\theta)} \int f(\theta',\theta)\, d\theta'\\
+&amp;= f(\theta) \frac{1}{f(\theta)} f(\theta)\\
+% 
+&amp;= f(\theta) \cdot 1 \\
+&amp;= f(\theta)
+\end{aligned}
+\end{split}\]</div>
+<p>となる。言葉で説明すると、 <strong><span class="math notranslate nohighlight">\(\theta'\)</span>から<span class="math notranslate nohighlight">\(\theta\)</span>に遷移する確率密度の、あらゆる点に関する平均確率密度（左辺）は、<span class="math notranslate nohighlight">\(\theta\)</span>の確率密度<span class="math notranslate nohighlight">\(f(\theta)\)</span>そのものである（右辺）</strong> ということ。そしてこれが標本空間の任意の2点（<span class="math notranslate nohighlight">\(\theta, \theta'\)</span>）で上記の条件が成り立つ、というのが詳細釣り合い条件。</p>
+<p>MCMCのアルゴリズムは、この条件を満たすように遷移確率を作り、事後分布をサンプリングする。</p>
 </section>
 </section>
 <section id="id9">
 <h2>MCMCのアルゴリズム<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
 <section id="mh">
 <h3>メトロポリス・ヘイスティング（MH）法<a class="headerlink" href="#mh" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>最も単純な方法</p></li>
-<li><p>しかし実用上はうまく収束しないことも多く、NUTS法のほうが使われる</p></li>
-</ul>
+<p>最も単純な方法でわかりやすいが、実用上はうまく収束しないことが多い方法。</p>
 <p>基本アイデア</p>
 <ul class="simple">
-<li><p>現在の状態 <span class="math notranslate nohighlight">\(\theta\)</span> から <strong>提案分布（proposal）</strong> <span class="math notranslate nohighlight">\(q(\theta' \mid \theta)\)</span> により候補 <span class="math notranslate nohighlight">\(\theta'\)</span> を生成</p></li>
-<li><p><span class="math notranslate nohighlight">\(\theta'\)</span> を <strong>確率的に受理 or 棄却</strong></p></li>
-<li><p>この操作を繰り返すことで、極限的に <span class="math notranslate nohighlight">\(p(\theta \mid y)\)</span> に従うマルコフ連鎖を得る</p></li>
+<li><p>遷移核<span class="math notranslate nohighlight">\(f( \mid)\)</span>に正規分布など適当な分布<span class="math notranslate nohighlight">\(q(\mid)\)</span>を置く（ <strong>提案分布</strong> という）</p></li>
+<li><p>提案分布が詳細釣り合い条件を満たさない場合、釣り合うようにズレたぶんだけ補正をしていく</p></li>
 </ul>
 <p>アルゴリズムの概要：</p>
 <ol class="arabic simple">
-<li><p>推移確率行列にまず適当な確率分布を置く</p>
+<li><p>遷移核にまず適当な確率分布を置く</p>
 <ul class="simple">
 <li><p>正規分布がよく使われる</p></li>
 <li><p><span class="math notranslate nohighlight">\(T(\theta'|\theta)=N(\theta, \sigma)\)</span></p></li>
@@ -1526,6 +1560,13 @@ r=\frac{
 </li>
 </ul>
 </section>
+</section>
+<section id="id10">
+<h2>参考<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.docswell.com/s/BunjiRo/KJL73N-bayes-06-MCMC1#p1">ベイズ統計_06_マルコフ連鎖モンテカルロ法(1) | ドクセル</a></p></li>
+<li><p><a class="reference external" href="https://www.docswell.com/s/BunjiRo/ZNR4LD-bayes-07-MCMC2">ベイズ統計_07_マルコフ連鎖モンテカルロ法(2) | ドクセル</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -1601,8 +1642,8 @@ r=\frac{
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">マルコフ連鎖</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">マルコフ連鎖の重要な性質</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">遷移核</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ergodicity">エルゴード性（ergodicity）</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">定常分布</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ergodicity">エルゴード性（ergodicity）</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">詳細つり合い条件</a></li>
 </ul>
 </li>
@@ -1612,6 +1653,7 @@ r=\frac{
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nuts">NUTS</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">参考</a></li>
 </ul>
   </nav></div>
 
