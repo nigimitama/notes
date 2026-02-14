@@ -1307,28 +1307,29 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">スコア関数</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fisher">Fisher情報行列</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#irls">IRLS</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">IRLSのスクラッチ実装</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">シミュレーションデータでの検証</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">逸脱度</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">IRLSのスクラッチ実装</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">シミュレーションデータでの検証</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">仮説検定とモデル評価</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">仮説検定とモデル評価</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wald">Wald検定</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deviance">逸脱度（deviance）</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">オフセット項</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">オフセット項</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overdispersion">過分散（overdispersion）</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">過分散の影響</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">過分散の診断</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">過分散への対処</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">過分散の影響</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">過分散の診断</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">過分散への対処</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quasi-poisson">1. 準ポアソン回帰（quasi-Poisson）</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#negative-binomial-regression">2. 負の二項回帰（negative binomial regression）</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">実データでの例</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">実データでの例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1392,7 +1393,12 @@ g(\mu_i) = \log \mu_i
 \[
 \mu_i = \exp(\mathbf{x}_i^\top \boldsymbol{\beta})
 \]</div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -1413,7 +1419,7 @@ g(\mu_i) = \log \mu_i
 <span class="n">eta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
 <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\eta = \mathbf</span><span class="si">{x}</span><span class="s2">^\top \boldsymbol{\beta}$&quot;</span><span class="p">,</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\eta = \mathbf</span><span class="si">{x}</span><span class="s2">^\top \mathbf{\beta}$&quot;</span><span class="p">,</span>
             <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\mu = \exp(\eta)$&quot;</span><span class="p">,</span>
             <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Exponential (inverse log link)&quot;</span><span class="p">)</span>
 
@@ -1421,178 +1427,9 @@ g(\mu_i) = \log \mu_i
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/formatters.py:402,</span> in <span class="ni">BaseFormatter.__call__</span><span class="nt">(self, obj)</span>
-<span class="g g-Whitespace">    </span><span class="mi">400</span>     <span class="k">pass</span>
-<span class="g g-Whitespace">    </span><span class="mi">401</span> <span class="k">else</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">402</span>     <span class="k">return</span> <span class="n">printer</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">403</span> <span class="c1"># Finally look for special method names</span>
-<span class="g g-Whitespace">    </span><span class="mi">404</span> <span class="n">method</span> <span class="o">=</span> <span class="n">get_real_method</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_method</span><span class="p">)</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170,</span> in <span class="ni">print_figure</span><span class="nt">(fig, fmt, bbox_inches, base64, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">167</span>     <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.backend_bases</span><span class="w"> </span><span class="kn">import</span> <span class="n">FigureCanvasBase</span>
-<span class="g g-Whitespace">    </span><span class="mi">168</span>     <span class="n">FigureCanvasBase</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">170</span> <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">print_figure</span><span class="p">(</span><span class="n">bytes_io</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">171</span> <span class="n">data</span> <span class="o">=</span> <span class="n">bytes_io</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">172</span> <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s1">&#39;svg&#39;</span><span class="p">:</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/backend_bases.py:2338,</span> in <span class="ni">FigureCanvasBase.print_figure</span><span class="nt">(self, filename, dpi, facecolor, edgecolor, orientation, format, bbox_inches, pad_inches, bbox_extra_artists, backend, **kwargs)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2332</span>     <span class="n">renderer</span> <span class="o">=</span> <span class="n">_get_renderer</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">2333</span>         <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">2334</span>         <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">2335</span>             <span class="n">print_method</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="n">orientation</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2336</span>     <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2337</span>     <span class="k">with</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="s2">&quot;_draw_disabled&quot;</span><span class="p">,</span> <span class="n">nullcontext</span><span class="p">)():</span>
-<span class="ne">-&gt; </span><span class="mi">2338</span>         <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2340</span> <span class="k">if</span> <span class="n">bbox_inches</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">2341</span>     <span class="k">if</span> <span class="n">bbox_inches</span> <span class="o">==</span> <span class="s2">&quot;tight&quot;</span><span class="p">:</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/artist.py:95,</span> in <span class="ni">_finalize_rasterization.&lt;locals&gt;.draw_wrapper</span><span class="nt">(artist, renderer, *args, **kwargs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">93</span> <span class="nd">@wraps</span><span class="p">(</span><span class="n">draw</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">94</span> <span class="k">def</span><span class="w"> </span><span class="nf">draw_wrapper</span><span class="p">(</span><span class="n">artist</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">95</span>     <span class="n">result</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">artist</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">96</span>     <span class="k">if</span> <span class="n">renderer</span><span class="o">.</span><span class="n">_rasterizing</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">97</span>         <span class="n">renderer</span><span class="o">.</span><span class="n">stop_rasterizing</span><span class="p">()</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/artist.py:72,</span> in <span class="ni">allow_rasterization.&lt;locals&gt;.draw_wrapper</span><span class="nt">(artist, renderer)</span>
-<span class="g g-Whitespace">     </span><span class="mi">69</span>     <span class="k">if</span> <span class="n">artist</span><span class="o">.</span><span class="n">get_agg_filter</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">70</span>         <span class="n">renderer</span><span class="o">.</span><span class="n">start_filter</span><span class="p">()</span>
-<span class="ne">---&gt; </span><span class="mi">72</span>     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">artist</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">73</span> <span class="k">finally</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">74</span>     <span class="k">if</span> <span class="n">artist</span><span class="o">.</span><span class="n">get_agg_filter</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/figure.py:3125,</span> in <span class="ni">Figure.draw</span><span class="nt">(self, renderer)</span>
-<span class="g g-Whitespace">   </span><span class="mi">3122</span>         <span class="c1"># ValueError can occur when resizing a window.</span>
-<span class="g g-Whitespace">   </span><span class="mi">3124</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">3125</span> <span class="n">mimage</span><span class="o">.</span><span class="n">_draw_list_compositing_images</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">3126</span>     <span class="n">renderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">artists</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">suppressComposite</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">3128</span> <span class="k">for</span> <span class="n">sfig</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subfigs</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">3129</span>     <span class="n">sfig</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/image.py:131,</span> in <span class="ni">_draw_list_compositing_images</span><span class="nt">(renderer, parent, artists, suppress_composite)</span>
-<span class="g g-Whitespace">    </span><span class="mi">129</span> <span class="k">if</span> <span class="n">not_composite</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">has_images</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">130</span>     <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artists</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">131</span>         <span class="n">a</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">132</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">133</span>     <span class="c1"># Composite any adjacent images together</span>
-<span class="g g-Whitespace">    </span><span class="mi">134</span>     <span class="n">image_group</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/artist.py:72,</span> in <span class="ni">allow_rasterization.&lt;locals&gt;.draw_wrapper</span><span class="nt">(artist, renderer)</span>
-<span class="g g-Whitespace">     </span><span class="mi">69</span>     <span class="k">if</span> <span class="n">artist</span><span class="o">.</span><span class="n">get_agg_filter</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">70</span>         <span class="n">renderer</span><span class="o">.</span><span class="n">start_filter</span><span class="p">()</span>
-<span class="ne">---&gt; </span><span class="mi">72</span>     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">artist</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">73</span> <span class="k">finally</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">74</span>     <span class="k">if</span> <span class="n">artist</span><span class="o">.</span><span class="n">get_agg_filter</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/axes/_base.py:3066,</span> in <span class="ni">_AxesBase.draw</span><span class="nt">(self, renderer)</span>
-<span class="g g-Whitespace">   </span><span class="mi">3063</span> <span class="k">if</span> <span class="n">artists_rasterized</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">3064</span>     <span class="n">_draw_rasterized</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="p">,</span> <span class="n">artists_rasterized</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">3066</span> <span class="n">mimage</span><span class="o">.</span><span class="n">_draw_list_compositing_images</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">3067</span>     <span class="n">renderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">artists</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">suppressComposite</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">3069</span> <span class="n">renderer</span><span class="o">.</span><span class="n">close_group</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">3070</span> <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/image.py:131,</span> in <span class="ni">_draw_list_compositing_images</span><span class="nt">(renderer, parent, artists, suppress_composite)</span>
-<span class="g g-Whitespace">    </span><span class="mi">129</span> <span class="k">if</span> <span class="n">not_composite</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">has_images</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">130</span>     <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artists</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">131</span>         <span class="n">a</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">132</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">133</span>     <span class="c1"># Composite any adjacent images together</span>
-<span class="g g-Whitespace">    </span><span class="mi">134</span>     <span class="n">image_group</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/artist.py:72,</span> in <span class="ni">allow_rasterization.&lt;locals&gt;.draw_wrapper</span><span class="nt">(artist, renderer)</span>
-<span class="g g-Whitespace">     </span><span class="mi">69</span>     <span class="k">if</span> <span class="n">artist</span><span class="o">.</span><span class="n">get_agg_filter</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">70</span>         <span class="n">renderer</span><span class="o">.</span><span class="n">start_filter</span><span class="p">()</span>
-<span class="ne">---&gt; </span><span class="mi">72</span>     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">artist</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">73</span> <span class="k">finally</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">74</span>     <span class="k">if</span> <span class="n">artist</span><span class="o">.</span><span class="n">get_agg_filter</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/axis.py:1379,</span> in <span class="ni">Axis.draw</span><span class="nt">(self, renderer, *args, **kwargs)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1377</span> <span class="c1"># Shift label away from axes to avoid overlapping ticklabels.</span>
-<span class="g g-Whitespace">   </span><span class="mi">1378</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_label_position</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">1379</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1381</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_offset_text_position</span><span class="p">(</span><span class="n">tlb1</span><span class="p">,</span> <span class="n">tlb2</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1382</span> <span class="bp">self</span><span class="o">.</span><span class="n">offsetText</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">major</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">get_offset</span><span class="p">())</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/artist.py:72,</span> in <span class="ni">allow_rasterization.&lt;locals&gt;.draw_wrapper</span><span class="nt">(artist, renderer)</span>
-<span class="g g-Whitespace">     </span><span class="mi">69</span>     <span class="k">if</span> <span class="n">artist</span><span class="o">.</span><span class="n">get_agg_filter</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">70</span>         <span class="n">renderer</span><span class="o">.</span><span class="n">start_filter</span><span class="p">()</span>
-<span class="ne">---&gt; </span><span class="mi">72</span>     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">artist</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">73</span> <span class="k">finally</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">74</span>     <span class="k">if</span> <span class="n">artist</span><span class="o">.</span><span class="n">get_agg_filter</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/text.py:752,</span> in <span class="ni">Text.draw</span><span class="nt">(self, renderer)</span>
-<span class="g g-Whitespace">    </span><span class="mi">749</span> <span class="n">renderer</span><span class="o">.</span><span class="n">open_group</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gid</span><span class="p">())</span>
-<span class="g g-Whitespace">    </span><span class="mi">751</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cm_set</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_wrapped_text</span><span class="p">()):</span>
-<span class="ne">--&gt; </span><span class="mi">752</span>     <span class="n">bbox</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">descent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_layout</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">753</span>     <span class="n">trans</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_transform</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">755</span>     <span class="c1"># don&#39;t use self.get_position here, which refers to text</span>
-<span class="g g-Whitespace">    </span><span class="mi">756</span>     <span class="c1"># position in Text:</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/text.py:386,</span> in <span class="ni">Text._get_layout</span><span class="nt">(self, renderer)</span>
-<span class="g g-Whitespace">    </span><span class="mi">384</span> <span class="n">clean_line</span><span class="p">,</span> <span class="n">ismath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_math</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">385</span> <span class="k">if</span> <span class="n">clean_line</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">386</span>     <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">_get_text_metrics_with_cache</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">387</span>         <span class="n">renderer</span><span class="p">,</span> <span class="n">clean_line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fontproperties</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">388</span>         <span class="n">ismath</span><span class="o">=</span><span class="n">ismath</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">dpi</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">389</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">390</span>     <span class="n">w</span> <span class="o">=</span> <span class="n">h</span> <span class="o">=</span> <span class="n">d</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/text.py:97,</span> in <span class="ni">_get_text_metrics_with_cache</span><span class="nt">(renderer, text, fontprop, ismath, dpi)</span>
-<span class="g g-Whitespace">     </span><span class="mi">94</span><span class="w"> </span><span class="sd">&quot;&quot;&quot;Call ``renderer.get_text_width_height_descent``, caching the results.&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">     </span><span class="mi">95</span> <span class="c1"># Cached based on a copy of fontprop so that later in-place mutations of</span>
-<span class="g g-Whitespace">     </span><span class="mi">96</span> <span class="c1"># the passed-in argument do not mess up the cache.</span>
-<span class="ne">---&gt; </span><span class="mi">97</span> <span class="k">return</span> <span class="n">_get_text_metrics_with_cache_impl</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">98</span>     <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">renderer</span><span class="p">),</span> <span class="n">text</span><span class="p">,</span> <span class="n">fontprop</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">ismath</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/text.py:105,</span> in <span class="ni">_get_text_metrics_with_cache_impl</span><span class="nt">(renderer_ref, text, fontprop, ismath, dpi)</span>
-<span class="g g-Whitespace">    </span><span class="mi">101</span> <span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="mi">4096</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">102</span> <span class="k">def</span><span class="w"> </span><span class="nf">_get_text_metrics_with_cache_impl</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">103</span>         <span class="n">renderer_ref</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">fontprop</span><span class="p">,</span> <span class="n">ismath</span><span class="p">,</span> <span class="n">dpi</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">104</span>     <span class="c1"># dpi is unused, but participates in cache invalidation (via the renderer).</span>
-<span class="ne">--&gt; </span><span class="mi">105</span>     <span class="k">return</span> <span class="n">renderer_ref</span><span class="p">()</span><span class="o">.</span><span class="n">get_text_width_height_descent</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">fontprop</span><span class="p">,</span> <span class="n">ismath</span><span class="p">)</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/backends/backend_agg.py:230,</span> in <span class="ni">RendererAgg.get_text_width_height_descent</span><span class="nt">(self, s, prop, ismath)</span>
-<span class="g g-Whitespace">    </span><span class="mi">226</span>     <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_text_width_height_descent</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">ismath</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span> <span class="k">if</span> <span class="n">ismath</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span>     <span class="n">ox</span><span class="p">,</span> <span class="n">oy</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">descent</span><span class="p">,</span> <span class="n">font_image</span> <span class="o">=</span> \
-<span class="ne">--&gt; </span><span class="mi">230</span>         <span class="bp">self</span><span class="o">.</span><span class="n">mathtext_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span>     <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">descent</span>
-<span class="g g-Whitespace">    </span><span class="mi">233</span> <span class="n">font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_font</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/mathtext.py:226,</span> in <span class="ni">MathTextParser.parse</span><span class="nt">(self, s, dpi, prop)</span>
-<span class="g g-Whitespace">    </span><span class="mi">222</span> <span class="c1"># lru_cache can&#39;t decorate parse() directly because prop</span>
-<span class="g g-Whitespace">    </span><span class="mi">223</span> <span class="c1"># is mutable; key the cache using an internal copy (see</span>
-<span class="g g-Whitespace">    </span><span class="mi">224</span> <span class="c1"># text._get_text_metrics_with_cache for a similar case).</span>
-<span class="g g-Whitespace">    </span><span class="mi">225</span> <span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">prop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-<span class="ne">--&gt; </span><span class="mi">226</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_cached</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">dpi</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/mathtext.py:247,</span> in <span class="ni">MathTextParser._parse_cached</span><span class="nt">(self, s, dpi, prop)</span>
-<span class="g g-Whitespace">    </span><span class="mi">244</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Cache the parser globally.</span>
-<span class="g g-Whitespace">    </span><span class="mi">245</span>     <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">_mathtext</span><span class="o">.</span><span class="n">Parser</span><span class="p">()</span>
-<span class="ne">--&gt; </span><span class="mi">247</span> <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">fontset</span><span class="p">,</span> <span class="n">fontsize</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">248</span> <span class="n">output</span> <span class="o">=</span> <span class="n">_mathtext</span><span class="o">.</span><span class="n">ship</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">249</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_type</span> <span class="o">==</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/matplotlib/_mathtext.py:1995,</span> in <span class="ni">Parser.parse</span><span class="nt">(self, s, fonts_object, fontsize, dpi)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1992</span>     <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expression</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1993</span> <span class="k">except</span> <span class="n">ParseBaseException</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1994</span>     <span class="c1"># explain becomes a plain method on pyparsing 3 (err.explain(0)).</span>
-<span class="ne">-&gt; </span><span class="mi">1995</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">ParseException</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
-<span class="g g-Whitespace">   </span><span class="mi">1996</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_stack</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="g g-Whitespace">   </span><span class="mi">1997</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_subscript_or_superscript</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="ne">ValueError</span>: 
-\<span class="n">eta</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">x</span><span class="p">}</span><span class="o">^</span>\<span class="n">top</span> \<span class="n">boldsymbol</span><span class="p">{</span>\<span class="n">beta</span><span class="p">}</span>
-                       <span class="o">^</span>
-<span class="ne">ParseFatalException</span>: Unknown symbol: \boldsymbol, found &#39;\&#39;  (at char 23), (line:1, col:24)
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Figure size 1200x400 with 2 Axes&gt;
-</pre></div>
-</div>
+<img alt="../../_images/c5da18f3ad857bd646da15d5ce9aecfb0420e4e78264f3e07b4cf2608c478cb0.png" src="../../_images/c5da18f3ad857bd646da15d5ce9aecfb0420e4e78264f3e07b4cf2608c478cb0.png" />
 </div>
 </div>
 </section>
@@ -1661,7 +1498,10 @@ z_i^{(t)} = \eta_i^{(t)} + \frac{y_i - \mu_i^{(t)}}{\mu_i^{(t)}}
 <p>リンク関数の微分 <span class="math notranslate nohighlight">\(g'(\mu) = 1/\mu\)</span> が反映されている。</p>
 </section>
 <section id="id9">
-<h3>IRLSのスクラッチ実装<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<h3>逸脱度<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+</section>
+<section id="id10">
+<h3>IRLSのスクラッチ実装<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">poisson_regression_irls</span><span class="p">(</span>
@@ -1724,9 +1564,9 @@ z_i^{(t)} = \eta_i^{(t)} + \frac{y_i - \mu_i^{(t)}}{\mu_i^{(t)}}
 
     <span class="c1"># 逸脱度</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">0</span>
-    <span class="n">deviance</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">/</span> <span class="n">mu</span><span class="p">[</span><span class="n">mask</span><span class="p">]),</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span>
-    <span class="p">)</span>
+    <span class="n">term</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">term</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">/</span> <span class="n">mu</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+    <span class="n">deviance</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">term</span> <span class="o">-</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">mu</span><span class="p">))</span>
 
     <span class="c1"># 標準誤差</span>
     <span class="n">XtWX</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span> <span class="o">@</span> <span class="n">X</span>
@@ -1746,8 +1586,8 @@ z_i^{(t)} = \eta_i^{(t)} + \frac{y_i - \mu_i^{(t)}}{\mu_i^{(t)}}
 </div>
 </div>
 </section>
-<section id="id10">
-<h3>シミュレーションデータでの検証<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3>シミュレーションデータでの検証<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <p>スクラッチ実装を <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> の結果と比較する。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1808,36 +1648,75 @@ yの平均: 3.226, 分散: 7.703
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_8825/1547262308.py:57: DeprecationWarning: `np.math` is a deprecated alias for the standard library `math` module (Deprecated Numpy 1.25). Replace usages of `np.math` with `math`
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>IRLS 反復回数: 5
+対数尤度 (自前): -939.9157
+対数尤度 (statsmodels): -939.9157
+逸脱度 (自前): 557.5685
+逸脱度 (statsmodels): 557.5685
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_8854/3894540174.py:57: DeprecationWarning: `np.math` is a deprecated alias for the standard library `math` module (Deprecated Numpy 1.25). Replace usages of `np.math` with `math`
   log_lik = np.sum(y * np.log(mu + 1e-15) - mu - np.array([np.math.lgamma(yi + 1) for yi in y]))
 </pre></div>
 </div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># スクラッチ実装</span>
-<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">result_irls</span> <span class="o">=</span> <span class="n">poisson_regression_irls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="c1"># statsmodels</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">model_sm</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">GLM</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="n">families</span><span class="o">.</span><span class="n">Poisson</span><span class="p">())</span>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<span class="nn">Cell In[2], line 62,</span> in <span class="ni">poisson_regression_irls</span><span class="nt">(X, y, max_iter, tol)</span>
-<span class="g g-Whitespace">     </span><span class="mi">59</span> <span class="c1"># 逸脱度</span>
-<span class="g g-Whitespace">     </span><span class="mi">60</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">0</span>
-<span class="g g-Whitespace">     </span><span class="mi">61</span> <span class="n">deviance</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
-<span class="ne">---&gt; </span><span class="mi">62</span>     <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">/</span> <span class="n">mu</span><span class="p">[</span><span class="n">mask</span><span class="p">]),</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">63</span> <span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">65</span> <span class="c1"># 標準誤差</span>
-<span class="g g-Whitespace">     </span><span class="mi">66</span> <span class="n">XtWX</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span> <span class="o">@</span> <span class="n">X</span>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-<span class="ne">ValueError</span>: operands could not be broadcast together with shapes (500,) (450,) () 
-</pre></div>
-</div>
-</div>
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>真の値</th>
+      <th>IRLS (自前)</th>
+      <th>statsmodels</th>
+      <th>SE (自前)</th>
+      <th>SE (statsmodels)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>β₀</th>
+      <td>1.0</td>
+      <td>0.991881</td>
+      <td>0.991881</td>
+      <td>0.029044</td>
+      <td>0.029044</td>
+    </tr>
+    <tr>
+      <th>β₁</th>
+      <td>0.5</td>
+      <td>0.521496</td>
+      <td>0.521496</td>
+      <td>0.025434</td>
+      <td>0.025434</td>
+    </tr>
+    <tr>
+      <th>β₂</th>
+      <td>-0.3</td>
+      <td>-0.297395</td>
+      <td>-0.297395</td>
+      <td>0.024331</td>
+      <td>0.024331</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 </section>
 </section>
-<section id="id11">
-<h2>仮説検定とモデル評価<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<section id="id12">
+<h2>仮説検定とモデル評価<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
 <section id="wald">
 <h3>Wald検定<a class="headerlink" href="#wald" title="Link to this heading">#</a></h3>
 <p>ロジスティック回帰と同様に、個々の係数について <span class="math notranslate nohighlight">\(H_0: \beta_j = 0\)</span> を検定する：</p>
@@ -1861,6 +1740,28 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:                      y   No. Observations:                  500
+Model:                            GLM   Df Residuals:                      497
+Model Family:                 Poisson   Df Model:                            2
+Link Function:                    Log   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:                -939.92
+Date:                Sat, 14 Feb 2026   Deviance:                       557.57
+Time:                        14:36:09   Pearson chi2:                     500.
+No. Iterations:                     5   Pseudo R-squ. (CS):             0.6738
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+const          0.9919      0.029     34.151      0.000       0.935       1.049
+x1             0.5215      0.025     20.504      0.000       0.472       0.571
+x2            -0.2974      0.024    -12.223      0.000      -0.345      -0.250
+==============================================================================
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1881,11 +1782,65 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>β</th>
+      <th>IRR (exp(β))</th>
+      <th>IRR 95%CI lower</th>
+      <th>IRR 95%CI upper</th>
+      <th>p-value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>intercept</th>
+      <td>0.991881</td>
+      <td>2.696302</td>
+      <td>2.547101</td>
+      <td>2.854242</td>
+      <td>1.298211e-255</td>
+    </tr>
+    <tr>
+      <th>x₁</th>
+      <td>0.521496</td>
+      <td>1.684546</td>
+      <td>1.602632</td>
+      <td>1.770647</td>
+      <td>1.972123e-93</td>
+    </tr>
+    <tr>
+      <th>x₂</th>
+      <td>-0.297395</td>
+      <td>0.742751</td>
+      <td>0.708161</td>
+      <td>0.779030</td>
+      <td>2.353386e-34</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 </section>
 </section>
-<section id="id12">
-<h2>オフセット項<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+<section id="id13">
+<h2>オフセット項<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
 <p>ポアソン回帰では、観測ごとに曝露量（exposure）が異なる場合がある。例えば人口規模が異なる地域の犯罪件数や、観察期間が異なる場合のイベント発生数である。</p>
 <p>曝露量 <span class="math notranslate nohighlight">\(t_i\)</span> を考慮したモデルは</p>
 <div class="math notranslate nohighlight">
@@ -1933,13 +1888,26 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>真の係数: β₀=0.5, β₁=0.8
+
+--- オフセットあり（正しいモデル）---
+  β₀=0.495, β₁=0.792
+  AIC=1275.4
+
+--- オフセットなし（誤ったモデル）---
+  β₀=1.565, β₁=0.809
+  AIC=1750.7
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 <section id="overdispersion">
 <h2>過分散（overdispersion）<a class="headerlink" href="#overdispersion" title="Link to this heading">#</a></h2>
 <p>ポアソン回帰の最も重要な前提は <span class="math notranslate nohighlight">\(E[Y_i] = \text{Var}(Y_i) = \mu_i\)</span>（平均と分散が等しい）であるが、実データでは <span class="math notranslate nohighlight">\(\text{Var}(Y_i) &gt; E[Y_i]\)</span>（過分散）となることが非常に多い。</p>
-<section id="id13">
-<h3>過分散の影響<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>過分散の影響<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <p>過分散が存在するのにポアソン回帰をそのまま適用すると：</p>
 <ul class="simple">
 <li><p>係数の点推定 <span class="math notranslate nohighlight">\(\hat{\boldsymbol{\beta}}\)</span> 自体は一致性を持つ（偏りなく推定できる）</p></li>
@@ -1947,8 +1915,8 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 <li><p>その結果、p値が小さくなりすぎ、<strong>偽陽性が増加</strong>する</p></li>
 </ul>
 </section>
-<section id="id14">
-<h3>過分散の診断<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<section id="id15">
+<h3>過分散の診断<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
 <p>過分散の簡易的な指標として、ピアソン <span class="math notranslate nohighlight">\(\chi^2\)</span> 統計量または逸脱度を残差自由度 <span class="math notranslate nohighlight">\(n - p\)</span> で割った値を使う：</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1971,6 +1939,13 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;yの平均: </span><span class="si">{</span><span class="n">y_od</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;yの分散: </span><span class="si">{</span><span class="n">y_od</span><span class="o">.</span><span class="n">var</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;分散/平均: </span><span class="si">{</span><span class="n">y_od</span><span class="o">.</span><span class="n">var</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">y_od</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> (ポアソンなら1になる)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>yの平均: 3.03
+yの分散: 11.16
+分散/平均: 3.69 (ポアソンなら1になる)
 </pre></div>
 </div>
 </div>
@@ -1997,10 +1972,20 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>逸脱度: 1228.48
+残差自由度: 498
+逸脱度/自由度: 2.47
+Pearson χ²/自由度: 2.39
+
+→ 過分散が強く疑われる（値が1から大きく乗離）
+</pre></div>
+</div>
+</div>
 </div>
 </section>
-<section id="id15">
-<h3>過分散への対処<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<section id="id16">
+<h3>過分散への対処<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
 <section id="quasi-poisson">
 <h4>1. 準ポアソン回帰（quasi-Poisson）<a class="headerlink" href="#quasi-poisson" title="Link to this heading">#</a></h4>
 <p>分散構造を <span class="math notranslate nohighlight">\(\text{Var}(Y_i) = \phi \mu_i\)</span> と仮定し、分散パラメータ <span class="math notranslate nohighlight">\(\phi\)</span> をデータから推定する。係数の点推定はポアソン回帰と同じだが、標準誤差が <span class="math notranslate nohighlight">\(\sqrt{\hat{\phi}}\)</span> 倍される。</p>
@@ -2031,17 +2016,61 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== 標準誤差の比較 ===
+推定された分散パラメータ φ = 2.39
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Poisson</th>
+      <th>Quasi-Poisson</th>
+      <th>Neg. Binomial</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>β₀</th>
+      <td>0.028723</td>
+      <td>0.044426</td>
+      <td>0.053416</td>
+    </tr>
+    <tr>
+      <th>β₁</th>
+      <td>0.026254</td>
+      <td>0.040606</td>
+      <td>0.056285</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 </section>
 </section>
 </section>
-<section id="id16">
-<h2>実データでの例<a class="headerlink" href="#id16" title="Link to this heading">#</a></h2>
+<section id="id17">
+<h2>実データでの例<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
 <p>船のデータセットを用いて、船の種類・建造時期・運用期間から損傷インシデント数を予測するポアソン回帰を行う。このデータは運用期間（曝露量）が観測ごとに異なるため、オフセット項の使用が適切である。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># statsmodels 組み込みの船のデータ</span>
-<span class="n">ships</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;Ships&quot;</span><span class="p">,</span> <span class="s2">&quot;MASS&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+<span class="n">ships</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;ships&quot;</span><span class="p">,</span> <span class="s2">&quot;MASS&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
 
 <span class="c1"># service が 0 の行を除外（オフセットに log(0) が使えない）</span>
 <span class="n">ships</span> <span class="o">=</span> <span class="n">ships</span><span class="p">[</span><span class="n">ships</span><span class="p">[</span><span class="s2">&quot;service&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -2053,6 +2082,120 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>サンプルサイズ: 34
+目的変数 (incidents) の平均: 10.47
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>type</th>
+      <th>year</th>
+      <th>period</th>
+      <th>service</th>
+      <th>incidents</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>A</td>
+      <td>60</td>
+      <td>60</td>
+      <td>127</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>A</td>
+      <td>60</td>
+      <td>75</td>
+      <td>63</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>A</td>
+      <td>65</td>
+      <td>60</td>
+      <td>1095</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>A</td>
+      <td>65</td>
+      <td>75</td>
+      <td>1095</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>A</td>
+      <td>70</td>
+      <td>60</td>
+      <td>1512</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>A</td>
+      <td>70</td>
+      <td>75</td>
+      <td>3353</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>A</td>
+      <td>75</td>
+      <td>75</td>
+      <td>2244</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>B</td>
+      <td>60</td>
+      <td>60</td>
+      <td>44882</td>
+      <td>39</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>B</td>
+      <td>60</td>
+      <td>75</td>
+      <td>17176</td>
+      <td>29</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>B</td>
+      <td>65</td>
+      <td>60</td>
+      <td>28609</td>
+      <td>58</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2072,6 +2215,34 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:              incidents   No. Observations:                   34
+Model:                            GLM   Df Residuals:                       25
+Model Family:                 Poisson   Df Model:                            8
+Link Function:                    Log   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:                -68.281
+Date:                Sat, 14 Feb 2026   Deviance:                       38.695
+Time:                        14:36:10   Pearson chi2:                     42.3
+No. Iterations:                     6   Pseudo R-squ. (CS):             0.9578
+Covariance Type:            nonrobust                                         
+===================================================================================
+                      coef    std err          z      P&gt;|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------
+Intercept          -6.4059      0.217    -29.460      0.000      -6.832      -5.980
+C(type)[T.B]       -0.5433      0.178     -3.060      0.002      -0.891      -0.195
+C(type)[T.C]       -0.6874      0.329     -2.089      0.037      -1.332      -0.042
+C(type)[T.D]       -0.0760      0.291     -0.261      0.794      -0.645       0.494
+C(type)[T.E]        0.3256      0.236      1.380      0.168      -0.137       0.788
+C(year)[T.65]       0.6971      0.150      4.659      0.000       0.404       0.990
+C(year)[T.70]       0.8184      0.170      4.821      0.000       0.486       1.151
+C(year)[T.75]       0.4534      0.233      1.945      0.052      -0.004       0.910
+C(period)[T.75]     0.3845      0.118      3.251      0.001       0.153       0.616
+===================================================================================
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2087,6 +2258,108 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>β</th>
+      <th>IRR</th>
+      <th>IRR 95%CI lower</th>
+      <th>IRR 95%CI upper</th>
+      <th>p-value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Intercept</th>
+      <td>-6.405902</td>
+      <td>0.001652</td>
+      <td>0.001079</td>
+      <td>0.002530</td>
+      <td>9.376625e-191</td>
+    </tr>
+    <tr>
+      <th>C(type)[T.B]</th>
+      <td>-0.543344</td>
+      <td>0.580803</td>
+      <td>0.410075</td>
+      <td>0.822609</td>
+      <td>2.216735e-03</td>
+    </tr>
+    <tr>
+      <th>C(type)[T.C]</th>
+      <td>-0.687402</td>
+      <td>0.502881</td>
+      <td>0.263864</td>
+      <td>0.958409</td>
+      <td>3.670169e-02</td>
+    </tr>
+    <tr>
+      <th>C(type)[T.D]</th>
+      <td>-0.075961</td>
+      <td>0.926852</td>
+      <td>0.524408</td>
+      <td>1.638141</td>
+      <td>7.937730e-01</td>
+    </tr>
+    <tr>
+      <th>C(type)[T.E]</th>
+      <td>0.325579</td>
+      <td>1.384833</td>
+      <td>0.872201</td>
+      <td>2.198762</td>
+      <td>1.675007e-01</td>
+    </tr>
+    <tr>
+      <th>C(year)[T.65]</th>
+      <td>0.697140</td>
+      <td>2.008002</td>
+      <td>1.497577</td>
+      <td>2.692398</td>
+      <td>3.181498e-06</td>
+    </tr>
+    <tr>
+      <th>C(year)[T.70]</th>
+      <td>0.818427</td>
+      <td>2.266930</td>
+      <td>1.625274</td>
+      <td>3.161912</td>
+      <td>1.430606e-06</td>
+    </tr>
+    <tr>
+      <th>C(year)[T.75]</th>
+      <td>0.453427</td>
+      <td>1.573695</td>
+      <td>0.996427</td>
+      <td>2.485397</td>
+      <td>5.182142e-02</td>
+    </tr>
+    <tr>
+      <th>C(period)[T.75]</th>
+      <td>0.384467</td>
+      <td>1.468831</td>
+      <td>1.164926</td>
+      <td>1.852019</td>
+      <td>1.151225e-03</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2095,6 +2368,14 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;残差自由度: </span><span class="si">{</span><span class="n">model_ships</span><span class="o">.</span><span class="n">df_resid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;逸脱度/自由度: </span><span class="si">{</span><span class="n">model_ships</span><span class="o">.</span><span class="n">deviance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">model_ships</span><span class="o">.</span><span class="n">df_resid</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pearson </span><span class="se">\u03c7\u00b2</span><span class="s2">/自由度: </span><span class="si">{</span><span class="n">model_ships</span><span class="o">.</span><span class="n">pearson_chi2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">model_ships</span><span class="o">.</span><span class="n">df_resid</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>逸脱度: 38.70
+残差自由度: 25
+逸脱度/自由度: 1.55
+Pearson χ²/自由度: 1.69
 </pre></div>
 </div>
 </div>
@@ -2125,10 +2406,13 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../../_images/6febe53c9ef73b9c2812b9c12075d315ef4b7ab19fe8e49d8d6bdb1c612d86a8.png" src="../../_images/6febe53c9ef73b9c2812b9c12075d315ef4b7ab19fe8e49d8d6bdb1c612d86a8.png" />
+</div>
 </div>
 </section>
-<section id="id17">
-<h2>参考文献<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
+<section id="id18">
+<h2>参考文献<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <p class="sd-card-text">McCullagh, P., &amp; Nelder, J. A. (1989). <em>Generalized Linear Models</em> (2nd ed.). Chapman &amp; Hall.</p>
@@ -2227,28 +2511,29 @@ D = 2 \sum_{i=1}^{n} \left[ y_i \log\frac{y_i}{\hat{\mu}_i} - (y_i - \hat{\mu}_i
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">スコア関数</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fisher">Fisher情報行列</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#irls">IRLS</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">IRLSのスクラッチ実装</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">シミュレーションデータでの検証</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">逸脱度</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">IRLSのスクラッチ実装</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">シミュレーションデータでの検証</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">仮説検定とモデル評価</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">仮説検定とモデル評価</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wald">Wald検定</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deviance">逸脱度（deviance）</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">オフセット項</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">オフセット項</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overdispersion">過分散（overdispersion）</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">過分散の影響</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">過分散の診断</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">過分散への対処</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">過分散の影響</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">過分散の診断</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">過分散への対処</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quasi-poisson">1. 準ポアソン回帰（quasi-Poisson）</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#negative-binomial-regression">2. 負の二項回帰（negative binomial regression）</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">実データでの例</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">実データでの例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">参考文献</a></li>
 </ul>
   </nav></div>
 
