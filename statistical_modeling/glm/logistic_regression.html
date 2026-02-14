@@ -71,10 +71,12 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'statistical_modeling/glm/logistic_regression';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="疑似R2乗値" href="pseudo_r_squared.html" />
+    <link rel="next" title="ポアソン回帰モデル" href="poisson_regression.html" />
     <link rel="prev" title="概要" href="introduction.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -326,6 +328,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">一般化線形モデル（GLM)</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="introduction.html">概要</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">ロジスティック回帰モデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poisson_regression.html">ポアソン回帰モデル</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pseudo_r_squared.html">疑似R2乗値</a></li>
 </ul>
 </details></li>
@@ -1262,7 +1265,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -1278,6 +1283,44 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#glm">GLMとしての定式化</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">変量成分</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">リンク関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">系統的成分</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">3つをまとめると</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">係数の解釈：オッズ比</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">オッズ</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">オッズ比</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">最尤推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">対数尤度関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">スコア関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fisher">Fisher情報行列</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#irls">IRLS（反復再重み付け最小二乗法）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">IRLSのスクラッチ実装</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">シミュレーションデータでの検証</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">仮説検定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wald">Wald検定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">尤度比検定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deviance">逸脱度（deviance）</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">実データでの例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">他のリンク関数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">完全分離と準完全分離</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">参考文献</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -1291,6 +1334,862 @@ document.write(`
 <h1>ロジスティック回帰モデル<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <p>機械学習の文脈だったりエコノメの文脈だったりで若干導入が違う（<a class="reference external" href="https://ill-identified.hatenablog.com/entry/2024/04/26/033151">ロジスティック回帰の4通りの表現 - ill-identified diary</a>）</p>
 <p>ここではGLM文脈のものにする</p>
+<section id="glm">
+<h2>GLMとしての定式化<a class="headerlink" href="#glm" title="Link to this heading">#</a></h2>
+<p>ロジスティック回帰はGLMの3つの構成要素で記述できる。</p>
+<section id="id2">
+<h3>変量成分<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>目的変数 <span class="math notranslate nohighlight">\(Y_i\)</span> は「成功」（1）か「失敗」（0）の二値をとり、成功確率 <span class="math notranslate nohighlight">\(\pi_i\)</span> のベルヌーイ分布に従う：</p>
+<div class="math notranslate nohighlight">
+\[
+Y_i \sim \text{Bernoulli}(\pi_i), \quad i = 1, \dots, n
+\]</div>
+<p><span class="math notranslate nohighlight">\(n_i\)</span> 回中の成功回数 <span class="math notranslate nohighlight">\(Y_i\)</span> を扱う場合は二項分布 <span class="math notranslate nohighlight">\(Y_i \sim \text{Binomial}(n_i, \pi_i)\)</span> になる。</p>
+<p>ベルヌーイ分布は指数型分布族に属する。確率関数を</p>
+<div class="math notranslate nohighlight">
+\[
+f(y_i \mid \pi_i) = \pi_i^{y_i} (1 - \pi_i)^{1 - y_i}
+= \exp\left( y_i \log\frac{\pi_i}{1 - \pi_i} + \log(1 - \pi_i) \right)
+\]</div>
+<p>と書けば、自然パラメータが <span class="math notranslate nohighlight">\(\eta_i = \log\frac{\pi_i}{1 - \pi_i}\)</span>（ロジット）であることがわかる。</p>
+</section>
+<section id="id3">
+<h3>リンク関数<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>自然パラメータに合わせ、<strong>ロジットリンク</strong>（logit link）を用いる：</p>
+<div class="math notranslate nohighlight">
+\[
+g(\pi_i) = \log\frac{\pi_i}{1 - \pi_i} = \text{logit}(\pi_i)
+\]</div>
+<p>これは正準リンク関数（canonical link function）であり、理論的に好ましい性質を持つ。</p>
+</section>
+<section id="id4">
+<h3>系統的成分<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>線形予測子 <span class="math notranslate nohighlight">\(\eta_i\)</span> は</p>
+<div class="math notranslate nohighlight">
+\[
+\eta_i = \mathbf{x}_i^\top \boldsymbol{\beta} = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}
+\]</div>
+</section>
+<section id="id5">
+<h3>3つをまとめると<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[
+\text{logit}(\pi_i) = \log\frac{\pi_i}{1 - \pi_i} = \mathbf{x}_i^\top \boldsymbol{\beta}
+\]</div>
+<p>逆リンク関数（ロジスティック関数）で <span class="math notranslate nohighlight">\(\pi_i\)</span> を表すと</p>
+<div class="math notranslate nohighlight">
+\[
+\pi_i = \frac{1}{1 + \exp(-\mathbf{x}_i^\top \boldsymbol{\beta})} = \text{logistic}(\mathbf{x}_i^\top \boldsymbol{\beta})
+\]</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># ロジスティック関数の可視化</span>
+<span class="n">eta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="n">pi</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">eta</span><span class="p">))</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">pi</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\eta = \mathbf</span><span class="si">{x}</span><span class="s2">^\top \mathbf{\beta}$&quot;</span><span class="p">,</span>
+            <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\pi$&quot;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Logistic function (inverse link)&quot;</span><span class="p">)</span>
+
+<span class="c1"># 異なる β_1 によるロジスティック曲線</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">b1</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]:</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">b1</span> <span class="o">*</span> <span class="n">x</span><span class="p">)),</span> <span class="n">label</span><span class="o">=</span><span class="sa">rf</span><span class="s2">&quot;$\beta_1 = </span><span class="si">{</span><span class="n">b1</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$x$&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\pi$&quot;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\pi = \mathrm</span><span class="si">{logistic}</span><span class="s2">(\beta_1 x)$, $\beta_0=0$&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/8720b493a0ac763b2475b183a9aff2e89020fd0106a648df746da1231715abc9.png" src="../../_images/8720b493a0ac763b2475b183a9aff2e89020fd0106a648df746da1231715abc9.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="id6">
+<h2>係数の解釈：オッズ比<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<p>ロジスティック回帰の係数はオッズ比（odds ratio）として解釈できる。</p>
+<section id="id7">
+<h3>オッズ<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>ある事象の成功確率を <span class="math notranslate nohighlight">\(\pi\)</span> とするとき、<strong>オッズ</strong>（odds）は</p>
+<div class="math notranslate nohighlight">
+\[
+\text{odds} = \frac{\pi}{1 - \pi}
+\]</div>
+<p>で定義される。例えば <span class="math notranslate nohighlight">\(\pi = 0.8\)</span> なら <span class="math notranslate nohighlight">\(\text{odds} = 4\)</span>（成功4回に対し失敗1回）。</p>
+</section>
+<section id="id8">
+<h3>オッズ比<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>ロジスティック回帰モデルにおいて、説明変数 <span class="math notranslate nohighlight">\(x_j\)</span> が1単位増加したときのオッズの変化率を考える。</p>
+<p><span class="math notranslate nohighlight">\(x_j\)</span> の値が <span class="math notranslate nohighlight">\(x_j\)</span> と <span class="math notranslate nohighlight">\(x_j + 1\)</span> の場合のオッズの比は</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\text{odds}(x_j + 1)}{\text{odds}(x_j)}
+= \frac{\exp(\cdots + \beta_j(x_j + 1) + \cdots)}{\exp(\cdots + \beta_j x_j + \cdots)}
+= \exp(\beta_j)
+\]</div>
+<p>すなわち <span class="math notranslate nohighlight">\(\exp(\beta_j)\)</span> は、他の変数を一定に保ったとき <span class="math notranslate nohighlight">\(x_j\)</span> が1単位増加した場合のオッズの変化倍率である。</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\beta_j &gt; 0 \Leftrightarrow \exp(\beta_j) &gt; 1\)</span>：<span class="math notranslate nohighlight">\(x_j\)</span> が増えると成功確率が上がる</p></li>
+<li><p><span class="math notranslate nohighlight">\(\beta_j = 0 \Leftrightarrow \exp(\beta_j) = 1\)</span>：<span class="math notranslate nohighlight">\(x_j\)</span> は成功確率に影響しない</p></li>
+<li><p><span class="math notranslate nohighlight">\(\beta_j &lt; 0 \Leftrightarrow \exp(\beta_j) &lt; 1\)</span>：<span class="math notranslate nohighlight">\(x_j\)</span> が増えると成功確率が下がる</p></li>
+</ul>
+</section>
+</section>
+<section id="id9">
+<h2>最尤推定<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<section id="id10">
+<h3>対数尤度関数<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(n\)</span> 個の独立な観測 <span class="math notranslate nohighlight">\((y_i, \mathbf{x}_i)\)</span> に対する対数尤度は</p>
+<div class="math notranslate nohighlight">
+\[
+\ell(\boldsymbol{\beta}) = \sum_{i=1}^{n} \left[ y_i \log \pi_i + (1 - y_i) \log(1 - \pi_i) \right]
+\]</div>
+<p><span class="math notranslate nohighlight">\(\pi_i = \text{logistic}(\mathbf{x}_i^\top \boldsymbol{\beta})\)</span> を代入すると</p>
+<div class="math notranslate nohighlight">
+\[
+\ell(\boldsymbol{\beta}) = \sum_{i=1}^{n} \left[ y_i\, \mathbf{x}_i^\top \boldsymbol{\beta} - \log\left(1 + \exp(\mathbf{x}_i^\top \boldsymbol{\beta})\right) \right]
+\]</div>
+</section>
+<section id="id11">
+<h3>スコア関数<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>対数尤度の <span class="math notranslate nohighlight">\(\boldsymbol{\beta}\)</span> に関する偏微分（スコア関数）は</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial \ell}{\partial \boldsymbol{\beta}} = \sum_{i=1}^{n} (y_i - \pi_i)\, \mathbf{x}_i = \mathbf{X}^\top (\mathbf{y} - \boldsymbol{\pi})
+\]</div>
+<p>スコア関数を <span class="math notranslate nohighlight">\(\mathbf{0}\)</span> と置いた方程式は <span class="math notranslate nohighlight">\(\boldsymbol{\beta}\)</span> について解析的に解けないため、反復法で数値的に解く。</p>
+</section>
+<section id="fisher">
+<h3>Fisher情報行列<a class="headerlink" href="#fisher" title="Link to this heading">#</a></h3>
+<p>観測Fisher情報行列は</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{F}(\boldsymbol{\beta}) = -\frac{\partial^2 \ell}{\partial \boldsymbol{\beta}\, \partial \boldsymbol{\beta}^\top} = \mathbf{X}^\top \mathbf{W} \mathbf{X}
+\]</div>
+<p>ここで <span class="math notranslate nohighlight">\(\mathbf{W} = \text{diag}(\pi_1(1-\pi_1), \dots, \pi_n(1-\pi_n))\)</span> は重み行列である。</p>
+</section>
+<section id="irls">
+<h3>IRLS（反復再重み付け最小二乗法）<a class="headerlink" href="#irls" title="Link to this heading">#</a></h3>
+<p>GLMの枠組みでは、Fisherスコアリング法が使われる。これはニュートン・ラフソン法と等価であり、IRLS（Iteratively Reweighted Least Squares）として実装される。</p>
+<p>更新式は</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{\beta}^{(t+1)} = (\mathbf{X}^\top \mathbf{W}^{(t)} \mathbf{X})^{-1}\, \mathbf{X}^\top \mathbf{W}^{(t)} \mathbf{z}^{(t)}
+\]</div>
+<p>ここで <span class="math notranslate nohighlight">\(\mathbf{z}^{(t)}\)</span> は作業従属変数（working dependent variable）で</p>
+<div class="math notranslate nohighlight">
+\[
+z_i^{(t)} = \eta_i^{(t)} + \frac{y_i - \pi_i^{(t)}}{\pi_i^{(t)}(1 - \pi_i^{(t)})}
+\]</div>
+<p>すなわち、各反復で重み <span class="math notranslate nohighlight">\(\mathbf{W}\)</span> を更新しながら重み付き最小二乗法を繰り返すことでMLEを得る。</p>
+</section>
+<section id="id12">
+<h3>IRLSのスクラッチ実装<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">logistic</span><span class="p">(</span><span class="n">eta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ロジスティック関数（数値安定版）&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">eta</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">eta</span><span class="p">)),</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">eta</span><span class="p">)))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">logistic_regression_irls</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span>
+    <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    IRLSによるロジスティック回帰の最尤推定</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : np.ndarray, shape (n, p)</span>
+<span class="sd">        計画行列（切片列を含む）</span>
+<span class="sd">    y : np.ndarray, shape (n,)</span>
+<span class="sd">        目的変数（0/1）</span>
+<span class="sd">    max_iter : int</span>
+<span class="sd">        最大反復回数</span>
+<span class="sd">    tol : float</span>
+<span class="sd">        収束判定の閾値</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        beta, se, log_likelihood, n_iter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+        <span class="n">eta</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="n">beta</span>
+        <span class="n">pi</span> <span class="o">=</span> <span class="n">logistic</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
+
+        <span class="c1"># 重み行列の対角要素</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">pi</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mf">1e-10</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># 数値安定性</span>
+
+        <span class="c1"># 作業従属変数</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">eta</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="n">w</span>
+
+        <span class="c1"># 重み付き最小二乗法</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">XtWX</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">W</span> <span class="o">@</span> <span class="n">X</span>
+        <span class="n">XtWz</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">W</span> <span class="o">@</span> <span class="n">z</span>
+
+        <span class="n">beta_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">XtWX</span><span class="p">,</span> <span class="n">XtWz</span><span class="p">)</span>
+
+        <span class="c1"># 収束判定</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">beta_new</span> <span class="o">-</span> <span class="n">beta</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
+            <span class="n">beta</span> <span class="o">=</span> <span class="n">beta_new</span>
+            <span class="k">break</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">beta_new</span>
+
+    <span class="c1"># 最終結果</span>
+    <span class="n">eta</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="n">beta</span>
+    <span class="n">pi</span> <span class="o">=</span> <span class="n">logistic</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
+    <span class="n">log_lik</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pi</span> <span class="o">+</span> <span class="mf">1e-15</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">pi</span> <span class="o">+</span> <span class="mf">1e-15</span><span class="p">))</span>
+
+    <span class="c1"># 標準誤差</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">pi</span><span class="p">)</span>
+    <span class="n">XtWX</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">@</span> <span class="n">X</span>
+    <span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">XtWX</span><span class="p">)</span>
+    <span class="n">se</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">cov</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;beta&quot;</span><span class="p">:</span> <span class="n">beta</span><span class="p">,</span>
+        <span class="s2">&quot;se&quot;</span><span class="p">:</span> <span class="n">se</span><span class="p">,</span>
+        <span class="s2">&quot;log_likelihood&quot;</span><span class="p">:</span> <span class="n">log_lik</span><span class="p">,</span>
+        <span class="s2">&quot;n_iter&quot;</span><span class="p">:</span> <span class="n">iteration</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;cov&quot;</span><span class="p">:</span> <span class="n">cov</span><span class="p">,</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id13">
+<h3>シミュレーションデータでの検証<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<p>スクラッチ実装を <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> の結果と比較する。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">statsmodels.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sm</span>
+
+<span class="c1"># データ生成</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="n">beta_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">])</span>  <span class="c1"># beta_0, beta_1, beta_2</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">])</span>
+<span class="n">eta</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="n">beta_true</span>
+<span class="n">pi_true</span> <span class="o">=</span> <span class="n">logistic</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">pi_true</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;サンプルサイズ: </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;真の係数: β₀=</span><span class="si">{</span><span class="n">beta_true</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, β₁=</span><span class="si">{</span><span class="n">beta_true</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, β₂=</span><span class="si">{</span><span class="n">beta_true</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;y=1 の割合: </span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>サンプルサイズ: 500
+真の係数: β₀=-0.5, β₁=1.2, β₂=-0.8
+y=1 の割合: 0.428
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># スクラッチ実装</span>
+<span class="n">result_irls</span> <span class="o">=</span> <span class="n">logistic_regression_irls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># statsmodels</span>
+<span class="n">model_sm</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">GLM</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="n">families</span><span class="o">.</span><span class="n">Binomial</span><span class="p">())</span>
+<span class="n">result_sm</span> <span class="o">=</span> <span class="n">model_sm</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+
+<span class="c1"># 比較</span>
+<span class="n">comparison</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;真の値&quot;</span><span class="p">:</span> <span class="n">beta_true</span><span class="p">,</span>
+    <span class="s2">&quot;IRLS (自前)&quot;</span><span class="p">:</span> <span class="n">result_irls</span><span class="p">[</span><span class="s2">&quot;beta&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;statsmodels&quot;</span><span class="p">:</span> <span class="n">result_sm</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+    <span class="s2">&quot;SE (自前)&quot;</span><span class="p">:</span> <span class="n">result_irls</span><span class="p">[</span><span class="s2">&quot;se&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;SE (statsmodels)&quot;</span><span class="p">:</span> <span class="n">result_sm</span><span class="o">.</span><span class="n">bse</span><span class="p">,</span>
+<span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;β₀&quot;</span><span class="p">,</span> <span class="s2">&quot;β₁&quot;</span><span class="p">,</span> <span class="s2">&quot;β₂&quot;</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IRLS 反復回数: </span><span class="si">{</span><span class="n">result_irls</span><span class="p">[</span><span class="s1">&#39;n_iter&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;対数尤度 (自前): </span><span class="si">{</span><span class="n">result_irls</span><span class="p">[</span><span class="s1">&#39;log_likelihood&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;対数尤度 (statsmodels): </span><span class="si">{</span><span class="n">result_sm</span><span class="o">.</span><span class="n">llf</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="n">comparison</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>IRLS 反復回数: 6
+対数尤度 (自前): -261.2875
+対数尤度 (statsmodels): -261.2875
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>真の値</th>
+      <th>IRLS (自前)</th>
+      <th>statsmodels</th>
+      <th>SE (自前)</th>
+      <th>SE (statsmodels)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>β₀</th>
+      <td>-0.5</td>
+      <td>-0.427388</td>
+      <td>-0.427388</td>
+      <td>0.108908</td>
+      <td>0.108908</td>
+    </tr>
+    <tr>
+      <th>β₁</th>
+      <td>1.2</td>
+      <td>1.219814</td>
+      <td>1.219814</td>
+      <td>0.139285</td>
+      <td>0.139285</td>
+    </tr>
+    <tr>
+      <th>β₂</th>
+      <td>-0.8</td>
+      <td>-0.905850</td>
+      <td>-0.905850</td>
+      <td>0.123665</td>
+      <td>0.123665</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+</section>
+<section id="id14">
+<h2>仮説検定<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<section id="wald">
+<h3>Wald検定<a class="headerlink" href="#wald" title="Link to this heading">#</a></h3>
+<p>個々の係数について <span class="math notranslate nohighlight">\(H_0: \beta_j = 0\)</span> を検定する。Wald統計量は</p>
+<div class="math notranslate nohighlight">
+\[
+z_j = \frac{\hat{\beta}_j}{\text{SE}(\hat{\beta}_j)}
+\]</div>
+<p>で、漸近的に標準正規分布に従う。<code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> の summary に表示される <span class="math notranslate nohighlight">\(z\)</span> 値と <span class="math notranslate nohighlight">\(P&gt;|z|\)</span> がこれに対応する。</p>
+</section>
+<section id="id15">
+<h3>尤度比検定<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<p>帰無モデル（null model: 切片のみ）と完全モデルを比較する。尤度比統計量は</p>
+<div class="math notranslate nohighlight">
+\[
+G^2 = -2 \left[ \ell(\hat{\boldsymbol{\beta}}_0) - \ell(\hat{\boldsymbol{\beta}}) \right]
+\]</div>
+<p>で漸近的に自由度 <span class="math notranslate nohighlight">\(p\)</span> の <span class="math notranslate nohighlight">\(\chi^2\)</span> 分布に従う。</p>
+</section>
+<section id="deviance">
+<h3>逸脱度（deviance）<a class="headerlink" href="#deviance" title="Link to this heading">#</a></h3>
+<p>GLMでは逸脱度が適合度の指標として用いられる。ロジスティック回帰の逸脱度は</p>
+<div class="math notranslate nohighlight">
+\[
+D = -2\, \ell(\hat{\boldsymbol{\beta}}) = -2 \sum_{i=1}^{n} \left[ y_i \log \hat{\pi}_i + (1 - y_i) \log(1 - \hat{\pi}_i) \right]
+\]</div>
+<p>逸脱度はモデル比較やモデル選択に使われる。AICは <span class="math notranslate nohighlight">\(\text{AIC} = D + 2p\)</span> で計算できる。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">result_sm</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:                      y   No. Observations:                  500
+Model:                            GLM   Df Residuals:                      497
+Model Family:                Binomial   Df Model:                            2
+Link Function:                  Logit   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:                -261.29
+Date:                Sat, 14 Feb 2026   Deviance:                       522.57
+Time:                        01:18:54   Pearson chi2:                     508.
+No. Iterations:                     5   Pseudo R-squ. (CS):             0.2741
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+const         -0.4274      0.109     -3.924      0.000      -0.641      -0.214
+x1             1.2198      0.139      8.758      0.000       0.947       1.493
+x2            -0.9058      0.124     -7.325      0.000      -1.148      -0.663
+==============================================================================
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># オッズ比と95%信頼区間</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+
+<span class="n">beta_hat</span> <span class="o">=</span> <span class="n">result_sm</span><span class="o">.</span><span class="n">params</span>
+<span class="n">se</span> <span class="o">=</span> <span class="n">result_sm</span><span class="o">.</span><span class="n">bse</span>
+<span class="n">z_crit</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.975</span><span class="p">)</span>
+
+<span class="n">odds_ratio_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;β&quot;</span><span class="p">:</span> <span class="n">beta_hat</span><span class="p">,</span>
+    <span class="s2">&quot;OR (exp(β))&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">beta_hat</span><span class="p">),</span>
+    <span class="s2">&quot;OR 95% CI lower&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">beta_hat</span> <span class="o">-</span> <span class="n">z_crit</span> <span class="o">*</span> <span class="n">se</span><span class="p">),</span>
+    <span class="s2">&quot;OR 95% CI upper&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">beta_hat</span> <span class="o">+</span> <span class="n">z_crit</span> <span class="o">*</span> <span class="n">se</span><span class="p">),</span>
+    <span class="s2">&quot;p-value&quot;</span><span class="p">:</span> <span class="n">result_sm</span><span class="o">.</span><span class="n">pvalues</span><span class="p">,</span>
+<span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;intercept&quot;</span><span class="p">,</span> <span class="s2">&quot;x₁&quot;</span><span class="p">,</span> <span class="s2">&quot;x₂&quot;</span><span class="p">])</span>
+
+<span class="n">odds_ratio_df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>β</th>
+      <th>OR (exp(β))</th>
+      <th>OR 95% CI lower</th>
+      <th>OR 95% CI upper</th>
+      <th>p-value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>intercept</th>
+      <td>-0.427388</td>
+      <td>0.652210</td>
+      <td>0.526848</td>
+      <td>0.807402</td>
+      <td>8.697494e-05</td>
+    </tr>
+    <tr>
+      <th>x₁</th>
+      <td>1.219814</td>
+      <td>3.386559</td>
+      <td>2.577500</td>
+      <td>4.449576</td>
+      <td>1.993489e-18</td>
+    </tr>
+    <tr>
+      <th>x₂</th>
+      <td>-0.905850</td>
+      <td>0.404198</td>
+      <td>0.317198</td>
+      <td>0.515060</td>
+      <td>2.388104e-13</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+</section>
+<section id="id16">
+<h2>実データでの例<a class="headerlink" href="#id16" title="Link to this heading">#</a></h2>
+<p>Titanic データセットを用いて、乗客の生存を予測するロジスティック回帰を行う。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># statsmodels 組み込みの Titanic データ</span>
+<span class="n">titanic</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;Titanic&quot;</span><span class="p">,</span> <span class="s2">&quot;datasets&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+<span class="c1"># 集計データを個票データに展開</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">titanic</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;Freq&quot;</span><span class="p">])):</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;Class&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;Class&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;Sex&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;Sex&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;Age&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;Age&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;Survived&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;Survived&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Yes&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="p">})</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;サンプルサイズ: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;生存率: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Survived&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;Class&quot;</span><span class="p">,</span> <span class="s2">&quot;Sex&quot;</span><span class="p">])[</span><span class="s2">&quot;Survived&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>サンプルサイズ: 2201
+生存率: 0.323
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Sex</th>
+      <th>Female</th>
+      <th>Male</th>
+    </tr>
+    <tr>
+      <th>Class</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1st</th>
+      <td>0.972414</td>
+      <td>0.344444</td>
+    </tr>
+    <tr>
+      <th>2nd</th>
+      <td>0.877358</td>
+      <td>0.139665</td>
+    </tr>
+    <tr>
+      <th>3rd</th>
+      <td>0.459184</td>
+      <td>0.172549</td>
+    </tr>
+    <tr>
+      <th>Crew</th>
+      <td>0.869565</td>
+      <td>0.222738</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.formula.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">logit</span>
+
+<span class="c1"># ロジスティック回帰モデルの推定</span>
+<span class="n">model_titanic</span> <span class="o">=</span> <span class="n">logit</span><span class="p">(</span><span class="s2">&quot;Survived ~ C(Class) + C(Sex) + C(Age)&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">disp</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model_titanic</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                           Logit Regression Results                           
+==============================================================================
+Dep. Variable:               Survived   No. Observations:                 2201
+Model:                          Logit   Df Residuals:                     2195
+Method:                           MLE   Df Model:                            5
+Date:                Sat, 14 Feb 2026   Pseudo R-squ.:                  0.2020
+Time:                        01:18:54   Log-Likelihood:                -1105.0
+converged:                       True   LL-Null:                       -1384.7
+Covariance Type:            nonrobust   LLR p-value:                1.195e-118
+====================================================================================
+                       coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------------
+Intercept            2.0438      0.168     12.171      0.000       1.715       2.373
+C(Class)[T.2nd]     -1.0181      0.196     -5.194      0.000      -1.402      -0.634
+C(Class)[T.3rd]     -1.7778      0.172    -10.362      0.000      -2.114      -1.441
+C(Class)[T.Crew]    -0.8577      0.157     -5.451      0.000      -1.166      -0.549
+C(Sex)[T.Male]      -2.4201      0.140    -17.236      0.000      -2.695      -2.145
+C(Age)[T.Child]      1.0615      0.244      4.350      0.000       0.583       1.540
+====================================================================================
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># オッズ比の表示</span>
+<span class="n">or_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;β&quot;</span><span class="p">:</span> <span class="n">model_titanic</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+    <span class="s2">&quot;OR&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">model_titanic</span><span class="o">.</span><span class="n">params</span><span class="p">),</span>
+    <span class="s2">&quot;OR 95%CI lower&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">model_titanic</span><span class="o">.</span><span class="n">conf_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]),</span>
+    <span class="s2">&quot;OR 95%CI upper&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">model_titanic</span><span class="o">.</span><span class="n">conf_int</span><span class="p">()[</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="s2">&quot;p-value&quot;</span><span class="p">:</span> <span class="n">model_titanic</span><span class="o">.</span><span class="n">pvalues</span><span class="p">,</span>
+<span class="p">})</span>
+<span class="n">or_df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>β</th>
+      <th>OR</th>
+      <th>OR 95%CI lower</th>
+      <th>OR 95%CI upper</th>
+      <th>p-value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Intercept</th>
+      <td>2.043837</td>
+      <td>7.720178</td>
+      <td>5.555016</td>
+      <td>10.729248</td>
+      <td>4.447236e-34</td>
+    </tr>
+    <tr>
+      <th>C(Class)[T.2nd]</th>
+      <td>-1.018095</td>
+      <td>0.361283</td>
+      <td>0.246044</td>
+      <td>0.530494</td>
+      <td>2.053519e-07</td>
+    </tr>
+    <tr>
+      <th>C(Class)[T.3rd]</th>
+      <td>-1.777762</td>
+      <td>0.169016</td>
+      <td>0.120751</td>
+      <td>0.236573</td>
+      <td>3.694113e-25</td>
+    </tr>
+    <tr>
+      <th>C(Class)[T.Crew]</th>
+      <td>-0.857676</td>
+      <td>0.424147</td>
+      <td>0.311594</td>
+      <td>0.577355</td>
+      <td>5.004844e-08</td>
+    </tr>
+    <tr>
+      <th>C(Sex)[T.Male]</th>
+      <td>-2.420060</td>
+      <td>0.088916</td>
+      <td>0.067525</td>
+      <td>0.117084</td>
+      <td>1.434209e-66</td>
+    </tr>
+    <tr>
+      <th>C(Age)[T.Child]</th>
+      <td>1.061542</td>
+      <td>2.890826</td>
+      <td>1.791872</td>
+      <td>4.663769</td>
+      <td>1.360598e-05</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 予測確率の可視化</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;pred_prob&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_titanic</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># 性別ごとの予測確率分布</span>
+<span class="k">for</span> <span class="n">sex</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Male&quot;</span><span class="p">,</span> <span class="s2">&quot;Female&quot;</span><span class="p">]:</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sex&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">sex</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s2">&quot;pred_prob&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">sex</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Predicted probability of survival&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Density&quot;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Predicted probability by sex&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1"># 客室クラスごとの予測確率分布</span>
+<span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;1st&quot;</span><span class="p">,</span> <span class="s2">&quot;2nd&quot;</span><span class="p">,</span> <span class="s2">&quot;3rd&quot;</span><span class="p">,</span> <span class="s2">&quot;Crew&quot;</span><span class="p">]:</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Class&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">cls</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s2">&quot;pred_prob&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Predicted probability of survival&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Density&quot;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Predicted probability by class&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/1244e9b9a4bde030b7dbf8cdd3b1a387a9ab42071f827300c9e9ccfd8b2e9c86.png" src="../../_images/1244e9b9a4bde030b7dbf8cdd3b1a387a9ab42071f827300c9e9ccfd8b2e9c86.png" />
+</div>
+</div>
+</section>
+<section id="id17">
+<h2>他のリンク関数<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
+<p>ロジスティック回帰ではロジットリンクが標準だが、二項分布のGLMに対して別のリンク関数を用いることもできる。</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>リンク関数</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(g(\pi)\)</span></p></th>
+<th class="head"><p>逆リンク <span class="math notranslate nohighlight">\(g^{-1}(\eta)\)</span></p></th>
+<th class="head"><p>特徴</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ロジット (logit)</p></td>
+<td><p><span class="math notranslate nohighlight">\(\log\frac{\pi}{1-\pi}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{1}{1+e^{-\eta}}\)</span></p></td>
+<td><p>正準リンク。オッズ比として解釈可能</p></td>
+</tr>
+<tr class="row-odd"><td><p>プロビット (probit)</p></td>
+<td><p><span class="math notranslate nohighlight">\(\Phi^{-1}(\pi)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\Phi(\eta)\)</span></p></td>
+<td><p>潜在変数モデルとの対応。計量経済学で好まれる</p></td>
+</tr>
+<tr class="row-even"><td><p>補対数対数 (cloglog)</p></td>
+<td><p><span class="math notranslate nohighlight">\(\log(-\log(1-\pi))\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(1 - e^{-e^{\eta}}\)</span></p></td>
+<td><p>非対称。まれな事象の分析に適する</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>ここで <span class="math notranslate nohighlight">\(\Phi\)</span> は標準正規分布の累積分布関数。</p>
+<p>実用上、ロジットとプロビットの推定結果はほとんどの場合で非常に近い（プロビットの係数 <span class="math notranslate nohighlight">\(\approx\)</span> ロジットの係数 <span class="math notranslate nohighlight">\(\times 0.6\)</span>）。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 3つのリンク関数の比較</span>
+<span class="n">eta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="n">logistic_curve</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">eta</span><span class="p">))</span>
+<span class="n">probit_curve</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
+<span class="n">cloglog_curve</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">eta</span><span class="p">))</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">logistic_curve</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Logit&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">probit_curve</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Probit&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">cloglog_curve</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Cloglog&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;-.&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\eta$&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\pi$&quot;</span><span class="p">,</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Inverse link functions for binary GLM&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/14c5d43c9440f0f33f7707c8903558b22915e53de34bb5989ce8bd0ab86b8a88.png" src="../../_images/14c5d43c9440f0f33f7707c8903558b22915e53de34bb5989ce8bd0ab86b8a88.png" />
+</div>
+</div>
+</section>
+<section id="id18">
+<h2>完全分離と準完全分離<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
+<p>ロジスティック回帰の推定で注意すべき問題として<strong>完全分離</strong>（complete separation）がある。</p>
+<p>ある説明変数（またはその線形結合）によって <span class="math notranslate nohighlight">\(y = 0\)</span> と <span class="math notranslate nohighlight">\(y = 1\)</span> が完全に分離できる場合、MLEが存在しない（<span class="math notranslate nohighlight">\(\hat{\beta}_j \to \pm\infty\)</span>）。これは対数尤度が有限の最大値を持たず、上界に漸近するためである。</p>
+<ul class="simple">
+<li><p><strong>完全分離</strong>: <span class="math notranslate nohighlight">\(y=0\)</span> と <span class="math notranslate nohighlight">\(y=1\)</span> を完全に分離する超平面が存在する。MLEが存在しない</p></li>
+<li><p><strong>準完全分離</strong>（quasi-complete separation）: 分離境界上にデータ点が乗る。一部のMLEが存在しない</p></li>
+</ul>
+<p>実務上の対処法として：</p>
+<ol class="arabic simple">
+<li><p>サンプルサイズを増やす</p></li>
+<li><p>Firth の補正（penalized likelihood）を用いる</p></li>
+<li><p>ベイズ推定で事前分布による正則化を行う</p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> では収束しない場合や標準誤差が非常に大きい場合に警告が出る。</p>
+</section>
+<section id="id19">
+<h2>参考文献<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text">Agresti, A. (2013). <em>Categorical Data Analysis</em> (3rd ed.). Wiley.</p>
+<p class="sd-card-text">カテゴリカルデータ分析の標準的な教科書。ロジスティック回帰の理論と応用が詳しい</p>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text">McCullagh, P., &amp; Nelder, J. A. (1989). <em>Generalized Linear Models</em> (2nd ed.). Chapman &amp; Hall.</p>
+<p class="sd-card-text">GLMの原典</p>
+</div>
+</div>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text">Hosmer, D. W., Lemeshow, S., &amp; Sturdivant, R. X. (2013). <em>Applied Logistic Regression</em> (3rd ed.). Wiley.</p>
+<p class="sd-card-text">ロジスティック回帰に特化した応用的教科書</p>
+</div>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1333,11 +2232,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="pseudo_r_squared.html"
+       href="poisson_regression.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">疑似R2乗値</p>
+        <p class="prev-next-title">ポアソン回帰モデル</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1347,6 +2246,51 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#glm">GLMとしての定式化</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">変量成分</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">リンク関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">系統的成分</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">3つをまとめると</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">係数の解釈：オッズ比</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">オッズ</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">オッズ比</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">最尤推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">対数尤度関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">スコア関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fisher">Fisher情報行列</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#irls">IRLS（反復再重み付け最小二乗法）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">IRLSのスクラッチ実装</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">シミュレーションデータでの検証</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">仮説検定</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wald">Wald検定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">尤度比検定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deviance">逸脱度（deviance）</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">実データでの例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">他のリンク関数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">完全分離と準完全分離</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">参考文献</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
