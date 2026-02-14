@@ -30,6 +30,14 @@
 :columns: 6
 統計モデリング
 
+- [](statistical_modeling/glm/index)
+- [](statistical_modeling/ordered_regression/index)
+- [](statistical_modeling/sem/index)
+- [](statistical_modeling/test_theory/index)
+- [](statistical_modeling/bayes_modeling/index)
+- [](statistical_modeling/time_series_analysis/index)
+- [](statistical_modeling/semiparametric/index)
+- [](statistical_modeling/evaluation/index)
 - [](statistical_modeling/lowess)
 - [](statistical_modeling/factor_analysis)
 - [](statistical_modeling/mmm)
@@ -38,13 +46,6 @@
 - [](statistical_modeling/quantile_regression)
 - [](statistical_modeling/survival_analysis)
 - [](statistical_modeling/symbolic_data_analysis)
-- [](statistical_modeling/sem/index)
-- [](statistical_modeling/test_theory/index)
-- [](statistical_modeling/glm/index)
-- [](statistical_modeling/bayes_modeling/index)
-- [](statistical_modeling/time_series_analysis/index)
-- [](statistical_modeling/semiparametric/index)
-- [](statistical_modeling/evaluation/index)
 :::
 
 :::{grid-item-card}
