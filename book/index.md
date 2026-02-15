@@ -222,7 +222,6 @@
 - [](soft_skills/thinking/index)
 - [](soft_skills/logic/index)
 - [](soft_skills/leadership/index)
-- [](soft_skills/team_management/index)
 - [](soft_skills/people_management/index)
 - [](soft_skills/project_management/index)
 - [](soft_skills/health_management/index)
