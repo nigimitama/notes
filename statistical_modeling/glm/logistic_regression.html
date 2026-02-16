@@ -1305,24 +1305,25 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">最尤推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">対数尤度関数</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">スコア関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">尤度関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">対数尤度関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">スコア関数</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fisher">Fisher情報行列</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#irls">IRLS（反復再重み付け最小二乗法）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">IRLSのスクラッチ実装</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">シミュレーションデータでの検証</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">IRLSのスクラッチ実装</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">シミュレーションデータでの検証</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">仮説検定</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">仮説検定</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wald">Wald検定</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">尤度比検定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">尤度比検定</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deviance">逸脱度（deviance）</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">実データでの例</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">他のリンク関数</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">完全分離と準完全分離</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">実データでの例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">他のリンク関数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">完全分離と準完全分離</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1336,6 +1337,18 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>ロジスティック回帰モデル<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<div class="admonition-logistic-regression-model admonition">
+<p class="admonition-title">Logistic Regression Model</p>
+<div class="math notranslate nohighlight">
+\[
+P(y_i = 1) = \text{logistic}(\mathbf{x}_i^\top \boldsymbol{\beta}) = \frac{1}{1 + \exp(-\mathbf{x}_i^\top \boldsymbol{\beta})} 
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(y_i\)</span>：目的変数</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span>：特徴量ベクトル</p></li>
+<li><p><span class="math notranslate nohighlight">\(\boldsymbol{\beta}\)</span>：パラメータ</p></li>
+</ul>
+</div>
 <p>機械学習の文脈だったりエコノメの文脈だったりで若干導入が違う（<a class="reference external" href="https://ill-identified.hatenablog.com/entry/2024/04/26/033151">ロジスティック回帰の4通りの表現 - ill-identified diary</a>）</p>
 <p>ここではGLM文脈のものにする</p>
 <section id="glm">
@@ -1343,10 +1356,10 @@ document.write(`
 <p>ロジスティック回帰はGLMの3つの構成要素で記述できる。</p>
 <section id="id2">
 <h3>変量成分<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
-<p>目的変数 <span class="math notranslate nohighlight">\(Y_i\)</span> は「成功」（1）か「失敗」（0）の二値をとり、成功確率 <span class="math notranslate nohighlight">\(\pi_i\)</span> のベルヌーイ分布に従う：</p>
+<p>目的変数 <span class="math notranslate nohighlight">\(y_i\)</span> は「成功」（1）か「失敗」（0）の二値をとり、成功確率 <span class="math notranslate nohighlight">\(\pi_i\)</span> のベルヌーイ分布に従う：</p>
 <div class="math notranslate nohighlight">
 \[
-Y_i \sim \text{Bernoulli}(\pi_i), \quad i = 1, \dots, n
+y_i \sim \text{Bernoulli}(\pi_i), \quad i = 1, \dots, n
 \]</div>
 <p><span class="math notranslate nohighlight">\(n_i\)</span> 回中の成功回数 <span class="math notranslate nohighlight">\(Y_i\)</span> を扱う場合は二項分布 <span class="math notranslate nohighlight">\(Y_i \sim \text{Binomial}(n_i, \pi_i)\)</span> になる。</p>
 <p>ベルヌーイ分布は指数型分布族に属する。確率関数を</p>
@@ -1458,8 +1471,28 @@ g(\pi_i) = \log\frac{\pi_i}{1 - \pi_i} = \text{logit}(\pi_i)
 </section>
 <section id="id9">
 <h2>最尤推定<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<p>ベルヌーイ分布の確率密度関数は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\text{Bernoulli}(\pi_i) =
+\begin{cases}
+\pi &amp; \text{ if } y_i = 1\\
+1 - \pi &amp; \text{ if } y_i = 0\\
+\end{cases}
+=
+\pi_i^{y_i} (1-\pi_i)^{1-y_i}
+\end{split}\]</div>
 <section id="id10">
-<h3>対数尤度関数<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<h3>尤度関数<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(n\)</span> 個の独立な観測 <span class="math notranslate nohighlight">\((y_i, \mathbf{x}_i)\)</span> に対する尤度は</p>
+<div class="math notranslate nohighlight">
+\[
+L(\boldsymbol{\beta}) = \prod_{i=1}^{n} \pi_i^{y_i} (1-\pi_i)^{1-y_i}
+\]</div>
+<p>ここで <span class="math notranslate nohighlight">\(\pi_i\)</span> は モデルが出力する予測値 <span class="math notranslate nohighlight">\(\pi_i = \text{logistic}(\mathbf{x}_i^\top \boldsymbol{\beta})\)</span> であり、<span class="math notranslate nohighlight">\(y_i\)</span>が観測値であるため、観測値と合致する予測値を出すほど尤度は高くなる。</p>
+</section>
+<section id="id11">
+<h3>対数尤度関数<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(n\)</span> 個の独立な観測 <span class="math notranslate nohighlight">\((y_i, \mathbf{x}_i)\)</span> に対する対数尤度は</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1471,8 +1504,8 @@ g(\pi_i) = \log\frac{\pi_i}{1 - \pi_i} = \text{logit}(\pi_i)
 \ell(\boldsymbol{\beta}) = \sum_{i=1}^{n} \left[ y_i\, \mathbf{x}_i^\top \boldsymbol{\beta} - \log\left(1 + \exp(\mathbf{x}_i^\top \boldsymbol{\beta})\right) \right]
 \]</div>
 </section>
-<section id="id11">
-<h3>スコア関数<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>スコア関数<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <p>対数尤度の <span class="math notranslate nohighlight">\(\boldsymbol{\beta}\)</span> に関する偏微分（スコア関数）は</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1504,8 +1537,8 @@ z_i^{(t)} = \eta_i^{(t)} + \frac{y_i - \pi_i^{(t)}}{\pi_i^{(t)}(1 - \pi_i^{(t)})
 \]</div>
 <p>すなわち、各反復で重み <span class="math notranslate nohighlight">\(\mathbf{W}\)</span> を更新しながら重み付き最小二乗法を繰り返すことでMLEを得る。</p>
 </section>
-<section id="id12">
-<h3>IRLSのスクラッチ実装<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>IRLSのスクラッチ実装<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">logistic</span><span class="p">(</span><span class="n">eta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -1590,8 +1623,8 @@ z_i^{(t)} = \eta_i^{(t)} + \frac{y_i - \pi_i^{(t)}}{\pi_i^{(t)}(1 - \pi_i^{(t)})
 </div>
 </div>
 </section>
-<section id="id13">
-<h3>シミュレーションデータでの検証<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>シミュレーションデータでの検証<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <p>スクラッチ実装を <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> の結果と比較する。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1711,8 +1744,8 @@ y=1 の割合: 0.428
 </div>
 </section>
 </section>
-<section id="id14">
-<h2>仮説検定<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<section id="id15">
+<h2>仮説検定<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
 <section id="wald">
 <h3>Wald検定<a class="headerlink" href="#wald" title="Link to this heading">#</a></h3>
 <p>個々の係数について <span class="math notranslate nohighlight">\(H_0: \beta_j = 0\)</span> を検定する。Wald統計量は</p>
@@ -1722,8 +1755,8 @@ z_j = \frac{\hat{\beta}_j}{\text{SE}(\hat{\beta}_j)}
 \]</div>
 <p>で、漸近的に標準正規分布に従う。<code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> の summary に表示される <span class="math notranslate nohighlight">\(z\)</span> 値と <span class="math notranslate nohighlight">\(P&gt;|z|\)</span> がこれに対応する。</p>
 </section>
-<section id="id15">
-<h3>尤度比検定<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<section id="id16">
+<h3>尤度比検定<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
 <p>帰無モデル（null model: 切片のみ）と完全モデルを比較する。尤度比統計量は</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1753,8 +1786,8 @@ Model:                            GLM   Df Residuals:                      497
 Model Family:                Binomial   Df Model:                            2
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -261.29
-Date:                Sun, 15 Feb 2026   Deviance:                       522.57
-Time:                        11:11:50   Pearson chi2:                     508.
+Date:                Mon, 16 Feb 2026   Deviance:                       522.57
+Time:                        07:03:20   Pearson chi2:                     508.
 No. Iterations:                     5   Pseudo R-squ. (CS):             0.2741
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -1846,8 +1879,8 @@ x2            -0.9058      0.124     -7.325      0.000      -1.148      -0.663
 </div>
 </section>
 </section>
-<section id="id16">
-<h2>実データでの例<a class="headerlink" href="#id16" title="Link to this heading">#</a></h2>
+<section id="id17">
+<h2>実データでの例<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
 <p>Titanic データセットを用いて、乗客の生存を予測するロジスティック回帰を行う。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1945,8 +1978,8 @@ x2            -0.9058      0.124     -7.325      0.000      -1.148      -0.663
 Dep. Variable:               Survived   No. Observations:                 2201
 Model:                          Logit   Df Residuals:                     2195
 Method:                           MLE   Df Model:                            5
-Date:                Sun, 15 Feb 2026   Pseudo R-squ.:                  0.2020
-Time:                        11:11:50   Log-Likelihood:                -1105.0
+Date:                Mon, 16 Feb 2026   Pseudo R-squ.:                  0.2020
+Time:                        07:03:21   Log-Likelihood:                -1105.0
 converged:                       True   LL-Null:                       -1384.7
 Covariance Type:            nonrobust   LLR p-value:                1.195e-118
 ====================================================================================
@@ -2094,8 +2127,8 @@ C(Age)[T.Child]      1.0615      0.244      4.350      0.000       0.583       1
 </div>
 </div>
 </section>
-<section id="id17">
-<h2>他のリンク関数<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
+<section id="id18">
+<h2>他のリンク関数<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
 <p>ロジスティック回帰ではロジットリンクが標準だが、二項分布のGLMに対して別のリンク関数を用いることもできる。</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -2157,8 +2190,8 @@ C(Age)[T.Child]      1.0615      0.244      4.350      0.000       0.583       1
 </div>
 </div>
 </section>
-<section id="id18">
-<h2>完全分離と準完全分離<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
+<section id="id19">
+<h2>完全分離と準完全分離<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
 <p>ロジスティック回帰の推定で注意すべき問題として<strong>完全分離</strong>（complete separation）がある。</p>
 <p>ある説明変数（またはその線形結合）によって <span class="math notranslate nohighlight">\(y = 0\)</span> と <span class="math notranslate nohighlight">\(y = 1\)</span> が完全に分離できる場合、MLEが存在しない（<span class="math notranslate nohighlight">\(\hat{\beta}_j \to \pm\infty\)</span>）。これは対数尤度が有限の最大値を持たず、上界に漸近するためである。</p>
 <ul class="simple">
@@ -2173,8 +2206,8 @@ C(Age)[T.Child]      1.0615      0.244      4.350      0.000       0.583       1
 </ol>
 <p><code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> では収束しない場合や標準誤差が非常に大きい場合に警告が出る。</p>
 </section>
-<section id="id19">
-<h2>参考文献<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
+<section id="id20">
+<h2>参考文献<a class="headerlink" href="#id20" title="Link to this heading">#</a></h2>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <p class="sd-card-text">Agresti, A. (2013). <em>Categorical Data Analysis</em> (3rd ed.). Wiley.</p>
@@ -2273,24 +2306,25 @@ C(Age)[T.Child]      1.0615      0.244      4.350      0.000       0.583       1
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">最尤推定</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">対数尤度関数</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">スコア関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">尤度関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">対数尤度関数</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">スコア関数</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fisher">Fisher情報行列</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#irls">IRLS（反復再重み付け最小二乗法）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">IRLSのスクラッチ実装</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">シミュレーションデータでの検証</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">IRLSのスクラッチ実装</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">シミュレーションデータでの検証</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">仮説検定</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">仮説検定</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wald">Wald検定</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">尤度比検定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">尤度比検定</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deviance">逸脱度（deviance）</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">実データでの例</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">他のリンク関数</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">完全分離と準完全分離</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">実データでの例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">他のリンク関数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">完全分離と準完全分離</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">参考文献</a></li>
 </ul>
   </nav></div>
 

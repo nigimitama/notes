@@ -1345,21 +1345,16 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
 
     <span class="n">theta</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
     <span class="n">a</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">J</span><span class="p">)</span>
-
     <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span>
         <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">K</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
         <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
     <span class="p">)</span>
 
     <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">J</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">J</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="n">P_ge</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span>
-                <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
-                    <span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
+            <span class="n">eta</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">P_ge</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">eta</span><span class="p">))</span>
 
             <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
             <span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">P_ge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1368,7 +1363,6 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
             <span class="n">P</span><span class="p">[</span><span class="n">K</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">P_ge</span><span class="p">[</span><span class="n">K</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
 
             <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">P</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">U</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span>
 
 <span class="n">num_users</span> <span class="o">=</span> <span class="mi">1000</span>
@@ -1546,13 +1540,18 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 縦持ちへ変換</span>
+<span class="n">user_categories</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span>
+<span class="n">item_categories</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+
 <span class="n">df_long</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
     <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span>
     <span class="n">id_vars</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">,</span>
     <span class="n">var_name</span><span class="o">=</span><span class="s2">&quot;item&quot;</span><span class="p">,</span>
     <span class="n">value_name</span><span class="o">=</span><span class="s2">&quot;response&quot;</span><span class="p">,</span>
-<span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="s2">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;category&quot;</span><span class="p">})</span>
+<span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">})</span>
 
+<span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">],</span> <span class="n">categories</span><span class="o">=</span><span class="n">user_categories</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">],</span> <span class="n">categories</span><span class="o">=</span><span class="n">item_categories</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">df_long</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -1638,7 +1637,7 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
 <span class="n">coords</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">users</span><span class="p">,</span>
     <span class="s2">&quot;item&quot;</span><span class="p">:</span> <span class="n">items</span><span class="p">,</span>
-    <span class="s2">&quot;n_thresholds&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_thresholds</span><span class="p">),</span>
+    <span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_thresholds</span><span class="p">),</span>
     <span class="s2">&quot;obs_id&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df_long</span><span class="p">)),</span>
 <span class="p">}</span>
 
@@ -1656,17 +1655,23 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
         <span class="s2">&quot;b&quot;</span><span class="p">,</span>
         <span class="n">mu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_thresholds</span><span class="p">),</span>   <span class="c1"># 初期の目安</span>
         <span class="n">sigma</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-        <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;item&quot;</span><span class="p">,</span> <span class="s2">&quot;n_thresholds&quot;</span><span class="p">),</span>
+        <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;item&quot;</span><span class="p">,</span> <span class="s2">&quot;threshold&quot;</span><span class="p">),</span>
         <span class="n">transform</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ordered</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="c1"># 線形予測子</span>
     <span class="n">eta</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">item_idx_</span><span class="p">]</span> <span class="o">*</span> <span class="n">theta</span><span class="p">[</span><span class="n">user_idx_</span><span class="p">]</span>
 
+    <span class="c1"># GRM の cutpoints: a_j * b_{jk}</span>
+    <span class="c1"># OrderedLogistic は P(Y &gt;= k) = sigma(eta - cutpoints_k) を計算するため、</span>
+    <span class="c1"># Samejima のパラメタリゼーション P(Y &gt;= k) = sigma(a*(theta - b)) に合わせるには</span>
+    <span class="c1"># cutpoints = a * b とする必要がある（a &gt; 0 なので順序は保たれる）</span>
+    <span class="n">cutpoints</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span>
+
     <span class="c1"># 観測：item ごとの cutpoints を観測ごとに参照</span>
     <span class="n">pm</span><span class="o">.</span><span class="n">OrderedLogistic</span><span class="p">(</span>
         <span class="s2">&quot;obs&quot;</span><span class="p">,</span>
         <span class="n">eta</span><span class="o">=</span><span class="n">eta</span><span class="p">,</span>
-        <span class="n">cutpoints</span><span class="o">=</span><span class="n">b</span><span class="p">[</span><span class="n">item_idx_</span><span class="p">],</span>   <span class="c1"># shape: (n_obs, n_thresholds) にブロードキャストされる想定</span>
+        <span class="n">cutpoints</span><span class="o">=</span><span class="n">cutpoints</span><span class="p">[</span><span class="n">item_idx_</span><span class="p">],</span>
         <span class="n">observed</span><span class="o">=</span><span class="n">responses_</span><span class="p">,</span>
         <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;obs_id&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1694,11 +1699,7 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>NUTS: [theta, a, b]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/notes/notes/.venv/lib/python3.10/site-packages/pytensor/compile/function/types.py:1039: RuntimeWarning: invalid value encountered in accumulate
-  outputs = vm() if output_subset is None else vm(output_subset=output_subset)
-</pre></div>
-</div>
-<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "e051cba703ce4b099b4ec8146a21d21e"}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "d08f922410b74f458909fd38ae071b15"}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
 </div><div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
 <span class="n">File</span> <span class="o">&lt;</span><span class="n">timed</span> <span class="n">exec</span><span class="o">&gt;</span><span class="p">:</span><span class="mi">2</span>
@@ -1782,27 +1783,27 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
     <tr>
       <th>0</th>
       <td>question_1</td>
-      <td>0.991192</td>
+      <td>0.943863</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>question_10</td>
-      <td>1.108870</td>
+      <td>question_2</td>
+      <td>0.747024</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>question_11</td>
-      <td>0.642687</td>
+      <td>question_3</td>
+      <td>0.900281</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>question_12</td>
-      <td>1.563226</td>
+      <td>question_4</td>
+      <td>1.136561</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>question_13</td>
-      <td>0.782629</td>
+      <td>question_5</td>
+      <td>0.886757</td>
     </tr>
   </tbody>
 </table>
@@ -1838,7 +1839,7 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../../_images/cc0c9db00326d0fc6f1e4e2c4fcc171b4fcb42362f8f69185e381af5fe3f3aa2.png" src="../../../_images/cc0c9db00326d0fc6f1e4e2c4fcc171b4fcb42362f8f69185e381af5fe3f3aa2.png" />
+<img alt="../../../_images/206d857dbaed29f7b4de328f775a0fc89e19fc920f6890fc9fc88a8274dc91bf.png" src="../../../_images/206d857dbaed29f7b4de328f775a0fc89e19fc920f6890fc9fc88a8274dc91bf.png" />
 </div>
 </div>
 </section>
