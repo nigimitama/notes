@@ -1433,53 +1433,49 @@ g(E[y])=\beta_0+\sum f_i(x_i)+\sum f_{i, j}(x_i, x_j)
 <span class="g g-Whitespace">     </span><span class="mi">28</span> <span class="n">pred</span> <span class="o">=</span> <span class="n">ebm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 <span class="g g-Whitespace">     </span><span class="mi">29</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R^2: </span><span class="si">{</span><span class="n">r2_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/interpret/glassbox/_ebm/_ebm.py:1179,</span> in <span class="ni">EBMModel.fit</span><span class="nt">(self, X, y, sample_weight, bags, init_score)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1176</span>     <span class="n">stop_flag</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="g g-Whitespace">   </span><span class="mi">1177</span>     <span class="n">shm_name</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="ne">-&gt; </span><span class="mi">1179</span> <span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1180</span>     <span class="n">delayed</span><span class="p">(</span><span class="n">booster</span><span class="p">)(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1181</span>         <span class="n">shm_name</span><span class="o">=</span><span class="n">shm_name</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1182</span>         <span class="n">bag_idx</span><span class="o">=</span><span class="n">idx</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1183</span>         <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1184</span>         <span class="n">dataset</span><span class="o">=</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1185</span>             <span class="n">shared</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">shared</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">shared</span><span class="o">.</span><span class="n">dataset</span>
-<span class="g g-Whitespace">   </span><span class="mi">1186</span>         <span class="p">),</span>
-<span class="g g-Whitespace">   </span><span class="mi">1187</span>         <span class="n">intercept_rounds</span><span class="o">=</span><span class="n">n_intercept_rounds</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1188</span>         <span class="n">intercept_learning_rate</span><span class="o">=</span><span class="n">develop</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1189</span>             <span class="s2">&quot;intercept_learning_rate&quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">1190</span>         <span class="p">),</span>
-<span class="g g-Whitespace">   </span><span class="mi">1191</span>         <span class="n">intercept</span><span class="o">=</span><span class="n">bagged_intercept</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
-<span class="g g-Whitespace">   </span><span class="mi">1192</span>         <span class="n">bag</span><span class="o">=</span><span class="n">internal_bags</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
-<span class="g g-Whitespace">   </span><span class="mi">1193</span>         <span class="c1"># TODO: instead of making these copies we should</span>
-<span class="g g-Whitespace">   </span><span class="mi">1194</span>         <span class="c1"># put init_score into the native shared dataframe</span>
-<span class="g g-Whitespace">   </span><span class="mi">1195</span>         <span class="n">init_scores</span><span class="o">=</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1196</span>             <span class="n">init_score</span>
-<span class="g g-Whitespace">   </span><span class="mi">1197</span>             <span class="k">if</span> <span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1198</span>                 <span class="n">init_score</span> <span class="ow">is</span> <span class="kc">None</span>
-<span class="g g-Whitespace">   </span><span class="mi">1199</span>                 <span class="ow">or</span> <span class="n">internal_bags</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
-<span class="g g-Whitespace">   </span><span class="mi">1200</span>                 <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">internal_bags</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
-<span class="g g-Whitespace">   </span><span class="mi">1201</span>                 <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">internal_bags</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
-<span class="g g-Whitespace">   </span><span class="mi">1202</span>             <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1203</span>             <span class="k">else</span> <span class="n">init_score</span><span class="p">[</span><span class="n">internal_bags</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
-<span class="g g-Whitespace">   </span><span class="mi">1204</span>         <span class="p">),</span>
-<span class="g g-Whitespace">   </span><span class="mi">1205</span>         <span class="n">term_features</span><span class="o">=</span><span class="n">term_features</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1206</span>         <span class="n">smoothing_rounds</span><span class="o">=</span><span class="n">smoothing_rounds</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1207</span>         <span class="c1"># if there are no validation samples, turn off early stopping</span>
-<span class="g g-Whitespace">   </span><span class="mi">1208</span>         <span class="c1"># because the validation metric cannot improve each round</span>
-<span class="g g-Whitespace">   </span><span class="mi">1209</span>         <span class="n">early_stopping_rounds</span><span class="o">=</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1210</span>             <span class="n">early_stopping_rounds</span>
-<span class="g g-Whitespace">   </span><span class="mi">1211</span>             <span class="k">if</span> <span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1212</span>                 <span class="n">internal_bags</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-<span class="g g-Whitespace">   </span><span class="mi">1213</span>                 <span class="ow">and</span> <span class="p">(</span><span class="n">internal_bags</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1214</span>             <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1215</span>             <span class="k">else</span> <span class="mi">0</span>
-<span class="g g-Whitespace">   </span><span class="mi">1216</span>         <span class="p">),</span>
-<span class="g g-Whitespace">   </span><span class="mi">1217</span>         <span class="n">rng</span><span class="o">=</span><span class="n">rngs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
-<span class="g g-Whitespace">   </span><span class="mi">1218</span>     <span class="p">)</span>
-<span class="nn">   1219     for idx</span> in <span class="ni">range</span><span class="nt">(self.outer_bags)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1220</span> <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1222</span> <span class="n">best_iteration</span> <span class="o">=</span> <span class="p">[[]]</span>
-<span class="g g-Whitespace">   </span><span class="mi">1223</span> <span class="n">models</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/interpret/glassbox/_ebm/_ebm.py:1292,</span> in <span class="ni">EBMModel.fit</span><span class="nt">(self, X, y, sample_weight, bags, init_score)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1289</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+<span class="g g-Whitespace">   </span><span class="mi">1290</span>     <span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Estimating with FAST&quot;</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">1292</span>     <span class="n">bagged_ranked_interaction</span> <span class="o">=</span> <span class="n">parallel</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1293</span>         <span class="c1"># TODO: the combinations below should be selected from the non-excluded features</span>
+<span class="g g-Whitespace">   </span><span class="mi">1294</span>         <span class="n">delayed</span><span class="p">(</span><span class="n">rank_interactions</span><span class="p">)(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1295</span>             <span class="n">shm_name</span><span class="o">=</span><span class="n">shm_name</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1296</span>             <span class="n">bag_idx</span><span class="o">=</span><span class="n">idx</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1297</span>             <span class="n">dataset</span><span class="o">=</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1298</span>                 <span class="n">shared</span><span class="o">.</span><span class="n">name</span>
+<span class="g g-Whitespace">   </span><span class="mi">1299</span>                 <span class="k">if</span> <span class="n">shared</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="g g-Whitespace">   </span><span class="mi">1300</span>                 <span class="k">else</span> <span class="n">shared</span><span class="o">.</span><span class="n">dataset</span>
+<span class="g g-Whitespace">   </span><span class="mi">1301</span>             <span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">1302</span>             <span class="n">intercept</span><span class="o">=</span><span class="n">bagged_intercept</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+<span class="g g-Whitespace">   </span><span class="mi">1303</span>             <span class="n">bag</span><span class="o">=</span><span class="n">internal_bags</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+<span class="g g-Whitespace">   </span><span class="mi">1304</span>             <span class="n">init_scores</span><span class="o">=</span><span class="n">scores_bags</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+<span class="g g-Whitespace">   </span><span class="mi">1305</span>             <span class="n">iter_term_features</span><span class="o">=</span><span class="n">combinations</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1306</span>                 <span class="nb">range</span><span class="p">(</span><span class="n">n_features_in</span><span class="p">),</span> <span class="mi">2</span>
+<span class="g g-Whitespace">   </span><span class="mi">1307</span>             <span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">1308</span>             <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1309</span>             <span class="n">exclude_features</span><span class="o">=</span><span class="n">exclude_features</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1310</span>             <span class="n">calc_interaction_flags</span><span class="o">=</span><span class="n">interaction_flags</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1311</span>             <span class="n">max_cardinality</span><span class="o">=</span><span class="n">max_cardinality</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1312</span>             <span class="n">min_samples_leaf</span><span class="o">=</span><span class="n">min_samples_leaf</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1313</span>             <span class="n">min_hessian</span><span class="o">=</span><span class="n">min_hessian</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1314</span>             <span class="n">reg_alpha</span><span class="o">=</span><span class="n">reg_alpha</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1315</span>             <span class="n">reg_lambda</span><span class="o">=</span><span class="n">reg_lambda</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1316</span>             <span class="n">max_delta_step</span><span class="o">=</span><span class="n">max_delta_step</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1317</span>             <span class="n">create_interaction_flags</span><span class="o">=</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1318</span>                 <span class="n">Native</span><span class="o">.</span><span class="n">CreateInteractionFlags_DifferentialPrivacy</span>
+<span class="g g-Whitespace">   </span><span class="mi">1319</span>                 <span class="k">if</span> <span class="n">is_differential_privacy</span>
+<span class="g g-Whitespace">   </span><span class="mi">1320</span>                 <span class="k">else</span> <span class="n">Native</span><span class="o">.</span><span class="n">CreateInteractionFlags_Default</span>
+<span class="g g-Whitespace">   </span><span class="mi">1321</span>             <span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">1322</span>             <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1323</span>             <span class="n">acceleration</span><span class="o">=</span><span class="n">develop</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="s2">&quot;acceleration&quot;</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">1324</span>             <span class="n">experimental_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1325</span>             <span class="n">n_output_interactions</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1326</span>             <span class="n">develop_options</span><span class="o">=</span><span class="n">develop</span><span class="o">.</span><span class="n">_develop_options</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1327</span>         <span class="p">)</span>
+<span class="nn">   1328         for idx</span> in <span class="ni">range</span><span class="nt">(self.outer_bags)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1329</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1331</span>     <span class="c1"># Select merged pairs</span>
+<span class="g g-Whitespace">   </span><span class="mi">1332</span>     <span class="n">pair_ranks</span> <span class="o">=</span> <span class="p">{}</span>
 
 <span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/joblib/parallel.py:2072,</span> in <span class="ni">Parallel.__call__</span><span class="nt">(self, iterable)</span>
 <span class="g g-Whitespace">   </span><span class="mi">2066</span> <span class="c1"># The first item from the output is blank, but it makes the interpreter</span>
