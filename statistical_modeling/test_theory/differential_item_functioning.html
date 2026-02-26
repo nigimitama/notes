@@ -603,6 +603,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/uncertainty/gaussian_process.html">ガウス過程モデル</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/adversarial_ml/index.html">Adversarial Machine Learning：攻撃と防御</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/adversarial_ml/pretrain_defense.html">訓練前段階の防御（Pre-training Stage Defense）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/adversarial_ml/training_defense.html">訓練段階の防御（Training Stage Defense）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/adversarial_ml/post_training_defense.html">訓練後・デプロイ段階の防御（Post-training / Deployment Stage Defense）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../machine_learning/adversarial_ml/inference_defense.html">推論段階の防御（Inference Stage Defense）</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../machine_learning/deep_learning/index.html">深層学習</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/deep_learning/history.html">深層学習の歴史</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../machine_learning/deep_learning/theory.html">深層学習の理論</a></li>
@@ -1314,34 +1321,46 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概要</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dif">DIFの種類</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概要</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plm">定義（2PLMベース）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uniform-dif">Uniform DIF の仮定</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#icc">幾何学的解釈（ICC上）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-uniform-dif">Non-Uniform DIFとの違い（重要）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#region">階層ベイズでの実装（あなたのケース：複層ガラス×region）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#irt">実務的解釈（不動産設備IRT）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dif">DIFの種類</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#uniform-dif-dif">Uniform DIF（均一DIF）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#non-uniform-dif-dif">Non-uniform DIF（非均一DIF）</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">DIF検出手法</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantel-haenszel">Mantel-Haenszel法</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ロジスティック回帰法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#irt">IRT法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">IRT法</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sibtest">SIBTEST</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Pythonでの実装</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#difnlr-r">difNLR パッケージ（R）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Pythonによる実装例</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">シミュレーションデータによる検証</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Pythonによる実装例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">シミュレーションデータによる検証</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">DIFの解釈と対処</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">DIFを考慮したスコアリング</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">アプローチ1: DIF項目の除外</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">アプローチ2: 集団別IRTパラメータによるスコアリング</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">アプローチ3: 期待得点調整</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">アプローチ4: 多母集団IRTモデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">実装例: 各スコアリング手法の比較</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">手法の選択指針</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">DIFの解釈と対処</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">DIFを考慮したスコアリング</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">アプローチ1: DIF項目の除外</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">アプローチ2: 集団別IRTパラメータによるスコアリング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">アプローチ3: 期待得点調整</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">アプローチ4: 多母集団IRTモデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">実装例: 各スコアリング手法の比較</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">手法の選択指針</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1359,13 +1378,179 @@ document.write(`
 <h2>概要<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p><strong>Differential Item Functioning (DIF: 特異項目機能)</strong> とは、同じ能力を持つ異なる集団の受験者が、特定のテスト項目に対して異なる正答確率を示す現象である。</p>
 <p>例えば、同じ数学的能力を持つ男女が、ある文章題に対して異なる正答率を示す場合、その項目にはDIFが存在する可能性がある。これは項目の内容が一方の集団に有利に働いていることを示唆し、テストの公平性（fairness）に関わる重要な問題である。</p>
+<p>IRT文脈における <strong>Uniform DIF (Differential Item Functioning)</strong> は、
+「<strong>潜在能力 <span class="math notranslate nohighlight">\(\theta\)</span> の全域にわたって、特定の群に対して一方向に“難易度がシフトしている”項目バイアス</strong>」を意味します。</p>
+</section>
+<hr class="docutils" />
+<section id="plm">
+<h2>定義（2PLMベース）<a class="headerlink" href="#plm" title="Link to this heading">#</a></h2>
+<hr class="docutils" />
+<section id="uniform-dif">
+<h3>Uniform DIF の仮定<a class="headerlink" href="#uniform-dif" title="Link to this heading">#</a></h3>
+<p>Uniform DIFでは</p>
+<div class="math notranslate nohighlight">
+\[
+a_{j0} = a_{j1} = a_j
+\]</div>
+<p>すなわち discrimination は <strong>群不変</strong> であり、</p>
+<div class="math notranslate nohighlight">
+\[
+b_{j1} = b_{j0} + \delta_j
+\]</div>
+<p>のように <strong>困難度のみが群ごとに一定量シフト</strong> します。</p>
+<p>したがって：</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}
+P(Y_{ij}=1 \mid \theta_i, g_i)
+==============================\\\operatorname{logit}^{-1}
+\Big(
+a_j (\theta_i - (b_j + \delta_j g_i))
+\Big)
+\end{aligned}\end{align} \]</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="icc">
+<h2>幾何学的解釈（ICC上）<a class="headerlink" href="#icc" title="Link to this heading">#</a></h2>
+<p>Uniform DIFがある場合：</p>
+<ul class="simple">
+<li><p>ICC（Item Characteristic Curve）の<strong>傾きは同じ</strong></p></li>
+<li><p>ICCは <strong>水平方向に平行移動</strong></p></li>
+</ul>
+<p>つまり：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>群</p></th>
+<th class="head"><p>ICC</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Group 0</p></td>
+<td><p>baseline</p></td>
+</tr>
+<tr class="row-odd"><td><p>Group 1</p></td>
+<td><p>baseline を <span class="math notranslate nohighlight">\(\delta_j\)</span> だけ左 or 右にシフト</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>能力水準に依存せず：</p>
+<blockquote>
+<div><p><strong>すべての <span class="math notranslate nohighlight">\(\theta\)</span> において一方の群が一貫して有利 or 不利</strong></p>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="non-uniform-dif">
+<h2>Non-Uniform DIFとの違い（重要）<a class="headerlink" href="#non-uniform-dif" title="Link to this heading">#</a></h2>
+<p>Non-Uniform DIFでは：</p>
+<div class="math notranslate nohighlight">
+\[
+a_{j1} \ne a_{j0}
+\]</div>
+<p>となり、</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}
+P(Y_{ij}=1)
+===========\\\operatorname{logit}^{-1}
+\Big(
+(a_j + \gamma_j g_i)(\theta_i - b_j)
+\Big)
+\end{aligned}\end{align} \]</div>
+<p>となるため、</p>
+<ul class="simple">
+<li><p>ICCの<strong>傾きが群で異なる</strong></p></li>
+<li><p>曲線が交差する（crossing ICC）</p></li>
+<li><p>DIF効果が <span class="math notranslate nohighlight">\(\theta\)</span> に依存</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="region">
+<h2>階層ベイズでの実装（あなたのケース：複層ガラス×region）<a class="headerlink" href="#region" title="Link to this heading">#</a></h2>
+<p>あなたがやろうとしている：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">b_glass_base</span>
+<span class="n">b_glass_region</span>
+</pre></div>
+</div>
+<p>は、まさに Uniform DIF の典型的な</p>
+<blockquote>
+<div><p><strong>baseline + group-specific deviation</strong></p>
+</div></blockquote>
+<p>parameterization です。</p>
+<p>数式で書くと：</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}
+b_{j,r}
+=======\\b_j^{\text{base}} + \delta_{jr}
+\end{aligned}\end{align} \]</div>
+<div class="math notranslate nohighlight">
+\[
+\delta_{jr} \sim \mathcal{N}(0, \sigma_j)
+\]</div>
+<p>したがって：</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}
+P(Y_{ij}=1)
+===========\\\operatorname{logit}^{-1}
+\Big(
+a_j(\theta_i - (b_j^{\text{base}} + \delta_{j,r_i}))
+\Big)
+\end{aligned}\end{align} \]</div>
+<p>これは</p>
+<ul class="simple">
+<li><p>regionごとの difficulty random effect</p></li>
+<li><p>ICCの平行移動のみを許容</p></li>
+</ul>
+<p>という意味で、<strong>Hierarchical Uniform DIF model</strong> になっています。</p>
+</section>
+<hr class="docutils" />
+<section id="irt">
+<h2>実務的解釈（不動産設備IRT）<a class="headerlink" href="#irt" title="Link to this heading">#</a></h2>
+<p>たとえば「複層ガラス」項目において：</p>
+<ul class="simple">
+<li><p>北海道では標準装備 → 実質的に“易しい”</p></li>
+<li><p>沖縄では希少 → 実質的に“難しい”</p></li>
+</ul>
+<p>という climate-driven DIF は：</p>
+<blockquote>
+<div><p>ability（住宅品質）が同じでも
+地域により「付いている確率」が一様に変わる</p>
+</div></blockquote>
+<p>＝ <strong>典型的な Uniform DIF</strong></p>
+<p>であり、あなたの「気温カテゴリ × 設備」モデリング方針と整合します。</p>
+<hr class="docutils" />
+<p>必要なら、GPCM/GRMでのUniform DIF（threshold shift）の定式化も展開します。</p>
+<p>2PLモデルを考える：</p>
+<div class="math notranslate nohighlight">
+\[
+P(Y_{ij}=1 \mid \theta_i, g_i) = \operatorname{logit}^{-1}(a_j (\theta_i - b_{j g_i}))
+\]</div>
+<p>ここで</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(a_j\)</span> : 識別力（discrimination）</p></li>
+<li><p><span class="math notranslate nohighlight">\(b_{jg}\)</span> : 群 <span class="math notranslate nohighlight">\(g\)</span> における困難度（difficulty）</p></li>
+</ul>
 <section id="dif">
 <h3>DIFの種類<a class="headerlink" href="#dif" title="Link to this heading">#</a></h3>
 <p>DIFには2種類ある：</p>
-<p><strong>1. Uniform DIF（均一DIF）</strong></p>
-<p>能力レベルに関わらず、一方の集団が常に有利（または不利）である場合。IRTの文脈では、項目困難度パラメータ <span class="math notranslate nohighlight">\(b\)</span> が集団間で異なる状況に対応する。</p>
-<p><strong>2. Non-uniform DIF（非均一DIF）</strong></p>
+<ol class="arabic simple">
+<li><p>Uniform DIF（均一DIF）</p></li>
+<li><p>Non-uniform DIF（非均一DIF）</p></li>
+</ol>
+<section id="uniform-dif-dif">
+<h4>Uniform DIF（均一DIF）<a class="headerlink" href="#uniform-dif-dif" title="Link to this heading">#</a></h4>
+<p>能力レベルに関わらず、一方の集団が常に有利（または不利）である場合。パラメータでいうと項目困難度 <span class="math notranslate nohighlight">\(b\)</span> が集団間で異なる状況。</p>
+<p>例えば2母集団（グループ<span class="math notranslate nohighlight">\(g\in\{1,2\}\)</span>）いるとして、<span class="math notranslate nohighlight">\(b_{j, 1} \neq b_{j, 2}\)</span>であるということ。<br />
+あるいは、ベースラインからの差分<span class="math notranslate nohighlight">\(\delta\)</span>があると表現する：<span class="math notranslate nohighlight">\(b_{j 2}=b_{j 1}+\delta_j\)</span></p>
+<p>ただし、識別力<span class="math notranslate nohighlight">\(a_{j g}\)</span>はグループ間で一定だとする：<span class="math notranslate nohighlight">\(a_{j 1}=a_{j 2} = \cdots = a_{j G}\)</span></p>
+</section>
+<section id="non-uniform-dif-dif">
+<h4>Non-uniform DIF（非均一DIF）<a class="headerlink" href="#non-uniform-dif-dif" title="Link to this heading">#</a></h4>
 <p>集団間の差が能力レベルによって変化する場合。低能力では集団Aが有利だが、高能力では集団Bが有利になるなど。IRTでは識別力パラメータ <span class="math notranslate nohighlight">\(a\)</span> が集団間で異なる状況に対応する。</p>
+<div class="math notranslate nohighlight">
+\[
+a_{j 1} \neq a_{j 2}
+\]</div>
+</section>
 </section>
 </section>
 <section id="id2">
@@ -1405,8 +1590,8 @@ document.write(`
 </ul>
 <p>この方法の利点は、Uniform DIFとNon-uniform DIFを同時に検出できることである。</p>
 </section>
-<section id="irt">
-<h3>IRT法<a class="headerlink" href="#irt" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>IRT法<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <p>各集団で別々にIRTモデルを推定し、等化して尺度を揃えたのち、項目パラメータの差を検定する方法。</p>
 <p>Lord’s <span class="math notranslate nohighlight">\(\chi^2\)</span> 検定：</p>
 <div class="math notranslate nohighlight">
@@ -1435,8 +1620,8 @@ document.write(`
 </pre></div>
 </div>
 </section>
-<section id="id4">
-<h3>Pythonによる実装例<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>Pythonによる実装例<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p>PythonでのDIF分析は、<code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> を用いたロジスティック回帰や、<code class="docutils literal notranslate"><span class="pre">scipy.stats</span></code> を用いたMantel-Haenszel検定で実装できる。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1597,8 +1782,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id5">
-<h3>シミュレーションデータによる検証<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>シミュレーションデータによる検証<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">simulate_dif_data</span><span class="p">(</span>
@@ -2013,8 +2198,8 @@ document.write(`
 </div>
 </section>
 </section>
-<section id="id6">
-<h2>DIFの解釈と対処<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h2>DIFの解釈と対処<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <p>DIFが検出された場合、以下のステップで対処する：</p>
 <ol class="arabic simple">
 <li><p><strong>統計的有意性の確認</strong>: 多重比較の補正（Bonferroni補正など）を考慮</p></li>
@@ -2030,11 +2215,11 @@ document.write(`
 </li>
 </ol>
 </section>
-<section id="id7">
-<h2>DIFを考慮したスコアリング<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
-<p>DIFが検出された場合、従来の単純な総得点（素点）は集団間の公平な比較を歪める可能性がある。ここでは、DIFの影響を適切に扱うスコアリング手法を紹介する。</p>
 <section id="id8">
-<h3>アプローチ1: DIF項目の除外<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<h2>DIFを考慮したスコアリング<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<p>DIFが検出された場合、従来の単純な総得点（素点）は集団間の公平な比較を歪める可能性がある。ここでは、DIFの影響を適切に扱うスコアリング手法を紹介する。</p>
+<section id="id9">
+<h3>アプローチ1: DIF項目の除外<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <p>最も単純な方法は、DIFが検出された項目を除外して得点を算出することである。</p>
 <div class="math notranslate nohighlight">
 \[
@@ -2042,8 +2227,8 @@ X_{\text{purified}} = \sum_{j \notin \mathcal{D}} X_j
 \]</div>
 <p>ここで <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> はDIF項目の集合である。この方法は直感的で実装が容易だが、項目数が減ることでテストの信頼性・測定精度が低下するという欠点がある。</p>
 </section>
-<section id="id9">
-<h3>アプローチ2: 集団別IRTパラメータによるスコアリング<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>アプローチ2: 集団別IRTパラメータによるスコアリング<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p>DIF項目については集団ごとに異なるパラメータを用い、非DIF項目については共通パラメータを用いて能力値を推定する方法である。2PLMの場合、受験者 <span class="math notranslate nohighlight">\(i\)</span> が集団 <span class="math notranslate nohighlight">\(g\)</span> に属するとき、各項目 <span class="math notranslate nohighlight">\(j\)</span> の正答確率は：</p>
 <div class="math notranslate nohighlight">
 \[
@@ -2060,8 +2245,8 @@ P_j(\theta_i \mid g) = \frac{1}{1 + \exp(-a_j(\theta_i - b_{jg}))}
 \]</div>
 <p>この方法は全項目の情報を活用でき、DIFの影響を適切にモデル化できる。</p>
 </section>
-<section id="id10">
-<h3>アプローチ3: 期待得点調整<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3>アプローチ3: 期待得点調整<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <p>Dorans &amp; Holland (1993) に基づく方法で、DIF項目について参照群のパラメータで期待される得点に置き換えることで、焦点群に対するDIFの影響を補正する。</p>
 <p>焦点群の受験者 <span class="math notranslate nohighlight">\(i\)</span> について、DIF項目 <span class="math notranslate nohighlight">\(j\)</span> の調整済みスコアは：</p>
 <div class="math notranslate nohighlight">
@@ -2075,8 +2260,8 @@ X_i^{*} = \sum_{j \notin \mathcal{D}} X_{ij} + \sum_{j \in \mathcal{D}} X_{ij}^{
 \]</div>
 <p>この方法は項目を除外せずにDIFの影響のみを除去でき、かつ非DIF項目からの情報を保持できる。</p>
 </section>
-<section id="id11">
-<h3>アプローチ4: 多母集団IRTモデル<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>アプローチ4: 多母集団IRTモデル<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <p>最も理論的に洗練されたアプローチは、多母集団（multiple-group）IRTモデルを用いて全集団のデータを同時に推定することである。</p>
 <p>このモデルでは：</p>
 <ul class="simple">
@@ -2086,8 +2271,8 @@ X_i^{*} = \sum_{j \notin \mathcal{D}} X_{ij} + \sum_{j \in \mathcal{D}} X_{ij}^{
 </ul>
 <p>全集団のデータを同時に用いるため推定精度が高く、等化が不要で、DIFの有無に関わらずすべての項目を活用できる。</p>
 </section>
-<section id="id12">
-<h3>実装例: 各スコアリング手法の比較<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>実装例: 各スコアリング手法の比較<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <p>先のシミュレーションデータを用いて、各スコアリング手法の効果を比較する。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2254,67 +2439,67 @@ X_i^{*} = \sum_{j \notin \mathcal{D}} X_{ij} + \sum_{j \in \mathcal{D}} X_{ij}^{
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 32032 (\N{CJK UNIFIED IDEOGRAPH-7D20}) missing from current font.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 32032 (\N{CJK UNIFIED IDEOGRAPH-7D20}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 38917 (\N{CJK UNIFIED IDEOGRAPH-9805}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 38917 (\N{CJK UNIFIED IDEOGRAPH-9805}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 30446 (\N{CJK UNIFIED IDEOGRAPH-76EE}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 30446 (\N{CJK UNIFIED IDEOGRAPH-76EE}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 38500 (\N{CJK UNIFIED IDEOGRAPH-9664}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 38500 (\N{CJK UNIFIED IDEOGRAPH-9664}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 22806 (\N{CJK UNIFIED IDEOGRAPH-5916}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 22806 (\N{CJK UNIFIED IDEOGRAPH-5916}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 38598 (\N{CJK UNIFIED IDEOGRAPH-96C6}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 38598 (\N{CJK UNIFIED IDEOGRAPH-96C6}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 22243 (\N{CJK UNIFIED IDEOGRAPH-56E3}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 22243 (\N{CJK UNIFIED IDEOGRAPH-56E3}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 21029 (\N{CJK UNIFIED IDEOGRAPH-5225}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 21029 (\N{CJK UNIFIED IDEOGRAPH-5225}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 26399 (\N{CJK UNIFIED IDEOGRAPH-671F}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 26399 (\N{CJK UNIFIED IDEOGRAPH-671F}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 24453 (\N{CJK UNIFIED IDEOGRAPH-5F85}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 24453 (\N{CJK UNIFIED IDEOGRAPH-5F85}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 24471 (\N{CJK UNIFIED IDEOGRAPH-5F97}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 24471 (\N{CJK UNIFIED IDEOGRAPH-5F97}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 35519 (\N{CJK UNIFIED IDEOGRAPH-8ABF}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 35519 (\N{CJK UNIFIED IDEOGRAPH-8ABF}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 25972 (\N{CJK UNIFIED IDEOGRAPH-6574}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 25972 (\N{CJK UNIFIED IDEOGRAPH-6574}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 21508 (\N{CJK UNIFIED IDEOGRAPH-5404}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 21508 (\N{CJK UNIFIED IDEOGRAPH-5404}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 12473 (\N{KATAKANA LETTER SU}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 12473 (\N{KATAKANA LETTER SU}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 12467 (\N{KATAKANA LETTER KO}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 12467 (\N{KATAKANA LETTER KO}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 12450 (\N{KATAKANA LETTER A}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 12450 (\N{KATAKANA LETTER A}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 12522 (\N{KATAKANA LETTER RI}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 12522 (\N{KATAKANA LETTER RI}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 12531 (\N{KATAKANA LETTER N}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 12531 (\N{KATAKANA LETTER N}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 12464 (\N{KATAKANA LETTER GU}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 12464 (\N{KATAKANA LETTER GU}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 25163 (\N{CJK UNIFIED IDEOGRAPH-624B}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 25163 (\N{CJK UNIFIED IDEOGRAPH-624B}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 27861 (\N{CJK UNIFIED IDEOGRAPH-6CD5}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 27861 (\N{CJK UNIFIED IDEOGRAPH-6CD5}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 12392 (\N{HIRAGANA LETTER TO}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 12392 (\N{HIRAGANA LETTER TO}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 30495 (\N{CJK UNIFIED IDEOGRAPH-771F}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 30495 (\N{CJK UNIFIED IDEOGRAPH-771F}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 12398 (\N{HIRAGANA LETTER NO}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 12398 (\N{HIRAGANA LETTER NO}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 33021 (\N{CJK UNIFIED IDEOGRAPH-80FD}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 33021 (\N{CJK UNIFIED IDEOGRAPH-80FD}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 21147 (\N{CJK UNIFIED IDEOGRAPH-529B}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 21147 (\N{CJK UNIFIED IDEOGRAPH-529B}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 20516 (\N{CJK UNIFIED IDEOGRAPH-5024}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 20516 (\N{CJK UNIFIED IDEOGRAPH-5024}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 38306 (\N{CJK UNIFIED IDEOGRAPH-95A2}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 38306 (\N{CJK UNIFIED IDEOGRAPH-95A2}) missing from current font.
   plt.tight_layout()
-/tmp/ipykernel_9597/3640317213.py:28: UserWarning: Glyph 20418 (\N{CJK UNIFIED IDEOGRAPH-4FC2}) missing from current font.
+/tmp/ipykernel_9749/3640317213.py:28: UserWarning: Glyph 20418 (\N{CJK UNIFIED IDEOGRAPH-4FC2}) missing from current font.
   plt.tight_layout()
 </pre></div>
 </div>
@@ -2426,8 +2611,8 @@ X_i^{*} = \sum_{j \notin \mathcal{D}} X_{ij} + \sum_{j \in \mathcal{D}} X_{ij}^{
 </div>
 </div>
 </section>
-<section id="id13">
-<h3>手法の選択指針<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>手法の選択指針<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>手法</p></th>
@@ -2463,8 +2648,8 @@ X_i^{*} = \sum_{j \notin \mathcal{D}} X_{ij} + \sum_{j \in \mathcal{D}} X_{ij}^{
 <p>実務的には、DIFが少数の項目にのみ見られ効果量が小さい場合には素点のままでも許容される場合がある。一方、DIFが多くの項目に見られるか効果量が大きい場合には、集団別IRTパラメータや多母集団IRTモデルの利用を検討すべきである。</p>
 </section>
 </section>
-<section id="id14">
-<h2>参考文献<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<section id="id15">
+<h2>参考文献<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <p class="sd-card-text">Holland, P. W., &amp; Wainer, H. (Eds.). (1993). <em>Differential item functioning</em>. Lawrence Erlbaum Associates.</p>
@@ -2550,34 +2735,46 @@ X_i^{*} = \sum_{j \notin \mathcal{D}} X_{ij} + \sum_{j \in \mathcal{D}} X_{ij}^{
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概要</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dif">DIFの種類</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">概要</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plm">定義（2PLMベース）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uniform-dif">Uniform DIF の仮定</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#icc">幾何学的解釈（ICC上）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-uniform-dif">Non-Uniform DIFとの違い（重要）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#region">階層ベイズでの実装（あなたのケース：複層ガラス×region）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#irt">実務的解釈（不動産設備IRT）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dif">DIFの種類</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#uniform-dif-dif">Uniform DIF（均一DIF）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#non-uniform-dif-dif">Non-uniform DIF（非均一DIF）</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">DIF検出手法</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantel-haenszel">Mantel-Haenszel法</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ロジスティック回帰法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#irt">IRT法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">IRT法</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sibtest">SIBTEST</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Pythonでの実装</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#difnlr-r">difNLR パッケージ（R）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Pythonによる実装例</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">シミュレーションデータによる検証</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Pythonによる実装例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">シミュレーションデータによる検証</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">DIFの解釈と対処</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">DIFを考慮したスコアリング</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">アプローチ1: DIF項目の除外</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">アプローチ2: 集団別IRTパラメータによるスコアリング</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">アプローチ3: 期待得点調整</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">アプローチ4: 多母集団IRTモデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">実装例: 各スコアリング手法の比較</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">手法の選択指針</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">DIFの解釈と対処</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">DIFを考慮したスコアリング</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">アプローチ1: DIF項目の除外</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">アプローチ2: 集団別IRTパラメータによるスコアリング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">アプローチ3: 期待得点調整</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">アプローチ4: 多母集団IRTモデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">実装例: 各スコアリング手法の比較</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">手法の選択指針</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">参考文献</a></li>
 </ul>
   </nav></div>
 
