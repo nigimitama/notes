@@ -395,6 +395,7 @@
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">離散選択モデル</a></li>
 <li class="toctree-l2"><a class="reference internal" href="blp_model.html">BLPモデル</a></li>
 <li class="toctree-l2"><a class="reference internal" href="probit_model.html">プロビットモデル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control_function_logit.html">コントロール関数多項ロジット</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../causality.html">因果の定義について</a></li>
@@ -1328,18 +1329,24 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">概要</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">効用関数</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">多項ロジットモデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">最尤推定</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">反実仮想シミュレーション</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">期待効用</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">ランダム効用モデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">離散選択問題</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">二項選択モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">二項プロビットモデル</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">二項ロジットモデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">文献</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">経済セミナー サポートサイト</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">多項ロジットモデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">最尤推定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">反実仮想シミュレーション</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">期待効用</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">ランダム効用モデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">直接効用と間接効用</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">文献</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">経済セミナー サポートサイト</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">直接効用と間接効用</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#u-x">直接効用関数 <span class="math notranslate nohighlight">\(u(x)\)</span></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#v-p-m">間接効用関数 <span class="math notranslate nohighlight">\(v(p, m)\)</span></a></li>
 </ul>
@@ -1360,13 +1367,29 @@ document.write(`
 <section id="id2">
 <h2>概要<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><strong>離散選択問題</strong>：意思決定者（例えば消費者や企業）が取りうる行動の選択肢の中から自身の目的関数（例えば効用や利潤）を最大化するような行動を選ぶという意思決定問題</p></li>
+<li><p><strong>離散選択問題</strong>：意思決定者（例えば消費者や企業）が取りうる行動の選択肢の中から自身の目的関数（例えば効用や利潤）を最大化するような行動を選ぶという意思決定問題</p>
+<ul>
+<li><p>ある商品の需要を考えるために、他の製品との代替性を考える</p></li>
+</ul>
+</li>
 <li><p>動学的な意思決定を考える場合は「今日この行動をとる」と「今日は見送る（明日以降に行動するという選択肢を残す）」の両者の利得の現在割引価値を比較することになる</p></li>
 <li><p>ここでは、ある製品を購入するかどうかの例で考えていく。</p></li>
 </ul>
 <section id="id3">
 <h3>効用関数<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
-<p>例えば消費者<span class="math notranslate nohighlight">\(i\)</span>が製品<span class="math notranslate nohighlight">\(j\)</span>を購入した場合の間接効用<span class="math notranslate nohighlight">\(U_{ij}\)</span>を以下のように与える。</p>
+<p>消費者<span class="math notranslate nohighlight">\(i\)</span>が製品<span class="math notranslate nohighlight">\(j\)</span>を購入した場合の間接効用<span class="math notranslate nohighlight">\(U_{ij}\)</span>を、製品から消費者が平均的に得る効用<span class="math notranslate nohighlight">\(V_j\)</span>と個々人の好みよる効用<span class="math notranslate nohighlight">\(\epsilon_{ij}\)</span>（選好ショック）とに分けて捉える。</p>
+<div class="math notranslate nohighlight">
+\[
+U_{ij} = V_j + \epsilon_{ij}
+\]</div>
+<p>ここで <span class="math notranslate nohighlight">\(V_j = \beta^0 + \sum_{k=1}^K \beta^k x^k_j - \alpha p_j\)</span>で、<span class="math notranslate nohighlight">\(\alpha, \beta^0, ..., \beta^k\)</span> はパラメータである。</p>
+<p>「購入しない」という選択肢は <strong>outside goods</strong> と呼ばれ、<span class="math notranslate nohighlight">\(j=0\)</span>で表す。</p>
+<p>以上をまとめると効用は次のように表される。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+効用関数</div>
+<p class="sd-card-text">消費者<span class="math notranslate nohighlight">\(i\)</span>が製品<span class="math notranslate nohighlight">\(j\)</span>を購入した場合の間接効用<span class="math notranslate nohighlight">\(U_{ij}\)</span>：</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 U_{ij} = 
@@ -1375,28 +1398,80 @@ U_{ij} =
 \epsilon_{ij} &amp; j=0
 \end{cases}
 \end{split}\]</div>
-<p>パラメータ（<span class="math notranslate nohighlight">\(\alpha, \beta^0, ..., \beta^k\)</span>)は消費者の価格や製品の属性への選好を捉える。</p>
-<p><span class="math notranslate nohighlight">\(\epsilon_{ij}\)</span>はその製品に対する個人特有の選好で、特定の確率分布に従う確率変数</p>
-<p>「購入しない」という選択肢は<strong>アウトサイド・グッズ</strong>と呼ばれ、<span class="math notranslate nohighlight">\(j=0\)</span>で表す。</p>
+<ul class="simple">
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\alpha, \beta^0, ..., \beta^k\)</span> ：パラメータ</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(x_j^k\)</span>：製品属性</p></li>
+<li><p class="sd-card-text"><span class="math notranslate nohighlight">\(\epsilon_{ij}\)</span>：その製品に対する個人特有の選好で、特定の確率分布に従う確率変数（誤差項）</p></li>
+</ul>
+</div>
+</div>
 </section>
 <section id="id4">
-<h3>多項ロジットモデル<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(\epsilon_{ij}\)</span>があるため消費者の選好は確率的になる。消費者<span class="math notranslate nohighlight">\(i\)</span>が製品<span class="math notranslate nohighlight">\(j\)</span>を購入する確率は以下のように書くことができる。</p>
+<h3>離散選択問題<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>以上の効用関数のもとで、消費者<span class="math notranslate nohighlight">\(i\)</span>は最も高い効用が得られる選択肢<span class="math notranslate nohighlight">\(d_i\)</span>を選ぶと考える。</p>
 <div class="math notranslate nohighlight">
 \[
-Pr(d_i=j)
-= Pr(
-\{\epsilon_{ij}\}^J_{j=0} \ \text{s.t. } U_{ij} &gt; U_{il}, \ \forall \ l \neq j
-)
+d_i=\underset{j \in\{1, \ldots, J\}}{\operatorname{argmax}} U_{i j}
 \]</div>
-<p>logit modelでは<span class="math notranslate nohighlight">\(\epsilon_{ij}\)</span>は独立かつ同一に分布しており、以下の<strong>第１種極値分布</strong>に従うと仮定する。</p>
+<p>分析者の視点では<span class="math notranslate nohighlight">\(\epsilon_{ij}\)</span>は直接観測できず、誤差項のようなものである。</p>
+<p>そのランダム性を考慮して確率で考えると、消費者<span class="math notranslate nohighlight">\(i\)</span>が製品<span class="math notranslate nohighlight">\(j\)</span>を選択する確率は、選択肢<span class="math notranslate nohighlight">\(j\)</span>から得られる効用<span class="math notranslate nohighlight">\(U_{ij}\)</span>が他の選択肢から得られる効用<span class="math notranslate nohighlight">\(U_{il}\)</span>よりも高くなるような事象が発生する確率</p>
 <div class="math notranslate nohighlight">
 \[
-P(\epsilon_{ij}\leq x)
-=F(x)
-=e^{-e^{-x}}
+\operatorname{Pr}\left(d_i=j\right)=\operatorname{Pr}\left(\left\{\epsilon_{i j}\right\}_{j=0}^J \mid V_j+\epsilon_{i j}&gt;V_l+\epsilon_{i l}, \forall l \neq j\right)
 \]</div>
-<p>この確率分布関数のもとで、消費者にとっての製品<span class="math notranslate nohighlight">\(j\)</span>の購入確率を以下のように書くことができる。</p>
+<p>となる。この確率は<span class="math notranslate nohighlight">\(\epsilon_{ij}\)</span>が従うと仮定する確率分布の設定によって変わる。</p>
+</section>
+<section id="id5">
+<h3>二項選択モデル<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>最も単純なケースとして、選択肢の数<span class="math notranslate nohighlight">\(J=2\)</span>の場合を考える。各財から得られる効用を、平均的な満足度<span class="math notranslate nohighlight">\(\beta_j\)</span>、価格<span class="math notranslate nohighlight">\(p_j\)</span>、ランダムな選好ショック<span class="math notranslate nohighlight">\(\epsilon_{ij}\)</span>で表す：</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; U_{i 1}=\beta_1-\alpha p_1+\epsilon_{i 1} \\
+&amp; U_{i 2}=\beta_2-\alpha p_2+\epsilon_{i 2}
+\end{aligned}
+\end{split}\]</div>
+<p>このとき、消費者<span class="math notranslate nohighlight">\(i\)</span>がとる選択肢<span class="math notranslate nohighlight">\(d_i\)</span>は：</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+d_i= \begin{cases}1 &amp; \text { if } \beta_1-\alpha p_1+\epsilon_{i 1}&gt;\beta_2-\alpha p_2+\epsilon_{i 2} \\
+2 &amp; \text { if } \beta_1-\alpha p_1+\epsilon_{i 1} \leq \beta_2-\alpha p_2+\epsilon_{i 2}\end{cases}
+\end{split}\]</div>
+<p>したがって購入確率は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\operatorname{Pr}\left(d_i=1\right) &amp; =\operatorname{Pr}\left(\beta_1-\alpha p_1+\epsilon_{i 1}&gt;\beta_2-\alpha p_2+\epsilon_{i 2}\right) \\
+&amp; =\operatorname{Pr}\big(\epsilon_{i 1}-\epsilon_{i 2}&gt;-\left(\beta_1-\beta_2-\alpha\left(p_1-p_2\right)\right)\big)
+\end{aligned}
+\end{split}\]</div>
+<p>となる。</p>
+<section id="id6">
+<h4>二項プロビットモデル<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
+<p><span class="math notranslate nohighlight">\(\epsilon_{ij}\)</span>が独立かつ同一の正規分布<span class="math notranslate nohighlight">\(\mathcal{N}(0, 0.5)\)</span>に従うと仮定する場合をprobit modelという。<br />
+この場合、財1の購入確率は、標準正規分布の累積分布関数<span class="math notranslate nohighlight">\(\Phi(\cdot)\)</span>を使って次のように表すことができる。</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{Pr}\left(d_i=1\right) = \Phi\left(\beta_1-\beta_2-\alpha\left(p_1-p_2\right)\right)
+\]</div>
+</section>
+<section id="id7">
+<h4>二項ロジットモデル<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
+<p>選好ショック<span class="math notranslate nohighlight">\(\epsilon_{ij}\)</span>が第I種極値分布 <span class="math notranslate nohighlight">\(P(\epsilon_{i j} \leq x)=F(x)=e^{-e^{-x}}\)</span> に従うと仮定する場合、言い換えると選好ショックの差分<span class="math notranslate nohighlight">\(\epsilon_{i1} - \epsilon_{i2}\)</span>が標準ロジスティック分布 <span class="math notranslate nohighlight">\(F(t)=P(X \leq t)=\frac{1}{1+\exp (-t)}\)</span> に従うと仮定する場合、財1の購入確率は次のように表すことができる。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\operatorname{Pr}\left(d_i=1\right)
+&amp; =\frac{1}{1+\exp(-\{ \beta_1-\beta_2-\alpha\left(p_1-p_2\right)\})}\\
+&amp; =\frac{\exp \left(\beta_1-\beta_2-\alpha\left(p_1-p_2\right)\right)}{1+\exp \left(\beta_1-\beta_2-\alpha\left(p_1-p_2\right)\right)}
+\end{aligned}
+\end{split}\]</div>
+</section>
+</section>
+<section id="id8">
+<h3>多項ロジットモデル<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>二項選択モデルを一般化して多項にした場合、多項プロビットモデルは複雑な数値計算が必要になりあまり用いられない。ここでは多項ロジットモデルについて書く。</p>
+<p>選好ショック<span class="math notranslate nohighlight">\(\epsilon_{ij}\)</span>が第I種極値分布 <span class="math notranslate nohighlight">\(P(\epsilon_{i j} \leq x)=F(x)=e^{-e^{-x}}\)</span> に従うと仮定する場合、言い換えると選好ショックの差分<span class="math notranslate nohighlight">\(\epsilon_{i1} - \epsilon_{i2}\)</span>が標準ロジスティック分布 <span class="math notranslate nohighlight">\(F(t)=P(X \leq t)=\frac{1}{1+\exp (-t)}\)</span> に従うと仮定する場合、消費者にとっての製品<span class="math notranslate nohighlight">\(j\)</span>の購入確率を以下のように書くことができる。</p>
 <div class="math notranslate nohighlight">
 \[
 Pr(d_i=j)
@@ -1404,10 +1479,10 @@ Pr(d_i=j)
 {\exp( \beta^0 + \sum_{k=1}^K \beta^k x^k_j - \alpha p_j )}
 {1 + \sum^J_{l=1} \exp( \beta^0 + \sum_{k=1}^K \beta^k x^k_l - \alpha p_l )}
 \]</div>
-<p>このモデルは多項ロジットモデルと呼ばれる。exp関数の中は間接効用<span class="math notranslate nohighlight">\(U_{ij}\)</span>からショック項<span class="math notranslate nohighlight">\(\epsilon_{ij}\)</span>を除いたもの。効用が高い選択肢ほど選ばれる確率が高くなる。</p>
+<p>財<span class="math notranslate nohighlight">\(j\)</span>の選択確率は自身の価格<span class="math notranslate nohighlight">\(p_j\)</span>や製品属性<span class="math notranslate nohighlight">\(x_j^k\)</span>のみならず、他の選択肢の価格や製品属性<span class="math notranslate nohighlight">\((p_l, x_l^k)\)</span>にも依存する点に注意。</p>
 </section>
-<section id="id5">
-<h3>最尤推定<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>最尤推定<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <p>顕示選好（ある製品の選択肢のもとで、実際にどの選択肢が選ばれたか）の考え方を反映したものが、データを用いた最尤推定である。</p>
 <p>製品の価格や性能などのデータ<span class="math notranslate nohighlight">\(\{p_j, x^1_j,\cdots,x^K_j\}^J_{j=1}\)</span>と、各消費者がどれを購入したかというデータ<span class="math notranslate nohighlight">\(\{d_i\}^N_{i=1}\)</span>が利用可能であるとする。このとき、多項ロジットモデルから尤度関数を以下のように書くことができる</p>
 <div class="math notranslate nohighlight">
@@ -1417,12 +1492,12 @@ L(\theta)
 \]</div>
 <p>この尤度関数をパラメータ<span class="math notranslate nohighlight">\(\theta=(\alpha, \beta^0, \cdots, \beta^K)\)</span>について最大化することで消費者の効用関数内のパラメータを得ることができる。</p>
 </section>
-<section id="id6">
-<h3>反実仮想シミュレーション<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>反実仮想シミュレーション<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p>一度関数が推定できれば、例えば値下げ時の効用の変化は効用関数に代入する製品価格を下げればシミュレーションができ、売上高の予測もできる。</p>
 </section>
-<section id="id7">
-<h3>期待効用<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3>期待効用<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <p>多項ロジットモデルにおける期待効用は</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1442,13 +1517,13 @@ E_{\{\epsilon_{ij}\}_j}
 \]</div>
 <p>ここで<span class="math notranslate nohighlight">\(V_{ij} = \beta^0 + \sum_{k=1}^K \beta^k x^k_j - \alpha p_j\)</span>である。この右辺の形は<strong>ログ・サム公式</strong>（log-sum formula）と呼ばれる。</p>
 </section>
-<section id="id8">
-<h3>ランダム効用モデル<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>ランダム効用モデル<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <p>こうした確率的なショック項を入れた離散選択モデルはランダム効用モデルとも呼ばれる</p>
 </section>
 </section>
-<section id="id9">
-<h2>文献<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<section id="id13">
+<h2>文献<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://eml.berkeley.edu/books/choice2.html">Discrete Choice Methods with Simulation, by Kenneth Train, Cambridge University Press, 2002</a></p>
 <ul>
@@ -1466,8 +1541,8 @@ E_{\{\epsilon_{ij}\}_j}
 </li>
 <li><p><a class="reference external" href="http://web.econ.keio.ac.jp/staff/bessho/lecture/09/091021discrete.pdf">別所俊一郎（2009）「離散選択モデル」慶應義塾大学経済学部応用計量経済分析Ⅲの授業資料</a></p></li>
 </ul>
-<section id="id10">
-<h3>経済セミナー サポートサイト<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>経済セミナー サポートサイト<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://sites.google.com/view/keisemi-ebiz/%E7%AC%AC1%E5%9B%9E">第1回</a></p></li>
 <li><p><a class="reference external" href="https://sites.google.com/view/keisemi-ebiz/%E7%AC%AC2%E5%9B%9E">第2回 需要を制する者はプライシングを制す 消費者需要モデルの推定［基礎編１］</a></p></li>
@@ -1475,8 +1550,8 @@ E_{\{\epsilon_{ij}\}_j}
 </ul>
 </section>
 </section>
-<section id="id11">
-<h2>直接効用と間接効用<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<section id="id15">
+<h2>直接効用と間接効用<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
 <p><a class="reference external" href="https://www.i-repository.net/contents/outemon/ir/102/102830312.pdf">https://www.i-repository.net/contents/outemon/ir/102/102830312.pdf</a></p>
 <section id="u-x">
 <h3>直接効用関数 <span class="math notranslate nohighlight">\(u(x)\)</span><a class="headerlink" href="#u-x" title="Link to this heading">#</a></h3>
@@ -1570,18 +1645,24 @@ u(x_1, \cdots, x_j)\\
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">概要</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">効用関数</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">多項ロジットモデル</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">最尤推定</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">反実仮想シミュレーション</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">期待効用</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">ランダム効用モデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">離散選択問題</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">二項選択モデル</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">二項プロビットモデル</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">二項ロジットモデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">文献</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">経済セミナー サポートサイト</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">多項ロジットモデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">最尤推定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">反実仮想シミュレーション</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">期待効用</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">ランダム効用モデル</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">直接効用と間接効用</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">文献</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">経済セミナー サポートサイト</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">直接効用と間接効用</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#u-x">直接効用関数 <span class="math notranslate nohighlight">\(u(x)\)</span></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#v-p-m">間接効用関数 <span class="math notranslate nohighlight">\(v(p, m)\)</span></a></li>
 </ul>
