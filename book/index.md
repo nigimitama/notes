@@ -39,6 +39,7 @@
 - [](statistical_modeling/semiparametric/index)
 - [](statistical_modeling/evaluation/index)
 - [](statistical_modeling/lowess)
+- [](statistical_modeling/gam)
 - [](statistical_modeling/factor_analysis)
 - [](statistical_modeling/mmm)
 - [](statistical_modeling/memo_high_interpretability_model)
