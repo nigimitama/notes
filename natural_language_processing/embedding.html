@@ -381,6 +381,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../statistical_modeling/lowess.html">LOWESS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../statistical_modeling/gam.html">一般化加法モデル (GAM)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../statistical_modeling/factor_analysis.html">因子分析</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../statistical_modeling/mmm.html">MMM (marketing mix modeling)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../statistical_modeling/memo_high_interpretability_model.html">メモ：説明性の高いモデルをどう作るか</a></li>
@@ -554,7 +555,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/bart.html">BART: Bayesian additive regression trees</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/unbiased_gbdt.html">UnbiasedGBM</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/rule_extraction.html">Rule Extraction from GBDT</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/explainable_boosting_machine.html">Explainable Boosting Machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/explainable_boosting_machine.html">Explainable Boosting Machine / GA2M</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/tabular_data_and_trees.html">なぜTree-based modelはDeep Learningよりテーブルデータに強いのか</a></li>
 </ul>
 </details></li>
@@ -1562,19 +1563,19 @@ Prediction: programs
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[-2.2695, -2.0797,  0.4880,  0.3455,  1.2876, -0.3062,  0.4239, -0.8017,
-         -1.8622,  0.3521,  0.6698,  2.1208, -1.0693, -1.7328, -1.6550, -1.5786,
-         -0.3657,  2.3030,  1.0627,  0.1319,  0.5084,  0.2688,  0.4776,  0.1387,
-         -0.4088,  0.5623,  0.0659, -1.8270, -0.1852,  0.1960, -1.0628,  0.0718,
-         -0.7412,  0.6079,  1.4418, -0.6159, -1.0028, -0.8924,  1.9322, -0.0331,
-         -0.9314,  1.0577, -0.8213, -1.1979, -0.6613,  0.2652, -1.6935,  2.3670,
-          0.4591,  0.7559,  0.2749, -0.2163,  1.2735,  0.9662, -0.1981, -0.7405,
-          0.9090,  0.3469,  0.1608, -0.1297, -0.8541, -0.3922,  0.3560,  0.8717,
-          0.0815, -1.2691,  0.2784, -1.0183, -1.8616, -0.7579,  0.0280,  1.4825,
-         -0.1835, -1.3692, -0.6922, -0.7218,  1.1609,  0.4260,  0.3027, -0.4017,
-         -0.5716, -0.1447, -0.2053,  1.1959,  1.0882, -0.1515,  0.1016, -1.4362,
-         -0.2112, -1.0189, -0.1587, -0.6445, -0.1037, -0.1757, -0.2605, -1.3631,
-         -0.8565,  1.9384,  0.8375,  1.2526]], grad_fn=&lt;ViewBackward0&gt;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 1.1503,  1.2524, -1.2356, -0.8681,  0.9858, -1.4313, -0.1058,  0.2433,
+         -1.4285, -0.9416,  0.5333,  1.4910, -0.6557,  1.4067, -1.0351, -0.7962,
+          1.5751, -0.6588,  0.6965, -0.6628,  0.9339, -0.8166,  0.7202, -1.1571,
+         -0.1784, -0.8133,  1.0934,  0.2527, -0.8847, -0.3589, -0.0452, -0.0194,
+         -0.8512,  0.8503,  0.8975,  0.1997, -0.3661, -2.5087, -0.0442, -0.1356,
+          0.7553,  0.2363,  0.8534,  0.2527, -1.1741, -0.9725,  1.7672, -0.2242,
+         -1.4684, -0.0907, -1.1985,  0.5150, -2.4263, -0.7059, -0.2686,  1.2939,
+          0.7747, -2.4778,  1.8800, -0.3284, -1.8122,  0.9002,  1.1011, -1.4201,
+         -0.3758,  0.8336,  2.3696, -1.6338, -2.5817, -0.4145, -0.8440,  0.9311,
+          2.9215, -0.4183,  1.0756,  0.4847,  0.8515,  0.1764,  1.4080, -0.4193,
+         -1.2838, -0.9852,  1.9253,  1.1931, -1.4533,  0.6116, -0.1308,  1.9393,
+          1.1242, -0.2402, -0.0221, -0.8776,  1.1988,  0.3535,  0.5168,  1.6779,
+          0.2594, -1.4150,  1.2937, -0.0299]], grad_fn=&lt;ViewBackward0&gt;)
 </pre></div>
 </div>
 </div>
@@ -1677,10 +1678,10 @@ p(w_O|w_I) = \frac{\exp( v_{w_O}^T v_{w_I} )}{\sum^W_{w=1} \exp( v_{w}^T v_{w_I}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>male: -0.0999
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>female: 0.0576
 ruler: 0.187
+male: -0.0999
 queen: 0.0146
-female: 0.0576
 </pre></div>
 </div>
 </div>
