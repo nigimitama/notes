@@ -61,6 +61,7 @@
 - [](econometrics/ab_tests)
 - [](econometrics/pearl_causal_model)
 - [](econometrics/causal_diagram/index)
+- [](econometrics/bias/index)
 - [](econometrics/ols/index)
 - [](econometrics/panel_data/index)
 - [](econometrics/time_series/index)
