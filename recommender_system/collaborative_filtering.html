@@ -75,7 +75,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="行列分解に基づく推薦システム" href="matrix_factorization.html" />
-    <link rel="prev" title="概要" href="introduction.html" />
+    <link rel="prev" title="内容ベースフィルタリング" href="content_based_filtering.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -700,6 +700,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">推薦システム</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">概要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="content_based_filtering.html">内容ベースフィルタリング</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">協調フィルタリング</a></li>
 <li class="toctree-l1"><a class="reference internal" href="matrix_factorization.html">行列分解に基づく推薦システム</a></li>
 <li class="toctree-l1"><a class="reference internal" href="factorization_machines.html">Factorization Machines</a></li>
@@ -1034,6 +1035,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/multi_tenants_saas.html">マルチテナントSaaS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/local_stack.html">LocalStack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/twelve_factor_app.html">Twelve-Factor App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/base64encoding.html">Base64 Data Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software_engineering/development/id_generation.html">ID生成（AUTO_INCREMENT, UUID等）</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../software_engineering/frontend/index.html">フロントエンド開発</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1332,8 +1335,13 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">データ数</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">メモリベース法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ユーザーベース協調フィルタリング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">モデルベース法</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">データ数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -1347,25 +1355,61 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>協調フィルタリング<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>協調フィルタリング（Collaborative Filtering）は、ユーザーの行動履歴や評価データから「似ているユーザー／アイテム」を見つけて推薦を行う手法</p>
+<p>基本の考え方自体はシンプルで</p>
+<ul class="simple">
+<li><p>「あなたと似た行動をしている人が好きなものは、あなたも好きな可能性が高い」</p></li>
+<li><p>「あなたが好きなアイテムに似たアイテムは、他にも好きになる可能性が高い」</p></li>
+</ul>
+<p>というもの。</p>
+<p>アルゴリズムはメモリベースとモデルベースに大別される</p>
 <ol class="arabic simple">
-<li><p>モデルベース法：ユーザの嗜好をモデル化して推薦</p></li>
-<li><p>メモリベース法：</p>
+<li><p>メモリベース法（memory-based method, instance-based method）</p>
 <ul class="simple">
 <li><p>ユーザーベース：ユーザの類似性に注目する</p></li>
 <li><p>アイテムベース：アイテムの類似性に注目する</p></li>
 </ul>
 </li>
+<li><p>モデルベース法（model-based method）：ユーザの嗜好をモデル化して推薦</p></li>
 </ol>
 <section id="id2">
-<h2>データ数<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>メモリベース法<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>推薦の都度リアルタイムに類似度を計算する方法は <strong>メモリベース法（memory-based method）</strong> あるいは <strong>事例ベース法（instance-based method）</strong> と呼ばれる。</p>
+<section id="id3">
+<h3>ユーザーベース協調フィルタリング<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>ユーザー同士の類似度を計算し、似ているユーザーのアイテムへの評価を使って推薦する。</p>
+</section>
+<section id="id4">
+<h3>モデルベース法<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>観測データの規則性を学習したモデルを事前に用意しておく方法を <strong>モデルベース法（model-based method）</strong> という。</p>
+<p>モデルには</p>
+<ul class="simple">
+<li><p>クラスタリング</p></li>
+<li><p>回帰・分類・ランキング問題として評価値を予測するモデル</p></li>
+<li><p>トピックモデル</p>
+<ul>
+<li><p>LDA（Latent Dirichlet Allocation）などで評価値行列を次元削減し、嗜好を表現する情報を獲得する</p></li>
+</ul>
+</li>
+<li><p>行列分解（Matrix Factorization）</p>
+<ul>
+<li><p>評価値行列をユーザー行列とアイテム行列に分解し、ユーザーベクトルとアイテムベクトルの類似度で予測評価値を計算する</p></li>
+</ul>
+</li>
+</ul>
+<p>など様々なモデルが使われる。</p>
+</section>
+</section>
+<section id="id5">
+<h2>データ数<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <p><a class="reference external" href="https://www.ieice.org/publications/conference-FIT-DVDs/FIT2008/pdf/F/F_028.pdf">田村幸之介, &amp; 松原仁. (2008). 協調フィルタリングにおけるデータの必要数の分析 (Doctoral dissertation, Future University Hakodate).</a></p>
 <ul class="simple">
 <li><p>ユーザーベースの手法であるGroupLensを使った。</p></li>
 <li><p>データ数を減らしながら精度の変化を見たところ、最低でも8万レコードほしいという結果に</p></li>
 </ul>
 </section>
-<section id="id3">
-<h2>参考<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h2>参考<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://zenn.dev/datasciencekun/articles/33d3be4c4ce4ea">レコメンドシステム——協調フィルタリング(Collaborative Filtering)</a></p></li>
 </ul>
@@ -1403,12 +1447,12 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="introduction.html"
+       href="content_based_filtering.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">概要</p>
+        <p class="prev-next-title">内容ベースフィルタリング</p>
       </div>
     </a>
     <a class="right-next"
@@ -1436,8 +1480,13 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">データ数</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">メモリベース法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ユーザーベース協調フィルタリング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">モデルベース法</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">データ数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
 </ul>
   </nav></div>
 

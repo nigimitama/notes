@@ -702,6 +702,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">推薦システム</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../recommender_system/introduction.html">概要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recommender_system/content_based_filtering.html">内容ベースフィルタリング</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../recommender_system/collaborative_filtering.html">協調フィルタリング</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../recommender_system/matrix_factorization.html">行列分解に基づく推薦システム</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../recommender_system/factorization_machines.html">Factorization Machines</a></li>
@@ -1036,6 +1037,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/multi_tenants_saas.html">マルチテナントSaaS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/local_stack.html">LocalStack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/twelve_factor_app.html">Twelve-Factor App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/base64encoding.html">Base64 Data Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../software_engineering/development/id_generation.html">ID生成（AUTO_INCREMENT, UUID等）</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../software_engineering/frontend/index.html">フロントエンド開発</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1654,141 +1657,63 @@ document.write(`
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Replication 60/1000
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Replication 61/1000
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Replication 62/1000
+</pre></div>
+</div>
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">line</span> <span class="mi">21</span>
-<span class="g g-Whitespace">     </span><span class="mi">18</span> <span class="n">i_train</span><span class="p">,</span> <span class="n">i_est</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_obs</span><span class="p">),</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">20</span> <span class="c1"># fit the ML algorithms on the training sample</span>
-<span class="ne">---&gt; </span><span class="mi">21</span> <span class="n">ml_l</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i_train</span><span class="p">,</span> <span class="p">:],</span> <span class="n">y</span><span class="p">[</span><span class="n">i_train</span><span class="p">])</span>
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">line</span> <span class="mi">25</span>
 <span class="g g-Whitespace">     </span><span class="mi">22</span> <span class="n">ml_m</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i_train</span><span class="p">,</span> <span class="p">:],</span> <span class="n">d</span><span class="p">[</span><span class="n">i_train</span><span class="p">])</span>
 <span class="g g-Whitespace">     </span><span class="mi">24</span> <span class="n">psi_a</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i_train</span><span class="p">]</span> <span class="o">-</span> <span class="n">ml_m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i_train</span><span class="p">,</span> <span class="p">:]),</span> <span class="n">d</span><span class="p">[</span><span class="n">i_train</span><span class="p">]</span> <span class="o">-</span> <span class="n">ml_m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i_train</span><span class="p">,</span> <span class="p">:]))</span>
+<span class="ne">---&gt; </span><span class="mi">25</span> <span class="n">psi_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i_train</span><span class="p">]</span> <span class="o">-</span> <span class="n">ml_m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i_train</span><span class="p">,</span> <span class="p">:]),</span> <span class="n">y</span><span class="p">[</span><span class="n">i_train</span><span class="p">]</span> <span class="o">-</span> <span class="n">ml_l</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i_train</span><span class="p">,</span> <span class="p">:]))</span>
+<span class="g g-Whitespace">     </span><span class="mi">26</span> <span class="n">theta_initial</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">psi_b</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">psi_a</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">27</span> <span class="n">ml_g</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i_train</span><span class="p">,</span> <span class="p">:],</span> <span class="n">y</span><span class="p">[</span><span class="n">i_train</span><span class="p">]</span> <span class="o">-</span> <span class="n">theta_initial</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i_train</span><span class="p">])</span>
 
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/base.py:1389,</span> in <span class="ni">_fit_context.&lt;locals&gt;.decorator.&lt;locals&gt;.wrapper</span><span class="nt">(estimator, *args, **kwargs)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1382</span>     <span class="n">estimator</span><span class="o">.</span><span class="n">_validate_params</span><span class="p">()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1384</span> <span class="k">with</span> <span class="n">config_context</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1385</span>     <span class="n">skip_parameter_validation</span><span class="o">=</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1386</span>         <span class="n">prefer_skip_nested_validation</span> <span class="ow">or</span> <span class="n">global_skip_validation</span>
-<span class="g g-Whitespace">   </span><span class="mi">1387</span>     <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1388</span> <span class="p">):</span>
-<span class="ne">-&gt; </span><span class="mi">1389</span>     <span class="k">return</span> <span class="n">fit_method</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/ensemble/_forest.py:1066,</span> in <span class="ni">ForestRegressor.predict</span><span class="nt">(self, X)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1064</span> <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1065</span> <span class="c1"># Check data</span>
+<span class="ne">-&gt; </span><span class="mi">1066</span> <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_X_predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1068</span> <span class="c1"># Assign chunk of trees to jobs</span>
+<span class="g g-Whitespace">   </span><span class="mi">1069</span> <span class="n">n_jobs</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_partition_estimators</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_estimators</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">)</span>
 
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/ensemble/_forest.py:487,</span> in <span class="ni">BaseForest.fit</span><span class="nt">(self, X, y, sample_weight)</span>
-<span class="g g-Whitespace">    </span><span class="mi">476</span> <span class="n">trees</span> <span class="o">=</span> <span class="p">[</span>
-<span class="g g-Whitespace">    </span><span class="mi">477</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_make_estimator</span><span class="p">(</span><span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
-<span class="nn">    478     for i</span> in <span class="ni">range</span><span class="nt">(n_more_estimators)</span>
-<span class="g g-Whitespace">    </span><span class="mi">479</span> <span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">481</span> <span class="c1"># Parallel loop: we prefer the threading backend as the Cython code</span>
-<span class="g g-Whitespace">    </span><span class="mi">482</span> <span class="c1"># for fitting the trees is internally releasing the Python GIL</span>
-<span class="g g-Whitespace">    </span><span class="mi">483</span> <span class="c1"># making threading more efficient than multiprocessing in</span>
-<span class="g g-Whitespace">    </span><span class="mi">484</span> <span class="c1"># that case. However, for joblib 0.12+ we respect any</span>
-<span class="g g-Whitespace">    </span><span class="mi">485</span> <span class="c1"># parallel_backend contexts set at a higher level,</span>
-<span class="g g-Whitespace">    </span><span class="mi">486</span> <span class="c1"># since correctness does not rely on using threads.</span>
-<span class="ne">--&gt; </span><span class="mi">487</span> <span class="n">trees</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">488</span>     <span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">489</span>     <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">490</span>     <span class="n">prefer</span><span class="o">=</span><span class="s2">&quot;threads&quot;</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">491</span> <span class="p">)(</span>
-<span class="g g-Whitespace">    </span><span class="mi">492</span>     <span class="n">delayed</span><span class="p">(</span><span class="n">_parallel_build_trees</span><span class="p">)(</span>
-<span class="g g-Whitespace">    </span><span class="mi">493</span>         <span class="n">t</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">494</span>         <span class="bp">self</span><span class="o">.</span><span class="n">bootstrap</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">495</span>         <span class="n">X</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">496</span>         <span class="n">y</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">497</span>         <span class="n">sample_weight</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">498</span>         <span class="n">i</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">499</span>         <span class="nb">len</span><span class="p">(</span><span class="n">trees</span><span class="p">),</span>
-<span class="g g-Whitespace">    </span><span class="mi">500</span>         <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">501</span>         <span class="n">class_weight</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_weight</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">502</span>         <span class="n">n_samples_bootstrap</span><span class="o">=</span><span class="n">n_samples_bootstrap</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">503</span>         <span class="n">missing_values_in_feature_mask</span><span class="o">=</span><span class="n">missing_values_in_feature_mask</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">504</span>     <span class="p">)</span>
-<span class="nn">    505     for i, t</span> in <span class="ni">enumerate</span><span class="nt">(trees)</span>
-<span class="g g-Whitespace">    </span><span class="mi">506</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">508</span> <span class="c1"># Collect newly grown trees</span>
-<span class="g g-Whitespace">    </span><span class="mi">509</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimators_</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">trees</span><span class="p">)</span>
+<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/ensemble/_forest.py:638,</span> in <span class="ni">BaseForest._validate_X_predict</span><span class="nt">(self, X)</span>
+<span class="g g-Whitespace">    </span><span class="mi">635</span> <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">636</span>     <span class="n">ensure_all_finite</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="ne">--&gt; </span><span class="mi">638</span> <span class="n">X</span> <span class="o">=</span> <span class="n">validate_data</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">639</span>     <span class="bp">self</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">640</span>     <span class="n">X</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">641</span>     <span class="n">dtype</span><span class="o">=</span><span class="n">DTYPE</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">642</span>     <span class="n">accept_sparse</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">643</span>     <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">644</span>     <span class="n">ensure_all_finite</span><span class="o">=</span><span class="n">ensure_all_finite</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">645</span> <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">646</span> <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">intc</span> <span class="ow">or</span> <span class="n">X</span><span class="o">.</span><span class="n">indptr</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">intc</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">647</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No support for np.int64 index based sparse matrices&quot;</span><span class="p">)</span>
 
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/utils/parallel.py:77,</span> in <span class="ni">Parallel.__call__</span><span class="nt">(self, iterable)</span>
-<span class="g g-Whitespace">     </span><span class="mi">72</span> <span class="n">config</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">73</span> <span class="n">iterable_with_config</span> <span class="o">=</span> <span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">74</span>     <span class="p">(</span><span class="n">_with_config</span><span class="p">(</span><span class="n">delayed_func</span><span class="p">,</span> <span class="n">config</span><span class="p">),</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">75</span>     <span class="k">for</span> <span class="n">delayed_func</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="ow">in</span> <span class="n">iterable</span>
-<span class="g g-Whitespace">     </span><span class="mi">76</span> <span class="p">)</span>
-<span class="ne">---&gt; </span><span class="mi">77</span> <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">iterable_with_config</span><span class="p">)</span>
+<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/utils/validation.py:2944,</span> in <span class="ni">validate_data</span><span class="nt">(_estimator, X, y, reset, validate_separately, skip_check_array, **check_params)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2942</span>         <span class="n">out</span> <span class="o">=</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
+<span class="g g-Whitespace">   </span><span class="mi">2943</span> <span class="k">elif</span> <span class="ow">not</span> <span class="n">no_val_X</span> <span class="ow">and</span> <span class="n">no_val_y</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">2944</span>     <span class="n">out</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">input_name</span><span class="o">=</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">check_params</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2945</span> <span class="k">elif</span> <span class="n">no_val_X</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">no_val_y</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">2946</span>     <span class="n">out</span> <span class="o">=</span> <span class="n">_check_y</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">check_params</span><span class="p">)</span>
 
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/joblib/parallel.py:1986,</span> in <span class="ni">Parallel.__call__</span><span class="nt">(self, iterable)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1984</span>     <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sequential_output</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1985</span>     <span class="nb">next</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">1986</span>     <span class="k">return</span> <span class="n">output</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_generator</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1988</span> <span class="c1"># Let&#39;s create an ID that uniquely identifies the current call. If the</span>
-<span class="g g-Whitespace">   </span><span class="mi">1989</span> <span class="c1"># call is interrupted early and that the same instance is immediately</span>
-<span class="g g-Whitespace">   </span><span class="mi">1990</span> <span class="c1"># reused, this id will be used to prevent workers that were</span>
-<span class="g g-Whitespace">   </span><span class="mi">1991</span> <span class="c1"># concurrently finalizing a task from the previous call to run the</span>
-<span class="g g-Whitespace">   </span><span class="mi">1992</span> <span class="c1"># callback.</span>
-<span class="g g-Whitespace">   </span><span class="mi">1993</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/utils/validation.py:987,</span> in <span class="ni">check_array</span><span class="nt">(array, accept_sparse, accept_large_sparse, dtype, order, copy, force_writeable, force_all_finite, ensure_all_finite, ensure_non_negative, ensure_2d, allow_nd, ensure_min_samples, ensure_min_features, estimator, input_name)</span>
+<span class="g g-Whitespace">    </span><span class="mi">983</span> <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_is_numpy_namespace</span><span class="p">(</span><span class="n">xp</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">984</span>     <span class="c1"># convert to dtype object to conform to Array API to be use `xp.isdtype` later</span>
+<span class="g g-Whitespace">    </span><span class="mi">985</span>     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">987</span> <span class="n">estimator_name</span> <span class="o">=</span> <span class="n">_check_estimator_name</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">988</span> <span class="n">context</span> <span class="o">=</span> <span class="s2">&quot; by </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">estimator_name</span> <span class="k">if</span> <span class="n">estimator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">990</span> <span class="c1"># When all dataframe columns are sparse, convert to a sparse array</span>
 
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/joblib/parallel.py:1914,</span> in <span class="ni">Parallel._get_sequential_output</span><span class="nt">(self, iterable)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1912</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_dispatched_batches</span> <span class="o">+=</span> <span class="mi">1</span>
-<span class="g g-Whitespace">   </span><span class="mi">1913</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_dispatched_tasks</span> <span class="o">+=</span> <span class="mi">1</span>
-<span class="ne">-&gt; </span><span class="mi">1914</span> <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1915</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_completed_tasks</span> <span class="o">+=</span> <span class="mi">1</span>
-<span class="g g-Whitespace">   </span><span class="mi">1916</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_progress</span><span class="p">()</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/utils/parallel.py:139,</span> in <span class="ni">_FuncWrapper.__call__</span><span class="nt">(self, *args, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">137</span>     <span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="g g-Whitespace">    </span><span class="mi">138</span> <span class="k">with</span> <span class="n">config_context</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">139</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/ensemble/_forest.py:189,</span> in <span class="ni">_parallel_build_trees</span><span class="nt">(tree, bootstrap, X, y, sample_weight, tree_idx, n_trees, verbose, class_weight, n_samples_bootstrap, missing_values_in_feature_mask)</span>
-<span class="g g-Whitespace">    </span><span class="mi">186</span>     <span class="k">elif</span> <span class="n">class_weight</span> <span class="o">==</span> <span class="s2">&quot;balanced_subsample&quot;</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">187</span>         <span class="n">curr_sample_weight</span> <span class="o">*=</span> <span class="n">compute_sample_weight</span><span class="p">(</span><span class="s2">&quot;balanced&quot;</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">indices</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">189</span>     <span class="n">tree</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">190</span>         <span class="n">X</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">191</span>         <span class="n">y</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">192</span>         <span class="n">sample_weight</span><span class="o">=</span><span class="n">curr_sample_weight</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">193</span>         <span class="n">check_input</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">194</span>         <span class="n">missing_values_in_feature_mask</span><span class="o">=</span><span class="n">missing_values_in_feature_mask</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">195</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">196</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">197</span>     <span class="n">tree</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">198</span>         <span class="n">X</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">199</span>         <span class="n">y</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">202</span>         <span class="n">missing_values_in_feature_mask</span><span class="o">=</span><span class="n">missing_values_in_feature_mask</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">203</span>     <span class="p">)</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/tree/_classes.py:239,</span> in <span class="ni">BaseDecisionTree._fit</span><span class="nt">(self, X, y, sample_weight, check_input, missing_values_in_feature_mask)</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span> <span class="k">def</span><span class="w"> </span><span class="nf">_fit</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span>     <span class="bp">self</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">233</span>     <span class="n">X</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">237</span>     <span class="n">missing_values_in_feature_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">238</span> <span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">239</span>     <span class="n">random_state</span> <span class="o">=</span> <span class="n">check_random_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">241</span>     <span class="k">if</span> <span class="n">check_input</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">242</span>         <span class="c1"># Need to validate separately here.</span>
-<span class="g g-Whitespace">    </span><span class="mi">243</span>         <span class="c1"># We can&#39;t pass multi_output=True because that would allow y to be</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">246</span>         <span class="c1"># _compute_missing_values_in_feature_mask will check for finite values and</span>
-<span class="g g-Whitespace">    </span><span class="mi">247</span>         <span class="c1"># compute the missing mask if the tree supports missing values</span>
-<span class="g g-Whitespace">    </span><span class="mi">248</span>         <span class="n">check_X_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">249</span>             <span class="n">dtype</span><span class="o">=</span><span class="n">DTYPE</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="s2">&quot;csc&quot;</span><span class="p">,</span> <span class="n">ensure_all_finite</span><span class="o">=</span><span class="kc">False</span>
-<span class="g g-Whitespace">    </span><span class="mi">250</span>         <span class="p">)</span>
-
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/utils/validation.py:1515,</span> in <span class="ni">check_random_state</span><span class="nt">(seed)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1513</span>     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">mtrand</span><span class="o">.</span><span class="n">_rand</span>
-<span class="g g-Whitespace">   </span><span class="mi">1514</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
-<span class="ne">-&gt; </span><span class="mi">1515</span>     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1516</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">):</span>
-<span class="g g-Whitespace">   </span><span class="mi">1517</span>     <span class="k">return</span> <span class="n">seed</span>
-
-<span class="nn">File numpy/random/mtrand.pyx:184,</span> in <span class="ni">numpy.random.mtrand.RandomState.__init__</span><span class="nt">()</span>
-
-<span class="nn">File _mt19937.pyx:132,</span> in <span class="ni">numpy.random._mt19937.MT19937.__init__</span><span class="nt">()</span>
-
-<span class="nn">File ~/.local/share/uv/python/cpython-3.10.20-linux-x86_64-gnu/lib/python3.10/contextlib.py:79,</span> in <span class="ni">ContextDecorator.__call__.&lt;locals&gt;.inner</span><span class="nt">(*args, **kwds)</span>
-<span class="g g-Whitespace">     </span><span class="mi">76</span> <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">77</span> <span class="k">def</span><span class="w"> </span><span class="nf">inner</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-<span class="g g-Whitespace">     </span><span class="mi">78</span>     <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recreate_cm</span><span class="p">():</span>
-<span class="ne">---&gt; </span><span class="mi">79</span>         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/sklearn/utils/validation.py:685,</span> in <span class="ni">_check_estimator_name</span><span class="nt">(estimator)</span>
+<span class="g g-Whitespace">    </span><span class="mi">683</span> <span class="k">def</span><span class="w"> </span><span class="nf">_check_estimator_name</span><span class="p">(</span><span class="n">estimator</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">684</span>     <span class="k">if</span> <span class="n">estimator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">685</span>         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">686</span>             <span class="k">return</span> <span class="n">estimator</span>
+<span class="g g-Whitespace">    </span><span class="mi">687</span>         <span class="k">else</span><span class="p">:</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
