@@ -161,6 +161,7 @@
 推薦システム
 
 - [](recommender_system/introduction)
+- [](recommender_system/content_based_filtering)
 - [](recommender_system/collaborative_filtering)
 - [](recommender_system/matrix_factorization)
 - [](recommender_system/factorization_machines)
