@@ -1360,8 +1360,9 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">確率予測</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#log-loss-cross-entropy-loss">Log Loss（Cross Entropy Loss）</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration-plot">Calibration Plot</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#log-loss-cross-entropy-loss">Log Loss（Cross Entropy Loss）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#brier-score-loss">Brier Score Loss</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-classification">二値分類 （Binary Classification）</a><ul class="nav section-nav flex-column">
@@ -1552,18 +1553,6 @@ R^2 = 1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2}
 </section>
 <section id="id7">
 <h2>確率予測<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
-<section id="log-loss-cross-entropy-loss">
-<h3>Log Loss（Cross Entropy Loss）<a class="headerlink" href="#log-loss-cross-entropy-loss" title="Link to this heading">#</a></h3>
-<p>予測確率の信頼度を含めた誤差指標。確率出力モデルに適する。</p>
-<div class="math notranslate nohighlight">
-\[
-\text{LogLoss} = -\frac{1}{n}\sum_{i=1}^n [y_i\log \hat{p}_i + (1-y_i)\log(1-\hat{p}_i)]
-\]</div>
-</section>
-<section id="calibration-plot">
-<h3>Calibration Plot<a class="headerlink" href="#calibration-plot" title="Link to this heading">#</a></h3>
-<p>横軸に予測確率、縦軸には経験確率、つまり「同じくらいの予測確率になったサンプルを集めたときの実際の正例の比率」を出したもの。</p>
-<p>（参考：<a class="reference external" href="https://scikit-learn.org/stable/modules/calibration.html#calibration-curves">1.16. Probability calibration — scikit-learn 1.7.2 documentation</a>）</p>
 <div class="cell tag_hide-input docutils container">
 <details class="admonition hide above-input">
 <summary aria-label="Toggle hidden content">
@@ -1578,13 +1567,32 @@ R^2 = 1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2}
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="o">**</span><span class="n">args</span><span class="p">)</span>
 <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="o">**</span><span class="n">args</span><span class="p">)</span>
 
-<span class="c1"># Logistic Regression</span>
+<span class="c1"># 予測確率の例</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
 <span class="n">clf</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
 <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="n">y_prob</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<section id="calibration-plot">
+<h3>Calibration Plot<a class="headerlink" href="#calibration-plot" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>横軸に予測確率</p></li>
+<li><p>縦軸には経験確率、つまり「同じくらいの予測確率になったサンプルを集めたときの実際の正例の比率」</p></li>
+</ul>
+<p>を出したプロット</p>
+<p>（参考：<a class="reference external" href="https://scikit-learn.org/stable/modules/calibration.html#calibration-curves">1.16. Probability calibration — scikit-learn 1.7.2 documentation</a>）</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.calibration</span><span class="w"> </span><span class="kn">import</span> <span class="n">CalibrationDisplay</span>
 
@@ -1606,6 +1614,57 @@ R^2 = 1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2}
 </details>
 <div class="cell_output docutils container">
 <img alt="../../_images/0f720b30b03c857330aee98c040ab6d762df711eecf1d4b57ea08f26d60eb1f0.png" src="../../_images/0f720b30b03c857330aee98c040ab6d762df711eecf1d4b57ea08f26d60eb1f0.png" />
+</div>
+</div>
+</section>
+<section id="log-loss-cross-entropy-loss">
+<h3>Log Loss（Cross Entropy Loss）<a class="headerlink" href="#log-loss-cross-entropy-loss" title="Link to this heading">#</a></h3>
+<p>予測確率の信頼度を含めた誤差指標。確率出力モデルに適する。</p>
+<div class="math notranslate nohighlight">
+\[
+\text{LogLoss} = -\frac{1}{n}\sum_{i=1}^n [y_i\log \hat{p}_i + (1-y_i)\log(1-\hat{p}_i)]
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">log_loss</span>
+<span class="n">log_loss</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.3873822188513259
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="brier-score-loss">
+<h3>Brier Score Loss<a class="headerlink" href="#brier-score-loss" title="Link to this heading">#</a></h3>
+<p>Brier Score は 正解クラスと予測確率の平均二乗誤差（MSE）で定義される指標。低いほど良いのでBrier Score Lossとも呼ばれる。</p>
+<p><strong>2クラス分類の場合</strong></p>
+<p>2クラス分類の場合は正解クラス<span class="math notranslate nohighlight">\(y_i\)</span>と予測確率<span class="math notranslate nohighlight">\(\hat{p}_i\)</span>により次のように表され、<span class="math notranslate nohighlight">\([0,1]\)</span>の値をとる。</p>
+<div class="math notranslate nohighlight">
+\[
+\text{Brier Score} = \frac{1}{N} \sum_{i=1}^N (y_i - \hat{p}_i)^2
+\]</div>
+<p><strong><span class="math notranslate nohighlight">\(C\)</span>クラス分類の場合</strong></p>
+<p>一般に<span class="math notranslate nohighlight">\(C\)</span>クラス分類の場合は次のように表され、<span class="math notranslate nohighlight">\([0,2]\)</span>の値をとる。</p>
+<div class="math notranslate nohighlight">
+\[
+\text{Brier Score} = \frac{1}{N}\sum_{i=1}^{N}\sum_{c=1}^{C}(y_{ic} - \hat{p}_{ic})^{2}
+\]</div>
+<p><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.brier_score_loss.html">brier_score_loss — scikit-learn 1.8.0 documentation</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">brier_score_loss</span>
+<span class="n">brier_score_loss</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.1209847403686766
+</pre></div>
+</div>
 </div>
 </div>
 </section>
@@ -2472,8 +2531,9 @@ q(x)
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">確率予測</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#log-loss-cross-entropy-loss">Log Loss（Cross Entropy Loss）</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration-plot">Calibration Plot</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#log-loss-cross-entropy-loss">Log Loss（Cross Entropy Loss）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#brier-score-loss">Brier Score Loss</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-classification">二値分類 （Binary Classification）</a><ul class="nav section-nav flex-column">

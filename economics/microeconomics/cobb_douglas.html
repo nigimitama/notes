@@ -1346,7 +1346,18 @@ document.write(`
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">ビジネスでの応用例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">2財の効用関数</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">パラメータについての仮定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">性質</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">1. 限界効用逓減</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#mrs">2. 限界代替率（MRS）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#homothetic">3. 同次性（homothetic）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">4. 最適消費（需要関数）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">ビジネスでの応用例</a></li>
 </ul>
             </nav>
         </div>
@@ -1423,11 +1434,233 @@ Y=A K^\alpha L^\beta
 \log Y=\log A+\alpha \log K+\beta \log L
 \]</div>
 <p>となるので、回帰分析で扱いやすい。</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># パラメータ</span>
+<span class="n">A</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.6</span>
+
+<span class="c1"># 入力の範囲</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>   <span class="c1"># 資本</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>   <span class="c1"># 労働</span>
+
+<span class="c1"># 格子点を作る</span>
+<span class="n">K_grid</span><span class="p">,</span> <span class="n">L_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
+
+<span class="c1"># コブ＝ダグラス型生産関数</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="n">K_grid</span> <span class="o">**</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">L_grid</span> <span class="o">**</span> <span class="n">beta</span><span class="p">)</span>
+
+<span class="c1"># 3Dプロット</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
+
+<span class="n">surf</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">K_grid</span><span class="p">,</span> <span class="n">L_grid</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Capital K&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Labor L&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s2">&quot;Output Y&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Cobb-Douglas Production Function&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/f1f616a03c88cb06e6178cdd11c72a1a5faaf9854cc8ec67d091d3b7e8f26740.png" src="../../_images/f1f616a03c88cb06e6178cdd11c72a1a5faaf9854cc8ec67d091d3b7e8f26740.png" />
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># パラメータ</span>
+<span class="n">A</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.6</span>
+
+<span class="c1"># 入力の範囲</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+
+<span class="n">K_grid</span><span class="p">,</span> <span class="n">L_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="n">K_grid</span> <span class="o">**</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">L_grid</span> <span class="o">**</span> <span class="n">beta</span><span class="p">)</span>
+
+<span class="c1"># 等高線プロット</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">contour</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">K_grid</span><span class="p">,</span> <span class="n">L_grid</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Output Y&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Capital K&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Labor L&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Cobb-Douglas Production Function (Contour Plot)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/063210b732f30c296983d6f7eb449da152aed72911c1ef24907d0988260c35f7.png" src="../../_images/063210b732f30c296983d6f7eb449da152aed72911c1ef24907d0988260c35f7.png" />
+</div>
+</div>
 </section>
 </section>
 </section>
 <section id="id7">
-<h2>ビジネスでの応用例<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<h2>2財の効用関数<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<div class="admonition- admonition">
+<p class="admonition-title">2財のコブ＝ダグラス型効用関数</p>
+<div class="math notranslate nohighlight">
+\[
+U(x, y)=x^\alpha y^\beta
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x, y\)</span>：各財の消費量</p></li>
+<li><p><span class="math notranslate nohighlight">\(\alpha, \beta &gt; 0\)</span>：効用に対する重み（選好の強さ）</p></li>
+</ul>
+</div>
+<p>この関数は</p>
+<ul class="simple">
+<li><p>両方の財をバランスよく消費すると効用が高い</p></li>
+<li><p>どちらか一方だけでは効用は伸びにくい（完全代替ではない）</p></li>
+</ul>
+<p>という「滑らかで凸な選好」を表す。</p>
+<section id="id8">
+<h3>パラメータについての仮定<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>よく使われる仮定</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\alpha &gt; 0, \beta &gt; 0\)</span>（単調性）</p></li>
+<li><p><span class="math notranslate nohighlight">\(\alpha &lt; 1, \beta &lt; 1\)</span>（限界効用逓減）</p></li>
+<li><p><span class="math notranslate nohighlight">\(\alpha + \beta = 1\)</span>（正規化）</p></li>
+</ul>
+</section>
+<section id="id9">
+<h3>性質<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h4>1. 限界効用逓減<a class="headerlink" href="#id10" title="Link to this heading">#</a></h4>
+<div class="math notranslate nohighlight">
+\[
+MU_x = \frac{\partial U}{\partial x} = \alpha x^{\alpha-1} y^{\beta}
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+MU_y = \frac{\partial U}{\partial y} = \beta x^{\alpha} y^{\beta-1}
+\]</div>
+<p>消費が増えると限界効用は逓減（diminishing marginal utility）</p>
+<p>具体的には</p>
+<ul class="simple">
+<li><p>財 <span class="math notranslate nohighlight">\(x\)</span> の限界効用が逓減する ⇔ <span class="math notranslate nohighlight">\(\alpha &lt; 1\)</span></p></li>
+<li><p>財 <span class="math notranslate nohighlight">\(y\)</span> の限界効用が逓減する ⇔ <span class="math notranslate nohighlight">\(\beta &lt; 1\)</span></p></li>
+</ul>
+</section>
+<section id="mrs">
+<h4>2. 限界代替率（MRS）<a class="headerlink" href="#mrs" title="Link to this heading">#</a></h4>
+<div class="math notranslate nohighlight">
+\[
+MRS = \frac{MU_x}{MU_y} = \frac{\alpha}{\beta} \cdot \frac{y}{x}
+\]</div>
+<ul class="simple">
+<li><p>逓減する（無差別曲線が凸）</p></li>
+<li><p>「xが多いほど、xの価値は相対的に下がる」</p></li>
+</ul>
+</section>
+<section id="homothetic">
+<h4>3. 同次性（homothetic）<a class="headerlink" href="#homothetic" title="Link to this heading">#</a></h4>
+<p>ある単調増加関数 <span class="math notranslate nohighlight">\(f\)</span> と 同次関数 <span class="math notranslate nohighlight">\(V\)</span> が存在して、効用関数 <span class="math notranslate nohighlight">\(U\)</span>を</p>
+<div class="math notranslate nohighlight">
+\[
+U(x)=f(V(x))
+\]</div>
+<p>と書ける選好を <strong>相似拡大的選好（homothetic preferences）</strong> という。</p>
+<p>例えば2財の効用関数においては</p>
+<div class="math notranslate nohighlight">
+\[
+U(tx, ty) = t^{\alpha+\beta} U(x, y)
+\]</div>
+<p>を満たすとき、選好が相似拡大的であるという。コブ＝ダグラス型効用関数は相似拡大的である。</p>
+<p>選好が相似拡大的であるとき、無差別曲線は「原点からの放射方向」にそのまま拡大される。つまり、消費の比率が同じなら所得が増えても好みは変わらないという性質になる</p>
+</section>
+<section id="id11">
+<h4>4. 最適消費（需要関数）<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
+<p>予算制約</p>
+<div class="math notranslate nohighlight">
+\[
+p_x x + p_y y = I
+\]</div>
+<p>のもとで効用最大化する消費量は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+x^* = \frac{\alpha}{\alpha+\beta} \cdot \frac{I}{p_x}\\
+y^* = \frac{\beta}{\alpha+\beta} \cdot \frac{I}{p_y}
+\end{split}\]</div>
+<p>となる</p>
+<p>解釈：</p>
+<ul class="simple">
+<li><p>所得の一定割合を各財に使う（支出シェア一定）</p></li>
+<li><p><span class="math notranslate nohighlight">\(\alpha, \beta\)</span> が「支出比率」になる</p></li>
+</ul>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># パラメータ</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+<span class="c1"># 財 x, y の範囲</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+
+<span class="c1"># 格子点</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># 効用関数</span>
+<span class="n">U</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span> <span class="o">**</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Y</span> <span class="o">**</span> <span class="n">beta</span><span class="p">)</span>
+
+<span class="c1"># 等高線プロット</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">contour</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">clabel</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Contour Plot of Cobb-Douglas Utility Function&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/0b758ae46374b80d2d9419a1b89c36167b75220efa4d700ce7b52bf12ad58f1e.png" src="../../_images/0b758ae46374b80d2d9419a1b89c36167b75220efa4d700ce7b52bf12ad58f1e.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="id12">
+<h2>ビジネスでの応用例<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
 <div class="math notranslate nohighlight">
 \[
 売上 = OOH広告^{\beta_{OOH}} \times TVCM^{\beta_{TVCM}} \times \epsilon
@@ -1509,7 +1742,18 @@ Y=A K^\alpha L^\beta
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">ビジネスでの応用例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">2財の効用関数</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">パラメータについての仮定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">性質</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">1. 限界効用逓減</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#mrs">2. 限界代替率（MRS）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#homothetic">3. 同次性（homothetic）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">4. 最適消費（需要関数）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">ビジネスでの応用例</a></li>
 </ul>
   </nav></div>
 
