@@ -71,6 +71,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'statistical_modeling/test_theory/irt_and_cf';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -1335,7 +1337,16 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#irt-mirt-mf">多次元IRT（MIRT）≒ ロジスティックMF（低ランク）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">IRTを協調フィルタリングとして解く</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bergner-et-al-2012-machine-learning-item-response-theory">Bergner et al.（2012）”Machine-Learning Item Response Theory”</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">IRTモデルは協調フィルタリングモデルの特殊形</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">協調フィルタリング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">IRTモデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#irt-mirt-mf">多次元IRT（MIRT）≒ ロジスティックMF（低ランク）</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -1355,9 +1366,66 @@ document.write(`
 <p>Bergner / Halpin / Vie（2023）“Multidimensional IRT in the Style of Collaborative Filtering”
 タイトル通り「CF流のMIRT」。高次元・疎行列を前提に、JML + CV で運用する話。
 <a class="reference external" href="https://doi.org/10.1007/s11336-021-09788-9">Multidimensional Item Response Theory in the Style of Collaborative Filtering | Psychometrika | Cambridge Core</a></p>
+<p><a class="reference external" href="https://arxiv.org/abs/2301.00909">[2301.00909] Multidimensional Item Response Theory in the Style of Collaborative Filtering</a></p>
+<section id="id1">
+<h2>IRTを協調フィルタリングとして解く<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="bergner-et-al-2012-machine-learning-item-response-theory">
+<h3>Bergner et al.（2012）”Machine-Learning Item Response Theory”<a class="headerlink" href="#bergner-et-al-2012-machine-learning-item-response-theory" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://eric.ed.gov/?id=ED537194">https://eric.ed.gov/?id=ED537194</a></p>
+<p>機械学習の枠組みからIRTを再解釈し、協調フィルタリングを用いた新たな分析手法を提案</p>
+<p>学習者×設問の正誤データを、CFの評価（予測精度・CV）でモデル選択する、という立場。</p>
+</section>
+</section>
+<section id="id2">
+<h2>IRTモデルは協調フィルタリングモデルの特殊形<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="id3">
+<h3>協調フィルタリング<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>協調フィルタリングのアプローチの一つには、「成約」「クリック」など2値で評価された反応を正則化されたロジスティック回帰で解くものがある。</p>
+<p>数式として書くと、ユーザー<span class="math notranslate nohighlight">\(i\)</span>がアイテム<span class="math notranslate nohighlight">\(j\)</span>に対して反応する（<span class="math notranslate nohighlight">\(U_{ij}=1\)</span>となる）確率を次のようにモデリングする：</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{Pr}\left\{U_{i j}=1 \mid \boldsymbol{\theta}_i, \boldsymbol{x}_j\right\}=\sigma\left(x_{j 0}+\theta_{i 0}+\sum_{k=1}^r \theta_{i k} x_{j k}\right)
+\]</div>
+<p>ここで<span class="math notranslate nohighlight">\(\sigma(\cdot)\)</span>はロジスティック・シグモイド関数</p>
+<div class="math notranslate nohighlight">
+\[
+\sigma(z_{i j})=\frac{1}{1+e^{-z_{i j}}}
+\]</div>
+<p>そして <span class="math notranslate nohighlight">\(\boldsymbol{\theta}_i, \boldsymbol{x}_j\)</span>はパラメータ</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{\theta}_i=(\begin{array}{lllll}
+1 &amp; \theta_{i 0} &amp; \theta_{i 1} &amp; \cdots &amp; \theta_{i r}
+\end{array})^T 
+\quad
+\boldsymbol{x}_j=(\begin{array}{lllll}
+x_{j 0} &amp; 1 &amp; x_{j 1} &amp; \cdots &amp; x_{j s}
+\end{array})^T
+\]</div>
+<p>両者の次元数が一致する場合、線形結合が定義できる</p>
+<div class="math notranslate nohighlight">
+\[
+z_{i j}=\left\langle\boldsymbol{\theta}_i, \boldsymbol{x}_j\right\rangle=x_{j 0}+\theta_{i 0}+\sum_{k=1}^r \theta_{i k} x_{j k}
+\]</div>
+</section>
+<section id="id4">
+<h3>IRTモデル<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>IRTモデルにおいても、ユーザー<span class="math notranslate nohighlight">\(i\)</span>がアイテム<span class="math notranslate nohighlight">\(j\)</span>に対して反応する（<span class="math notranslate nohighlight">\(U_{ij}=1\)</span>となる）確率を次のようにモデリングする：</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{Pr}\left\{U_{i j}=1 \mid \boldsymbol{\theta}_i, \boldsymbol{x}_j\right\}=\sigma\left(x_{j 0}+\theta_{i 0}+\sum_{k=1}^r \theta_{i k} x_{j k}\right)
+\]</div>
+<p>パラメータ数に応じて既存のIRTモデルが表現できる</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x_0 + \theta_0\)</span> ：Rasch (1PL)</p></li>
+<li><p><span class="math notranslate nohighlight">\(x_0 + \theta_1 x_1\)</span> ：2PL</p></li>
+<li><p><span class="math notranslate nohighlight">\(x_0 + \sum_k \theta_k x_k\)</span> ：多次元2PL</p></li>
+</ul>
+</section>
 <section id="irt-mirt-mf">
-<h2>多次元IRT（MIRT）≒ ロジスティックMF（低ランク）<a class="headerlink" href="#irt-mirt-mf" title="Link to this heading">#</a></h2>
+<h3>多次元IRT（MIRT）≒ ロジスティックMF（低ランク）<a class="headerlink" href="#irt-mirt-mf" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://web.stanford.edu/~rezab/nips2014workshop/submits/logmat.pdf">Logistic Matrix Factorization for Implicit Feedback Data</a></p>
+</section>
 </section>
 </section>
 
@@ -1425,7 +1493,16 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#irt-mirt-mf">多次元IRT（MIRT）≒ ロジスティックMF（低ランク）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">IRTを協調フィルタリングとして解く</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bergner-et-al-2012-machine-learning-item-response-theory">Bergner et al.（2012）”Machine-Learning Item Response Theory”</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">IRTモデルは協調フィルタリングモデルの特殊形</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">協調フィルタリング</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">IRTモデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#irt-mirt-mf">多次元IRT（MIRT）≒ ロジスティックMF（低ランク）</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

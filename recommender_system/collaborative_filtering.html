@@ -71,6 +71,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'recommender_system/collaborative_filtering';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -1337,11 +1339,12 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">メモリベース法</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ユーザーベース協調フィルタリング</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">モデルベース法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">アイテムベース協調フィルタリング</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">データ数</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">モデルベース法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">データ数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -1377,10 +1380,26 @@ document.write(`
 <p>推薦の都度リアルタイムに類似度を計算する方法は <strong>メモリベース法（memory-based method）</strong> あるいは <strong>事例ベース法（instance-based method）</strong> と呼ばれる。</p>
 <section id="id3">
 <h3>ユーザーベース協調フィルタリング<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
-<p>ユーザー同士の類似度を計算し、似ているユーザーのアイテムへの評価を使って推薦する。</p>
+<p>ユーザー<span class="math notranslate nohighlight">\(i\)</span>と似たユーザーがアイテム<span class="math notranslate nohighlight">\(j\)</span>に与えた評価に基づいて、ユーザー<span class="math notranslate nohighlight">\(i\)</span>がまだ評価していないアイテム<span class="math notranslate nohighlight">\(j\)</span>に与えるレイティング（またはscore）<span class="math notranslate nohighlight">\(s_{ij}\)</span>を予測する</p>
+<div class="math notranslate nohighlight">
+\[
+s_{i j}=\bar{y}_{i \cdot}+\frac{\sum_{\ell \in \mathcal{I}_j(i)} w(i, \ell)\left(y_{\ell j}-\bar{y}_{\ell .}\right)}{\sum_{\ell \in \mathcal{I}_j(i)}|w(i, \ell)|}
+\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathcal{I}_j(i)\)</span> ：アイテム <span class="math notranslate nohighlight">\(j\)</span> を評価したユーザでユーザ <span class="math notranslate nohighlight">\(i\)</span> に類似するユーザの集合</p></li>
+<li><p><span class="math notranslate nohighlight">\(w(i, \ell)\)</span>：ユーザ<span class="math notranslate nohighlight">\(\ell\)</span>の評価に対する重み</p></li>
+<li><p><span class="math notranslate nohighlight">\(\bar{y}_{i \cdot}\)</span>はユーザ<span class="math notranslate nohighlight">\(i\)</span>の他のアイテムへの平均レイティング</p></li>
+</ul>
+<p>ユーザ <span class="math notranslate nohighlight">\(i\)</span> に類似するユーザの集合を定義する方法は、最も単純なのはピアソンの相関係数を使って近傍の<span class="math notranslate nohighlight">\(k\)</span>人を選択するもの</p>
 </section>
 <section id="id4">
-<h3>モデルベース法<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<h3>アイテムベース協調フィルタリング<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>ユーザー<span class="math notranslate nohighlight">\(i\)</span>へのアイテム<span class="math notranslate nohighlight">\(j\)</span>の推薦に使うスコア<span class="math notranslate nohighlight">\(\hat{y}_{ij}\)</span>の推薦について、<br />
+あるアイテム<span class="math notranslate nohighlight">\(j\)</span>に似ているアイテムたちへのユーザー<span class="math notranslate nohighlight">\(i\)</span>の過去の応答をもとに<span class="math notranslate nohighlight">\(\hat{y}_{ij}\)</span>を推定する</p>
+</section>
+</section>
+<section id="id5">
+<h2>モデルベース法<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <p>観測データの規則性を学習したモデルを事前に用意しておく方法を <strong>モデルベース法（model-based method）</strong> という。</p>
 <p>モデルには</p>
 <ul class="simple">
@@ -1399,17 +1418,16 @@ document.write(`
 </ul>
 <p>など様々なモデルが使われる。</p>
 </section>
-</section>
-<section id="id5">
-<h2>データ数<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h2>データ数<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <p><a class="reference external" href="https://www.ieice.org/publications/conference-FIT-DVDs/FIT2008/pdf/F/F_028.pdf">田村幸之介, &amp; 松原仁. (2008). 協調フィルタリングにおけるデータの必要数の分析 (Doctoral dissertation, Future University Hakodate).</a></p>
 <ul class="simple">
 <li><p>ユーザーベースの手法であるGroupLensを使った。</p></li>
 <li><p>データ数を減らしながら精度の変化を見たところ、最低でも8万レコードほしいという結果に</p></li>
 </ul>
 </section>
-<section id="id6">
-<h2>参考<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h2>参考<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://zenn.dev/datasciencekun/articles/33d3be4c4ce4ea">レコメンドシステム——協調フィルタリング(Collaborative Filtering)</a></p></li>
 </ul>
@@ -1482,11 +1500,12 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">メモリベース法</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">ユーザーベース協調フィルタリング</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">モデルベース法</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">アイテムベース協調フィルタリング</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">データ数</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">モデルベース法</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">データ数</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">参考</a></li>
 </ul>
   </nav></div>
 
