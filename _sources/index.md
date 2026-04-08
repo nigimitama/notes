@@ -154,6 +154,7 @@
 - [](image_processing/similarity_and_hashing)
 - [](image_processing/intensity_transformation)
 - [](image_processing/region_splitting)
+- [](image_processing/noise_removal)
 :::
 
 :::{grid-item-card}
@@ -223,6 +224,7 @@
 - [](soft_skills/task_management)
 - [](soft_skills/document_management)
 - [](soft_skills/growth/skillup)
+- [](soft_skills/growth/growth_formula)
 - [](soft_skills/thinking/index)
 - [](soft_skills/logic/index)
 - [](soft_skills/leadership/index)
@@ -236,9 +238,11 @@
 ビジネス関連知識
 
 - [](business/revenue_structure)
+- [](business/breakeven_point)
 - [](business/accounting)
 - [](business/career_of_ds)
 - [](business/digital_transformation)
+- [](business/feature_vector_based)
 - [](business/business_administration/index)
 :::
 
