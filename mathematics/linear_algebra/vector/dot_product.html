@@ -971,8 +971,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../business/accounting.html">会計</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../business/career_of_ds.html">データサイエンティスト / MLエンジニアのキャリア</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../business/digital_transformation.html">Digital Transformation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../business/feature_vector_based.html">アイテム素性ベクトル</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="../../../business/feature_vector_based.html">素性ベクトルベース</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../business/business_administration/index.html">経営学</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../business/business_administration/introduction.html">概要</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../business/business_administration/history.html">経営学史</a></li>
@@ -986,6 +985,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../business/business_administration/competitive_strategy/moat.html">Moat</a></li>
 </ul>
 </details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../business/real_estate/index.html">不動産業</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../business/real_estate/real_estate_industry.html">不動産業界</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../business/real_estate/real_estate_securitization.html">不動産証券化</a></li>
 </ul>
 </details></li>
 </ul>
@@ -1342,8 +1346,15 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">内積と類似度</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">直交</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ノルム</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">内積と類似度</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">コサイン類似度</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">直交</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">コーシー・シュワルツの不等式</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -1357,12 +1368,12 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>内積<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
-<p><span class="math notranslate nohighlight">\(k\)</span>次元のベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a} = (a_1, a_2, \dots, a_k)^T, \ \boldsymbol{b} = (b_1, b_2, \dots, b_k)^T\)</span>があるとき、</p>
+<p><span class="math notranslate nohighlight">\(k\)</span>次元のベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a} = (a_1, a_2, \dots, a_k)^\top, \ \boldsymbol{b} = (b_1, b_2, \dots, b_k)^\top\)</span>があるとき、</p>
 <div class="math notranslate nohighlight">
 \[
 \sum^k_{i=1} a_i b_i
 \]</div>
-<p>という演算を内積（inner product）といい、<span class="math notranslate nohighlight">\(\boldsymbol{a}^T \boldsymbol{b}\)</span>や<span class="math notranslate nohighlight">\(\boldsymbol{a} \cdot \boldsymbol{b}\)</span>や<span class="math notranslate nohighlight">\((\boldsymbol{a}, \boldsymbol{b})\)</span>や<span class="math notranslate nohighlight">\(\langle\boldsymbol{a}, \boldsymbol{b} \rangle\)</span>と表す</p>
+<p>という演算を内積（inner product）といい、<span class="math notranslate nohighlight">\(\boldsymbol{a}^\top \boldsymbol{b}\)</span>や<span class="math notranslate nohighlight">\(\boldsymbol{a} \cdot \boldsymbol{b}\)</span>や<span class="math notranslate nohighlight">\((\boldsymbol{a}, \boldsymbol{b})\)</span>や<span class="math notranslate nohighlight">\(\langle\boldsymbol{a}, \boldsymbol{b} \rangle\)</span>と表す</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -1383,11 +1394,26 @@ document.write(`
 </div>
 </div>
 <section id="id2">
-<h2>内積と類似度<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>ノルム<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a}\)</span>に対して<span class="math notranslate nohighlight">\(\sqrt{\boldsymbol{a}^\top \boldsymbol{b}}\)</span>をベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a}\)</span>の <strong>長さ</strong> または <strong>ノルム（norm）</strong> といい、<span class="math notranslate nohighlight">\(\|\boldsymbol{a}\|\)</span>で表す。すなわち</p>
+<div class="math notranslate nohighlight">
+\[
+\|\boldsymbol{a}\|
+= \sqrt{\boldsymbol{a}^\top \boldsymbol{b}},
+\quad
+\|\boldsymbol{a}\|^2=
+\boldsymbol{a}^\top \boldsymbol{b}
+\]</div>
+<p>である。</p>
+</section>
+<section id="id3">
+<h2>内積と類似度<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<section id="id4">
+<h3>コサイン類似度<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>コサイン類似度
-2つのベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a} = (a_1, a_2, \dots, a_k)^T\)</span>と<span class="math notranslate nohighlight">\(\boldsymbol{b} = (b_1, b_2, \dots, b_k)^T\)</span>について、</p>
+<p>コサイン類似度</p>
+<p>2つのベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a} = (a_1, a_2, \dots, a_k)^T\)</span>と<span class="math notranslate nohighlight">\(\boldsymbol{b} = (b_1, b_2, \dots, b_k)^T\)</span>について、</p>
 <div class="math notranslate nohighlight">
 \[
 \cos(\boldsymbol{a}, \boldsymbol{b})
@@ -1450,12 +1476,13 @@ document.write(`
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../../_images/d7c3879975e3ae66f64f6dfc8ce32cef9e5813bc762b9309ec00e24c57d8136d.png" src="../../../_images/d7c3879975e3ae66f64f6dfc8ce32cef9e5813bc762b9309ec00e24c57d8136d.png" />
+<img alt="../../../_images/91143adc04aaded300520b76a7bdc1cf0290ec7072cee4a8e8ade09e8790f46c.png" src="../../../_images/91143adc04aaded300520b76a7bdc1cf0290ec7072cee4a8e8ade09e8790f46c.png" />
 </div>
 </div>
 </section>
-<section id="id3">
-<h2>直交<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+</section>
+<section id="id5">
+<h2>直交<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <div class="admonition- admonition">
 <p class="admonition-title">直交</p>
 <p>ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a}, \boldsymbol{b} \in \mathbb{R}^n\)</span>が</p>
@@ -1463,8 +1490,48 @@ document.write(`
 \[
 \boldsymbol{a}^T \boldsymbol{b} = 0
 \]</div>
-<p>を満たすとき、<span class="math notranslate nohighlight">\(\boldsymbol{a} \boldsymbol{b}\)</span>は直交しているという</p>
+<p>を満たすとき、<span class="math notranslate nohighlight">\(\boldsymbol{a}, \boldsymbol{b}\)</span>は直交しているという</p>
 </div>
+<section id="id6">
+<h3>コーシー・シュワルツの不等式<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>コサイン類似度が <span class="math notranslate nohighlight">\([-1, 1]\)</span> の範囲に正規化される理由</p>
+<div class="admonition- admonition">
+<p class="admonition-title">定理（コーシー・シュワルツの不等式）</p>
+<p>ベクトル<span class="math notranslate nohighlight">\(\boldsymbol{a}, \boldsymbol{b}\)</span>に対し、</p>
+<div class="math notranslate nohighlight">
+\[
+(\boldsymbol{a}^\top \boldsymbol{b})^2
+\leq
+\| \boldsymbol{a} \|^2 \cdot \| \boldsymbol{b} \|^2
+\]</div>
+<p>が成立する。等号になるのは <span class="math notranslate nohighlight">\(\boldsymbol{a} = 0\)</span> または <span class="math notranslate nohighlight">\(\boldsymbol{a} = c \boldsymbol{b} \ (c \in \mathbb{R})\)</span> のとき（1次独立でないとき）に限る</p>
+</div>
+<p>平方根をとれば</p>
+<div class="math notranslate nohighlight">
+\[
+| \boldsymbol{a}^\top \boldsymbol{b} |
+\leq
+\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|
+\]</div>
+<p>となり、それを変形すると</p>
+<div class="math notranslate nohighlight">
+\[
+- \| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|
+\leq
+\boldsymbol{a}^\top \boldsymbol{b}
+\leq
+\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|
+\]</div>
+<p>なので両辺を<span class="math notranslate nohighlight">\(\| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \|\)</span>で割れば</p>
+<div class="math notranslate nohighlight">
+\[
+- 1
+\leq
+\frac{ \boldsymbol{a}^\top \boldsymbol{b} }{ \| \boldsymbol{a} \| \cdot \| \boldsymbol{b} \| }
+\leq
+1
+\]</div>
+</section>
 </section>
 </section>
 
@@ -1532,8 +1599,15 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">内積と類似度</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">直交</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">ノルム</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">内積と類似度</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">コサイン類似度</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">直交</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">コーシー・シュワルツの不等式</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
