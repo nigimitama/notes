@@ -244,6 +244,7 @@
 - [](business/digital_transformation)
 - [](business/feature_vector_based)
 - [](business/business_administration/index)
+- [](business/real_estate/index)
 :::
 
 :::{grid-item-card}
