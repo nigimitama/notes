@@ -71,6 +71,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'statistical_modeling/test_theory/recent_irt';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -1344,6 +1346,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-networkirt">Neural Networkに基づくIRT</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deep-irt">Deep-IRT</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-deep-irt">Bayesian Deep-IRT</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thurstonian-diffusion-irt">Thurstonian Diffusion IRT モデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">自然言語の評価</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cat">CATのための困難度の予測</a></li>
 </ul>
@@ -1361,6 +1369,77 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="irt">
 <h1>近年のIRTのトピック<a class="headerlink" href="#irt" title="Link to this heading">#</a></h1>
+<section id="neural-networkirt">
+<h2>Neural Networkに基づくIRT<a class="headerlink" href="#neural-networkirt" title="Link to this heading">#</a></h2>
+<section id="deep-irt">
+<h3>Deep-IRT<a class="headerlink" href="#deep-irt" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="http://www.ai.lab.uec.ac.jp/wp-content/uploads/2020/03/4be6305d75bec91360cb94a124c4746f.pdf">木下涼, &amp; 植野真臣. (2020). 深層学習によるテスト理論: item deep response theory. 電子情報通信学会論文誌 D, 103(4), 314-329.</a></p></li>
+<li><p><a class="reference external" href="https://eric.ed.gov/?id=ED615529">Tsutsumi, E., Kinoshita, R., &amp; Ueno, M. (2021). Deep-IRT with Independent Student and Item Networks. International Educational Data Mining Society.</a></p></li>
+</ul>
+<p>異なるテスト評価のリンケージにおいては、同一母集団からの独立なランダムサンプリングを仮定する。<br />
+Deep-IRTは受験者が単一母集団からのランダムサンプリングを仮定できない場合でも頑健な推定ができる。</p>
+<p>提案手法 <strong>Deep Response Model</strong> は受験者のネットワークと項目のネットワークから成る。</p>
+<p><strong>受験者ネットワーク</strong></p>
+<p><span class="math notranslate nohighlight">\(i\)</span>番目の受験者の応答は、<span class="math notranslate nohighlight">\(i\)</span>番目の要素のみが1のone-hot vector <span class="math notranslate nohighlight">\(\boldsymbol{s}_i \in \mathbb{R}^{I}\)</span>を入力とし、<span class="math notranslate nohighlight">\((\boldsymbol{s}_i, \boldsymbol{\theta}_1^{(i)}, \boldsymbol{\theta}_2^{(i)}, \theta_3^{(i)})\)</span>の4層をもつDNNとする（<span class="math notranslate nohighlight">\(\theta_3^{(i)}\)</span>はスカラー）。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\boldsymbol{\theta}_1^{(i)}
+&amp;= \tanh \left(
+\boldsymbol{W}^{(\theta_1)} s_i + \boldsymbol{\tau}^{(\theta_1)}
+\right) \\
+\boldsymbol{\theta}_2^{(i)}
+&amp;= \tanh \left(
+\boldsymbol{W}^{(\theta_2)} \boldsymbol{\theta}_1^{(i)} + \boldsymbol{\tau}^{(\theta_2)}
+\right) \\
+\theta_3^{(i)}
+&amp;= \boldsymbol{W}^{(\theta_3)} \boldsymbol{\theta}_2^{(i)} + \tau^{(\theta_3)}
+\end{aligned}
+\end{split}\]</div>
+<p><span class="math notranslate nohighlight">\(\boldsymbol{W}^{(\theta_l)}\)</span>は重み行列、<span class="math notranslate nohighlight">\(\tau^{(\theta_l)}\)</span>はバイアスパラメータである。</p>
+<p><strong>項目ネットワーク</strong></p>
+<p>こちらも同様に<span class="math notranslate nohighlight">\(j\)</span>番目の項目が1のone-hot vector <span class="math notranslate nohighlight">\(\boldsymbol{q}_j \in \mathbb{R}^{J}\)</span>を入力とし、<span class="math notranslate nohighlight">\((\boldsymbol{q}_j, \boldsymbol{\beta}_1^{(j)}, \boldsymbol{\beta}_2^{(j)}, \beta_3^{(j)})\)</span>の4層のDNNとする。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\boldsymbol{\beta}_1^{(j)}
+&amp;= \tanh \left(
+\boldsymbol{W}^{\beta_1} \boldsymbol{q}_j + \boldsymbol{\tau}^{\beta_1}
+\right) \\
+\boldsymbol{\beta}_2^{(j)}
+&amp;= \tanh \left(
+\boldsymbol{W}^{\beta_2} \boldsymbol{\beta}_1^{(j)} + \boldsymbol{\tau}^{\beta_2}
+\right) \\
+\beta_3^{(j)}
+&amp;= \boldsymbol{W}^{\beta_3} \boldsymbol{\beta}_2^{(j)} + \tau^{\beta_3}
+\end{aligned}
+\end{split}\]</div>
+<p><strong>出力</strong></p>
+<p>IRTのパラメータ解釈に倣い、受検者の能力パラメータと項目の難易度パラメータの差を用いて、受検者の項目への反応をモデル化する</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{h}^{(i, j)}=\left(\boldsymbol{W}^{(y)}\right)^\top \left(\theta_3^{(i)}-\beta_3^{(j)}\right)+\tau^{(y)}
+\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{u}_{i, j} &amp; =\operatorname{softmax}\left(\boldsymbol{h}^{(i, j)}\right) \\
+&amp; =\frac{\exp \left(h_1^{(i, j)}\right)}{\exp \left(h_0^{(i, j)}\right)+\exp \left(h_1^{(i, j)}\right)}
+\end{aligned}
+\end{split}\]</div>
+</section>
+<section id="bayesian-deep-irt">
+<h3>Bayesian Deep-IRT<a class="headerlink" href="#bayesian-deep-irt" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.jstage.jst.go.jp/article/pjsai/JSAI2023/0/JSAI2023_4N2GS1003/_article/-char/ja">堤瑛美子 &amp; 植野真臣. (2023). Bayesian neural network に基づく項目反応理論.</a></p></li>
+</ul>
+</section>
+</section>
+<section id="thurstonian-diffusion-irt">
+<h2>Thurstonian Diffusion IRT モデル<a class="headerlink" href="#thurstonian-diffusion-irt" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://jasr.or.jp/wp/asr/asrpdf/asr25/asr25_020.pdf">分寺・岡田（2020）「現代的なパーソナリティ測定のためのベイズ統計モデリング」『ベイズ統計学が拓く調査データ解析の最前線』</a></p>
+</section>
 <section id="id1">
 <h2>自然言語の評価<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
@@ -1449,6 +1528,12 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-networkirt">Neural Networkに基づくIRT</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deep-irt">Deep-IRT</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-deep-irt">Bayesian Deep-IRT</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thurstonian-diffusion-irt">Thurstonian Diffusion IRT モデル</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">自然言語の評価</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cat">CATのための困難度の予測</a></li>
 </ul>
