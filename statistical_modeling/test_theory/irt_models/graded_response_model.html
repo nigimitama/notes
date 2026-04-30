@@ -1346,12 +1346,22 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実装例</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">推定</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実装例（全項目のカテゴリ数が等しい場合）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cutpoints">閾値（cutpoints）の推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">推定</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eap">EAP推定量</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">実装例（各項目のカテゴリ数が異なる場合）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">モデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">EAP推定値</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">真値と比較</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">分析手順</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考文献</a></li>
 </ul>
             </nav>
         </div>
@@ -1387,7 +1397,8 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
 \]</div>
 </div>
 <section id="id2">
-<h2>実装例<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>実装例（全項目のカテゴリ数が等しい場合）<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>PyMCパッケージを使ってベイズ推定する場合、各項目のカテゴリ数が同じ場合は順序ロジットモデルで簡単に実装できる</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># データを生成</span>
@@ -1424,7 +1435,7 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
 <span class="n">U</span><span class="p">,</span> <span class="n">true_theta</span><span class="p">,</span> <span class="n">true_a</span><span class="p">,</span> <span class="n">true_b</span> <span class="o">=</span> <span class="n">simulate_grm</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="n">num_users</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="n">num_items</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">U</span><span class="p">,</span>
                   <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;user_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_users</span><span class="p">)],</span>
-                  <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;question_</span><span class="si">{</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_items</span><span class="p">)])</span>
+                  <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;item_</span><span class="si">{</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_items</span><span class="p">)])</span>
 
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -1449,26 +1460,26 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>question_1</th>
-      <th>question_2</th>
-      <th>question_3</th>
-      <th>question_4</th>
-      <th>question_5</th>
-      <th>question_6</th>
-      <th>question_7</th>
-      <th>question_8</th>
-      <th>question_9</th>
-      <th>question_10</th>
-      <th>question_11</th>
-      <th>question_12</th>
-      <th>question_13</th>
-      <th>question_14</th>
-      <th>question_15</th>
-      <th>question_16</th>
-      <th>question_17</th>
-      <th>question_18</th>
-      <th>question_19</th>
-      <th>question_20</th>
+      <th>item_1</th>
+      <th>item_2</th>
+      <th>item_3</th>
+      <th>item_4</th>
+      <th>item_5</th>
+      <th>item_6</th>
+      <th>item_7</th>
+      <th>item_8</th>
+      <th>item_9</th>
+      <th>item_10</th>
+      <th>item_11</th>
+      <th>item_12</th>
+      <th>item_13</th>
+      <th>item_14</th>
+      <th>item_15</th>
+      <th>item_16</th>
+      <th>item_17</th>
+      <th>item_18</th>
+      <th>item_19</th>
+      <th>item_20</th>
     </tr>
   </thead>
   <tbody>
@@ -1639,43 +1650,63 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
     <tr>
       <th>0</th>
       <td>user_1</td>
-      <td>question_1</td>
+      <td>item_1</td>
       <td>0</td>
     </tr>
     <tr>
       <th>1</th>
       <td>user_2</td>
-      <td>question_1</td>
+      <td>item_1</td>
       <td>0</td>
     </tr>
     <tr>
       <th>2</th>
       <td>user_3</td>
-      <td>question_1</td>
+      <td>item_1</td>
       <td>3</td>
     </tr>
     <tr>
       <th>3</th>
       <td>user_4</td>
-      <td>question_1</td>
+      <td>item_1</td>
       <td>0</td>
     </tr>
     <tr>
       <th>4</th>
       <td>user_5</td>
-      <td>question_1</td>
+      <td>item_1</td>
       <td>0</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
+<section id="cutpoints">
+<h3>閾値（cutpoints）の推定<a class="headerlink" href="#cutpoints" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://www.pymc.io/projects/docs/en/latest/api/distributions/generated/pymc.OrderedLogistic.html"><code class="docutils literal notranslate"><span class="pre">pymc.OrderedLogistic</span></code></a> が <span class="math notranslate nohighlight">\(\text{logit}^{-1}(\eta - c_k)\)</span> なので、IRTモデルの<span class="math notranslate nohighlight">\(\text{logit}^{-1}(a(\theta - b_k)) = \text{logit}^{-1}(a\theta - a b_k)\)</span> に合わせると <code class="docutils literal notranslate"><span class="pre">cutpoints</span> <span class="pre">=</span> <span class="pre">a[:,</span> <span class="pre">None]</span> <span class="pre">*</span> <span class="pre">b</span></code> のようにするのが素直な実装。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- GRM の閾値：各 item ごとに (K-1) 本 ---</span>
+<span class="c1"># ordered transform が last axis に対して単調増加を強制する想定</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span>
+    <span class="s2">&quot;b&quot;</span><span class="p">,</span>
+    <span class="n">mu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_thresholds</span><span class="p">),</span>
+    <span class="n">sigma</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;item&quot;</span><span class="p">,</span> <span class="s2">&quot;threshold&quot;</span><span class="p">),</span>
+    <span class="n">initval</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_thresholds</span><span class="p">),</span> <span class="p">(</span><span class="n">num_items</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="c1"># 初期値を指定</span>
+    <span class="n">transform</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ordered</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># GRM の cutpoints: a_j * b_{jk}</span>
+<span class="c1"># OrderedLogistic は P(Y &gt;= k) = sigma(eta - cutpoints_k) を計算するため、</span>
+<span class="c1"># Samejima のパラメタリゼーション P(Y &gt;= k) = sigma(a*(theta - b)) に合わせるには</span>
+<span class="c1"># cutpoints = a * b とする必要がある（a &gt; 0 なので順序は保たれる）</span>
+<span class="n">cutpoints</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span>
+</pre></div>
+</div>
+<p>しかし、これはaとbに依存が関係が生じてサンプリングが安定しにくいかもしれない。<code class="docutils literal notranslate"><span class="pre">cutpoints</span> <span class="pre">=</span> <span class="pre">pm.Normal()</span></code> にして <code class="docutils literal notranslate"><span class="pre">b</span> <span class="pre">=</span> <span class="pre">cutpoints</span> <span class="pre">/</span> <span class="pre">a[:,</span> <span class="pre">None]</span></code> としたほうが良いかも</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pymc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pm</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pytensor.tensor</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pt</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.miscmodels.ordinal_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedModel</span>
 
 <span class="c1"># indexと値の取得</span>
 <span class="n">user_idx</span> <span class="o">=</span> <span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
@@ -1696,36 +1727,32 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
 <span class="p">}</span>
 
 <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">)</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
-    <span class="n">user_idx_</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="s2">&quot;user_idx&quot;</span><span class="p">,</span> <span class="n">user_idx</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;obs_id&quot;</span><span class="p">)</span>
-    <span class="n">item_idx_</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="s2">&quot;item_idx&quot;</span><span class="p">,</span> <span class="n">item_idx</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;obs_id&quot;</span><span class="p">)</span>
     <span class="n">responses_</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="s2">&quot;responses&quot;</span><span class="p">,</span> <span class="n">responses</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;obs_id&quot;</span><span class="p">)</span>
 
     <span class="n">theta</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">)</span>
     <span class="n">a</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">LogNormal</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;item&quot;</span><span class="p">)</span>
 
-    <span class="c1"># --- GRM の閾値：各 item ごとに (K-1) 本 ---</span>
-    <span class="c1"># ordered transform が last axis に対して単調増加を強制する想定</span>
+    <span class="c1"># --- 閾値：各 item ごとに (K-1) 本 ---</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span>
         <span class="s2">&quot;b&quot;</span><span class="p">,</span>
-        <span class="n">mu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_thresholds</span><span class="p">),</span>   <span class="c1"># 初期の目安</span>
+        <span class="n">mu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_thresholds</span><span class="p">),</span>
         <span class="n">sigma</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
         <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;item&quot;</span><span class="p">,</span> <span class="s2">&quot;threshold&quot;</span><span class="p">),</span>
+        <span class="n">initval</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_thresholds</span><span class="p">),</span> <span class="p">(</span><span class="n">num_items</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="c1"># 初期値を指定</span>
         <span class="n">transform</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ordered</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="c1"># 線形予測子</span>
-    <span class="n">eta</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">item_idx_</span><span class="p">]</span> <span class="o">*</span> <span class="n">theta</span><span class="p">[</span><span class="n">user_idx_</span><span class="p">]</span>
+    <span class="c1"># OrderedLogistic は P(Y &gt;= k) = inv_logit(eta - cutpoints_k) を計算するため、</span>
+    <span class="c1"># GRM の P(Y &gt;= k) = inv_logit(a*(theta - b_k)) に合わせてcutpoints_k = a * b_k</span>
+    <span class="n">cutpoints</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s2">&quot;cutpoints&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span>
 
-    <span class="c1"># GRM の cutpoints: a_j * b_{jk}</span>
-    <span class="c1"># OrderedLogistic は P(Y &gt;= k) = sigma(eta - cutpoints_k) を計算するため、</span>
-    <span class="c1"># Samejima のパラメタリゼーション P(Y &gt;= k) = sigma(a*(theta - b)) に合わせるには</span>
-    <span class="c1"># cutpoints = a * b とする必要がある（a &gt; 0 なので順序は保たれる）</span>
-    <span class="n">cutpoints</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span>
+    <span class="c1"># 線形予測子</span>
+    <span class="n">eta</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s2">&quot;eta&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="n">item_idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">theta</span><span class="p">[</span><span class="n">user_idx</span><span class="p">])</span>
 
     <span class="c1"># 観測：item ごとの cutpoints を観測ごとに参照</span>
     <span class="n">pm</span><span class="o">.</span><span class="n">OrderedLogistic</span><span class="p">(</span>
         <span class="s2">&quot;obs&quot;</span><span class="p">,</span>
         <span class="n">eta</span><span class="o">=</span><span class="n">eta</span><span class="p">,</span>
-        <span class="n">cutpoints</span><span class="o">=</span><span class="n">cutpoints</span><span class="p">[</span><span class="n">item_idx_</span><span class="p">],</span>
+        <span class="n">cutpoints</span><span class="o">=</span><span class="n">cutpoints</span><span class="p">[</span><span class="n">item_idx</span><span class="p">],</span>
         <span class="n">observed</span><span class="o">=</span><span class="n">responses_</span><span class="p">,</span>
         <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;obs_id&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1733,13 +1760,23 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
 </div>
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pm</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/31c10a8a71cfe473fcfe19f52d11536a62bea244d4d3640b3f3989f61d43df5b.svg" src="../../../_images/31c10a8a71cfe473fcfe19f52d11536a62bea244d4d3640b3f3989f61d43df5b.svg" />
+</div>
+</div>
 <section id="id3">
-<h3>推定<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<h4>推定<a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
 <span class="k">with</span> <span class="n">model</span><span class="p">:</span>
-    <span class="n">idata</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">random_seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">draws</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">idata</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">random_seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">draws</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">tune</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1753,7 +1790,7 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>NUTS: [theta, a, b]
 </pre></div>
 </div>
-<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "19119c8ffbba469a82409848e2ba758d"}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "47bc409475eb4ff794ac4a394d654aaa"}</script><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
 </div><div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
 <span class="n">File</span> <span class="o">&lt;</span><span class="n">timed</span> <span class="n">exec</span><span class="o">&gt;</span><span class="p">:</span><span class="mi">2</span>
@@ -1795,8 +1832,184 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
 </div>
 </div>
 </section>
+</section>
 <section id="eap">
 <h3>EAP推定量<a class="headerlink" href="#eap" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">arviz</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">az</span>
+<span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">],</span> <span class="n">round_to</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mean</th>
+      <th>sd</th>
+      <th>hdi_3%</th>
+      <th>hdi_97%</th>
+      <th>mcse_mean</th>
+      <th>mcse_sd</th>
+      <th>ess_bulk</th>
+      <th>ess_tail</th>
+      <th>r_hat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>a[item_1]</th>
+      <td>0.94</td>
+      <td>0.09</td>
+      <td>0.77</td>
+      <td>1.12</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>2406.78</td>
+      <td>2928.07</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>a[item_2]</th>
+      <td>0.75</td>
+      <td>0.07</td>
+      <td>0.62</td>
+      <td>0.89</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1172.53</td>
+      <td>1324.90</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>a[item_3]</th>
+      <td>0.90</td>
+      <td>0.08</td>
+      <td>0.75</td>
+      <td>1.05</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1331.70</td>
+      <td>2025.87</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>a[item_4]</th>
+      <td>1.13</td>
+      <td>0.10</td>
+      <td>0.96</td>
+      <td>1.31</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>2135.03</td>
+      <td>2944.66</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>a[item_5]</th>
+      <td>0.88</td>
+      <td>0.08</td>
+      <td>0.74</td>
+      <td>1.05</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1712.02</td>
+      <td>2359.38</td>
+      <td>1.01</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>b[item_19, 1]</th>
+      <td>0.12</td>
+      <td>0.08</td>
+      <td>-0.04</td>
+      <td>0.26</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>2724.39</td>
+      <td>3421.61</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>b[item_19, 2]</th>
+      <td>1.30</td>
+      <td>0.13</td>
+      <td>1.05</td>
+      <td>1.55</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1597.53</td>
+      <td>2120.53</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>b[item_20, 0]</th>
+      <td>-0.64</td>
+      <td>0.08</td>
+      <td>-0.78</td>
+      <td>-0.50</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1336.95</td>
+      <td>2396.03</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>b[item_20, 1]</th>
+      <td>1.38</td>
+      <td>0.11</td>
+      <td>1.18</td>
+      <td>1.58</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>2044.45</td>
+      <td>2471.56</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>b[item_20, 2]</th>
+      <td>2.64</td>
+      <td>0.18</td>
+      <td>2.32</td>
+      <td>3.00</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1817.68</td>
+      <td>2467.32</td>
+      <td>1.00</td>
+    </tr>
+  </tbody>
+</table>
+<p>80 rows × 9 columns</p>
+</div></div></div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">post_mean</span> <span class="o">=</span> <span class="n">idata</span><span class="o">.</span><span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chain&quot;</span><span class="p">,</span> <span class="s2">&quot;draw&quot;</span><span class="p">])</span>
@@ -1836,28 +2049,28 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
   <tbody>
     <tr>
       <th>0</th>
-      <td>question_1</td>
-      <td>0.943863</td>
+      <td>item_1</td>
+      <td>0.944434</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>question_2</td>
-      <td>0.747024</td>
+      <td>item_2</td>
+      <td>0.751282</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>question_3</td>
-      <td>0.900281</td>
+      <td>item_3</td>
+      <td>0.898166</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>question_4</td>
-      <td>1.136561</td>
+      <td>item_4</td>
+      <td>1.134108</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>question_5</td>
-      <td>0.886757</td>
+      <td>item_5</td>
+      <td>0.884190</td>
     </tr>
   </tbody>
 </table>
@@ -1893,13 +2106,743 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../../_images/206d857dbaed29f7b4de328f775a0fc89e19fc920f6890fc9fc88a8274dc91bf.png" src="../../../_images/206d857dbaed29f7b4de328f775a0fc89e19fc920f6890fc9fc88a8274dc91bf.png" />
+<img alt="../../../_images/7698b8a0b7eb8950fa366ac58d7a6e84b6aa7d892c789e47adf871d2beb837dc.png" src="../../../_images/7698b8a0b7eb8950fa366ac58d7a6e84b6aa7d892c789e47adf871d2beb837dc.png" />
 </div>
 </div>
 </section>
 </section>
 <section id="id4">
-<h2>参考文献<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<h2>実装例（各項目のカテゴリ数が異なる場合）<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>OrderedLogisticを複数個重ねるように実装する方法がある</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># respondents</span>
+<span class="n">J</span> <span class="o">=</span> <span class="mi">20</span>   <span class="c1"># items total</span>
+
+<span class="c1"># K per item</span>
+<span class="n">K_per_item</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="mi">7</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="mi">7</span> <span class="o">+</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mi">6</span><span class="p">)</span>
+
+<span class="c1"># True parameters</span>
+<span class="n">theta_true</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+<span class="n">a_true</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">J</span><span class="p">)</span>
+<span class="c1"># b_true[j]: sorted array of K_j-1 thresholds</span>
+<span class="n">b_true</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">K_per_item</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">J</span><span class="p">)]</span>
+
+<span class="c1"># Generate responses</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">J</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">J</span><span class="p">):</span>
+    <span class="n">K_j</span> <span class="o">=</span> <span class="n">K_per_item</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+    <span class="c1"># P*(Y &gt;= k) for k=1,...,K_j-1 — shape (N, K_j-1)</span>
+    <span class="n">eta</span> <span class="o">=</span> <span class="n">a_true</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">theta_true</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">b_true</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="n">cum_p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">eta</span><span class="p">))</span>
+    <span class="n">probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span>
+        <span class="mi">1</span> <span class="o">-</span> <span class="n">cum_p</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">cum_p</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">cum_p</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:],</span>
+        <span class="n">cum_p</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:],</span>
+    <span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (N, K_j)</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">Y</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">u</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Response matrix shape: </span><span class="si">{</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">K_per_item</span><span class="p">):</span>
+    <span class="n">items_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">K_per_item</span> <span class="o">==</span> <span class="n">k</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">Y</span><span class="p">[:,</span> <span class="n">items_k</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">minlength</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;K=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">items_k</span><span class="p">)</span><span class="si">}</span><span class="s2"> items, category counts = </span><span class="si">{</span><span class="n">counts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Response matrix shape: (100, 20)
+K=3: 7 items, category counts = [275 154 271]
+K=4: 7 items, category counts = [256  85 113 246]
+K=5: 6 items, category counts = [193  38  92 124 153]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span>
+                  <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;user_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])],</span>
+                  <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;item_</span><span class="si">{</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>item_1</th>
+      <th>item_2</th>
+      <th>item_3</th>
+      <th>item_4</th>
+      <th>item_5</th>
+      <th>item_6</th>
+      <th>item_7</th>
+      <th>item_8</th>
+      <th>item_9</th>
+      <th>item_10</th>
+      <th>item_11</th>
+      <th>item_12</th>
+      <th>item_13</th>
+      <th>item_14</th>
+      <th>item_15</th>
+      <th>item_16</th>
+      <th>item_17</th>
+      <th>item_18</th>
+      <th>item_19</th>
+      <th>item_20</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>user_96</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>4</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>user_97</th>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>3</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>user_98</th>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>3</td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>user_99</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>3</td>
+      <td>0</td>
+      <td>3</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>2</td>
+      <td>4</td>
+      <td>3</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>user_100</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>3</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 縦持ちへ変換</span>
+<span class="n">user_categories</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span>
+<span class="n">item_categories</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+
+<span class="n">df_long</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span>
+    <span class="n">id_vars</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">,</span>
+    <span class="n">var_name</span><span class="o">=</span><span class="s2">&quot;item&quot;</span><span class="p">,</span>
+    <span class="n">value_name</span><span class="o">=</span><span class="s2">&quot;response&quot;</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">})</span>
+
+<span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">],</span> <span class="n">categories</span><span class="o">=</span><span class="n">user_categories</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">],</span> <span class="n">categories</span><span class="o">=</span><span class="n">item_categories</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">df_long</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>user</th>
+      <th>item</th>
+      <th>response</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>user_1</td>
+      <td>item_1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>user_2</td>
+      <td>item_1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>user_3</td>
+      <td>item_1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>user_4</td>
+      <td>item_1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>user_5</td>
+      <td>item_1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pymc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pm</span>
+
+<span class="c1"># indexと値の取得</span>
+<span class="n">user_idx</span> <span class="o">=</span> <span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">users</span> <span class="o">=</span> <span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">item_idx</span> <span class="o">=</span> <span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">items</span> <span class="o">=</span> <span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">responses</span> <span class="o">=</span> <span class="n">df_long</span><span class="p">[</span><span class="s2">&quot;response&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>  <span class="c1"># 0..K-1</span>
+
+<span class="c1"># カテゴリ数</span>
+<span class="n">K</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">responses</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">n_thresholds</span> <span class="o">=</span> <span class="n">K</span> <span class="o">-</span> <span class="mi">1</span>
+
+<span class="n">coords</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">users</span><span class="p">,</span>
+    <span class="s2">&quot;item&quot;</span><span class="p">:</span> <span class="n">items</span><span class="p">,</span>
+    <span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_thresholds</span><span class="p">),</span>
+    <span class="s2">&quot;obs_id&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df_long</span><span class="p">)),</span>
+<span class="p">}</span>
+
+<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">)</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">responses_</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="s2">&quot;responses&quot;</span><span class="p">,</span> <span class="n">responses</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;obs_id&quot;</span><span class="p">)</span>
+
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">LogNormal</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;item&quot;</span><span class="p">)</span>
+
+    <span class="c1"># --- GRM の閾値：各 item ごとに (K-1) 本 ---</span>
+    <span class="c1"># ordered transform が last axis に対して単調増加を強制する想定</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span>
+        <span class="s2">&quot;b&quot;</span><span class="p">,</span>
+        <span class="n">mu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_thresholds</span><span class="p">),</span>   <span class="c1"># 初期の目安</span>
+        <span class="n">sigma</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;item&quot;</span><span class="p">,</span> <span class="s2">&quot;threshold&quot;</span><span class="p">),</span>
+        <span class="n">transform</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ordered</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># 線形予測子</span>
+    <span class="n">eta</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">item_idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">theta</span><span class="p">[</span><span class="n">user_idx</span><span class="p">]</span>
+
+    <span class="c1"># GRM の cutpoints: a_j * b_{jk}</span>
+    <span class="c1"># OrderedLogistic は P(Y &gt;= k) = sigma(eta - cutpoints_k) を計算するため、</span>
+    <span class="c1"># Samejima のパラメタリゼーション P(Y &gt;= k) = sigma(a*(theta - b)) に合わせるには</span>
+    <span class="c1"># cutpoints = a * b とする必要がある（a &gt; 0 なので順序は保たれる）</span>
+    <span class="n">cutpoints</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span>
+
+    <span class="c1"># 観測：item ごとの cutpoints を観測ごとに参照</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">OrderedLogistic</span><span class="p">(</span>
+        <span class="s2">&quot;obs&quot;</span><span class="p">,</span>
+        <span class="n">eta</span><span class="o">=</span><span class="n">eta</span><span class="p">,</span>
+        <span class="n">cutpoints</span><span class="o">=</span><span class="n">cutpoints</span><span class="p">[</span><span class="n">item_idx</span><span class="p">],</span>
+        <span class="n">observed</span><span class="o">=</span><span class="n">responses_</span><span class="p">,</span>
+        <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;obs_id&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="id5">
+<h3>モデル<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://www.jstage.jst.go.jp/article/jjep1953/52/1/52_61/_article/-char/ja/">荘島宏二郎 &amp; 豊田秀樹 (2004)</a> を参考に、複数のモデルの尤度を掛けるようにして混合形式のモデルを構築する。</p>
+<p>ある項目<span class="math notranslate nohighlight">\(j\)</span>のカテゴリ数が<span class="math notranslate nohighlight">\(k\)</span>個だとし、それをGRMでモデリングした項目特性曲線を <span class="math notranslate nohighlight">\(P^{GRM(k)}_j(\theta)\)</span> とすると、今回のデータはカテゴリ数が<span class="math notranslate nohighlight">\(k=3\)</span>の項目が7個、<span class="math notranslate nohighlight">\(k=4\)</span>の項目が7個、<span class="math notranslate nohighlight">\(k=5\)</span>の項目が6個なので</p>
+<div class="math notranslate nohighlight">
+\[
+L(\theta) = \prod_{i=1}^N \left\{
+\prod_{j=1}^7 P^{GRM(3)}_j(\theta_i) 
+\times \prod_{j=1}^7 P^{GRM(4)}_j(\theta_i) 
+\times \prod_{j=1}^6 P^{GRM(5)}_j(\theta_i) 
+\right\}
+\]</div>
+<p>となる。同じカテゴリ数の項目ごとにグルーピングして実装すれば</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]:</span>
+        <span class="n">subset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">K_per_item</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span> <span class="c1"># 対応する項目を取り出す</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">OrderedLogistic</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="c1"># GRMを構築</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p>のように実装できる</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">K_per_item</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">unique_K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">K_per_item</span><span class="p">))</span>
+
+<span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+    <span class="c1"># theta, aはkによらず共通</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">LogNormal</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">J</span><span class="p">)</span>
+
+    <span class="c1"># カテゴリ数Kが同じ項目ごとにまとめてGRMを構築</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">unique_K</span><span class="p">:</span>
+        <span class="n">item_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">K_per_item</span> <span class="o">==</span> <span class="n">k</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">J_k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_idx</span><span class="p">)</span>
+        <span class="n">Y_k</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[:,</span> <span class="n">item_idx</span><span class="p">]</span>  <span class="c1"># (N, J_k)</span>
+        <span class="n">b_k</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;b_</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">mu</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="n">sigma</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+            <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">J_k</span><span class="p">,</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">transform</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ordered</span><span class="p">,</span>
+            <span class="n">initval</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">J_k</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+        <span class="p">)</span>
+
+        <span class="n">eta_k</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;eta_</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">theta</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">a</span><span class="p">[</span><span class="n">item_idx</span><span class="p">][</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>   <span class="c1"># (N, J_k)</span>
+        <span class="n">cutpoints_k</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cutpoints_</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="n">item_idx</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">b_k</span><span class="p">)</span>  <span class="c1"># (J_k, K-1)</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">OrderedLogistic</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;y_</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">eta</span><span class="o">=</span><span class="n">eta_k</span><span class="p">,</span>
+            <span class="n">cutpoints</span><span class="o">=</span><span class="n">cutpoints_k</span><span class="p">,</span>
+            <span class="n">observed</span><span class="o">=</span><span class="n">Y_k</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<span class="n">pm</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/5643e557391f9704bbdcb5cb7e26f3064fe28230d49a22d3df106409741eae30.svg" src="../../../_images/5643e557391f9704bbdcb5cb7e26f3064fe28230d49a22d3df106409741eae30.svg" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">model</span><span class="p">:</span>
+    <span class="n">idata</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+        <span class="n">draws</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
+        <span class="n">tune</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>
+        <span class="n">chains</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">target_accept</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+        <span class="n">random_seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+        <span class="n">progressbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">nuts_sampler</span><span class="o">=</span><span class="s2">&quot;numpyro&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:2026-04-29 20:37:55,403:jax._src.xla_bridge:794: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+</pre></div>
+</div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "a0efcef85a8b4bc6a4a7ea89cd0b1586", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "230e02ff8cdf44d58f21426b76aab429", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "8b2e69ea12bb4560bfbe37f76c11823e", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "aa4c5154d2df4a1d827683486cc0587d", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+</section>
+<section id="id6">
+<h3>EAP推定値<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">item_params</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;item&quot;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">})</span>
+<span class="n">item_params</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">idata</span><span class="o">.</span><span class="n">posterior</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chain&quot;</span><span class="p">,</span> <span class="s2">&quot;draw&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># (J,)</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">K_per_item</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+    <span class="n">b_col</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;b_</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">B_k</span> <span class="o">=</span> <span class="n">idata</span><span class="o">.</span><span class="n">posterior</span><span class="p">[</span><span class="n">b_col</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chain&quot;</span><span class="p">,</span> <span class="s2">&quot;draw&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">J_k</span> <span class="o">=</span> <span class="n">B_k</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">B_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">B_k</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;b</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">J_k</span><span class="p">)])</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">B_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">item_params</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="n">K_per_item</span><span class="p">),</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">B_df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+<span class="c1"># mirtパッケージのような表</span>
+<span class="n">item_params</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>item</th>
+      <th>a</th>
+      <th>b1</th>
+      <th>b2</th>
+      <th>b3</th>
+      <th>b4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>item_1</td>
+      <td>0.489036</td>
+      <td>-0.561038</td>
+      <td>0.347300</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>item_2</td>
+      <td>1.996779</td>
+      <td>0.126741</td>
+      <td>1.518604</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>item_3</td>
+      <td>0.644764</td>
+      <td>0.497665</td>
+      <td>0.870190</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>item_4</td>
+      <td>1.092062</td>
+      <td>-1.700215</td>
+      <td>2.220444</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>item_5</td>
+      <td>0.851446</td>
+      <td>-1.085440</td>
+      <td>-0.830939</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>item_6</td>
+      <td>0.634875</td>
+      <td>-1.676081</td>
+      <td>-0.222854</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>item_7</td>
+      <td>0.666209</td>
+      <td>-0.536491</td>
+      <td>0.720370</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>item_8</td>
+      <td>0.932530</td>
+      <td>-1.359590</td>
+      <td>-0.638903</td>
+      <td>0.599335</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>item_9</td>
+      <td>1.832579</td>
+      <td>0.628938</td>
+      <td>1.822901</td>
+      <td>2.857112</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>item_10</td>
+      <td>0.436971</td>
+      <td>-1.925663</td>
+      <td>-0.699537</td>
+      <td>0.517263</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>item_11</td>
+      <td>0.940934</td>
+      <td>-1.116973</td>
+      <td>-0.544383</td>
+      <td>1.034707</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>item_12</td>
+      <td>0.830151</td>
+      <td>-0.968405</td>
+      <td>-0.259681</td>
+      <td>1.653884</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>item_13</td>
+      <td>0.445196</td>
+      <td>-1.087842</td>
+      <td>-0.387065</td>
+      <td>0.290356</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>item_14</td>
+      <td>0.468102</td>
+      <td>-1.913398</td>
+      <td>-0.455333</td>
+      <td>0.074721</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>item_15</td>
+      <td>0.823297</td>
+      <td>-0.462799</td>
+      <td>0.134753</td>
+      <td>1.090493</td>
+      <td>1.951486</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>item_16</td>
+      <td>0.768977</td>
+      <td>-1.459521</td>
+      <td>-1.174272</td>
+      <td>-0.788920</td>
+      <td>2.241960</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>item_17</td>
+      <td>0.940680</td>
+      <td>-1.607840</td>
+      <td>-1.466008</td>
+      <td>0.932928</td>
+      <td>1.214162</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>item_18</td>
+      <td>0.635062</td>
+      <td>-1.132506</td>
+      <td>0.061923</td>
+      <td>0.270567</td>
+      <td>1.003326</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>item_19</td>
+      <td>2.166546</td>
+      <td>-1.499126</td>
+      <td>-1.306246</td>
+      <td>-0.265567</td>
+      <td>0.632866</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>item_20</td>
+      <td>0.601235</td>
+      <td>-0.057220</td>
+      <td>0.431428</td>
+      <td>0.503008</td>
+      <td>2.731121</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta_mean</span> <span class="o">=</span> <span class="n">idata</span><span class="o">.</span><span class="n">posterior</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chain&quot;</span><span class="p">,</span> <span class="s2">&quot;draw&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># (N,)</span>
+<span class="n">thetas</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;person&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="s2">&quot;theta&quot;</span><span class="p">:</span> <span class="n">theta_mean</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id7">
+<h3>真値と比較<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">theta_true</span><span class="p">,</span> <span class="n">theta_mean</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta_true</span><span class="p">,</span> <span class="n">theta_true</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;true_theta&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;theta_hat&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">a_true</span><span class="p">,</span> <span class="n">item_params</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">a_true</span><span class="p">,</span> <span class="n">a_true</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;true_a&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;a_hat&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">b_hat_flatten</span> <span class="o">=</span> <span class="n">item_params</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s2">&quot;b\d&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">b_true</span><span class="p">),</span> <span class="n">b_hat_flatten</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">b_hat_flatten</span><span class="p">)])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">true_b</span><span class="p">,</span> <span class="n">true_b</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;true_b&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;b_hat&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../../_images/fba8b2251c58b576cc754eb5e8ed305b125330551015d711172f762b3a42bf77.png" src="../../../_images/fba8b2251c58b576cc754eb5e8ed305b125330551015d711172f762b3a42bf77.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h2>分析手順<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<p>チュートリアル論文 <a class="reference external" href="https://onlinelibrary.wiley.com/doi/10.1002/ijop.13265">Zein, R. A., &amp; Akhtar, H. (2025). Getting started with the graded response model: an introduction and tutorial in R</a> によると</p>
+</section>
+<section id="id9">
+<h2>参考文献<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://link.springer.com/article/10.1007/BF03372160">Samejima, F. (1969). Estimation of latent ability using a response pattern of graded scores. Psychometrika, 34(S1), 1-97.</a></p></li>
 <li><p>Lipovetsky, S. (2021). Handbook of Item Response Theory, Volume 1, Models. Technometrics, 63(3), 428-431.</p></li>
@@ -1971,12 +2914,22 @@ P(y_{ij} = k) = \frac{1}{1+ \exp(-a_j (\theta_i - b_{jk}) )} - \frac{1}{1+ \exp(
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実装例</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">推定</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実装例（全項目のカテゴリ数が等しい場合）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cutpoints">閾値（cutpoints）の推定</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">推定</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eap">EAP推定量</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">参考文献</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">実装例（各項目のカテゴリ数が異なる場合）</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">モデル</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">EAP推定値</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">真値と比較</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">分析手順</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">参考文献</a></li>
 </ul>
   </nav></div>
 
