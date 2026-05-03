@@ -112,7 +112,7 @@
 - [](machine_learning/ml_ops/index)
 - [](machine_learning/overfitting)
 - [](machine_learning/feature_engineering)
-- [](machine_learning/explainability/introduction)
+- [](machine_learning/explainability/index)
 - [](machine_learning/uncertainty/index)
 - [](machine_learning/adversarial_ml/index)
 - [](machine_learning/deep_learning/index)
