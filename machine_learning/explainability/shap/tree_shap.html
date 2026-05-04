@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Tree SHAP / TreeExplainer &#8212; データサイエンス関連+αのメモ</title>
+    <title>Tree SHAP &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -71,6 +71,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'machine_learning/explainability/shap/tree_shap';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -598,7 +600,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">SHAP</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="shap.html">SHAP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kernel_shap.html">Kernel SHAP</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Tree SHAP / <code class="docutils literal notranslate"><span class="pre">TreeExplainer</span></code></a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Tree SHAP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="interaction.html">交互作用のSHAP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gam.html">一般化加法モデル（GAM）との関係</a></li>
 </ul>
@@ -1344,7 +1346,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Tree SHAP / TreeExplainer</h1>
+    <h1>Tree SHAP</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -1354,11 +1356,20 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">アルゴリズム</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">その後の改善</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">アルゴリズム</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shapley-values">Shapley values</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#o-tl2-m">シンプルだが <span class="math notranslate nohighlight">\(O(TL2^M)\)</span> のアルゴリズム</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">例</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#o-tld-2"><span class="math notranslate nohighlight">\(O(TLD^2)\)</span> のアルゴリズム</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treeshap">TreeSHAP</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">解説</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shap-interaction-values">SHAP interaction values</a></li>
 </ul>
             </nav>
         </div>
@@ -1370,18 +1381,207 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="tree-shap-treeexplainer">
-<h1>Tree SHAP / <code class="docutils literal notranslate"><span class="pre">TreeExplainer</span></code><a class="headerlink" href="#tree-shap-treeexplainer" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="tree-shap">
+<h1>Tree SHAP<a class="headerlink" href="#tree-shap" title="Link to this heading">#</a></h1>
 <p>決定木ベースの手法で高速にSHAPを計算する手法。</p>
 <p>論文上のアルゴリズム名はTreeSHAP、shapパッケージの実装としては <a class="reference external" href="https://shap.readthedocs.io/en/latest/generated/shap.TreeExplainer.html">TreeExplainer</a></p>
 <section id="id1">
 <h2>アルゴリズム<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>TreeSHAPはインスタンスが木のどの葉に分岐するのかの割合を計算する</p>
+<section id="shapley-values">
+<h3>Shapley values<a class="headerlink" href="#shapley-values" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(N\)</span> は全特徴量集合、<span class="math notranslate nohighlight">\(M\)</span> は特徴量数とする。特徴量集合 <span class="math notranslate nohighlight">\(S\)</span> が観測されているときの条件付き期待値 <span class="math notranslate nohighlight">\(f_x(S)=E[f(x)\mid x_S]\)</span> をとすると、Shapley valuesは</p>
+<div class="math notranslate nohighlight">
+\[
+\phi_i =
+\sum_{S \subseteq N \setminus \{i\}}
+\frac{|S|!(M-|S|-1)!}{M!}
+[f_x(S \cup \{i\}) - f_x(S)]
+\]</div>
+<p>となる。</p>
+<p>Tree SHAPアルゴリズムは木構造に特化してShapley valuesを厳密に計算し、計算量を従来の <span class="math notranslate nohighlight">\(O(TL2^M)\)</span> から <span class="math notranslate nohighlight">\(O(TLD^2)\)</span> に削減できる。ここで <span class="math notranslate nohighlight">\(T\)</span> は木の数、<span class="math notranslate nohighlight">\(L\)</span> は各木の最大葉数、<span class="math notranslate nohighlight">\(D\)</span> は最大の深さである。</p>
+<p>上の式のうち <span class="math notranslate nohighlight">\(f_x(S)=E[f(x)\mid x_S]\)</span> の推定が課題となる。</p>
 </section>
+<section id="o-tl2-m">
+<h3>シンプルだが <span class="math notranslate nohighlight">\(O(TL2^M)\)</span> のアルゴリズム<a class="headerlink" href="#o-tl2-m" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(f_x(S)=E[f(x)\mid x_S]\)</span> を推定する単純で計算量の多いアルゴリズム。</p>
+<div class="admonition-algorithm-1-estimating-e-f-x-do-x-s-x-s admonition">
+<p class="admonition-title">Algorithm 1 Estimating <span class="math notranslate nohighlight">\(E[f(X) | do(X_S = x_S)]\)</span></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">EXPVALUE</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">tree</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">d</span><span class="p">}):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">G</span><span class="p">(</span><span class="n">j</span><span class="p">):</span>                <span class="c1"># 再帰関数 G の定義開始</span>
+        <span class="k">if</span> <span class="n">v_j</span> <span class="o">!=</span> <span class="n">internal</span><span class="p">:</span>  <span class="c1"># ノードjが葉かどうか判定</span>
+            <span class="k">return</span> <span class="n">v_j</span>       <span class="c1"># 葉の値を返す</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d_j</span> <span class="ow">in</span> <span class="n">S</span><span class="p">:</span>     <span class="c1"># この特徴量で条件付けしてるか確認</span>
+                <span class="c1"># この木の経路の子ノードを使う</span>
+                <span class="k">return</span> <span class="n">G</span><span class="p">(</span><span class="n">a_j</span><span class="p">)</span> <span class="k">if</span> <span class="n">x_</span><span class="p">{</span><span class="n">d_j</span><span class="p">}</span> <span class="o">&lt;=</span> <span class="n">t_j</span> <span class="k">else</span> <span class="n">G</span><span class="p">(</span><span class="n">b_j</span><span class="p">)</span>
+            <span class="k">else</span>
+                <span class="c1"># カバレッジrで重み付け</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">G</span><span class="p">(</span><span class="n">a_j</span><span class="p">)</span> <span class="o">*</span> <span class="n">r_</span><span class="p">{</span><span class="n">a_j</span><span class="p">}</span> <span class="o">+</span> <span class="n">G</span><span class="p">(</span><span class="n">b_j</span><span class="p">)</span> <span class="o">*</span> <span class="n">r_</span><span class="p">{</span><span class="n">b_j</span><span class="p">}]</span> <span class="o">/</span> <span class="n">r_j</span>
+    <span class="k">return</span> <span class="n">G</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># root nodeから実行</span>
+</pre></div>
+</div>
+<p>ここで、</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(v\)</span> はノード値のベクトル。内部ノード（葉じゃないノード）に対しては <code class="docutils literal notranslate"><span class="pre">internal</span></code> という値を取る</p></li>
+<li><p>ベクトル <span class="math notranslate nohighlight">\(a\)</span> と <span class="math notranslate nohighlight">\(b\)</span> は、それぞれ各内部ノードにおける左子ノードと右子ノードのインデックスを表す</p></li>
+<li><p>ベクトル <span class="math notranslate nohighlight">\(t\)</span> は各内部ノードにおける閾値</p></li>
+<li><p><span class="math notranslate nohighlight">\(d\)</span> は、内部ノードで分割に使われる特徴量のインデックスのベクトル</p></li>
+<li><p>ベクトル <span class="math notranslate nohighlight">\(r\)</span> は各部分木にどれだけのデータサンプルが落ちるか（cover）を表している。</p></li>
+</ul>
+<p>出所：<a class="reference external" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7326367/">Lundberg et al. (2020)</a></p>
+</div>
 <section id="id2">
-<h2>その後の改善<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h4>例<a class="headerlink" href="#id2" title="Link to this heading">#</a></h4>
+<p>次のような木を考える</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>root: x_1 &lt;= 5 ?
+├── left leaf:  v = 10, cover = 30
+└── right node: cover = 70
+    ├── x_2 &lt;= 3 leaf: v = 20,  cover = 50
+    └── x_2 &gt; 3  leaf: v = 100, cover = 20
+</pre></div>
+</div>
+<p>説明対象のインスタンスが<span class="math notranslate nohighlight">\(x_1 = 7, x_2 = 2\)</span>だとする</p>
+<p><span class="math notranslate nohighlight">\(S = \{1, 2\}\)</span>の場合：<br />
+<span class="math notranslate nohighlight">\(x_1 &lt;= 5\)</span> → right node<br />
+→ <span class="math notranslate nohighlight">\(x_2 &lt;= 3\)</span> で <span class="math notranslate nohighlight">\(v=20\)</span> → <span class="math notranslate nohighlight">\(E[f(X) \mid X_1=7, X_2=2]=20\)</span></p>
+<p><span class="math notranslate nohighlight">\(S = {1}\)</span> の場合：<br />
+<span class="math notranslate nohighlight">\(x_1 &lt;= 5\)</span> → right node<br />
+→ <span class="math notranslate nohighlight">\(x_2\)</span>が未知なのでカバー比率<span class="math notranslate nohighlight">\(r\)</span>で子ノードを荷重和</p>
+<div class="math notranslate nohighlight">
+\[
+E[f(X) \mid X_1=7]
+=\frac{50}{70} \cdot 20+\frac{20}{70} \cdot 100
+= \frac{3000}{70} \approx 42.86
+\]</div>
+<p>特徴量の数<span class="math notranslate nohighlight">\(M\)</span>に対し、部分集合<span class="math notranslate nohighlight">\(S\)</span>は<span class="math notranslate nohighlight">\(2^M\)</span>個あるので計算量が多いのが問題</p>
+</section>
+</section>
+<section id="o-tld-2">
+<h3><span class="math notranslate nohighlight">\(O(TLD^2)\)</span> のアルゴリズム<a class="headerlink" href="#o-tld-2" title="Link to this heading">#</a></h3>
+<p>決定木では、ある葉の値に影響するのは、基本的にはその葉に至るパス上に現れた特徴量だけなので、ほかの特徴についてのパスは無視できる → 深さ<span class="math notranslate nohighlight">\(D\)</span>に対し<span class="math notranslate nohighlight">\(O(TLD^2)\)</span></p>
+<div class="admonition-algorithm-2-tree-shap-with-path-dependent-feature-perturbation admonition">
+<p class="admonition-title">Algorithm 2 Tree SHAP with path dependent feature perturbation</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">TREESHAP_PATH</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="p">{</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">d</span><span class="p">}):</span>
+    <span class="c1"># x: SHAP値を計算する対象サンプル</span>
+    <span class="c1"># tree: 木構造。v=ノード値, a/b=子ノード, t=閾値, r=カバー数, d=分割特徴量</span>
+    <span class="n">φ</span> <span class="o">=</span> <span class="n">array</span> <span class="n">of</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">zeros</span>  <span class="c1"># 各特徴量のSHAP値</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">RECURSE</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">pz</span><span class="p">,</span> <span class="n">po</span><span class="p">,</span> <span class="n">pi</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;メインの処理となる再帰関数</span>
+<span class="sd">        </span>
+<span class="sd">        引数：</span>
+<span class="sd">          j: 現在のノード</span>
+<span class="sd">          m: ルートから現在ノードまでのパス情報</span>
+<span class="sd">          pz: pi が「ない」とき、この経路を通る割合</span>
+<span class="sd">          po: pi が「ある」とき、この経路を通る割合</span>
+<span class="sd">          pi: 今回パスに追加する特徴量</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">EXTEND</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">pz</span><span class="p">,</span> <span class="n">po</span><span class="p">,</span> <span class="n">pi</span><span class="p">)</span>  <span class="c1"># mにpiの情報を追加</span>
+
+        <span class="k">if</span> <span class="n">v_j</span> <span class="o">!=</span> <span class="n">internal</span><span class="p">:</span>  <span class="c1"># 葉ノードなら寄与を計算</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="err">←</span> <span class="mi">2</span> <span class="n">to</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+                <span class="c1"># i: パス上の特徴量インデックス。1番目はダミーなので飛ばす</span>
+
+                <span class="n">w</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">UNWIND</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
+                <span class="c1"># w: 特徴量 m_i.d を除いたときのShapley重み</span>
+
+                <span class="n">φ_</span><span class="p">{</span><span class="n">m_i</span><span class="p">}</span> <span class="err">←</span> <span class="n">φ_</span><span class="p">{</span><span class="n">m_i</span><span class="p">}</span> <span class="o">+</span> <span class="n">w</span> <span class="o">*</span> <span class="p">(</span><span class="n">m_i</span><span class="o">.</span><span class="n">o</span> <span class="o">-</span> <span class="n">m_i</span><span class="o">.</span><span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="n">v_j</span>
+                <span class="c1"># m_i.d: 寄与を更新する特徴量</span>
+                <span class="c1"># m_i.o - m_i.z: 特徴量が「ある/ない」で葉への到達割合がどれだけ変わるか</span>
+                <span class="c1"># v_j: 葉の出力値</span>
+
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># 内部ノードなら子ノードへ再帰</span>
+            <span class="n">h</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">a_j</span><span class="p">,</span> <span class="n">b_j</span><span class="p">)</span> <span class="k">if</span> <span class="n">x_</span><span class="p">{</span><span class="n">d_j</span><span class="p">}</span> <span class="o">&lt;=</span> <span class="n">t_j</span> <span class="k">else</span> <span class="p">(</span><span class="n">b_j</span><span class="p">,</span> <span class="n">a_j</span><span class="p">)</span>
+            <span class="c1"># h: hot child。x が実際に進む子ノード</span>
+            <span class="c1"># c: cold child。x が実際には進まない子ノード</span>
+
+            <span class="n">iz</span> <span class="o">=</span> <span class="n">io</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 既存の zero/one fraction の初期値</span>
+
+            <span class="n">k</span> <span class="o">=</span> <span class="n">FINDFIRST</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">d_j</span><span class="p">)</span>
+            <span class="c1"># k: 特徴量 d_j がすでにパス上にある場合の位置</span>
+
+            <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">nothing</span><span class="p">:</span>
+                <span class="n">iz</span><span class="p">,</span> <span class="n">io</span> <span class="o">=</span> <span class="p">(</span><span class="n">m_k</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">m_k</span><span class="o">.</span><span class="n">o</span><span class="p">)</span>  <span class="c1"># 既存の割合を引き継ぐ</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">UNWIND</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>         <span class="c1"># 重複する特徴量の古い拡張を巻き戻す</span>
+
+            <span class="n">RECURSE</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">iz</span> <span class="o">*</span> <span class="n">r_h</span> <span class="o">/</span> <span class="n">r_j</span><span class="p">,</span> <span class="n">io</span><span class="p">,</span> <span class="n">d_j</span><span class="p">)</span>
+            <span class="c1"># hot child:</span>
+            <span class="c1">#   特徴量 d_j がない場合はカバー比 r_h/r_j で分岐</span>
+            <span class="c1">#   特徴量 d_j がある場合は x が進むので one fraction を維持</span>
+
+            <span class="n">RECURSE</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">iz</span> <span class="o">*</span> <span class="n">r_c</span> <span class="o">/</span> <span class="n">r_j</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">d_j</span><span class="p">)</span>
+            <span class="c1"># cold child:</span>
+            <span class="c1">#   特徴量 d_j がない場合はカバー比 r_c/r_j で分岐</span>
+            <span class="c1">#   特徴量 d_j がある場合は x が進まないので one fraction は0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">EXTEND</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">pz</span><span class="p">,</span> <span class="n">po</span><span class="p">,</span> <span class="n">pi</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;m に特徴量 pi を追加し、部分集合サイズごとの重みを更新する&quot;&quot;&quot;</span>
+        <span class="n">l</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">),</span> <span class="n">copy</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="c1"># l: 追加前のパス長</span>
+
+        <span class="n">m_</span><span class="p">{</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">}</span><span class="o">.</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">pz</span><span class="p">,</span> <span class="n">po</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="c1"># d: 特徴量番号</span>
+        <span class="c1"># z: zero fraction</span>
+        <span class="c1"># o: one fraction</span>
+        <span class="c1"># w: Shapley重み</span>
+
+        <span class="c1"># 後ろから更新して、更新済みの重みを再利用しないようにする</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="err">←</span> <span class="n">l</span> <span class="n">to</span> <span class="mi">1</span> <span class="n">do</span><span class="p">:</span>
+            <span class="c1"># pi を部分集合に含める場合の重み</span>
+            <span class="n">m_</span><span class="p">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">}</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">m_</span><span class="p">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">}</span><span class="o">.</span><span class="n">w</span> <span class="o">+</span> <span class="n">po</span> <span class="o">*</span> <span class="n">m_i</span><span class="o">.</span><span class="n">w</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="n">l</span><span class="p">)</span>
+            <span class="c1"># pi を部分集合に含めない場合の重み</span>
+            <span class="n">m_i</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">pz</span> <span class="o">*</span> <span class="n">m_i</span><span class="o">.</span><span class="n">w</span> <span class="o">*</span> <span class="p">((</span><span class="n">l</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="n">l</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">m</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">UNWIND</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;m から i 番目の特徴量を取り除いた状態の重みを復元する&quot;&quot;&quot;</span>
+        <span class="n">l</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">),</span> <span class="n">m_l</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">copy</span><span class="p">(</span><span class="n">m_</span><span class="p">{</span><span class="mf">1.</span><span class="o">..</span><span class="n">l</span><span class="o">-</span><span class="mi">1</span><span class="p">})</span>
+        <span class="c1"># l: 現在のパス長</span>
+        <span class="c1"># n: 重み復元用の一時変数</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="err">←</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">to</span> <span class="mi">1</span> <span class="n">do</span><span class="p">:</span>
+            <span class="c1"># 後ろから前へ重みを復元する</span>
+            <span class="k">if</span> <span class="n">m_i</span><span class="o">.</span><span class="n">o</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">m_j</span><span class="o">.</span><span class="n">w</span>   <span class="c1"># 更新前の重みを退避</span>
+                <span class="n">m_j</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">l</span> <span class="o">/</span> <span class="p">(</span><span class="n">j</span> <span class="o">*</span> <span class="n">m_i</span><span class="o">.</span><span class="n">o</span><span class="p">)</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">m_j</span><span class="o">.</span><span class="n">w</span> <span class="o">*</span> <span class="n">m_i</span><span class="o">.</span><span class="n">z</span> <span class="o">*</span> <span class="p">((</span><span class="n">l</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span> <span class="o">/</span> <span class="n">l</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># po=0 の場合は one fraction で割れないので、zero fraction 側から復元</span>
+                <span class="n">m_j</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">m_j</span><span class="o">.</span><span class="n">w</span> <span class="o">*</span> <span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">m_i</span><span class="o">.</span><span class="n">z</span> <span class="o">*</span> <span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="n">j</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="err">←</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">to</span> <span class="mi">1</span> <span class="n">do</span><span class="p">:</span>
+                <span class="n">m_j</span><span class="o">.</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span> <span class="o">=</span> <span class="n">m_</span><span class="p">{</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">}</span><span class="o">.</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span>
+                <span class="c1"># 取り除いた特徴量の分だけ、後続要素を前にずらす</span>
+        <span class="k">return</span> <span class="n">m</span>
+
+    <span class="c1"># 根ノードから開始。空パス、zero/one fraction はどちらも1</span>
+    <span class="n">RECURSE</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">φ</span>
+</pre></div>
+</div>
+</div>
+<p>Algorithm 2 は、決定木の各葉に到達する確率が、ある特徴量を条件付けるかどうかでどれだけ変わるかを計算し、その差に葉の出力値を掛けて特徴量ごとの寄与に分配するアルゴリズム</p>
+<ol class="arabic simple">
+<li><p>木を根から葉まで再帰的にたどる</p></li>
+<li><p>各分岐で、対象サンプル x が進む方向を hot child とする</p></li>
+<li><p>特徴量が「ある」場合は hot child にだけ進む</p></li>
+<li><p>特徴量が「ない」場合は、訓練データのカバー比 r_child / r_parent で左右に分配する</p></li>
+<li><p>パス上では、特徴量ごとの zero fraction, one fraction, Shapley重みを管理する</p></li>
+<li><p>葉に到達したら、<code class="docutils literal notranslate"><span class="pre">w</span> <span class="pre">*</span> <span class="pre">(one</span> <span class="pre">fraction</span> <span class="pre">-</span> <span class="pre">zero</span> <span class="pre">fraction)</span> <span class="pre">*</span> <span class="pre">葉の値</span></code> を各特徴量のSHAP値に加算する</p></li>
+</ol>
+<p>変化</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>φ_{m_i} ← φ_{m_i} + w * (m_i.o - m_i.z) * v_j
+# w: 重み
+# (m_i.o - m_i.z): 特徴の条件付けでの葉の到達確率の変化
+# v_j: 葉ノードでの出力値
+</pre></div>
+</div>
+</section>
+</section>
+<section id="treeshap">
+<h2>TreeSHAP<a class="headerlink" href="#treeshap" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://arxiv.org/abs/1802.03888">[1802.03888] Consistent Individualized Feature Attribution for Tree Ensembles</a></p></li>
+<li><p><a class="reference external" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7326367/">Lundberg et al. (2020). From local explanations to global understanding with explainable AI for trees.</a></p></li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/2109.09847">[2109.09847] Fast TreeSHAP: Accelerating SHAP Value Computation for Trees</a></p></li>
 </ul>
 <section id="id3">
 <h3>解説<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
@@ -1390,6 +1590,44 @@ document.write(`
 <li><p><a class="reference external" href="https://apxml.com/courses/model-interpretability-explainability/chapter-3-shap-additive-explanations/treeshap-explainer">TreeSHAP Explainer for Tree Models</a></p></li>
 </ul>
 </section>
+</section>
+<section id="shap-interaction-values">
+<h2>SHAP interaction values<a class="headerlink" href="#shap-interaction-values" title="Link to this heading">#</a></h2>
+<p>TreeSHAPと同じ論文で提案された、特徴量同士の交互作用の強さを評価する手法</p>
+<p>主効果から相互作用効果を分離することで、さらに追加の洞察を得ることができる。ペアごとの相互作用を考えると、あるモデル予測に対して、すべての特徴量ペアが与える影響を表す寄与度行列が得られる。SHAP値はゲーム理論における古典的なShapley値に基づいているため、相互作用効果への自然な拡張は、より現代的なShapley interaction index によって得られる。</p>
+<div class="math notranslate nohighlight">
+\[
+\Phi_{i,j} =
+\sum_{S \subseteq N \setminus {i,j}}
+\frac{|S|!(M-|S|-2)!}{2(M-1)!}
+\nabla_{ij}(S)
+\]</div>
+<p>ただし <span class="math notranslate nohighlight">\(i \ne j\)</span> であり、</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\nabla_{ij}(S)
+&amp;= f_x(S \cup {i,j}) - f_x(S \cup {i}) - f_x(S \cup {j}) + f_x(S)\\
+&amp;= f_x(S \cup {i,j}) - f_x(S \cup {j}) - [f_x(S \cup {i}) - f_x(S)]
+\end{aligned}
+\end{split}\]</div>
+<p>式3では、特徴量 <span class="math notranslate nohighlight">\(i\)</span> と特徴量 <span class="math notranslate nohighlight">\(j\)</span> の間のSHAP相互作用値は、それぞれの特徴量に等しく分配される。そのため、</p>
+<div class="math notranslate nohighlight">
+\[
+\Phi_{i,j} = \Phi_{j,i}
+\]</div>
+<p>となり、全体の相互作用効果は</p>
+<div class="math notranslate nohighlight">
+\[
+\Phi_{i,j} + \Phi_{j,i}
+\]</div>
+<p>で表される。ある予測に対する主効果は、その特徴量のSHAP値から、その特徴量に関するSHAP相互作用値を差し引いたものとして定義できる。</p>
+<div class="math notranslate nohighlight">
+\[
+\Phi_{i,i} = \phi_i - \sum_{j \ne i} \Phi_{i,j}
+\]</div>
+<p>SHAP相互作用値は直接計算することもできるが、木モデルではAlgorithm 2を利用することで、計算コストを大幅に削減できる。SHAP相互作用値は、特徴量 <span class="math notranslate nohighlight">\(j\)</span> が存在している場合の特徴量 <span class="math notranslate nohighlight">\(i\)</span> のSHAP値と、特徴量 <span class="math notranslate nohighlight">\(j\)</span> が存在していない場合の特徴量 <span class="math notranslate nohighlight">\(i\)</span> のSHAP値との差として解釈できる。</p>
+<p>このため、Algorithm 2を2回使うことができる。1回目は特徴量 <span class="math notranslate nohighlight">\(j\)</span> が存在しているものとして固定して無視し、2回目は特徴量 <span class="math notranslate nohighlight">\(j\)</span> が存在しないものとして計算する。各特徴量についてこの処理を繰り返すため、実行時間は <span class="math notranslate nohighlight">\(O(TMLD^2)\)</span> となる。</p>
 </section>
 </section>
 
@@ -1457,11 +1695,20 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">アルゴリズム</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">その後の改善</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">アルゴリズム</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shapley-values">Shapley values</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#o-tl2-m">シンプルだが <span class="math notranslate nohighlight">\(O(TL2^M)\)</span> のアルゴリズム</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">例</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#o-tld-2"><span class="math notranslate nohighlight">\(O(TLD^2)\)</span> のアルゴリズム</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treeshap">TreeSHAP</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">解説</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shap-interaction-values">SHAP interaction values</a></li>
 </ul>
   </nav></div>
 
@@ -1486,7 +1733,7 @@ By mitama
 
   <p class="copyright">
     
-      © Copyright 2025.
+      © Copyright 2026.
       <br/>
     
   </p>
