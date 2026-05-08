@@ -71,6 +71,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'machine_learning/trees/bias_of_trees';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -1360,7 +1362,13 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prediction-shift">prediction shift</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">解決策</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hothorn-et-al-2006-gainsplit">Hothorn et al. (2006): gain最大化ではなく、split変数選択を検定問題にする</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#strobl-et-al-2007-rfpermutation-importance">Strobl et al. (2007): RFの重要度バイアスを、条件付き推論木・permutation importanceで緩和する</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zhang-et-al-2023-gbdtgainoob">Zhang et al. (2023): GBDTのgain自体をOOBで不偏化する</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
 </ul>
             </nav>
         </div>
@@ -1416,6 +1424,8 @@ document.write(`
 <section id="gain">
 <h3>過学習によるGain推定のバイアス<a class="headerlink" href="#gain" title="Link to this heading">#</a></h3>
 <p>不純度は過学習を起こしている場合、重要でない特徴量に高い重要度を与えてしまうことがある（Permutation Importanceはこの問題を持たない）（<a class="reference external" href="https://scikit-learn.org/stable/modules/permutation_importance.html#relation-to-impurity-based-importance-in-trees">scikit-learn documentation</a>）</p>
+<p><a class="reference external" href="https://doi.org/10.1198/106186006X133933">Hothorn et al. (2006)</a> はCART系決定木のGain推定のバイアスの問題を指摘し、改善案を提案。</p>
+<p><a class="reference external" href="https://link.springer.com/article/10.1186/1471-2105-8-25">Strobl et al. (2007)</a> はRandom ForestのFeature Importanceのバイアスを指摘</p>
 <p>標準的なGain（情報利得）の推定では、目的変数と独立な特徴量のGainでもゼロになることはめったになく、多くの場合でプラスの値になる（→ 重要じゃない特徴量でもGainはプラスになりがち）。
 また、この問題はGain推定時にtraining setだけじゃなくvalidation setも使うことで解消する（<a class="reference external" href="https://dl.acm.org/doi/abs/10.24963/ijcai.2023/515">Zhang et al., 2023</a>）</p>
 </section>
@@ -1429,9 +1439,68 @@ document.write(`
 <p>CatBoostの「unbiased boosting」で対象にしているのはprediction shift、つまり各サンプルの予測を作るときにそのサンプル自身の目的変数情報が過去の木や target statistics に混入する一種の target leakage 。</p>
 </section>
 <section id="id2">
-<h2>参考<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>解決策<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="hothorn-et-al-2006-gainsplit">
+<h3>Hothorn et al. (2006): gain最大化ではなく、split変数選択を検定問題にする<a class="headerlink" href="#hothorn-et-al-2006-gainsplit" title="Link to this heading">#</a></h3>
+<p>Hothorn et al. の Conditional Inference Tree / <code class="docutils literal notranslate"><span class="pre">ctree</span></code> は、CARTのような不純度（Gain）最大化 <span class="math notranslate nohighlight">\(\max_{j, s} \Delta I(j, s)\)</span> を避ける（ここで<span class="math notranslate nohighlight">\(j\)</span>は特徴量インデックス、<span class="math notranslate nohighlight">\(s\)</span> が分割点）</p>
+<p>各ノードで</p>
+<ol class="arabic simple">
+<li><p>「目的変数 <span class="math notranslate nohighlight">\(Y\)</span> と特徴量 <span class="math notranslate nohighlight">\(X_j\)</span> が独立である」という帰無仮説 <span class="math notranslate nohighlight">\(H_0^j: Y \perp X_j\)</span> を特徴量ごとに検定</p></li>
+<li><p>最も強く <span class="math notranslate nohighlight">\(Y\)</span> と関連している特徴量を、p値などの検定統計量に基づいて選ぶ</p></li>
+<li><p>その特徴量の中で分割点を決める</p></li>
+</ol>
+<p>候補分割点が多い連続変数・多カテゴリ変数が有利になる問題を、<strong>条件付き分布に基づく検定</strong>で緩和</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text">Hothorn, T., Hornik, K., &amp; Zeileis, A. (2006). Unbiased recursive partitioning: A conditional inference framework. Journal of Computational and Graphical statistics, 15(3), 651-674. <a class="reference external" href="https://doi.org/10.1198/106186006X133933">https://doi.org/10.1198/106186006X133933</a></p>
+</div>
+</div>
+</section>
+<section id="strobl-et-al-2007-rfpermutation-importance">
+<h3>Strobl et al. (2007): RFの重要度バイアスを、条件付き推論木・permutation importanceで緩和する<a class="headerlink" href="#strobl-et-al-2007-rfpermutation-importance" title="Link to this heading">#</a></h3>
+<p>Strobl et al. (2007) は、Random Forestの variable importance が、特徴量の尺度やカテゴリ数が異なる場合に信頼できない（例：多カテゴリ特徴量や連続特徴量が有利になる）ことを示した。</p>
+<p>この論文での解決策は主に2つ：</p>
+<ol class="arabic simple">
+<li><p>Random Forestのベース木として CART ではなく、Hothorn et al. 系の <strong>conditional inference tree</strong> を使う</p></li>
+<li><p>変数重要度として、impurity decrease 型ではなく <strong>permutation importance</strong> 系の尺度を使う</p></li>
+</ol>
+<p>さらに Strobl らの後続研究では、相関特徴量がある場合に通常のpermutation importanceが不安定になるため、条件付き分布を保ちながらpermuteする <strong>conditional permutation importance</strong> が提案された。</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<p class="sd-card-text">Strobl, C., Boulesteix, A. L., Zeileis, A., &amp; Hothorn, T. (2007). Bias in random forest variable importance measures: Illustrations, sources and a solution. BMC bioinformatics, 8(1), 25. <a class="reference external" href="https://link.springer.com/article/10.1186/1471-2105-8-25">https://link.springer.com/article/10.1186/1471-2105-8-25</a></p>
+</div>
+</div>
+</section>
+<section id="zhang-et-al-2023-gbdtgainoob">
+<h3>Zhang et al. (2023): GBDTのgain自体をOOBで不偏化する<a class="headerlink" href="#zhang-et-al-2023-gbdtgainoob" title="Link to this heading">#</a></h3>
+<p>Zhang et al. はより直接的に、GBDTのsplit gainについて次の2つのバイアス源を指摘した。</p>
+<ol class="arabic simple">
+<li><p>各splitのgain計算そのものが、biased estimation になっている</p></li>
+<li><p>split improvement の評価と、best split の選択に同じデータを使うため、選択バイアスが生じる</p></li>
+</ol>
+<p>XGBoost / LightGBMなど現代的なGBDTのgainは、</p>
+<div class="math notranslate nohighlight">
+\[
+\text{Gain}
+=
+\frac{1}{2}
+\left[
+\frac{G_L^2}{H_L+\lambda}
++
+\frac{G_R^2}{H_R+\lambda}
+-
+\frac{G^2}{H+\lambda}
+\right]
+\]</div>
+<p>のように、同じ訓練データから得た勾配・ヘッセ行列で「このsplitを入れるとどれだけ損失が下がるか」を見積もる。</p>
+<p>Zhang et al. の Unbiased Gain は、この推定を <strong>out-of-bag sample</strong> で評価することで、予測力のない特徴量の重要度が期待値0になるように作られている。</p>
+</section>
+</section>
+<section id="id3">
+<h2>参考<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Hothorn, T., Hornik, K., &amp; Zeileis, A. (2006). Unbiased recursive partitioning: A conditional inference framework. Journal of Computational and Graphical statistics, 15(3), 651-674. <a class="reference external" href="https://doi.org/10.1198/106186006X133933">https://doi.org/10.1198/106186006X133933</a></p></li>
+<li><p>Strobl, C., Boulesteix, A. L., Zeileis, A., &amp; Hothorn, T. (2007). Bias in random forest variable importance measures: Illustrations, sources and a solution. BMC bioinformatics, 8(1), 25. <a class="reference external" href="https://link.springer.com/article/10.1186/1471-2105-8-25">https://link.springer.com/article/10.1186/1471-2105-8-25</a></p></li>
 </ul>
 </section>
 </section>
@@ -1488,7 +1557,13 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prediction-shift">prediction shift</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">参考</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">解決策</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hothorn-et-al-2006-gainsplit">Hothorn et al. (2006): gain最大化ではなく、split変数選択を検定問題にする</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#strobl-et-al-2007-rfpermutation-importance">Strobl et al. (2007): RFの重要度バイアスを、条件付き推論木・permutation importanceで緩和する</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zhang-et-al-2023-gbdtgainoob">Zhang et al. (2023): GBDTのgain自体をOOBで不偏化する</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">参考</a></li>
 </ul>
   </nav></div>
 
