@@ -559,7 +559,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/generalized_random_forest.html">Generalized Random Forest (GRF)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/distributional_random_forest.html">Distributional Random Forest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/bart.html">BART: Bayesian additive regression trees</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/unbiased_gbdt.html">UnbiasedGBM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/bias_of_trees.html">GBDT/Treesのバイアス</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/unbiased_gbm.html">UnbiasedGBM</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/rule_extraction.html">Rule Extraction from GBDT</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/explainable_boosting_machine.html">Explainable Boosting Machine / GA2M</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/trees/tabular_data_and_trees.html">なぜTree-based modelはDeep Learningよりテーブルデータに強いのか</a></li>
@@ -603,6 +604,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../machine_learning/explainability/shap/tree_shap.html">Tree SHAP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../machine_learning/explainability/shap/interaction.html">交互作用のSHAP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../machine_learning/explainability/shap/gam.html">一般化加法モデル（GAM）との関係</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../machine_learning/explainability/shap/causal_shap.html">因果とSHAP</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/explainability/influence_function.html">影響関数（influence function）</a></li>
@@ -1591,27 +1593,19 @@ Prediction: programs
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 1.6764e+00, -4.4626e-01,  1.3681e+00, -4.6301e-01, -1.7757e+00,
-         -3.0187e+00,  8.1709e-01, -1.8984e-01,  8.0044e-01,  6.6608e-01,
-         -3.0546e-01,  1.3805e+00,  8.9076e-01, -9.4107e-01,  5.9674e-01,
-          3.3460e-01, -5.7189e-01,  1.6551e-01,  2.2641e-01,  8.5941e-01,
-         -3.1138e-01,  1.9133e-01, -4.3416e-01, -1.9507e-01,  7.2239e-01,
-         -1.5457e+00,  1.8249e-01, -4.3920e-01,  1.5149e+00,  1.4104e+00,
-         -9.4905e-01, -5.2288e-01,  2.1229e+00, -1.2166e-01, -7.1679e-01,
-          1.3039e+00,  4.8704e-01,  1.7205e+00, -1.6317e-01,  8.3965e-01,
-          7.0166e-01,  4.7589e-01, -1.0732e+00,  7.2233e-01,  8.3627e-01,
-          1.7537e+00, -1.6595e+00,  1.4870e+00, -2.5782e-01, -8.3505e-01,
-          8.7299e-01,  1.2690e+00,  1.4232e+00, -2.6181e-01,  1.9458e+00,
-         -5.5529e-01, -1.6231e+00, -7.0699e-01,  4.3796e-01, -5.1991e-02,
-         -1.2534e-01,  6.2779e-01,  3.9939e-01,  6.8355e-01,  2.3325e+00,
-         -1.0788e+00,  5.6966e-01, -8.9387e-02, -1.9375e+00, -5.7520e-02,
-          2.8122e-01, -4.9731e-01, -3.6514e-01,  1.2874e-01, -9.7236e-02,
-          5.0479e-01,  4.0674e-01,  2.8384e-01,  9.2374e-01, -1.1341e+00,
-          6.8978e-01,  5.1961e-01, -6.9879e-01,  3.1552e-04, -1.6768e+00,
-         -4.6259e-01, -1.6761e+00, -1.9799e+00, -3.6440e-01,  1.0496e+00,
-         -1.2808e+00, -2.0143e+00,  6.6572e-01, -1.4953e+00, -1.4073e+00,
-         -8.9386e-01,  1.0689e+00,  1.3517e+00, -7.4036e-01, -1.0854e-01]],
-       grad_fn=&lt;ViewBackward0&gt;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 0.5268, -1.1094,  0.1381,  1.0894,  0.2756, -0.7858,  0.5081, -1.8133,
+         -0.4863, -1.0606,  1.4757,  0.3859, -0.7146,  1.1814, -0.6498,  0.8096,
+          0.1285, -0.0764,  0.2742,  0.2802, -1.5375,  0.1431,  1.8739,  0.4896,
+         -1.7333,  0.6116,  1.7971, -0.0480, -0.8517, -0.0835, -1.3853, -0.2178,
+          0.6293, -0.9047,  2.4290, -0.0298,  0.4070,  0.6157,  0.3393, -0.1285,
+          1.2152,  0.6849, -0.0351, -2.2311, -1.7014, -1.4151, -1.0911, -1.3865,
+          0.2495,  2.0432, -0.4785,  1.6937, -1.2662, -0.6991,  0.2713, -0.9506,
+         -0.3816, -0.2894,  1.4410, -1.1023, -1.4978, -1.6818,  0.6272,  2.3440,
+         -0.2168,  1.3866, -0.3709, -0.3035,  0.7701, -0.9130,  0.1783,  0.0432,
+          0.6640, -0.8628,  0.4681, -0.3729, -0.2698,  0.4315, -1.1219, -0.6404,
+         -0.1131,  1.4075,  0.0922, -0.9170,  0.1778,  1.3169, -0.2096, -0.0160,
+         -0.2050,  0.7767, -0.4824,  0.5208, -2.3836, -1.4573, -0.0494, -0.0409,
+         -2.0912, -0.5994,  0.4996, -1.5279]], grad_fn=&lt;ViewBackward0&gt;)
 </pre></div>
 </div>
 </div>
@@ -1714,10 +1708,10 @@ p(w_O|w_I) = \frac{\exp( v_{w_O}^T v_{w_I} )}{\sum^W_{w=1} \exp( v_{w}^T v_{w_I}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>female: -0.0395
-ruler: -0.0263
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>male: -0.0251
 queen: 0.00656
-male: -0.0251
+ruler: -0.0263
+female: -0.0395
 </pre></div>
 </div>
 </div>
