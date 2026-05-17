@@ -76,7 +76,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'software_engineering/algorithms/design/greedy_method';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="数学的なアルゴリズム" href="../mathematic_algorithms.html" />
+    <link rel="next" title="動的計画法" href="dynamic_programming.html" />
     <link rel="prev" title="全探索 / 総当り法" href="brute_force_search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -1051,6 +1051,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">アルゴリズムの設計技法</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="brute_force_search.html">全探索 / 総当り法</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">貪欲法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic_programming.html">動的計画法</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../mathematic_algorithms.html">数学的なアルゴリズム</a></li>
@@ -1383,7 +1384,17 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">応用例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">概要</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">基本的な考え方</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">利点と欠点</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">応用例</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">例1: コイン問題</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">例2: 区間スケジューリング問題</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">例3: 分数ナップサック問題</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -1398,9 +1409,52 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>貪欲法<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <section id="id2">
-<h2>応用例<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>線形探索で硬貨を順番に調べながら、貪欲法で最小枚数を求める例</p>
-<p>Q. <span class="math notranslate nohighlight">\(X\)</span>円の金額を日本の硬貨で支払うとき、必要な硬貨の最小枚数は？</p>
+<h2>概要<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p><strong>貪欲法（Greedy Algorithm）</strong> は、各ステップで「その時点で最も良く見える選択」を繰り返すことで解を構築するアルゴリズム設計手法である。</p>
+<section id="id3">
+<h3>基本的な考え方<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>問題をステップに分割し、各ステップで局所的に最適な選択をする</p></li>
+<li><p>一度した選択は覆さない（後戻りしない）</p></li>
+<li><p>全体の最適解を保証するには、問題が以下の2つの性質を満たす必要がある</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>性質</p></th>
+<th class="head"><p>説明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>貪欲選択性（Greedy Choice Property）</strong></p></td>
+<td><p>局所最適な選択を重ねることで大域最適解に到達できる</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>最適部分構造（Optimal Substructure）</strong></p></td>
+<td><p>問題の最適解が部分問題の最適解を含む</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id4">
+<h3>利点と欠点<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p><strong>利点</strong></p>
+<ul class="simple">
+<li><p>実装がシンプルで理解しやすい</p></li>
+<li><p>多くの場合、動的計画法より高速</p></li>
+</ul>
+<p><strong>欠点</strong></p>
+<ul class="simple">
+<li><p>適用できる問題が限られる（すべての最適化問題に使えるわけではない）</p></li>
+<li><p>局所最適解が大域最適解にならないケースがある（例：一般的なコイン問題、0/1 ナップサック問題）</p></li>
+</ul>
+</section>
+</section>
+<section id="id5">
+<h2>応用例<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h3>例1: コイン問題<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>Q. <span class="math notranslate nohighlight">\(X\)</span> 円の金額を日本の硬貨で支払うとき、必要な硬貨の最小枚数は？</p>
+<p>大きい硬貨から貪欲に使っていくことで最小枚数が得られる（日本円の硬貨体系では成立する）。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">coins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># 硬貨の種類</span>
@@ -1423,6 +1477,110 @@ document.write(`
 </div>
 </div>
 </div>
+</section>
+<section id="id7">
+<h3>例2: 区間スケジューリング問題<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>Q. 複数の仕事（開始時刻・終了時刻が決まっている）の中から、重複しない範囲で <strong>最大数</strong> の仕事をこなすには？</p>
+<p><strong>貪欲な選択</strong>: 終了時刻が早い仕事から順に選ぶ。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">activity_selection</span><span class="p">(</span><span class="n">jobs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    区間スケジューリング: 重複なしで選べる仕事の最大集合を返す</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    jobs : list of (start, end)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sorted_jobs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># 終了時刻でソート</span>
+    <span class="n">selected</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">last_end</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">sorted_jobs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="n">last_end</span><span class="p">:</span>
+            <span class="n">selected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
+            <span class="n">last_end</span> <span class="o">=</span> <span class="n">end</span>
+
+    <span class="k">return</span> <span class="n">selected</span>
+
+
+<span class="n">jobs</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">14</span><span class="p">)]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">activity_selection</span><span class="p">(</span><span class="n">jobs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;選択された仕事 (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">件):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>選択された仕事 (3件):
+  [1, 4)
+  [5, 7)
+  [8, 11)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id8">
+<h3>例3: 分数ナップサック問題<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>Q. 容量 <span class="math notranslate nohighlight">\(W\)</span> のナップサックに、重さ <span class="math notranslate nohighlight">\(w_i\)</span>・価値 <span class="math notranslate nohighlight">\(v_i\)</span> のアイテムを詰めるとき価値を最大化するには？
+アイテムを <strong>分割して詰めてよい</strong>（分数ナップサック）場合は貪欲法で最適解が得られる。</p>
+<p><strong>貪欲な選択</strong>: 単位重量あたりの価値（<span class="math notranslate nohighlight">\(v_i / w_i\)</span>）が高いアイテムから詰める。</p>
+<blockquote>
+<div><p>※ アイテムの分割が許されない <strong>0/1 ナップサック問題</strong> では貪欲法では最適解が保証されない（動的計画法が必要）。</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">fractional_knapsack</span><span class="p">(</span><span class="n">capacity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    分数ナップサック問題</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    capacity : float</span>
+<span class="sd">        ナップサックの容量</span>
+<span class="sd">    items : list of (weight, value)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        最大価値</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 単位重量あたりの価値で降順ソート</span>
+    <span class="n">sorted_items</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">total_value</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="n">capacity</span>
+
+    <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sorted_items</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">remaining</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">take</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">remaining</span><span class="p">)</span>
+        <span class="n">total_value</span> <span class="o">+=</span> <span class="n">value</span> <span class="o">*</span> <span class="p">(</span><span class="n">take</span> <span class="o">/</span> <span class="n">weight</span><span class="p">)</span>
+        <span class="n">remaining</span> <span class="o">-=</span> <span class="n">take</span>
+
+    <span class="k">return</span> <span class="n">total_value</span>
+
+
+<span class="n">capacity</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">items</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>  <span class="c1"># 重さ10, 価値60  → 単価6.0</span>
+    <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="c1"># 重さ20, 価値100 → 単価5.0</span>
+    <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span> <span class="c1"># 重さ30, 価値120 → 単価4.0</span>
+<span class="p">]</span>
+
+<span class="n">max_value</span> <span class="o">=</span> <span class="n">fractional_knapsack</span><span class="p">(</span><span class="n">capacity</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;最大価値: </span><span class="si">{</span><span class="n">max_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>最大価値: 240.0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 
@@ -1466,11 +1624,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="../mathematic_algorithms.html"
+       href="dynamic_programming.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">数学的なアルゴリズム</p>
+        <p class="prev-next-title">動的計画法</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1490,7 +1648,17 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">応用例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">概要</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">基本的な考え方</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">利点と欠点</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">応用例</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">例1: コイン問題</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">例2: 区間スケジューリング問題</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">例3: 分数ナップサック問題</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

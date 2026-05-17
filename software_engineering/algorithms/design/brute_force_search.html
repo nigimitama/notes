@@ -1051,6 +1051,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">アルゴリズムの設計技法</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">全探索 / 総当り法</a></li>
 <li class="toctree-l3"><a class="reference internal" href="greedy_method.html">貪欲法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic_programming.html">動的計画法</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../mathematic_algorithms.html">数学的なアルゴリズム</a></li>
@@ -1387,7 +1388,10 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">計算量の目安</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bit">bit全探索</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bit">bit全探索</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">例：組み合わせ探索</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#o-n">順列全列挙 <span class="math notranslate nohighlight">\(O(N!)\)</span></a></li>
 </ul>
             </nav>
@@ -1443,14 +1447,15 @@ document.write(`
 </tbody>
 </table>
 </div>
-<div class="{ docutils">
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>競技プログラミングでは <span class="math notranslate nohighlight">\(10^8\)</span> 操作/秒が目安。制約を見て計算量を見積もってから手法を選ぶ</p>
 </div>
 </section>
 </section>
 <section id="bit">
 <h2>bit全探索<a class="headerlink" href="#bit" title="Link to this heading">#</a></h2>
-<p><span class="math notranslate nohighlight">\(2^N\)</span>の組み合わせを探索する。<span class="math notranslate nohighlight">\(N\)</span>が小さければ実用可能</p>
+<p><strong>bit全探索（bit exhaustive search）</strong> は<span class="math notranslate nohighlight">\(2^N\)</span>の組み合わせを探索する。<span class="math notranslate nohighlight">\(N\)</span>が小さければ実用可能</p>
 <p>例えば「選ぶ」「選ばない」の2通りを<span class="math notranslate nohighlight">\(N\)</span>回判断するようなものを全パターン探索したいとする。<br />
 2通りは<code class="docutils literal notranslate"><span class="pre">0</span></code> と <code class="docutils literal notranslate"><span class="pre">1</span></code> のbit (binary digit)で表すことができる。<br />
 <span class="math notranslate nohighlight">\(N=3\)</span>として、全部「選ぶ」は<code class="docutils literal notranslate"><span class="pre">111</span></code>、全部「選ばない」は<code class="docutils literal notranslate"><span class="pre">000</span></code>、2回めだけ「選ぶ」なら<code class="docutils literal notranslate"><span class="pre">010</span></code>…のように表現していくことができる。<br />
@@ -1461,19 +1466,19 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">N</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;10進数=</span><span class="si">{</span><span class="n">mask</span><span class="si">}</span><span class="s2">, 2進数=</span><span class="si">{</span><span class="nb">bin</span><span class="p">(</span><span class="n">mask</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0
-1
-2
-3
-4
-5
-6
-7
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10進数=0, 2進数=000
+10進数=1, 2進数=001
+10進数=2, 2進数=010
+10進数=3, 2進数=011
+10進数=4, 2進数=100
+10進数=5, 2進数=101
+10進数=6, 2進数=110
+10進数=7, 2進数=111
 </pre></div>
 </div>
 </div>
@@ -1482,11 +1487,11 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">N</span><span class="p">):</span> <span class="c1"># 2**Nのループ</span>
-    <span class="n">selected</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">selected_indexes</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span> <span class="c1"># ビット列の各要素に対するループ</span>
         <span class="k">if</span> <span class="n">mask</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">):</span> <span class="c1"># maskのi番目のbitが1なら、その要素を選ぶ</span>
-            <span class="n">selected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span>
+            <span class="n">selected_indexes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">selected_indexes</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1503,6 +1508,35 @@ document.write(`
 </div>
 </div>
 </div>
+<section id="id4">
+<h3>例：組み合わせ探索<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>値の集合<code class="docutils literal notranslate"><span class="pre">values</span></code>の要素を足し合わせた時、ある値 <code class="docutils literal notranslate"><span class="pre">target</span></code> と等しくなるかどうかを判定したいとする。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+<span class="n">target</span> <span class="o">=</span> <span class="mi">16</span> <span class="c1"># 目標の値</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">N</span><span class="p">):</span> <span class="c1"># 2**Nのループ</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span> <span class="c1"># ビット列の各要素に対するループ</span>
+        <span class="k">if</span> <span class="n">mask</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">):</span> <span class="c1"># maskのi番目のbitが1なら、その要素を選ぶ</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Yes&quot;</span><span class="p">)</span>
+        <span class="k">break</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Yes
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 <section id="o-n">
 <h2>順列全列挙 <span class="math notranslate nohighlight">\(O(N!)\)</span><a class="headerlink" href="#o-n" title="Link to this heading">#</a></h2>
@@ -1659,7 +1693,10 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">計算量の目安</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bit">bit全探索</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bit">bit全探索</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">例：組み合わせ探索</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#o-n">順列全列挙 <span class="math notranslate nohighlight">\(O(N!)\)</span></a></li>
 </ul>
   </nav></div>
