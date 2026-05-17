@@ -261,12 +261,12 @@
 :columns: 6
 ソフトウェア工学
 
+- [](software_engineering/algorithms/index)
 - [](software_engineering/programming)
 - [](software_engineering/development_methods)
 - [](software_engineering/practitionars_approach)
 - [](software_engineering/software_process)
 - [](software_engineering/software_architecture/index)
-- [](software_engineering/algorithms/index)
 - [](software_engineering/development/index)
 - [](software_engineering/frontend/index)
 - [](software_engineering/data_store/index)
