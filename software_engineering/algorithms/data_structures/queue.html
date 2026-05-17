@@ -1052,10 +1052,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../design/brute_force_search.html">全探索 / 総当り法</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../design/greedy_method.html">貪欲法</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../design/dynamic_programming.html">動的計画法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../design/divide_and_conquer.html">分割統治法</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../mathematic_algorithms.html">数学的なアルゴリズム</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../other_algorithms.html">その他のアルゴリズム</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bit.html">bit演算</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../programming.html">プログラミング</a></li>
@@ -1384,9 +1385,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">計算量</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">利用例</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">例1: タスクの順番処理</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実装例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">計算量</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">利用例</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">例1: タスクの順番処理</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs">例2: 最短ステップ数（BFS）</a></li>
 </ul>
 </li>
@@ -1404,30 +1406,56 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>キュー<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <p><strong>キュー（Queue）</strong> はデータの中で最初に入ったものが最初に取り出される、 <strong>先入れ先出し（First In First Out: FIFO）</strong> のデータ構造</p>
-<p>操作：</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">enqueue(x)</span></code>: キューの末尾に要素<code class="docutils literal notranslate"><span class="pre">x</span></code>を追加する</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dequeue()</span></code>: キューの先頭から要素を取り出す</p></li>
-</ul>
+<p>キューの末尾に要素を追加することを <strong>エンキュー（enqueue）</strong> といい、<br />
+キューの先頭から要素を取り出すことを <strong>デキュー（dequeue）</strong> という。</p>
+<section id="id2">
+<h2>実装例<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>Pythonでは、シンプルなキューとして <code class="docutils literal notranslate"><span class="pre">collections</span></code> パッケージの<code class="docutils literal notranslate"><span class="pre">deque</span></code>が存在する。</p>
+<p>また <code class="docutils literal notranslate"><span class="pre">queue</span></code>パッケージの<code class="docutils literal notranslate"><span class="pre">Queue</span></code>というクラスも存在する。</p>
+<p><code class="docutils literal notranslate"><span class="pre">collections.dequeue</span></code> はスレッドセーフではなく、 <code class="docutils literal notranslate"><span class="pre">queue.Queue</span></code> はスレッドセーフなのが主な違い</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+
+<span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+<span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>  <span class="c1"># A</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>  <span class="c1"># B</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A
+B
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">Queue</span>
 
 <span class="n">q</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
-<span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A
+B
 </pre></div>
 </div>
 </div>
 </div>
-<section id="id2">
-<h2>計算量<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+</section>
+<section id="id3">
+<h2>計算量<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>キューは内部的に連結リスト（または双方向キュー）で実装されるため、先頭・末尾へのアクセスがO(1)になる。</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -1466,10 +1494,10 @@ document.write(`
 </div>
 <p>Pythonの <code class="docutils literal notranslate"><span class="pre">queue.Queue</span></code> は内部で <code class="docutils literal notranslate"><span class="pre">collections.deque</span></code> を使用しており、enqueue・dequeueともに償却 <span class="math notranslate nohighlight">\(O(1)\)</span>。</p>
 </section>
-<section id="id3">
-<h2>利用例<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <section id="id4">
-<h3>例1: タスクの順番処理<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<h2>利用例<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<section id="id5">
+<h3>例1: タスクの順番処理<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p>受け付けた順にタスクを処理する。新しいタスクは末尾に追加し、処理は先頭から行う。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1598,9 +1626,10 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">計算量</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">利用例</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">例1: タスクの順番処理</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">実装例</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">計算量</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">利用例</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">例1: タスクの順番処理</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs">例2: 最短ステップ数（BFS）</a></li>
 </ul>
 </li>
