@@ -71,10 +71,12 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'software_engineering/algorithms/sorting_algorithms/index';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="アルゴリズムの設計技法" href="../design/index.html" />
+    <link rel="next" title="バブルソート" href="bubble_sort.html" />
     <link rel="prev" title="ダイクストラ法" href="../graph_algorithms/dijkstra.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -1045,7 +1047,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../graph_algorithms/dijkstra.html">ダイクストラ法</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">ソートアルゴリズム</a></li>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">ソートアルゴリズム</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bubble_sort.html">バブルソート</a></li>
+<li class="toctree-l3"><a class="reference internal" href="insertion_sort.html">挿入ソート</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selection_sort.html">選択ソート</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merge_sort.html">マージソート</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quick_sort.html">クイックソート</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heap_sort.html">ヒープソート</a></li>
+<li class="toctree-l3"><a class="reference internal" href="counting_sort.html">計数ソート・基数ソート</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../design/index.html">アルゴリズムの設計技法</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../design/brute_force_search.html">全探索 / 総当り法</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../design/greedy_method.html">貪欲法</a></li>
@@ -1360,7 +1371,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -1376,6 +1389,15 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">主要アルゴリズムの比較</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">選択の指針</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -1387,6 +1409,112 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>ソートアルゴリズム<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>ソートアルゴリズムはデータを特定の順序に並び替えるアルゴリズム。用途やデータの特性によって最適な手法が異なる。</p>
+<section id="id2">
+<h2>主要アルゴリズムの比較<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>アルゴリズム</p></th>
+<th class="head"><p>最悪</p></th>
+<th class="head"><p>平均</p></th>
+<th class="head"><p>最良</p></th>
+<th class="head"><p>空間</p></th>
+<th class="head"><p>安定</p></th>
+<th class="head"><p>in-place</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>バブルソート</p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n^2)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n^2)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(1)\)</span></p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+</tr>
+<tr class="row-odd"><td><p>選択ソート</p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n^2)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n^2)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n^2)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(1)\)</span></p></td>
+<td><p>✗</p></td>
+<td><p>✓</p></td>
+</tr>
+<tr class="row-even"><td><p>挿入ソート</p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n^2)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n^2)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(1)\)</span></p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+</tr>
+<tr class="row-odd"><td><p>マージソート</p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n\log n)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n\log n)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n\log n)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n)\)</span></p></td>
+<td><p>✓</p></td>
+<td><p>✗</p></td>
+</tr>
+<tr class="row-even"><td><p>クイックソート</p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n^2)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n\log n)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n\log n)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(\log n)\)</span></p></td>
+<td><p>✗</p></td>
+<td><p>✓</p></td>
+</tr>
+<tr class="row-odd"><td><p>ヒープソート</p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n\log n)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n\log n)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n\log n)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(1)\)</span></p></td>
+<td><p>✗</p></td>
+<td><p>✓</p></td>
+</tr>
+<tr class="row-even"><td><p>計数ソート</p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n+k)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n+k)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n+k)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n+k)\)</span></p></td>
+<td><p>✓</p></td>
+<td><p>✗</p></td>
+</tr>
+<tr class="row-odd"><td><p>基数ソート</p></td>
+<td><p><span class="math notranslate nohighlight">\(O(d(n+b))\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(d(n+b))\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(d(n+b))\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(O(n+b)\)</span></p></td>
+<td><p>✓</p></td>
+<td><p>✗</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id3">
+<h2>選択の指針<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>汎用</strong>: Python の <code class="docutils literal notranslate"><span class="pre">sorted()</span></code> / <code class="docutils literal notranslate"><span class="pre">list.sort()</span></code>（Timsort）を使う</p></li>
+<li><p><strong>小配列 / ほぼソート済み</strong>: 挿入ソート</p></li>
+<li><p><strong>最悪保証が必要 + in-place</strong>: ヒープソート</p></li>
+<li><p><strong>安定 + 最悪保証</strong>: マージソート</p></li>
+<li><p><strong>実用最速（平均）</strong>: クイックソート（median-of-3 や乱択ピボット）</p></li>
+<li><p><strong>整数 + 値域が小さい</strong>: 計数ソート</p></li>
+<li><p><strong>整数 + 値域が広い</strong>: 基数ソート</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="bubble_sort.html">バブルソート</a></li>
+<li class="toctree-l1"><a class="reference internal" href="insertion_sort.html">挿入ソート</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selection_sort.html">選択ソート</a></li>
+<li class="toctree-l1"><a class="reference internal" href="merge_sort.html">マージソート</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_sort.html">クイックソート</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heap_sort.html">ヒープソート</a></li>
+<li class="toctree-l1"><a class="reference internal" href="counting_sort.html">計数ソート・基数ソート</a></li>
+</ul>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1429,11 +1557,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="../design/index.html"
+       href="bubble_sort.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">アルゴリズムの設計技法</p>
+        <p class="prev-next-title">バブルソート</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1443,6 +1571,22 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">主要アルゴリズムの比較</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">選択の指針</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
