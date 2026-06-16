@@ -71,8 +71,6 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'software_engineering/testing/introduction';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -1394,11 +1392,38 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">テストの種類</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">回帰テスト</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">同値分割テスト・境界値テスト</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">同値分割テスト</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">境界値テスト</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">テストの種類</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">粒度による分類</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">テスト観点による分類</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">テスト目的による分類</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">回帰テスト</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">スモークテスト</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">サニティテスト</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">探索的テスト</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">どれくらい内部構造を見て設計するかによる分類</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">ブラックボックステスト</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#property-based-testing">Property-based testing</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">ホワイトボックステスト</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">テストの品質</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">網羅性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">検出力</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">信頼性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">効率</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">保守性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">運用品質</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mutation-testing">Mutation testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#mutation-score">Mutation Score</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Pythonでの実践</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -1416,7 +1441,8 @@ document.write(`
 <h1>ソフトウェアテストの基本<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <section id="id2">
 <h2>テストの種類<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>基本のテスト工程</p>
+<section id="id3">
+<h3>粒度による分類<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>単体テスト（unit test）</strong> ：ソフトウェアの最小単位（モジュール）ごとの動作をテストする</p></li>
 <li><p><strong>結合テスト（integration test）</strong> ：複数のモジュールを組み合わせて動作をテストする。モジュール間の実行順序も確認する</p></li>
@@ -1424,71 +1450,316 @@ document.write(`
 <li><p><strong>システムテスト</strong> ：製品として提供できるかを確認する</p></li>
 </ul>
 </section>
-<section id="id3">
-<h2>回帰テスト<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p><strong>回帰テスト（regression test）</strong> はソフトウェアのコードを変更した際に、その変更が既存の機能に意図しない悪影響（デグレード）を及ぼしていないかを確認するためのテスト</p>
-</section>
 <section id="id4">
-<h2>同値分割テスト・境界値テスト<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
-<p>ソフトウェアは入力値や条件によって処理方法が変わる。多くの場合、入力値の組み合わせは膨大になるため、すべての入力値・すべての条件を網羅してテストするのは不可能になる。</p>
-<p>そこで、テストケースの枝刈りをして代表的な入力値だけテストするのが同値分割テストや境界値テスト。</p>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-例：パスワードの設定欄</div>
-<p class="sd-card-text">パスワードの文字数を「8文字以上16文字以下」としていて、文字数が条件を満たすかどうか を判定する関数があったとする</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">is_valid_length</span><span class="p">(</span><span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="o">...</span>
+<h3>テスト観点による分類<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>機能テスト</strong> ：仕様通りの機能が動くかを確認する</p>
+<ul>
+<li><p>例：</p>
+<ul>
+<li><p>正しいID/PWならログインできる</p></li>
+<li><p>間違ったPWならログインできない</p></li>
+<li><p>必須項目が空ならエラーになる</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>非機能テスト</strong> ：機能そのものではなく、性能・信頼性・安全性などを確認</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>種類</p></th>
+<th class="head"><p>確認内容</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>性能テスト</p></td>
+<td><p>応答時間、処理速度</p></td>
+</tr>
+<tr class="row-odd"><td><p>負荷テスト</p></td>
+<td><p>多数アクセス時に耐えられるか</p></td>
+</tr>
+<tr class="row-even"><td><p>セキュリティテスト</p></td>
+<td><p>認可漏れ、SQLインジェクションなど</p></td>
+</tr>
+<tr class="row-odd"><td><p>可用性テスト</p></td>
+<td><p>障害時に復旧できるか</p></td>
+</tr>
+<tr class="row-even"><td><p>ユーザビリティテスト</p></td>
+<td><p>使いやすいか</p></td>
+</tr>
+<tr class="row-odd"><td><p>互換性テスト</p></td>
+<td><p>ブラウザ・OS・端末差異で動くか</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id5">
+<h3>テスト目的による分類<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h4>回帰テスト<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
+<p><strong>回帰テスト（regression test）</strong> ：ソフトウェアのコードを変更した際に、その変更が既存の機能に意図しない悪影響（デグレード）を及ぼしていないかを確認するためのテスト</p>
+<p>例：</p>
+<ul class="simple">
+<li><p>新しい検索条件を追加したあと、既存の検索が壊れていないか</p></li>
+<li><p>認証処理を修正したあと、通常ログインが動くか</p></li>
+</ul>
+</section>
+<section id="id7">
+<h4>スモークテスト<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
+<p><strong>スモークテスト（smoke testing）</strong> ：最低限、アプリが起動して主要機能が動くかをざっくり確認するテスト</p>
+<p>例：</p>
+<ul class="simple">
+<li><p>アプリが起動する</p></li>
+<li><p>ログインできる</p></li>
+<li><p>トップページが表示される</p></li>
+<li><p>主要APIが200を返す</p></li>
+</ul>
+</section>
+<section id="id8">
+<h4>サニティテスト<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
+<p><strong>サニティテスト（sanity testing）</strong> ：特定の修正箇所が妥当そうかを軽く確認するテスト</p>
+<p>スモークテストが「全体の最低限確認」なのに対して、サニティテストは「変更箇所周辺の軽い確認」</p>
+</section>
+<section id="id9">
+<h4>探索的テスト<a class="headerlink" href="#id9" title="Link to this heading">#</a></h4>
+<p><strong>探索的テスト</strong> ：事前に細かいテストケースを固定せず、テスターが仕様理解や直感を使って不具合を探すテスト</p>
+<p>例：</p>
+<ul class="simple">
+<li><p>変な入力をしてみる</p></li>
+<li><p>想定外の順番で画面遷移する</p></li>
+<li><p>境界値を試す</p></li>
+<li><p>実ユーザーっぽい操作をする</p></li>
+</ul>
+</section>
+</section>
+<section id="id10">
+<h3>どれくらい内部構造を見て設計するかによる分類<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h4>ブラックボックステスト<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
+<p><strong>ブラックボックステスト</strong> は内部実装を見ずに、入力と出力だけを見てテストする方法<br />
+つまり、関数やAPIや画面の中身がどう実装されているかは気にせず、「この入力をしたら、仕様通りこの結果になるか？」を確認する</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>技法</p></th>
+<th class="head"><p>内容</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>同値分割</p></td>
+<td><p>同じ扱いになる入力をグループ化する</p></td>
+</tr>
+<tr class="row-odd"><td><p>境界値分析</p></td>
+<td><p>0、1、上限、下限など境界を重点的に試す</p></td>
+</tr>
+<tr class="row-even"><td><p>デシジョンテーブル</p></td>
+<td><p>条件の組み合わせと結果を表で整理する</p></td>
+</tr>
+<tr class="row-odd"><td><p>状態遷移テスト</p></td>
+<td><p>状態の変化が正しいか確認する</p></td>
+</tr>
+<tr class="row-even"><td><p>ユースケーステスト</p></td>
+<td><p>実際の利用シナリオで確認する</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="property-based-testing">
+<h5>Property-based testing<a class="headerlink" href="#property-based-testing" title="Link to this heading">#</a></h5>
+<p>型定義や制約に沿ってランダムな入力を大量生成し、「常に成り立つべき性質」を検証するテスト。<br />
+Pythonだと <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/">Hypothesis</a> パッケージがある。</p>
+</section>
+</section>
+<section id="id12">
+<h4>ホワイトボックステスト<a class="headerlink" href="#id12" title="Link to this heading">#</a></h4>
+<p><strong>ホワイトボックステスト</strong> は内部実装、コード構造、分岐、ループなどを見てテストする方法。<br />
+「このコードの分岐や例外処理はちゃんと通っているか？」を確認する。</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>観点</p></th>
+<th class="head"><p>内容</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>命令網羅</p></td>
+<td><p>すべての文が一度は実行されたか</p></td>
+</tr>
+<tr class="row-odd"><td><p>分岐網羅</p></td>
+<td><p>if/else の各分岐を通ったか</p></td>
+</tr>
+<tr class="row-even"><td><p>条件網羅</p></td>
+<td><p>複合条件の各条件が true/false になったか</p></td>
+</tr>
+<tr class="row-odd"><td><p>パス網羅</p></td>
+<td><p>可能な実行経路を通ったか</p></td>
+</tr>
+<tr class="row-even"><td><p>例外経路</p></td>
+<td><p>例外処理やエラーハンドリングを通ったか</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+</section>
+<section id="id13">
+<h2>テストの品質<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<section id="id14">
+<h3>網羅性<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>行カバレッジ</strong></p>
+<ul>
+<li><p>テスト実行時に、コードの各行がどれだけ実行されたかを示す指標。</p></li>
+<li><p>未テストの処理を見つけるのに有用だが、行が実行されただけで正しく検証されているとは限らない。</p></li>
+</ul>
+</li>
+<li><p><strong>分岐カバレッジ</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">if</span></code> / <code class="docutils literal notranslate"><span class="pre">else</span></code>、<code class="docutils literal notranslate"><span class="pre">switch</span></code>、三項演算子などの分岐がどれだけ網羅されているかを示す指標。</p></li>
+<li><p>行カバレッジよりも、条件分岐のテスト漏れを発見しやすい。</p></li>
+</ul>
+</li>
+<li><p><strong>重要機能カバレッジ</strong></p>
+<ul>
+<li><p>ユーザーや業務にとって重要な機能・フローが自動テストで守られているかを見る指標。</p></li>
+<li><p>単なるコード量ではなく、リスクや業務価値に基づいてテスト対象を評価する。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id15">
+<h3>検出力<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Mutation Score</strong></p>
+<ul>
+<li><p>コードに意図的に小さな変更、つまりミューテーションを加えたときに、テストがその異常を検出できる割合。</p></li>
+<li><p>カバレッジよりも「テストが本当にバグを見つけられるか」に近い指標。</p></li>
+</ul>
+</li>
+<li><p><strong>過去バグ再現テスト数</strong></p>
+<ul>
+<li><p>過去に発生したバグを再現するテストがどれだけ追加されているかを示す指標。</p></li>
+<li><p>バグ修正時に回帰テストを追加することで、同じ不具合の再発を防ぎやすくなる。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id16">
+<h3>信頼性<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Flaky率</strong></p>
+<ul>
+<li><p>コードを変更していないにもかかわらず、成功したり失敗したりするテスト「Flaky test」の割合。</p></li>
+<li><p>Flaky test が多いと、開発者がテスト結果を信用しなくなるため、優先的に改善すべき。</p></li>
+</ul>
+</li>
+<li><p><strong>再実行成功率</strong></p>
+<ul>
+<li><p>失敗したテストを再実行したときに成功する割合。</p></li>
+<li><p>再実行で成功するケースが多い場合、テストや環境に不安定要因がある可能性が高い。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id17">
+<h3>効率<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>CI実行時間</strong></p>
+<ul>
+<li><p>Pull Request や main ブランチへのマージ時に、自動テストが完了するまでの時間。</p></li>
+<li><p>長すぎると開発サイクルを遅くするため、テストの分割・並列化・実行対象の最適化が必要になる。</p></li>
+</ul>
+</li>
+<li><p><strong>遅いテスト上位</strong></p>
+<ul>
+<li><p>実行時間の長いテストを特定するための指標。</p></li>
+<li><p>ボトルネックになっているテストを把握し、モック化、データ削減、並列化などの改善につなげる。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id18">
+<h3>保守性<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>テストコード量</strong></p>
+<ul>
+<li><p>本番コードに対して、テストコードがどの程度あるかを見る指標。</p></li>
+<li><p>多ければよいわけではなく、重複が多い、意図が不明、修正コストが高い場合は保守性が低い。</p></li>
+</ul>
+</li>
+<li><p><strong>重複</strong></p>
+<ul>
+<li><p>テストデータ作成、セットアップ処理、アサーションなどが繰り返し書かれていないかを見る観点。</p></li>
+<li><p>重複が多いと、仕様変更時に多数のテストを修正する必要があり、保守コストが上がる。</p></li>
+</ul>
+</li>
+<li><p><strong>失敗時の原因特定時間</strong></p>
+<ul>
+<li><p>テストが失敗したときに、原因を特定するまでにかかる時間。</p></li>
+<li><p>良いテストは、失敗メッセージやテスト名から「何が壊れたか」がすぐ分かる。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id19">
+<h3>運用品質<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>本番障害のうちテスト漏れ件数</strong></p>
+<ul>
+<li><p>本番障害の中で、自動テストがあれば検出できたはずの件数。</p></li>
+<li><p>テスト戦略の弱点を見つけるために有効で、障害後の振り返りで確認するとよい。</p></li>
+</ul>
+</li>
+<li><p><strong>PRでの検出件数</strong></p>
+<ul>
+<li><p>Pull Request の段階で、自動テストによって不具合やデグレードを検出できた件数。</p></li>
+<li><p>自動テストが開発プロセス上どれだけ品質ゲートとして機能しているかを見る指標。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="mutation-testing">
+<h3>Mutation testing<a class="headerlink" href="#mutation-testing" title="Link to this heading">#</a></h3>
+<p><strong>Mutation testing</strong> は、既存のテストコードの品質を測るためのテスト手法。<br />
+わざと本番コードに小さなバグを埋め込んで、「そのバグをテストが検出できるか」を確認する。</p>
+<section id="mutation-score">
+<h4>Mutation Score<a class="headerlink" href="#mutation-score" title="Link to this heading">#</a></h4>
+<p>概ね次のように定量評価する</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mutation</span> <span class="n">score</span> <span class="o">=</span> <span class="n">killed</span> <span class="n">mutants</span> <span class="o">/</span> <span class="n">total</span> <span class="n">mutants</span>
 </pre></div>
 </div>
-<p class="sd-card-text">この関数のテストに際して、想定される全部の入力値の組み合わせを試すわけにはいかない（記号をどこまで含むかにもよるが、<span class="math notranslate nohighlight">\(94^{16} \approx 3.7\times 10^{31}\)</span> 通りとかになる）。</p>
-</div>
-</div>
-<section id="id5">
-<h3>同値分割テスト<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
-<p>同じ出力になる入力値の集合（ <strong>同値パーティション</strong> ）ごとに代表的な入力値だけをテストケースとする</p>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-例：パスワードの設定欄</div>
-<p class="sd-card-text">パスワードの条件が「8文字以上16文字以下」のため</p>
-<ul class="simple">
-<li><p class="sd-card-text">8文字以上16文字以下</p></li>
-</ul>
-<p class="sd-card-text">の場合は正しい値として <code class="docutils literal notranslate"><span class="pre">is_valid_length()</span></code>の返り値が <code class="docutils literal notranslate"><span class="pre">true</span></code> になる（ <strong>有効同値パーティション</strong> ）</p>
-<ul class="simple">
-<li><p class="sd-card-text">8文字未満や16文字を超える場合</p></li>
-</ul>
-<p class="sd-card-text">は<code class="docutils literal notranslate"><span class="pre">is_valid_length()</span></code>の返り値が <code class="docutils literal notranslate"><span class="pre">false</span></code> になる（ <strong>無効同値パーティション</strong> ）</p>
-<p class="sd-card-text">テストケースとしては、例えば</p>
-<ul class="simple">
-<li><p class="sd-card-text">有効同値パーティション の代表例として「9文字」</p></li>
-<li><p class="sd-card-text">無効同値パーティション の代表例として「6文字」</p></li>
-</ul>
-<p class="sd-card-text">を設定する、というのが同値分割テスト</p>
-</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>用語</p></th>
+<th class="head"><p>意味</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mutant</p></td>
+<td><p>意図的に変更されたコード</p></td>
+</tr>
+<tr class="row-odd"><td><p>killed mutant</p></td>
+<td><p>テストが失敗し、検出できた mutant</p></td>
+</tr>
+<tr class="row-even"><td><p>survived mutant</p></td>
+<td><p>テストが通ってしまい、検出できなかった mutant</p></td>
+</tr>
+<tr class="row-odd"><td><p>mutation score</p></td>
+<td><p>検出できた mutant の割合</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
-<section id="id6">
-<h3>境界値テスト<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
-<p><strong>境界値テスト</strong> は条件の境界となる値とその隣の値に対してテストを行う技法。</p>
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-例：パスワードの設定欄</div>
-<p class="sd-card-text">パスワードの長さは数値であるため、異なる同値パーティションが隣り合っている部分</p>
-<ul class="simple">
-<li><p class="sd-card-text">7文字と8文字</p></li>
-<li><p class="sd-card-text">16文字と17文字</p></li>
-</ul>
-<p class="sd-card-text">が境界となる</p>
+<section id="python">
+<h4>Pythonでの実践<a class="headerlink" href="#python" title="Link to this heading">#</a></h4>
+<p>Pythonだとpytestでのテストに対し <a class="reference external" href="https://pypi.org/project/mutmut/">mutmut</a> パッケージでmutation testingが実行できる</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>mutmut
+mutmut<span class="w"> </span>run
+</pre></div>
 </div>
-</div>
-<div class="admonition- admonition">
-<p class="admonition-title">隠れた境界値</p>
-<p>度重なる仕様変更の過去があるコードでは、従来の条件分岐が残っている場合がある。</p>
-<p>そのため、現在の仕様上の境界値以外にも実装では条件分岐が存在することがある点に注意。</p>
-</div>
+</section>
 </section>
 </section>
 </section>
@@ -1557,11 +1828,38 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">テストの種類</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">回帰テスト</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">同値分割テスト・境界値テスト</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">同値分割テスト</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">境界値テスト</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">テストの種類</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">粒度による分類</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">テスト観点による分類</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">テスト目的による分類</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">回帰テスト</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">スモークテスト</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">サニティテスト</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">探索的テスト</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">どれくらい内部構造を見て設計するかによる分類</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">ブラックボックステスト</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#property-based-testing">Property-based testing</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">ホワイトボックステスト</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">テストの品質</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">網羅性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">検出力</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">信頼性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">効率</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">保守性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">運用品質</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mutation-testing">Mutation testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#mutation-score">Mutation Score</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Pythonでの実践</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
