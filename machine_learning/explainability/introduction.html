@@ -1394,10 +1394,17 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">因子型</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">事例型</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#k">k近傍のサンプルを出す方法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-function">Influence function</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tracin">TracIn</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#protodash">ProtoDash</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#post-hoc">後付け（post-hoc）事例型説明</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-function">Influence function</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#tracin">TracIn</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#protodash">ProtoDash</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ante-hoc">組み込み型（ante-hoc）の事例型説明</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#tabr-tabular-deep-learning-meets-nearest-neighbors-iclr-2024">TabR: Tabular Deep Learning Meets Nearest Neighbors (ICLR 2024)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#protoattend">ProtoAttend</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">反実型</a></li>
 </ul>
 </li>
@@ -1438,12 +1445,14 @@ document.write(`
 </section>
 <section id="id3">
 <h2>事例型<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p>予測対象と類似した訓練事例を出すアプローチ</p>
-<section id="k">
-<h3>k近傍のサンプルを出す方法<a class="headerlink" href="#k" title="Link to this heading">#</a></h3>
-</section>
+<p>予測対象と類似した訓練事例を出すアプローチ。<br />
+instance-based explanation / prototype-based explanation などと呼ばれる</p>
+<section id="post-hoc">
+<h3>後付け（post-hoc）事例型説明<a class="headerlink" href="#post-hoc" title="Link to this heading">#</a></h3>
+<p>任意の機械学習アルゴリズムに対し、あとから説明を行うタイプ。<br />
+各インスタンスの誤差関数（勾配）への影響を使ったりする</p>
 <section id="influence-function">
-<h3>Influence function<a class="headerlink" href="#influence-function" title="Link to this heading">#</a></h3>
+<h4>Influence function<a class="headerlink" href="#influence-function" title="Link to this heading">#</a></h4>
 <ul class="simple">
 <li><p><a class="reference external" href="http://proceedings.mlr.press/v70/koh17a/koh17a.pdf">Koh &amp; Liang (2017)</a>が提案</p></li>
 <li><p><a class="reference external" href="https://proceedings.neurips.cc/paper/2019/file/5f14615696649541a025d3d0f8e0447f-Paper.pdf">Hara et al. (2019)</a>はconvexでない損失関数にも使えるよう拡張</p></li>
@@ -1451,7 +1460,7 @@ document.write(`
 </ul>
 </section>
 <section id="tracin">
-<h3>TracIn<a class="headerlink" href="#tracin" title="Link to this heading">#</a></h3>
+<h4>TracIn<a class="headerlink" href="#tracin" title="Link to this heading">#</a></h4>
 <p>SGDにおいて各インスタンスが誤差をどれだけ増減させるかを見てインスタンスの影響度を測るアプローチ</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://blog.research.google/2021/02/tracin-simple-method-to-estimate.html?m=1">TracIn — A Simple Method to Estimate Training Data Influence – Google Research Blog</a></p></li>
@@ -1459,9 +1468,33 @@ document.write(`
 </ul>
 </section>
 <section id="protodash">
-<h3>ProtoDash<a class="headerlink" href="#protodash" title="Link to this heading">#</a></h3>
-<p>事例ベースの説明。 AI Explainability 360パッケージで実行できる</p>
-<p><a class="reference external" href="https://arxiv.org/abs/1707.01212">[1707.01212] Efficient Data Representation by Selecting Prototypes with Importance Weights</a></p>
+<h4>ProtoDash<a class="headerlink" href="#protodash" title="Link to this heading">#</a></h4>
+<p><a class="reference external" href="https://arxiv.org/abs/1707.01212">[1707.01212] Efficient Data Representation by Selecting Prototypes with Importance Weights</a>（ICDM 2019）</p>
+<p>複雑なデータ分布を最もよく要約・コンパクトに代表する「プロトタイプ(代表例)」を、強い理論保証つきで選択するアルゴリズム。Kim et al. (2016)(MMD-Critic)を一般化し、プロトタイプ選択に加えて、その重要度を示す非負の重みを各プロトタイプに付与する。これによりプロトタイプと criticism(外れ値)を単一の一貫した枠組みで発見できる</p>
+<p>AI Explainability 360パッケージで実行できる</p>
+</section>
+</section>
+<section id="ante-hoc">
+<h3>組み込み型（ante-hoc）の事例型説明<a class="headerlink" href="#ante-hoc" title="Link to this heading">#</a></h3>
+<p>予測アルゴリズムに組み込まれた説明手法</p>
+<section id="tabr-tabular-deep-learning-meets-nearest-neighbors-iclr-2024">
+<h4>TabR: Tabular Deep Learning Meets Nearest Neighbors (ICLR 2024)<a class="headerlink" href="#tabr-tabular-deep-learning-meets-nearest-neighbors-iclr-2024" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>URL: <a class="reference external" href="https://arxiv.org/abs/2307.14338">https://arxiv.org/abs/2307.14338</a></p></li>
+<li><p>Github: <a class="reference external" href="https://github.com/yandex-research/tabular-dl-tabr">yandex-research/tabular-dl-tabr</a></p></li>
+</ul>
+<p>目的: テーブルDLがGBDTに勝てない状況を、検索拡張(retrieval-augmented)アプローチで打破する。<br />
+手法: 中央にkNNライクな検索モジュールを持つフィードフォワードネットワーク。ターゲットと近傍候補を同一エンコーダで符号化し、類似度モジュールで近傍を取得して表現を強化する。<br />
+結果: テーブルDLモデル中で最良の平均性能を示し、複数データセットで最先端を達成、”GBDTに有利”とされるベンチマークでもGBDTを上回った。<br />
+意義: 予測時に「どの訓練事例を参照したか」が構造として残るため、検索拡張モデルが持つ解釈性・頑健性などの有用な特性を備える。</p>
+</section>
+<section id="protoattend">
+<h4>ProtoAttend<a class="headerlink" href="#protoattend" title="Link to this heading">#</a></h4>
+<p><a class="reference external" href="https://www.jmlr.org/papers/v21/20-042.html">ProtoAttend: Attention-Based Prototypical Learning</a></p>
+<p>手法: 事前学習済みを含む広範なアーキテクチャに統合可能で、符号化表現とサンプルを関連付けるアテンション機構でプロトタイプ（少数の関連事例）を決定。<br />
+結果: 元モデルの精度を犠牲にせず、(1)決定に最も関連するサンプルを出力するサンプルベース解釈、(2)最先端の信頼度推定、(3)分布ミスマッチ検出で最先端を達成。<br />
+意義: 最小の追加テスト時間・実用的な訓練コストで実現でき、テーブル/構造化データを含む複数モダリティに適用可能。</p>
+</section>
 </section>
 <section id="id4">
 <h3>反実型<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
@@ -1472,9 +1505,8 @@ document.write(`
 <h2>ライブラリ<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <section id="ai-explainability-360">
 <h3>AI Explainability 360<a class="headerlink" href="#ai-explainability-360" title="Link to this heading">#</a></h3>
-<p>いろいろな論文でまとめられた説明に関する手法をまとめたライブラリ</p>
+<p>LIME、SHAP、ProtoDashなどが使えるパッケージ（更新が2025年で止まってる？）</p>
 <ul class="simple">
-<li><p>Docs: <a class="reference external" href="https://aix360.res.ibm.com/">https://aix360.res.ibm.com/</a></p></li>
 <li><p>Github: <a class="github reference external" href="https://github.com/Trusted-AI/AIX360">Trusted-AI/AIX360</a></p></li>
 <li><p>PyPI: <a class="reference external" href="https://pypi.org/project/aix360/">https://pypi.org/project/aix360/</a></p></li>
 </ul>
@@ -1595,10 +1627,17 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">因子型</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">事例型</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#k">k近傍のサンプルを出す方法</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-function">Influence function</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tracin">TracIn</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#protodash">ProtoDash</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#post-hoc">後付け（post-hoc）事例型説明</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-function">Influence function</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#tracin">TracIn</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#protodash">ProtoDash</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ante-hoc">組み込み型（ante-hoc）の事例型説明</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#tabr-tabular-deep-learning-meets-nearest-neighbors-iclr-2024">TabR: Tabular Deep Learning Meets Nearest Neighbors (ICLR 2024)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#protoattend">ProtoAttend</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">反実型</a></li>
 </ul>
 </li>
