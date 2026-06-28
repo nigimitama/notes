@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>表の読み取りや処理（Table Processing） &#8212; データサイエンス関連+αのメモ</title>
+    <title>LangExtractパッケージ &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -71,11 +71,9 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'natural_language_processing/task/table_processing';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'natural_language_processing/information_extraction/langextract';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Large Language Models" href="../large_language_models/index.html" />
-    <link rel="prev" title="Document Understanding" href="document_understanding.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -137,6 +135,8 @@
     <div class="bd-container__inner bd-page-width">
       
       
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -668,7 +668,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../generative_models/diffusion_models.html">Diffusion Models</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">自然言語処理</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../character_code.html">文字コード</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../normalization.html">テキストデータの前処理：表記揺れ、正規化</a></li>
 
@@ -678,11 +678,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../embedding.html">単語の埋め込み</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rnn.html">言語モデルとRNN</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../latent_dirichlet_allocation.html">Latent Dirichlet Allocation (LDA)</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">タスク</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="document_understanding.html">Document Understanding</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">表の読み取りや処理（Table Processing）</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../large_language_models/index.html">Large Language Models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../large_language_models/introduction.html">Large Language Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../large_language_models/emergent_abilities.html">Emergent Abilities（創発的能力）</a></li>
@@ -1298,7 +1293,7 @@
       
       
       
-      <li><a href="../../_sources/natural_language_processing/task/table_processing.ipynb" target="_blank"
+      <li><a href="../../_sources/natural_language_processing/information_extraction/langextract.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -1382,7 +1377,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>表の読み取りや処理（Table Processing）</h1>
+    <h1>LangExtractパッケージ</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -1392,10 +1387,8 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">有価証券報告書の読み取り</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ufo-2024">UFO 2024（有報読み取りコンペ）</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-langextract">Why LangExtract?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">日本語ガイド</a></li>
 </ul>
             </nav>
         </div>
@@ -1407,101 +1400,28 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="table-processing">
-<h1>表の読み取りや処理（Table Processing）<a class="headerlink" href="#table-processing" title="Link to this heading">#</a></h1>
-<p><a class="reference external" href="https://arxiv.org/abs/2402.05121">[2402.05121] Large Language Model for Table Processing: A Survey</a></p>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head text-center"><p>Task Name</p></th>
-<th class="head text-center"><p>Table Type</p></th>
-<th class="head text-center"><p>Description (related work)</p></th>
-<th class="head text-center"><p>Example Dataset</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td class="text-center"><p>Table QA</p></td>
-<td class="text-center"><p>WT</p></td>
-<td class="text-center"><p>Answer a NL question given a table ( [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib28">28</a>, <a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib29">29</a>])</p></td>
-<td class="text-center"><p>WikiTableQuestion [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib30">30</a>]</p></td>
-</tr>
-<tr class="row-odd"><td class="text-center"><p>Tablefact verification</p></td>
-<td class="text-center"><p>WT</p></td>
-<td class="text-center"><p>Verifying facts given a table ( [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib29">29</a>, <a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib31">31</a>])</p></td>
-<td class="text-center"><p>TabFact [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib32">32</a>]</p></td>
-</tr>
-<tr class="row-even"><td class="text-center"><p>Table-to-text</p></td>
-<td class="text-center"><p>WT</p></td>
-<td class="text-center"><p>Produce a NL question given a table ( [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib11">11</a>])</p></td>
-<td class="text-center"><p>ToTTo [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib33">33</a>]</p></td>
-</tr>
-<tr class="row-odd"><td class="text-center"><p>Data cleaning</p></td>
-<td class="text-center"><p>WT/SS/DB</p></td>
-<td class="text-center"><p>Correct errors of table data ( [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib34">34</a>, <a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib35">35</a>])</p></td>
-<td class="text-center"><p>-</p></td>
-</tr>
-<tr class="row-even"><td class="text-center"><p>Column/Row/Cellpopulation</p></td>
-<td class="text-center"><p>WT/SS/DB</p></td>
-<td class="text-center"><p>Populate possible column/row/cell for a table ( [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib11">11</a>, <a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib12">12</a>])</p></td>
-<td class="text-center"><p>TURL [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib9">9</a>]</p></td>
-</tr>
-<tr class="row-odd"><td class="text-center"><p>Entity linking</p></td>
-<td class="text-center"><p>WT</p></td>
-<td class="text-center"><p>Link the selected entity to the knowledge base ( [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib11">11</a>, <a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib12">12</a>])</p></td>
-<td class="text-center"><p>TURL [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib9">9</a>]</p></td>
-</tr>
-<tr class="row-even"><td class="text-center"><p>Column typeannotation</p></td>
-<td class="text-center"><p>WT</p></td>
-<td class="text-center"><p>Choose types for the column in the table ( [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib11">11</a>, <a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib12">12</a>])</p></td>
-<td class="text-center"><p>TURL [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib9">9</a>]</p></td>
-</tr>
-<tr class="row-odd"><td class="text-center"><p>Spreadsheetmanipulation</p></td>
-<td class="text-center"><p>SS</p></td>
-<td class="text-center"><p>Manipulate spreadsheets ( [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib16">16</a>, <a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib36">36</a>])</p></td>
-<td class="text-center"><p>SpreadsheetBench [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib37">37</a>]</p></td>
-</tr>
-<tr class="row-even"><td class="text-center"><p>NL2SQL</p></td>
-<td class="text-center"><p>DB</p></td>
-<td class="text-center"><p>Translate a NL question to a SQL query ( [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib38">38</a>, <a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib39">39</a>])</p></td>
-<td class="text-center"><p>Spider [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib40">40</a>]</p></td>
-</tr>
-<tr class="row-odd"><td class="text-center"><p>Data analysis</p></td>
-<td class="text-center"><p>SS/DB</p></td>
-<td class="text-center"><p>Table data analysis pipeline, consists offeature engineering, machine learning, etc. ( [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib41">41</a>, <a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib42">42</a>])</p></td>
-<td class="text-center"><p>DS-1000 [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib43">43</a>]</p></td>
-</tr>
-<tr class="row-even"><td class="text-center"><p>Table detection</p></td>
-<td class="text-center"><p>DOC</p></td>
-<td class="text-center"><p>Locate tables in documents ( [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib44">44</a>])</p></td>
-<td class="text-center"><p>TableBank [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib45">45</a>]</p></td>
-</tr>
-<tr class="row-odd"><td class="text-center"><p>Table extraction</p></td>
-<td class="text-center"><p>DOC</p></td>
-<td class="text-center"><p>Extract and structuralize tables from documents ( [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib46">46</a>, <a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib44">44</a>])</p></td>
-<td class="text-center"><p>PubTabNet [<a class="reference external" href="https://arxiv.org/html/2402.05121v2#bib.bib47">47</a>]</p></td>
-</tr>
-</tbody>
-</table>
+  <section class="tex2jax_ignore mathjax_ignore" id="langextract">
+<h1>LangExtractパッケージ<a class="headerlink" href="#langextract" title="Link to this heading">#</a></h1>
+<p>LangExtract は Googleによる情報抽出のためのPythonパッケージ</p>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+公式GitHubリポジトリ</div>
+<p class="sd-card-text"><a class="github reference external" href="https://github.com/google/langextract">google/langextract</a></p>
 </div>
-<section id="id1">
-<h2>有価証券報告書の読み取り<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="https://sites.google.com/view/ntcir18-u4/">NTCIR-18 U4 (UFO 2.0)</a></p>
-<section id="ufo-2024">
-<h3><a class="reference external" href="https://sites.google.com/view/ufo-2024/">UFO 2024</a>（有報読み取りコンペ）<a class="headerlink" href="#ufo-2024" title="Link to this heading">#</a></h3>
-<p>背景： <a class="reference external" href="https://www.jstage.jst.go.jp/article/jsaisigtwo/2024/FIN-033/2024_135/_article/-char/ja">有価証券報告書の表を対象としたコンペティションの提案</a></p>
-<p>タスク：</p>
-<ul class="simple">
-<li><p>Table Retrievalタスク：質問に該当する表を検索する</p>
-<ul>
-<li><p><a class="reference external" href="https://sites.google.com/view/ufo-2024/subtasks/table-retrieval">https://sites.google.com/view/ufo-2024/subtasks/table-retrieval</a></p></li>
-</ul>
-</li>
-<li><p>Table QAタスク：単一の表から、質問に該当するセルのID or 値を取り出すタスク</p>
-<ul>
-<li><p><a class="reference external" href="https://sites.google.com/view/ufo-2024/subtasks/table-qa">https://sites.google.com/view/ufo-2024/subtasks/table-qa</a></p></li>
-</ul>
-</li>
-</ul>
+</div>
+<section id="why-langextract">
+<h2>Why LangExtract?<a class="headerlink" href="#why-langextract" title="Link to this heading">#</a></h2>
+<p>VLM（LLM）による情報抽出は手軽にパフォーマンスを出せるようになってきた。</p>
+<p>ただし、実務で使うためには、ハルシネーションのリスクを軽減するために「文書のどこから取得したのか（source grounding）」を調べて検証できるようにしたりなど、細かい部分を整える必要がある。</p>
+<p>そこを簡単にできるようにするのがLangExtractパッケージ</p>
 </section>
+<section id="id1">
+<h2>日本語ガイド<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://langextract.work/ja/">LangExtract ガイド - Google 公式構造化データ抽出ライブラリ (LlamaIndex &amp; DeepSeek)</a></p></li>
+<li><p>blog: <a class="reference external" href="https://zenn.dev/langextract/articles/1fff4223c12b54">非構造化データ抽出の課題：LLMは「どこ」を見て回答したのか？</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -1518,7 +1438,7 @@ document.write(`
         },
         kernelOptions: {
             name: "python3",
-            path: "./natural_language_processing/task"
+            path: "./natural_language_processing/information_extraction"
         },
         predefinedOutput: true
     }
@@ -1535,24 +1455,6 @@ document.write(`
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="document_understanding.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Document Understanding</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="../large_language_models/index.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Large Language Models</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -1569,10 +1471,8 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">有価証券報告書の読み取り</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ufo-2024">UFO 2024（有報読み取りコンペ）</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-langextract">Why LangExtract?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">日本語ガイド</a></li>
 </ul>
   </nav></div>
 
