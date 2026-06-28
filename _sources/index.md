@@ -139,7 +139,7 @@
 - [](natural_language_processing/embedding)
 - [](natural_language_processing/rnn)
 - [](natural_language_processing/latent_dirichlet_allocation)
-- [](natural_language_processing/task/index)
+- [](natural_language_processing/information_extraction/index)
 - [](natural_language_processing/large_language_models/index)
 :::
 
@@ -188,6 +188,7 @@
 - [](applied_data_science/type_of_applications)
 - [](applied_data_science/business_application_of_ai)
 - [](applied_data_science/decision_focused_learning/index)
+- [](applied_data_science/marketing/marketing)
 :::
 
 :::{grid-item-card}
