@@ -611,6 +611,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/explainability/influence_function_with_linear_regression.html">Influence Function 線形回帰での例</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/explainability/tree_influence.html">Tree Influence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../machine_learning/explainability/model_class_reliance.html">Model Class Reliance (MCR)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine_learning/explainability/prototype_based_explanation.html">Prototype Based Explanation</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../machine_learning/uncertainty/index.html">予測の不確実性</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -700,6 +701,7 @@
 
 <li class="toctree-l2"><a class="reference internal" href="large_language_models/investigation_of_llm.html">LLMの調査</a></li>
 <li class="toctree-l2"><a class="reference internal" href="large_language_models/evaluation_of_llm.html">LLMの評価</a></li>
+<li class="toctree-l2"><a class="reference internal" href="large_language_models/llm_as_a_judge.html">LLM-as-a-Judge</a></li>
 </ul>
 </details></li>
 </ul>
@@ -1637,19 +1639,27 @@ Prediction: programs
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[-0.2656,  0.7199, -1.2619,  0.0124, -1.0829, -1.2705,  0.8059,  0.3039,
-         -1.3317, -1.3108, -0.4192, -0.9680, -0.1890,  0.0576,  0.8902, -1.9577,
-         -0.5543, -0.1257, -0.6454,  0.9908, -0.0033,  0.8515,  0.2713,  0.0076,
-         -0.6993,  1.3857,  0.0798,  1.1452,  0.0319,  0.0179,  0.2824,  0.2211,
-          0.3321, -0.9708, -0.0863,  0.2380,  0.7827, -0.4719, -0.8795,  0.0781,
-          0.7413, -0.0742, -1.3028, -0.0497, -0.3023,  0.4771, -1.3212, -1.6336,
-          0.6371,  0.6760, -1.0849,  0.5476,  0.2205,  0.8818, -0.3630, -0.2786,
-         -2.0056, -0.2237,  1.2787,  0.7101,  0.5956,  1.6783, -0.2713, -2.5405,
-         -1.4691,  0.2291, -1.0725,  0.6534, -0.1423, -0.2264,  0.3339, -0.0597,
-          0.0369, -1.0301, -0.2268,  1.1527, -0.7088, -0.1228,  0.1194,  0.9290,
-          0.0970,  1.3474, -1.7636, -1.9240, -0.9317,  1.2518, -1.6577,  0.6933,
-         -1.5364, -0.5323, -0.4859, -1.6060,  0.6275, -0.0218,  0.3905, -0.0539,
-         -0.7211,  0.8928,  0.2132, -0.6322]], grad_fn=&lt;ViewBackward0&gt;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[ 1.6827e+00, -1.3432e+00, -4.0636e-01,  8.9347e-01,  1.2612e+00,
+          1.0091e+00, -5.3587e-01, -3.5815e-01, -7.8069e-01,  6.6843e-01,
+         -1.8204e-01, -6.8572e-02,  2.3311e+00, -1.0382e+00,  4.2813e-02,
+         -2.7003e+00, -6.0915e-01, -1.8045e-01, -4.5296e-01, -1.3184e+00,
+         -2.2451e-01,  1.2011e+00,  1.0418e+00,  1.2750e-01, -2.5506e+00,
+          5.6224e-01, -2.6542e+00,  1.4206e+00,  3.4361e-01,  7.9957e-01,
+          9.6298e-01, -9.5724e-01, -1.3985e+00,  1.1525e+00, -1.1897e+00,
+          9.6058e-01, -7.7780e-01, -5.7403e-02,  3.1308e-01, -2.3969e-01,
+         -1.6846e+00, -1.5924e+00,  8.4741e-02,  3.9345e-01, -2.8852e-01,
+         -1.3735e+00,  2.3928e-01,  2.6510e-02, -1.1858e-01,  1.1426e+00,
+          2.4770e-01, -9.2119e-01,  2.9734e-01, -1.6608e+00, -1.2919e+00,
+         -4.9957e-01, -9.0986e-01, -6.0816e-01, -4.4340e-01,  4.0373e-01,
+         -4.7396e-01, -2.8523e-01, -8.5978e-01,  6.1363e-01, -3.1833e-01,
+          3.7110e-01, -3.4805e-02, -1.9695e+00,  1.5274e+00,  3.0175e-01,
+         -1.0465e+00, -4.0131e-01, -1.9224e+00,  2.7309e+00,  2.4574e-02,
+         -7.5756e-01,  3.1751e-01,  1.7946e+00, -1.9596e-01, -3.9250e-01,
+          9.7289e-01, -1.0492e+00,  6.2202e-01, -1.8468e+00,  2.2882e+00,
+         -7.9598e-02,  8.0531e-01,  2.2038e+00,  7.5791e-01, -1.0306e-03,
+         -3.2930e-01,  8.0254e-01,  6.1055e-01, -8.1107e-01,  1.0057e+00,
+          7.6471e-01,  3.6779e-01, -1.0409e+00, -1.7307e+00,  1.4546e+00]],
+       grad_fn=&lt;ViewBackward0&gt;)
 </pre></div>
 </div>
 </div>
@@ -1752,10 +1762,10 @@ p(w_O|w_I) = \frac{\exp( v_{w_O}^T v_{w_I} )}{\sum^W_{w=1} \exp( v_{w}^T v_{w_I}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>male: -0.0251
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>female: -0.0395
 ruler: -0.0263
 queen: 0.00656
-female: -0.0395
+male: -0.0251
 </pre></div>
 </div>
 </div>

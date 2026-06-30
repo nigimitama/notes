@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>&lt;no title&gt; &#8212; データサイエンス関連+αのメモ</title>
+    <title>Prototype Based Explanation &#8212; データサイエンス関連+αのメモ</title>
   
   
   
@@ -71,6 +71,8 @@
                 gtag('config', 'G-KCTWFQM00B');
             </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'machine_learning/explainability/prototype_based_explanation';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -508,7 +510,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../econometrics/memo/covariates.html">なぜ共変量をモデルに入れるのか</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">機械学習</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../statistical_learning_theory/index.html">統計的学習理論</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../statistical_learning_theory/introduction.html">統計的学習理論</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../statistical_learning_theory/loss.html">学習アルゴリズムの評価</a></li>
@@ -594,7 +596,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../overfitting.html">過学習と良性の過学習（Double Descent, Grokking）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../feature_engineering.html">Feature Engineering</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="index.html">説明可能なAI（Explainable AI: XAI）</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">説明可能なAI（Explainable AI: XAI）</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="introduction.html">説明可能性</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="shap/index.html">SHAP</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="shap/shap.html">SHAP</a></li>
@@ -609,6 +611,7 @@
 <li class="toctree-l2"><a class="reference internal" href="influence_function_with_linear_regression.html">Influence Function 線形回帰での例</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tree_influence.html">Tree Influence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="model_class_reliance.html">Model Class Reliance (MCR)</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Prototype Based Explanation</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../uncertainty/index.html">予測の不確実性</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -698,6 +701,7 @@
 
 <li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/investigation_of_llm.html">LLMの調査</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/evaluation_of_llm.html">LLMの評価</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../natural_language_processing/large_language_models/llm_as_a_judge.html">LLM-as-a-Judge</a></li>
 </ul>
 </details></li>
 </ul>
@@ -1390,7 +1394,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1><no title></h1>
+    <h1>Prototype Based Explanation</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -1399,9 +1403,13 @@ document.write(`
                 <h2> Contents </h2>
             </div>
             <nav aria-label="Page">
-                <ul class="simple visible nav section-nav flex-column">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">定義</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">アルゴリズムの例</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#protoattend">ProtoAttend</a></li>
 </ul>
-
+</li>
+</ul>
             </nav>
         </div>
     </div>
@@ -1412,7 +1420,34 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  
+  <section class="tex2jax_ignore mathjax_ignore" id="prototype-based-explanation">
+<h1>Prototype Based Explanation<a class="headerlink" href="#prototype-based-explanation" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>定義<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p><strong>Prototype-Based Explanation（プロトタイプベース説明）</strong> は、機械学習モデルの予測や判断を <strong>代表的な事例・典型例・類似例である「プロトタイプ」</strong> を用いて説明する方法。</p>
+<p>より形式的には、</p>
+<blockquote>
+<div><p>ある入力 <span class="math notranslate nohighlight">\(x\)</span> に対するモデルの予測 <span class="math notranslate nohighlight">\(f(x)\)</span> を、学習データ中または潜在空間上の代表点 <span class="math notranslate nohighlight">\(p_1, p_2, \dots, p_k\)</span> との類似性に基づいて説明する手法</p>
+</div></blockquote>
+<p>たとえば画像分類で猫画像が「猫」と判定された場合、</p>
+<blockquote>
+<div><p>この画像は、過去に見た典型的な猫画像プロトタイプに似ているため、猫と判定された</p>
+</div></blockquote>
+<p>という形で説明する。</p>
+<p>関連する概念として、<strong>example-based explanation</strong> や <strong>case-based reasoning</strong> に近いが、prototype-based explanation では単なる近傍事例ではなく、<strong>クラスや概念を代表する典型例</strong>を使う点が特徴。</p>
+</section>
+<section id="id2">
+<h2>アルゴリズムの例<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="protoattend">
+<h3>ProtoAttend<a class="headerlink" href="#protoattend" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://www.jmlr.org/papers/v21/20-042.html">ProtoAttend: Attention-Based Prototypical Learning</a></p>
+<p>手法: 事前学習済みを含む広範なアーキテクチャに統合可能で、符号化表現とサンプルを関連付けるアテンション機構でプロトタイプ（少数の関連事例）を決定。<br />
+結果: 元モデルの精度を犠牲にせず、(1)決定に最も関連するサンプルを出力するサンプルベース解釈、(2)最先端の信頼度推定、(3)分布ミスマッチ検出で最先端を達成。<br />
+意義: 最小の追加テスト時間・実用的な訓練コストで実現でき、テーブル/構造化データを含む複数モダリティに適用可能。</p>
+</section>
+</section>
+</section>
+
     <script type="text/x-thebe-config">
     {
         requestKernel: true,
@@ -1476,9 +1511,13 @@ document.write(`
     <i class="fa-solid fa-list"></i> Contents
   </div>
   <nav class="bd-toc-nav page-toc">
-    <ul class="simple visible nav section-nav flex-column">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">定義</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">アルゴリズムの例</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#protoattend">ProtoAttend</a></li>
 </ul>
-
+</li>
+</ul>
   </nav></div>
 
 </div></div>
