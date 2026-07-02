@@ -1503,7 +1503,7 @@ document.write(`
 単純な再帰では <span class="math notranslate nohighlight">\(O(2^n)\)</span> かかるが、DP では <span class="math notranslate nohighlight">\(O(n)\)</span> になる。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>it
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%timeit</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
 
 <span class="c1"># トップダウン（メモ化再帰）</span>
@@ -1520,14 +1520,14 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>266 μs ± 1.09 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>373 μs ± 1.51 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>it
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%timeit</span>
 <span class="c1"># ボトムアップ（表形式）</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">fib_bottom_up</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
@@ -1548,30 +1548,30 @@ document.write(`
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
 <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="nn">----&gt; 1 get_ipython().run_cell_magic(&#39;timeit&#39;, &#39;&#39;, &#39;# ボトムアップ（表形式）\ndef fib_bottom_up(n: int) -&gt; int:\n    if n &lt;= 1:\n        return n\n    dp = [0] * (n + 1)\n    dp[1] = 1\n    \n    # 状態を配列に保存してforループにする → O(n)\n    for i</span> in <span class="ni">range(2, n + 1):\n        dp[i] = dp[i - 1] + dp[i - 2]\n    return dp[n]\n\nfib_bottom_up</span><span class="nt">(n)\n&#39;)</span>
+<span class="nn">----&gt; 1 get_ipython().run_cell_magic(&#39;timeit&#39;, &#39;&#39;, &#39;# ボトムアップ（表形式）\ndef fib_bottom_up(n: int) -&gt; int:\n    if n &lt;= 1:\n        return n\n    dp = [0] * (n + 1)\n    dp[1] = 1\n\n    # 状態を配列に保存してforループにする → O(n)\n    for i</span> in <span class="ni">range(2, n + 1):\n        dp[i] = dp[i - 1] + dp[i - 2]\n    return dp[n]\n\nfib_bottom_up</span><span class="nt">(n)\n&#39;)</span>
 
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/interactiveshell.py:2543,</span> in <span class="ni">InteractiveShell.run_cell_magic</span><span class="nt">(self, magic_name, line, cell)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2541</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">builtin_trap</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">2542</span>     <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">magic_arg_s</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">2543</span>     <span class="n">result</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2545</span> <span class="c1"># The code below prevents the output from being displayed</span>
-<span class="g g-Whitespace">   </span><span class="mi">2546</span> <span class="c1"># when using magics with decorator @output_can_be_silenced</span>
-<span class="g g-Whitespace">   </span><span class="mi">2547</span> <span class="c1"># when the last Python token in the expression is a &#39;;&#39;.</span>
-<span class="g g-Whitespace">   </span><span class="mi">2548</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">magic</span><span class="o">.</span><span class="n">MAGIC_OUTPUT_CAN_BE_SILENCED</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+<span class="nn">File ~/work/notes/notes/.venv/lib/python3.12/site-packages/IPython/core/interactiveshell.py:2565,</span> in <span class="ni">InteractiveShell.run_cell_magic</span><span class="nt">(self, magic_name, line, cell)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2563</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">builtin_trap</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">2564</span>     <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">magic_arg_s</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">2565</span>     <span class="n">result</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2567</span> <span class="c1"># The code below prevents the output from being displayed</span>
+<span class="g g-Whitespace">   </span><span class="mi">2568</span> <span class="c1"># when using magics with decorator @output_can_be_silenced</span>
+<span class="g g-Whitespace">   </span><span class="mi">2569</span> <span class="c1"># when the last Python token in the expression is a &#39;;&#39;.</span>
+<span class="g g-Whitespace">   </span><span class="mi">2570</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">magic</span><span class="o">.</span><span class="n">MAGIC_OUTPUT_CAN_BE_SILENCED</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
 
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/magics/execution.py:1209,</span> in <span class="ni">ExecutionMagics.timeit</span><span class="nt">(self, line, cell, local_ns)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1207</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
-<span class="g g-Whitespace">   </span><span class="mi">1208</span>     <span class="n">number</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">index</span>
-<span class="ne">-&gt; </span><span class="mi">1209</span>     <span class="n">time_number</span> <span class="o">=</span> <span class="n">timer</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1210</span>     <span class="k">if</span> <span class="n">time_number</span> <span class="o">&gt;=</span> <span class="mf">0.2</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1211</span>         <span class="k">break</span>
+<span class="nn">File ~/work/notes/notes/.venv/lib/python3.12/site-packages/IPython/core/magics/execution.py:1227,</span> in <span class="ni">ExecutionMagics.timeit</span><span class="nt">(self, line, cell, local_ns)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1225</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+<span class="g g-Whitespace">   </span><span class="mi">1226</span>     <span class="n">number</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">index</span>
+<span class="ne">-&gt; </span><span class="mi">1227</span>     <span class="n">time_number</span> <span class="o">=</span> <span class="n">timer</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1228</span>     <span class="k">if</span> <span class="n">time_number</span> <span class="o">&gt;=</span> <span class="mf">0.2</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1229</span>         <span class="k">break</span>
 
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.10/site-packages/IPython/core/magics/execution.py:174,</span> in <span class="ni">Timer.timeit</span><span class="nt">(self, number)</span>
-<span class="g g-Whitespace">    </span><span class="mi">172</span> <span class="n">gc</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">173</span> <span class="k">try</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">174</span>     <span class="n">timing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timer</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">175</span> <span class="k">finally</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">176</span>     <span class="k">if</span> <span class="n">gcold</span><span class="p">:</span>
+<span class="nn">File ~/work/notes/notes/.venv/lib/python3.12/site-packages/IPython/core/magics/execution.py:184,</span> in <span class="ni">Timer.timeit</span><span class="nt">(self, number)</span>
+<span class="g g-Whitespace">    </span><span class="mi">182</span> <span class="n">gc</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">183</span> <span class="k">try</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">184</span>     <span class="n">timing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timer</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">185</span> <span class="k">finally</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">186</span>     <span class="k">if</span> <span class="n">gcold</span><span class="p">:</span>
 
 <span class="nn">File &lt;magic-timeit&gt;:13,</span> in <span class="ni">inner</span><span class="nt">(_it, _timer)</span>
 
