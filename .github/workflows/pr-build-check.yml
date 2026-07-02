@@ -1,0 +1,35 @@
+name: pr-build-check
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build-book:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cleanup unused files
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+
+      - name: Setup graphviz
+        uses: ts-graphviz/setup-graphviz@v2
+
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Build the book
+        run: |
+          uv run python src/gen_index.py
+          uv run jupyter-book build ./book
