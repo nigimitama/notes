@@ -1416,10 +1416,11 @@ document.write(`
 <li><p>Repository: <a class="reference external" href="https://github.com/jjbrophy47/tree_influence">jjbrophy47/tree_influence: Influence Estimation for Gradient-Boosted Decision Trees</a></p></li>
 <li><p>Paper: <a class="reference external" href="https://jmlr.org/papers/v24/22-0449.html">Brophy, J., Hammoudeh, Z., &amp; Lowd, D. (2023). Adapting and Evaluating Influence-Estimation Methods for Gradient-Boosted Decision Trees. J. Mach. Learn. Res., 24, 154-1.</a></p></li>
 </ul>
-<p>途中で <span class="math notranslate nohighlight">\(n\)</span>×木の数のnp.arrayを作るタイミングがあり、例えば100万レコード×5万の決定木ではfloat32だとしても186GiBになってしまう</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<ul class="simple">
+<li><p>❌️ 途中で <span class="math notranslate nohighlight">\(n\)</span>×木の数のnp.arrayを作るタイミングがあり、例えば100万レコード×5万の決定木ではfloat32だとしても186GiBになってしまう</p></li>
+<li><p>❌️ 2024年ごろから更新が停止しておりPython3.11以降はサポートしていない</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_iris</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">lightgbm</span><span class="w"> </span><span class="kn">import</span> <span class="n">LGBMClassifier</span>
@@ -1451,154 +1452,6 @@ document.write(`
 <span class="c1"># - most negatively influential (increases loss of the test instance the most)</span>
 <span class="n">training_idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">values</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A module that was compiled using NumPy 1.x cannot be run in
-NumPy 2.3.3 as it may crash. To support both 1.x and 2.x
-versions of NumPy, modules must be compiled with NumPy 2.0.
-Some module may need to rebuild instead e.g. with &#39;pybind11&gt;=2.12&#39;.
-
-If you are a user of the module, the easiest solution will be to
-downgrade to &#39;numpy&lt;2&#39; or try to upgrade the affected module.
-We expect that some modules will need time to support NumPy 2.
-
-Traceback (most recent call last):  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
-  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/ipykernel_launcher.py&quot;, line 18, in &lt;module&gt;
-    app.launch_new_instance()
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/traitlets/config/application.py&quot;, line 1075, in launch_instance
-    app.start()
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/ipykernel/kernelapp.py&quot;, line 739, in start
-    self.io_loop.start()
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/tornado/platform/asyncio.py&quot;, line 211, in start
-    self.asyncio_loop.run_forever()
-  File &quot;/usr/lib/python3.12/asyncio/base_events.py&quot;, line 641, in run_forever
-    self._run_once()
-  File &quot;/usr/lib/python3.12/asyncio/base_events.py&quot;, line 1987, in _run_once
-    handle._run()
-  File &quot;/usr/lib/python3.12/asyncio/events.py&quot;, line 88, in _run
-    self._context.run(self._callback, *self._args)
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/ipykernel/kernelbase.py&quot;, line 545, in dispatch_queue
-    await self.process_one()
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/ipykernel/kernelbase.py&quot;, line 534, in process_one
-    await dispatch(*args)
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/ipykernel/kernelbase.py&quot;, line 437, in dispatch_shell
-    await result
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/ipykernel/ipkernel.py&quot;, line 362, in execute_request
-    await super().execute_request(stream, ident, parent)
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/ipykernel/kernelbase.py&quot;, line 778, in execute_request
-    reply_content = await reply_content
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/ipykernel/ipkernel.py&quot;, line 449, in do_execute
-    res = shell.run_cell(
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/ipykernel/zmqshell.py&quot;, line 549, in run_cell
-    return super().run_cell(*args, **kwargs)
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/IPython/core/interactiveshell.py&quot;, line 3116, in run_cell
-    result = self._run_cell(
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/IPython/core/interactiveshell.py&quot;, line 3171, in _run_cell
-    result = runner(coro)
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/IPython/core/async_helpers.py&quot;, line 128, in _pseudo_sync_runner
-    coro.send(None)
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/IPython/core/interactiveshell.py&quot;, line 3394, in run_cell_async
-    has_raised = await self.run_ast_nodes(code_ast.body, cell_name,
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/IPython/core/interactiveshell.py&quot;, line 3639, in run_ast_nodes
-    if await self.run_code(code, result, async_=asy):
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/IPython/core/interactiveshell.py&quot;, line 3699, in run_code
-    exec(code_obj, self.user_global_ns, self.user_ns)
-  File &quot;/tmp/ipykernel_9078/203011019.py&quot;, line 4, in &lt;module&gt;
-    from lightgbm import LGBMClassifier
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/lightgbm/__init__.py&quot;, line 11, in &lt;module&gt;
-    from .basic import Booster, Dataset, Sequence, register_logger
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/lightgbm/basic.py&quot;, line 29, in &lt;module&gt;
-    from .compat import (
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/lightgbm/compat.py&quot;, line 191, in &lt;module&gt;
-    import matplotlib  # noqa: F401
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/matplotlib/__init__.py&quot;, line 131, in &lt;module&gt;
-    from . import _api, _version, cbook, _docstring, rcsetup
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/matplotlib/rcsetup.py&quot;, line 27, in &lt;module&gt;
-    from matplotlib.colors import Colormap, is_color_like
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/matplotlib/colors.py&quot;, line 56, in &lt;module&gt;
-    from matplotlib import _api, _cm, cbook, scale
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/matplotlib/scale.py&quot;, line 22, in &lt;module&gt;
-    from matplotlib.ticker import (
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/matplotlib/ticker.py&quot;, line 138, in &lt;module&gt;
-    from matplotlib import transforms as mtransforms
-  File &quot;/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/matplotlib/transforms.py&quot;, line 49, in &lt;module&gt;
-    from matplotlib._path import (
-</pre></div>
-</div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ImportError</span><span class="g g-Whitespace">                               </span>Traceback (most recent call last)
-<span class="nn">File ~/work/notes/notes/.venv/lib/python3.12/site-packages/numpy/core/_multiarray_umath.py:46,</span> in <span class="ni">__getattr__</span><span class="nt">(attr_name)</span>
-<span class="g g-Whitespace">     </span><span class="mi">41</span>     <span class="c1"># Also print the message (with traceback).  This is because old versions</span>
-<span class="g g-Whitespace">     </span><span class="mi">42</span>     <span class="c1"># of NumPy unfortunately set up the import to replace (and hide) the</span>
-<span class="g g-Whitespace">     </span><span class="mi">43</span>     <span class="c1"># error.  The traceback shouldn&#39;t be needed, but e.g. pytest plugins</span>
-<span class="g g-Whitespace">     </span><span class="mi">44</span>     <span class="c1"># seem to swallow it and we should be failing anyway...</span>
-<span class="g g-Whitespace">     </span><span class="mi">45</span>     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span> <span class="o">+</span> <span class="n">tb_msg</span><span class="p">)</span>
-<span class="ne">---&gt; </span><span class="mi">46</span>     <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">48</span> <span class="n">ret</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_multiarray_umath</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">49</span> <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-
-<span class="ne">ImportError</span>: 
-<span class="n">A</span> <span class="n">module</span> <span class="n">that</span> <span class="n">was</span> <span class="n">compiled</span> <span class="n">using</span> <span class="n">NumPy</span> <span class="mf">1.</span><span class="n">x</span> <span class="n">cannot</span> <span class="n">be</span> <span class="n">run</span> <span class="ow">in</span>
-<span class="n">NumPy</span> <span class="mf">2.3.3</span> <span class="k">as</span> <span class="n">it</span> <span class="n">may</span> <span class="n">crash</span><span class="o">.</span> <span class="n">To</span> <span class="n">support</span> <span class="n">both</span> <span class="mf">1.</span><span class="n">x</span> <span class="ow">and</span> <span class="mf">2.</span><span class="n">x</span>
-<span class="n">versions</span> <span class="n">of</span> <span class="n">NumPy</span><span class="p">,</span> <span class="n">modules</span> <span class="n">must</span> <span class="n">be</span> <span class="n">compiled</span> <span class="k">with</span> <span class="n">NumPy</span> <span class="mf">2.0</span><span class="o">.</span>
-<span class="n">Some</span> <span class="n">module</span> <span class="n">may</span> <span class="n">need</span> <span class="n">to</span> <span class="n">rebuild</span> <span class="n">instead</span> <span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="k">with</span> <span class="s1">&#39;pybind11&gt;=2.12&#39;</span><span class="o">.</span>
-
-<span class="n">If</span> <span class="n">you</span> <span class="n">are</span> <span class="n">a</span> <span class="n">user</span> <span class="n">of</span> <span class="n">the</span> <span class="n">module</span><span class="p">,</span> <span class="n">the</span> <span class="n">easiest</span> <span class="n">solution</span> <span class="n">will</span> <span class="n">be</span> <span class="n">to</span>
-<span class="n">downgrade</span> <span class="n">to</span> <span class="s1">&#39;numpy&lt;2&#39;</span> <span class="ow">or</span> <span class="k">try</span> <span class="n">to</span> <span class="n">upgrade</span> <span class="n">the</span> <span class="n">affected</span> <span class="n">module</span><span class="o">.</span>
-<span class="n">We</span> <span class="n">expect</span> <span class="n">that</span> <span class="n">some</span> <span class="n">modules</span> <span class="n">will</span> <span class="n">need</span> <span class="n">time</span> <span class="n">to</span> <span class="n">support</span> <span class="n">NumPy</span> <span class="mf">2.</span>
-</pre></div>
-</div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">5</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span><span class="w"> </span><span class="nn">lightgbm</span><span class="w"> </span><span class="kn">import</span> <span class="n">LGBMClassifier</span>
-<span class="ne">----&gt; </span><span class="mi">5</span> <span class="kn">from</span><span class="w"> </span><span class="nn">tree_influence.explainers</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoostIn</span>
-<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="c1"># load iris data</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="n">data</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;tree_influence&#39;
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">X_train</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([5.8, 2.6, 4. , 1.2])
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">values</span> <span class="o">=</span> <span class="n">influence</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
-<span class="n">training_idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">values</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">X</span><span class="p">[</span><span class="n">training_idxs</span><span class="p">[:</span><span class="mi">10</span><span class="p">],]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[5.1, 3.4, 1.5, 0.2],
-       [4.9, 2.4, 3.3, 1. ],
-       [5. , 2. , 3.5, 1. ],
-       [4.3, 3. , 1.1, 0.1],
-       [6. , 2.7, 5.1, 1.6],
-       [5.4, 3.4, 1.7, 0.2],
-       [5.7, 2.8, 4.5, 1.3],
-       [5.4, 3.4, 1.5, 0.4],
-       [5.4, 3.9, 1.3, 0.4],
-       [5.1, 3.5, 1.4, 0.2]])
-</pre></div>
-</div>
-</div>
 </div>
 </section>
 
