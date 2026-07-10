@@ -1,0 +1,69 @@
+Traceback (most recent call last):
+  File "/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 154, in wrapped
+    asyncio.get_running_loop()
+RuntimeError: no running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/nbclient/client.py", line 1319, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 158, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/runner/work/notes/notes/.venv/lib/python3.12/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# --- Before: 1つのループで2つの集計をしている ---
+def summary(people):
+    total_age = 0
+    total_salary = 0
+    for p in people:
+        total_age += p.age
+        total_salary += p.salary
+    return total_age, total_salary
+
+
+# --- After: ループを分離すると、それぞれを関数として抽出できる ---
+def summary(people):
+    total_age = sum(p.age for p in people)
+    total_salary = sum(p.salary for p in people)
+    return total_age, total_salary
+
+
+# --- パイプラインによるループの置き換え ---
+# Before
+names = []
+for office in offices:
+    if office["country"] == "Japan":
+        names.append(office["name"])
+
+# After
+names = [office["name"] for office in offices if office["country"] == "Japan"]
+
+------------------
+
+
+[31m---------------------------------------------------------------------------[39m
+[31mNameError[39m                                 Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[6][39m[32m, line 21[39m
+[32m     18[39m [38;5;66;03m# --- パイプラインによるループの置き換え ---[39;00m
+[32m     19[39m [38;5;66;03m# Before[39;00m
+[32m     20[39m names = []
+[32m---> [39m[32m21[39m [38;5;28;01mfor[39;00m office [38;5;129;01min[39;00m [43moffices[49m:
+[32m     22[39m     [38;5;28;01mif[39;00m office[[33m"[39m[33mcountry[39m[33m"[39m] == [33m"[39m[33mJapan[39m[33m"[39m:
+[32m     23[39m         names.append(office[[33m"[39m[33mname[39m[33m"[39m])
+
+[31mNameError[39m: name 'offices' is not defined
+
