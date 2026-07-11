@@ -1408,7 +1408,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">リファクタリングとは</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">いつリファクタリングするか</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">進め方の原則</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-smells">コードの不吉な臭い（Code Smells）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-smells">コードの臭い（Code Smells）</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">リファクタリング・カタログ</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extract-function">関数の抽出（Extract Function）／関数のインライン化</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">変数の抽出／名前の変更</a></li>
@@ -1439,7 +1439,6 @@ document.write(`
 <h2>リファクタリングとは<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>定義：<strong>外部から見た振る舞いを変えずに</strong>、内部構造を改善すること</p></li>
-<li><p>「2つの帽子」：機能追加の帽子とリファクタリングの帽子は同時にかぶらない（Fowler）</p></li>
 <li><p>目的：可読性・変更容易性を高め、バグを見つけやすくする</p></li>
 </ul>
 </section>
@@ -1471,7 +1470,7 @@ document.write(`
 </ul>
 </section>
 <section id="code-smells">
-<h2>コードの不吉な臭い（Code Smells）<a class="headerlink" href="#code-smells" title="Link to this heading">#</a></h2>
+<h2>コードの臭い（Code Smells）<a class="headerlink" href="#code-smells" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><strong>重複コード</strong></p></li>
 <li><p><strong>長い関数</strong></p></li>
@@ -1490,9 +1489,7 @@ document.write(`
 <section id="extract-function">
 <h3>関数の抽出（Extract Function）／関数のインライン化<a class="headerlink" href="#extract-function" title="Link to this heading">#</a></h3>
 <p>意図（何をするか）と実装（どうやるか）を分離する。名前を付けられる単位で抽出する。逆操作がインライン化。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: コメントで区切られた長い関数 ---</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: コメントで区切られた長い関数 ---</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">print_owing</span><span class="p">(</span><span class="n">invoice</span><span class="p">):</span>
     <span class="n">outstanding</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -1532,15 +1529,11 @@ document.write(`
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;amount: </span><span class="si">{</span><span class="n">outstanding</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
 </section>
 <section id="id6">
 <h3>変数の抽出／名前の変更<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <p>複雑な式に名前を付けて意図を表す。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: 式の意味をコメントで説明している ---</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: 式の意味をコメントで説明している ---</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">price</span><span class="p">(</span><span class="n">order</span><span class="p">):</span>
     <span class="c1"># 価格 = 基本価格 - 数量割引 + 送料</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">quantity</span> <span class="o">*</span> <span class="n">order</span><span class="o">.</span><span class="n">item_price</span>
@@ -1556,15 +1549,11 @@ document.write(`
     <span class="k">return</span> <span class="n">base_price</span> <span class="o">-</span> <span class="n">quantity_discount</span> <span class="o">+</span> <span class="n">shipping</span>
 </pre></div>
 </div>
-</div>
-</div>
 </section>
 <section id="id7">
 <h3>関数宣言の変更／パラメータオブジェクトの導入<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <p>引数の追加・削除・名前変更。いつも一緒に渡されるデータの群れはオブジェクトにまとめる。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
 
 
@@ -1591,15 +1580,11 @@ document.write(`
 <span class="c1"># クラスになると contains() のような振る舞いの置き場所もできる</span>
 </pre></div>
 </div>
-</div>
-</div>
 </section>
 <section id="id8">
 <h3>条件記述の分解／ガード節による入れ子の置き換え<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <p>複雑な条件式を関数に抽出する。異常系は早期リターンで抜け、正常系のフローを平坦にする。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: 条件も分岐先も式のままで、意図が読み取りにくい ---</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: 条件も分岐先も式のままで、意図が読み取りにくい ---</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">pay_amount</span><span class="p">(</span><span class="n">employee</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">employee</span><span class="o">.</span><span class="n">is_separated</span><span class="p">:</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;amount&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;SEP&quot;</span><span class="p">}</span>
@@ -1634,15 +1619,11 @@ document.write(`
     <span class="k">return</span> <span class="n">winter_charge</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="n">plan</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
 </section>
 <section id="id9">
 <h3>ポリモーフィズムによる条件記述の置き換え<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <p>型による switch / if の分岐をクラス階層（またはディスパッチ）に置き換える。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: 型で分岐する if の連鎖。種類が増えるたびに全分岐を修正 ---</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: 型で分岐する if の連鎖。種類が増えるたびに全分岐を修正 ---</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">speed</span><span class="p">(</span><span class="n">bird</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">bird</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;EuropeanSwallow&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">35</span>
@@ -1677,15 +1658,11 @@ document.write(`
         <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_nailed</span> <span class="k">else</span> <span class="mi">10</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">voltage</span> <span class="o">/</span> <span class="mi">10</span>
 </pre></div>
 </div>
-</div>
-</div>
 </section>
 <section id="id10">
 <h3>ループの分離／パイプラインによるループの置き換え<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p>1つのループで複数のことをしない。内包表記や map / filter への置き換え。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: 1つのループで2つの集計をしている ---</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: 1つのループで2つの集計をしている ---</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="n">people</span><span class="p">):</span>
     <span class="n">total_age</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">total_salary</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1713,30 +1690,11 @@ document.write(`
 <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">office</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">office</span> <span class="ow">in</span> <span class="n">offices</span> <span class="k">if</span> <span class="n">office</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Japan&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">line</span> <span class="mi">21</span>
-<span class="g g-Whitespace">     </span><span class="mi">18</span> <span class="c1"># --- パイプラインによるループの置き換え ---</span>
-<span class="g g-Whitespace">     </span><span class="mi">19</span> <span class="c1"># Before</span>
-<span class="g g-Whitespace">     </span><span class="mi">20</span> <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="ne">---&gt; </span><span class="mi">21</span> <span class="k">for</span> <span class="n">office</span> <span class="ow">in</span> <span class="n">offices</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">22</span>     <span class="k">if</span> <span class="n">office</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Japan&quot;</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">23</span>         <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">office</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
-
-<span class="ne">NameError</span>: name &#39;offices&#39; is not defined
-</pre></div>
-</div>
-</div>
-</div>
 </section>
 <section id="id11">
 <h3>問い合わせと更新の分離（コマンド・クエリ分離）<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <p>値を返す関数は観察可能な副作用を持たないようにする。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: 値を返しつつ副作用もある（問い合わせのつもりで呼ぶと警報が鳴る） ---</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: 値を返しつつ副作用もある（問い合わせのつもりで呼ぶと警報が鳴る） ---</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">alert_for_miscreant</span><span class="p">(</span><span class="n">people</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">people</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Don&quot;</span><span class="p">,</span> <span class="s2">&quot;John&quot;</span><span class="p">):</span>
@@ -1758,15 +1716,11 @@ document.write(`
         <span class="n">set_off_alarms</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-</div>
 </section>
 <section id="id12">
 <h3>デッドコードの削除<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <p>使われていないコードは「いつか使うかも」で残さず、バージョン管理に任せて消す。</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: 「いつか使うかも」でコメントアウトやフラグ分岐が残っている ---</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Before: 「いつか使うかも」でコメントアウトやフラグ分岐が残っている ---</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_price</span><span class="p">(</span><span class="n">order</span><span class="p">):</span>
     <span class="n">price</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">quantity</span> <span class="o">*</span> <span class="n">order</span><span class="o">.</span><span class="n">item_price</span>
     <span class="c1"># if order.is_member:  # 2023年に会員割引は廃止</span>
@@ -1781,8 +1735,6 @@ document.write(`
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_price</span><span class="p">(</span><span class="n">order</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">order</span><span class="o">.</span><span class="n">quantity</span> <span class="o">*</span> <span class="n">order</span><span class="o">.</span><span class="n">item_price</span>
 </pre></div>
-</div>
-</div>
 </div>
 </section>
 </section>
@@ -1852,7 +1804,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">リファクタリングとは</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">いつリファクタリングするか</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">進め方の原則</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-smells">コードの不吉な臭い（Code Smells）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-smells">コードの臭い（Code Smells）</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">リファクタリング・カタログ</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extract-function">関数の抽出（Extract Function）／関数のインライン化</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">変数の抽出／名前の変更</a></li>
