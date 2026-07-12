@@ -1,10 +1,12 @@
-# _toc.yml 更新手順
+# myst.yml toc 更新手順
 
-このドキュメントは、Jupyter Bookの目次ファイル (`book/_toc.yml`) を実際のノートブックファイル構造に合わせて更新する手順を記載しています。
+このドキュメントは、Jupyter Book (v2 / MyST) の目次（`book/myst.yml` の `project.toc`）を実際のノートブックファイル構造に合わせて更新する手順を記載しています。
+
+> **Note:** Jupyter Book 1 時代は `book/_toc.yml` が目次ファイルでしたが、Jupyter Book 2 へのアップグレード（2026-07-12）により目次は `book/myst.yml` の `project.toc` セクションに統合されました。
 
 ## 概要
 
-`book/` ディレクトリ内の `.ipynb` ファイルと `book/_toc.yml` の内容を同期させ、すべてのノートブックが正しく目次に登録されていることを確認します。
+`book/` ディレクトリ内の `.ipynb` ファイルと `book/myst.yml` の `project.toc` の内容を同期させ、すべてのノートブックが正しく目次に登録されていることを確認します。
 
 ## 実行タイミング
 
@@ -31,30 +33,25 @@
 import os
 import yaml
 
-# _toc.ymlを読み込む
-with open('/home/mitama/notes/book/_toc.yml', 'r') as f:
-    toc = yaml.safe_load(f)
+# myst.yml を読み込む
+with open('/home/mitama/notes/book/myst.yml', 'r') as f:
+    config = yaml.safe_load(f)
 
-# _toc.ymlに登録されているファイルを抽出
+# project.toc に登録されている .ipynb ファイルを抽出
 def extract_files(obj, prefix='book/'):
     files = []
     if isinstance(obj, dict):
-        if 'file' in obj:
-            files.append(prefix + obj['file'] + '.ipynb')
-        if 'sections' in obj:
-            for section in obj['sections']:
-                files.extend(extract_files(section, prefix))
+        if 'file' in obj and obj['file'].endswith('.ipynb'):
+            files.append(prefix + obj['file'])
+        if 'children' in obj:
+            for child in obj['children']:
+                files.extend(extract_files(child, prefix))
     elif isinstance(obj, list):
         for item in obj:
             files.extend(extract_files(item, prefix))
     return files
 
-toc_files = set()
-if 'parts' in toc:
-    for part in toc['parts']:
-        if 'chapters' in part:
-            for chapter in part['chapters']:
-                toc_files.update(extract_files(chapter))
+toc_files = set(extract_files(config['project']['toc']))
 
 # 実際のファイルを取得
 actual_files = set()
@@ -72,7 +69,7 @@ for root, dirs, files in os.walk('/home/mitama/notes/book'):
 missing_in_toc = sorted(actual_files - toc_files)
 missing_in_actual = sorted(toc_files - actual_files)
 
-print("=== _toc.ymlに存在しないファイル ===")
+print("=== myst.yml の toc に存在しないファイル ===")
 if missing_in_toc:
     for f in missing_in_toc:
         print(f)
@@ -80,7 +77,7 @@ if missing_in_toc:
 else:
     print("なし")
 
-print("\n=== 実際のファイルに存在しない_toc.ymlのエントリ ===")
+print("\n=== 実際のファイルに存在しない toc のエントリ ===")
 if missing_in_actual:
     for f in missing_in_actual:
         print(f)
@@ -90,7 +87,7 @@ else:
 
 # 要約
 if not missing_in_toc and not missing_in_actual:
-    print("\n✅ _toc.ymlと実際のファイル構造は完全に同期しています")
+    print("\n✅ myst.yml の toc と実際のファイル構造は完全に同期しています")
 else:
     print(f"\n⚠️  同期が必要です: {len(missing_in_toc)}個追加, {len(missing_in_actual)}個削除")
 ```
@@ -104,13 +101,13 @@ python3 /tmp/compare_toc.py
 
 出力例：
 ```
-=== _toc.ymlに存在しないファイル ===
+=== myst.yml の toc に存在しないファイル ===
 book/new_section/new_notebook.ipynb
 book/statistics/new_topic.ipynb
 
 合計: 2個
 
-=== 実際のファイルに存在しない_toc.ymlのエントリ ===
+=== 実際のファイルに存在しない toc のエントリ ===
 book/old_section/deleted_notebook.ipynb
 
 合計: 1個
@@ -118,9 +115,9 @@ book/old_section/deleted_notebook.ipynb
 ⚠️  同期が必要です: 2個追加, 1個削除
 ```
 
-### Step 3: _toc.ymlの編集
+### Step 3: myst.yml の編集
 
-差分確認の結果に基づいて、`book/_toc.yml` を編集します。
+差分確認の結果に基づいて、`book/myst.yml` の `project.toc` を編集します。
 
 #### 3.1 不要なエントリの削除
 
@@ -129,49 +126,55 @@ book/old_section/deleted_notebook.ipynb
 **例：**
 ```yaml
 # 削除前
-- file: old_section/deleted_notebook
+- file: old_section/deleted_notebook.ipynb
 
 # 削除後（エントリごと削除）
 ```
 
 #### 3.2 新しいファイルの追加
 
-実際に存在するが _toc.yml に登録されていないファイルを追加します。
+実際に存在するが toc に登録されていないファイルを追加します。
 
 **ファイル階層の対応関係：**
 
 ```yaml
+# パート（大見出し）の場合
+- title: セクション名
+  children:
+    - file: section_name/notebook_name.ipynb
+
 # 単一ファイルの場合
-- file: section_name/notebook_name
+- file: section_name/notebook_name.ipynb
 
 # index.ipynb を持つセクションの場合
-- file: section_name/index
-  sections:
-    - file: section_name/sub_notebook1
-    - file: section_name/sub_notebook2
+- file: section_name/index.ipynb
+  children:
+    - file: section_name/sub_notebook1.ipynb
+    - file: section_name/sub_notebook2.ipynb
 
 # ネストされたセクションの場合
-- file: section_name/index
-  sections:
-    - file: section_name/subsection/index
-      sections:
-        - file: section_name/subsection/notebook1
-        - file: section_name/subsection/notebook2
+- file: section_name/index.ipynb
+  children:
+    - file: section_name/subsection/index.ipynb
+      children:
+        - file: section_name/subsection/notebook1.ipynb
+        - file: section_name/subsection/notebook2.ipynb
 ```
 
 **注意事項：**
 
-1. ファイルパスは `book/` からの相対パスで、拡張子 `.ipynb` は**省略**します
+1. ファイルパスは `book/` からの相対パスで、拡張子 `.ipynb` を**含めます**（Jupyter Book 1 の `_toc.yml` とは逆）
 2. インデントはスペース2個を使用します
 3. 階層構造は論理的なグループ分けに従います
 4. `index.ipynb` はセクションのトップページとして使用します
+5. 子要素のキーは `sections:` ではなく `children:` です
 
 ### Step 4: 構文チェック
 
 編集後、YAMLの構文が正しいかチェックします：
 
 ```bash
-python3 -c "import yaml; yaml.safe_load(open('book/_toc.yml'))" && echo "✅ YAML構文OK" || echo "❌ YAML構文エラー"
+python3 -c "import yaml; yaml.safe_load(open('book/myst.yml'))" && echo "✅ YAML構文OK" || echo "❌ YAML構文エラー"
 ```
 
 ### Step 5: 再度差分確認
@@ -183,13 +186,13 @@ python3 /tmp/compare_toc.py
 すべての差分が解消されていることを確認します：
 
 ```
-=== _toc.ymlに存在しないファイル ===
+=== myst.yml の toc に存在しないファイル ===
 なし
 
-=== 実際のファイルに存在しない_toc.ymlのエントリ ===
+=== 実際のファイルに存在しない toc のエントリ ===
 なし
 
-✅ _toc.ymlと実際のファイル構造は完全に同期しています
+✅ myst.yml の toc と実際のファイル構造は完全に同期しています
 ```
 
 ### Step 6: Jupyter Bookのビルドテスト
@@ -198,8 +201,10 @@ python3 /tmp/compare_toc.py
 
 ```bash
 cd /home/mitama/notes
-jupyter-book build book --builder linkcheck 2>&1 | head -100
+bin/build_book 2>&1 | tail -20
 ```
+
+（`bin/build_book` は内部で `cd book && uv run jupyter-book build --html` を実行します。外部リンクも検証したい場合は `--check-links` を追加してください。）
 
 エラーがなく、すべてのファイルが正しく読み込まれることを確認します。
 
@@ -209,11 +214,11 @@ jupyter-book build book --builder linkcheck 2>&1 | head -100
 
 **症状：** ファイルは存在するのに「存在しない」と表示される
 
-**原因：** _toc.yml のパスが間違っている（例：`financial_economics/` と `economics/financial_economics/`）
+**原因：** myst.yml のパスが間違っている（例：`financial_economics/` と `economics/financial_economics/`）
 
 **対処法：**
 1. 実際のファイルパスを確認：`find book -name "filename.ipynb"`
-2. _toc.yml のパスを実際のパスに合わせて修正
+2. myst.yml のパスを実際のパスに合わせて修正
 
 ### 問題2: index.ipynb の扱い
 
@@ -224,10 +229,10 @@ jupyter-book build book --builder linkcheck 2>&1 | head -100
 **対処法：**
 ```yaml
 # 正しい例
-- file: section_name/index
-  sections:
-    - file: section_name/child1
-    - file: section_name/child2
+- file: section_name/index.ipynb
+  children:
+    - file: section_name/child1.ipynb
+    - file: section_name/child2.ipynb
 ```
 
 ### 問題3: Untitled.ipynb などの一時ファイル
@@ -237,7 +242,7 @@ jupyter-book build book --builder linkcheck 2>&1 | head -100
 **原因：** Jupyter で作成した一時ファイル
 
 **対処法：**
-- 一時ファイルは _toc.yml に追加**しない**
+- 一時ファイルは toc に追加**しない**
 - 必要に応じて削除またはリネームする
 
 ### 問題4: .ipynb_checkpoints ディレクトリ
@@ -273,16 +278,19 @@ fi
 
 - [ ] `python3 /tmp/compare_toc.py` で差分がないことを確認
 - [ ] YAML構文チェックが通ること
-- [ ] `jupyter-book build` が警告なく実行できること
+- [ ] `bin/build_book` が警告なく実行できること
 - [ ] 新しく追加したノートブックが適切なセクションに配置されていること
-- [ ] ファイルパスに拡張子 `.ipynb` が含まれていないこと
+- [ ] ファイルパスに拡張子 `.ipynb` が含まれて**いる**こと
+- [ ] 子要素のキーが `children:` であること
 - [ ] インデントがスペース2個で統一されていること
 
 ## 参考情報
 
-- [Jupyter Book ドキュメント - Table of Contents](https://jupyterbook.org/en/stable/structure/toc.html)
+- [MyST ドキュメント - Table of Contents](https://mystmd.org/guide/table-of-contents)
+- [Jupyter Book 2 アップグレードガイド](https://jupyterbook.org/stable/resources/upgrade/)
 - [YAML 構文ガイド](https://yaml.org/spec/1.2/spec.html)
 
 ## 更新履歴
 
 - 2025-10-24: 初版作成
+- 2026-07-12: Jupyter Book 2 (MyST) へのアップグレードに伴い `_toc.yml` → `myst.yml` の `project.toc` に変更

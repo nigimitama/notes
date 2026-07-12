@@ -6,27 +6,34 @@ import yaml
 workdir = Path(".")
 book_dir = workdir / "book"
 
-with open(book_dir / "_toc.yml", "r", encoding="utf-8") as f:
-    toc = yaml.load(f, Loader=yaml.CLoader)
+with open(book_dir / "myst.yml", "r", encoding="utf-8") as f:
+    config = yaml.load(f, Loader=yaml.CLoader)
+
+toc = config["project"]["toc"]
 
 
 ncols = 2
 
 grid_items = []
-for part in toc["parts"]:
-    section_title = part["caption"]
+for part in toc:
+    # index.md などパート（title + children）でないエントリはスキップ
+    if "title" not in part or "children" not in part:
+        continue
+    section_title = part["title"]
     articles = []
     # 第1層までのファイルを取得
-    for chapter in part["chapters"]:
+    for chapter in part["children"]:
+        if "file" not in chapter:
+            continue
         file_path: str = chapter["file"]
         articles.append(f"- []({file_path})")
     articles = "\n".join(articles)
-    grid_item = ":::{grid-item-card}\n" + f":columns: {12 // ncols}\n" + f"{section_title}\n" + f"\n{articles}\n" + ":::"
+    grid_item = ":::{grid-item-card}\n" + f"{section_title}\n" + f"\n{articles}\n" + ":::"
     grid_items.append(grid_item)
 
 grid_items: str = "\n\n".join(grid_items)
-grid = """
-::::{grid}
+grid = f"""
+::::{{grid}} 1 1 {ncols} {ncols}
 :gutter: 2
 :padding: 2
 :margin: 2

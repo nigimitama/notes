@@ -42,11 +42,14 @@ jobs:
           uv sync
 
       - name: Build the book
+        env:
+          # GitHub Pages のサブパス (https://nigimitama.github.io/notes/) 配信用
+          BASE_URL: /notes
         run: |
           # create index.md
           uv run python src/gen_index.py
-          # build jupyter book
-          uv run jupyter-book build ./book
+          # build jupyter book (v2 / MyST)
+          cd book && uv run jupyter-book build --html
 
       - name: Move 404.html
         run: mv 404.html ./book/_build/html/
