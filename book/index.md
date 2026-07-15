@@ -253,7 +253,7 @@
 - [](software_engineering/practitionars_approach.ipynb)
 - [](software_engineering/software_process.ipynb)
 - [](software_engineering/software_architecture/index.ipynb)
-- [](software_engineering/ddd.ipynb)
+- [](software_engineering/x_driven_development/index.ipynb)
 - [](software_engineering/refactoring.ipynb)
 - [](software_engineering/development/index.ipynb)
 - [](software_engineering/frontend/index.ipynb)
