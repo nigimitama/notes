@@ -148,6 +148,7 @@
 - [](image_processing/intensity_transformation.ipynb)
 - [](image_processing/region_splitting.ipynb)
 - [](image_processing/noise_removal.ipynb)
+- [](image_processing/object_detection/index.ipynb)
 :::
 
 :::{grid-item-card}
