@@ -178,6 +178,7 @@
 - [](applied_data_science/data_management.ipynb)
 - [](applied_data_science/type_of_applications.ipynb)
 - [](applied_data_science/business_application_of_ai.ipynb)
+- [](applied_data_science/ai_agent/index.ipynb)
 - [](applied_data_science/decision_focused_learning/index.ipynb)
 - [](applied_data_science/marketing/marketing.ipynb)
 :::
@@ -253,6 +254,7 @@
 - [](software_engineering/development_methods.ipynb)
 - [](software_engineering/practitionars_approach.ipynb)
 - [](software_engineering/software_process.ipynb)
+- [](software_engineering/oss.ipynb)
 - [](software_engineering/x_driven_development/index.ipynb)
 - [](software_engineering/design/index.ipynb)
 - [](software_engineering/software_architecture/index.ipynb)
