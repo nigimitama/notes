@@ -7,6 +7,13 @@ on:
       - master
       - develop
 
+# 同じブランチへの連続pushで複数のワークフロー実行が同時に走ると、
+# gh-pages への push が非fast-forwardで衝突して失敗するため、
+# 実行中の古いジョブはキャンセルして最新のpushのみをデプロイする
+concurrency:
+  group: deploy-book-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   remove-old-artifacts:
     runs-on: ubuntu-latest
