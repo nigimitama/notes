@@ -29,6 +29,7 @@
 統計モデリング
 
 - [](statistical_modeling/glm/index.ipynb)
+- [](statistical_modeling/conjoint_analysis/index.ipynb)
 - [](statistical_modeling/ordered_regression/index.ipynb)
 - [](statistical_modeling/sem/index.ipynb)
 - [](statistical_modeling/test_theory/index.ipynb)
