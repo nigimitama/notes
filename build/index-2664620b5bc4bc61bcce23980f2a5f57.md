@@ -142,6 +142,7 @@
 画像処理
 
 - [](image_processing/introduction.ipynb)
+- [](image_processing/digital_image.ipynb)
 - [](image_processing/sample_images.ipynb)
 - [](image_processing/rotation_correction.ipynb)
 - [](image_processing/distortion_correction.ipynb)
