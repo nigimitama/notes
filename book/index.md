@@ -136,6 +136,8 @@
 - [](natural_language_processing/latent_dirichlet_allocation.ipynb)
 - [](natural_language_processing/information_extraction/index.ipynb)
 - [](natural_language_processing/large_language_models/index.ipynb)
+- [](natural_language_processing/retrieval_augmented_generation/index.ipynb)
+- [](natural_language_processing/system_one_models/index.ipynb)
 :::
 
 :::{grid-item-card}
