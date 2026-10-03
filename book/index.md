@@ -201,6 +201,7 @@
 - [](mathematics/applied_math/index.ipynb)
 - [](mathematics/probability_theory/index.ipynb)
 - [](mathematics/discrete_mathematics/index.ipynb)
+- [](mathematics/literatures.ipynb)
 :::
 
 :::{grid-item-card}
