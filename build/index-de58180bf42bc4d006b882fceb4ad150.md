@@ -276,6 +276,12 @@
 :::
 
 :::{grid-item-card}
+Web3
+
+- [](web3/index.ipynb)
+:::
+
+:::{grid-item-card}
 外国語
 
 - [](foreign_languages/english/index.ipynb)
