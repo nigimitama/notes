@@ -2,6 +2,64 @@
 
 統計学・機械学習（+その他の気になった分野）の教科書や論文を読み、自分で理解した範囲の理論と実装をメモしていく場所
 
+## 基礎
+
+::::{grid} 1 1 2 2
+:gutter: 2
+:padding: 2
+:margin: 2
+
+:::{grid-item-card}
+ソフトスキル
+
+- [](soft_skills/mindset.ipynb)
+- [](soft_skills/learning.ipynb)
+- [](soft_skills/writing.ipynb)
+- [](soft_skills/presentation.ipynb)
+- [](soft_skills/negotiation.ipynb)
+- [](soft_skills/harvard_negotiation.ipynb)
+- [](soft_skills/assertion.ipynb)
+- [](soft_skills/data_analysis.ipynb)
+- [](soft_skills/research.ipynb)
+- [](soft_skills/meeting_design.ipynb)
+- [](soft_skills/task_management.ipynb)
+- [](soft_skills/document_management.ipynb)
+- [](soft_skills/growth/skillup.ipynb)
+- [](soft_skills/growth/growth_formula.ipynb)
+- [](soft_skills/thinking/index.ipynb)
+- [](soft_skills/logic/index.ipynb)
+- [](soft_skills/leadership/index.ipynb)
+- [](soft_skills/people_management/index.ipynb)
+- [](soft_skills/project_management/index.ipynb)
+- [](soft_skills/health_management/index.ipynb)
+:::
+
+:::{grid-item-card}
+数学
+
+- [](mathematics/introduction.ipynb)
+- [](mathematics/symbols.ipynb)
+- [](mathematics/math_for_ds.ipynb)
+- [](mathematics/set_theory.ipynb)
+- [](mathematics/algebra/index.ipynb)
+- [](mathematics/linear_algebra/index.ipynb)
+- [](mathematics/calculus/index.ipynb)
+- [](mathematics/mathematical_optimization/index.ipynb)
+- [](mathematics/applied_math/index.ipynb)
+- [](mathematics/probability_theory/index.ipynb)
+- [](mathematics/discrete_mathematics/index.ipynb)
+- [](mathematics/literatures.ipynb)
+:::
+
+:::{grid-item-card}
+外国語
+
+- [](foreign_languages/english/index.ipynb)
+- [](foreign_languages/chinese/index.ipynb)
+:::
+::::
+
+## データサイエンス
 
 ::::{grid} 1 1 2 2
 :gutter: 2
@@ -174,82 +232,14 @@
 
 - [](reinforcement_learning/introduction.ipynb)
 :::
+::::
 
-:::{grid-item-card}
-データ分析のビジネス応用
+## コンピュータサイエンス
 
-- [](applied_data_science/data_analysis.ipynb)
-- [](applied_data_science/data_management.ipynb)
-- [](applied_data_science/type_of_applications.ipynb)
-- [](applied_data_science/business_application_of_ai.ipynb)
-- [](applied_data_science/ai_agent/index.ipynb)
-- [](applied_data_science/decision_focused_learning/index.ipynb)
-- [](applied_data_science/marketing/marketing.ipynb)
-:::
-
-:::{grid-item-card}
-数学
-
-- [](mathematics/introduction.ipynb)
-- [](mathematics/symbols.ipynb)
-- [](mathematics/math_for_ds.ipynb)
-- [](mathematics/set_theory.ipynb)
-- [](mathematics/algebra/index.ipynb)
-- [](mathematics/linear_algebra/index.ipynb)
-- [](mathematics/calculus/index.ipynb)
-- [](mathematics/mathematical_optimization/index.ipynb)
-- [](mathematics/applied_math/index.ipynb)
-- [](mathematics/probability_theory/index.ipynb)
-- [](mathematics/discrete_mathematics/index.ipynb)
-- [](mathematics/literatures.ipynb)
-:::
-
-:::{grid-item-card}
-ソフトスキル
-
-- [](soft_skills/mindset.ipynb)
-- [](soft_skills/learning.ipynb)
-- [](soft_skills/writing.ipynb)
-- [](soft_skills/presentation.ipynb)
-- [](soft_skills/negotiation.ipynb)
-- [](soft_skills/harvard_negotiation.ipynb)
-- [](soft_skills/assertion.ipynb)
-- [](soft_skills/data_analysis.ipynb)
-- [](soft_skills/research.ipynb)
-- [](soft_skills/meeting_design.ipynb)
-- [](soft_skills/task_management.ipynb)
-- [](soft_skills/document_management.ipynb)
-- [](soft_skills/growth/skillup.ipynb)
-- [](soft_skills/growth/growth_formula.ipynb)
-- [](soft_skills/thinking/index.ipynb)
-- [](soft_skills/logic/index.ipynb)
-- [](soft_skills/leadership/index.ipynb)
-- [](soft_skills/people_management/index.ipynb)
-- [](soft_skills/project_management/index.ipynb)
-- [](soft_skills/health_management/index.ipynb)
-:::
-
-:::{grid-item-card}
-ビジネス関連知識
-
-- [](business/revenue_structure.ipynb)
-- [](business/breakeven_point.ipynb)
-- [](business/accounting.ipynb)
-- [](business/career_of_ds.ipynb)
-- [](business/digital_transformation.ipynb)
-- [](business/feature_vector_based.ipynb)
-- [](business/business_administration/index.ipynb)
-- [](business/real_estate/index.ipynb)
-:::
-
-:::{grid-item-card}
-プロダクト開発
-
-- [](product_development/product_management/index.ipynb)
-- [](product_development/marketing/index.ipynb)
-- [](product_development/hearing.ipynb)
-- [](product_development/solo_project.ipynb)
-:::
+::::{grid} 1 1 2 2
+:gutter: 2
+:padding: 2
+:margin: 2
 
 :::{grid-item-card}
 ソフトウェア工学
@@ -281,13 +271,56 @@ Web3
 
 - [](web3/index.ipynb)
 :::
+::::
+
+## ビジネス応用
+
+::::{grid} 1 1 2 2
+:gutter: 2
+:padding: 2
+:margin: 2
 
 :::{grid-item-card}
-外国語
+ビジネス関連知識
 
-- [](foreign_languages/english/index.ipynb)
-- [](foreign_languages/chinese/index.ipynb)
+- [](business/revenue_structure.ipynb)
+- [](business/breakeven_point.ipynb)
+- [](business/accounting.ipynb)
+- [](business/career_of_ds.ipynb)
+- [](business/digital_transformation.ipynb)
+- [](business/feature_vector_based.ipynb)
+- [](business/business_administration/index.ipynb)
+- [](business/real_estate/index.ipynb)
 :::
+
+:::{grid-item-card}
+データ分析のビジネス応用
+
+- [](applied_data_science/data_analysis.ipynb)
+- [](applied_data_science/data_management.ipynb)
+- [](applied_data_science/type_of_applications.ipynb)
+- [](applied_data_science/business_application_of_ai.ipynb)
+- [](applied_data_science/ai_agent/index.ipynb)
+- [](applied_data_science/decision_focused_learning/index.ipynb)
+- [](applied_data_science/marketing/marketing.ipynb)
+:::
+
+:::{grid-item-card}
+プロダクト開発
+
+- [](product_development/product_management/index.ipynb)
+- [](product_development/marketing/index.ipynb)
+- [](product_development/hearing.ipynb)
+- [](product_development/solo_project.ipynb)
+:::
+::::
+
+## その他
+
+::::{grid} 1 1 2 2
+:gutter: 2
+:padding: 2
+:margin: 2
 
 :::{grid-item-card}
 経済学
